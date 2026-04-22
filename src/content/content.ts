@@ -1,7 +1,15 @@
 type SettingKey =
   | 'enhancedTheaterMode'
-  | 'hideHeaderInTheater'
-  | 'autoHideUI'
+  | 'theaterHideHeader'
+  | 'theaterShowHeaderOnHover'
+  | 'theaterHidePlayerUI'
+  | 'theaterHideRecommendations'
+  | 'theaterHideComments'
+  | 'theaterHideLiveChat'
+  | 'theaterShowLiveChatOverlay'
+  | 'defaultHideRecommendations'
+  | 'defaultHideComments'
+  | 'defaultHideLiveChat'
   | 'pipButton'
   | 'floatingMiniPlayer';
 
@@ -17,8 +25,16 @@ type DockState = {
 
 const DEFAULT_SETTINGS: Settings = {
   enhancedTheaterMode: true,
-  hideHeaderInTheater: true,
-  autoHideUI: true,
+  theaterHideHeader: true,
+  theaterShowHeaderOnHover: true,
+  theaterHidePlayerUI: true,
+  theaterHideRecommendations: true,
+  theaterHideComments: false,
+  theaterHideLiveChat: false,
+  theaterShowLiveChatOverlay: false,
+  defaultHideRecommendations: false,
+  defaultHideComments: false,
+  defaultHideLiveChat: false,
   pipButton: true,
   floatingMiniPlayer: true,
 };
@@ -27,38 +43,39 @@ const SETTING_KEYS = Object.keys(DEFAULT_SETTINGS) as SettingKey[];
 
 const SELECTORS = {
   masthead: '#masthead-container, ytd-masthead',
+  mastheadTargets: '#masthead-container, ytd-masthead, ytd-masthead #container',
   guide: '#guide, ytd-guide-renderer, #guide-content',
   watchFlexy: 'ytd-watch-flexy',
   player: '#movie_player',
   html5Video: 'video.html5-main-video',
   controlsRight: '.ytp-right-controls',
   comments: '#comments',
-  playerContainer: '#player, #player-container, #player-container-inner',
+  liveChat: '#chat, #chat-container, ytd-live-chat-frame',
   dockTarget: '#player-container-inner, #player-container, #player',
 };
 
 const STYLE_ID = 'simple-yt-tweaks-style';
 const PIP_BUTTON_ID = 'simple-yt-tweaks-pip-button';
 const DOCK_ID = 'simple-yt-tweaks-dock';
+const MASTHEAD_CLASS = 'simple-yt-tweaks-masthead';
+const LIVE_CHAT_CLASS = 'simple-yt-tweaks-live-chat';
 
 const state: {
   settings: Settings;
   currentUrl: string;
-  idleTimer: number | undefined;
   observer: MutationObserver | null;
   dock: DockState | null;
   miniPlayerDismissed: boolean;
   storageObserverBound: boolean;
-  activityHandlersBound: boolean;
+  pointerHandlersBound: boolean;
 } = {
   settings: { ...DEFAULT_SETTINGS },
   currentUrl: location.href,
-  idleTimer: undefined,
   observer: null,
   dock: null,
   miniPlayerDismissed: false,
   storageObserverBound: false,
-  activityHandlersBound: false,
+  pointerHandlersBound: false,
 };
 
 function loadSettings(): Promise<Settings> {
@@ -83,6 +100,14 @@ function loadSettings(): Promise<Settings> {
   });
 }
 
+function isFeatureEnabled(key: SettingKey): boolean {
+  if (key === 'floatingMiniPlayer') {
+    return state.settings.pipButton && state.settings.floatingMiniPlayer;
+  }
+
+  return state.settings[key];
+}
+
 function debounce<TArgs extends unknown[]>(fn: (...args: TArgs) => void, wait = 120): (...args: TArgs) => void {
   let timer: number | undefined;
 
@@ -100,6 +125,14 @@ function query<T extends Element = Element>(selector: string, root: ParentNode =
   }
 }
 
+function queryAll<T extends Element = Element>(selector: string, root: ParentNode = document): T[] {
+  try {
+    return [...root.querySelectorAll<T>(selector)];
+  } catch {
+    return [];
+  }
+}
+
 function getVideo(): HTMLVideoElement | null {
   return query<HTMLVideoElement>(SELECTORS.html5Video);
 }
@@ -114,20 +147,34 @@ function isWatchPage(): boolean {
 
 function isTheaterMode(): boolean {
   const watchFlexy = query<HTMLElement>(SELECTORS.watchFlexy);
-  const player = getPlayer();
 
   return Boolean(
     watchFlexy?.hasAttribute('theater') ||
       watchFlexy?.classList.contains('theater') ||
-      player?.classList.contains('ytp-size-button-expanded') ||
       document.querySelector('ytd-watch-flexy[theater]'),
   );
 }
 
+function isEnhancedTheaterActive(): boolean {
+  return state.settings.enhancedTheaterMode && isWatchPage() && isTheaterMode();
+}
+
+function isDefaultWatchView(): boolean {
+  return isWatchPage() && !isTheaterMode();
+}
+
 function buildCss(): string {
   const enhancedTheater = state.settings.enhancedTheaterMode;
-  const hideHeader = state.settings.hideHeaderInTheater;
-  const autoHide = state.settings.autoHideUI;
+  const theaterHideHeader = state.settings.theaterHideHeader;
+  const theaterShowHeaderOnHover = state.settings.theaterShowHeaderOnHover;
+  const theaterHidePlayerUI = state.settings.theaterHidePlayerUI;
+  const theaterHideRecommendations = state.settings.theaterHideRecommendations;
+  const theaterHideComments = state.settings.theaterHideComments;
+  const theaterHideLiveChat = state.settings.theaterHideLiveChat;
+  const theaterShowLiveChatOverlay = state.settings.theaterShowLiveChatOverlay;
+  const defaultHideRecommendations = state.settings.defaultHideRecommendations;
+  const defaultHideComments = state.settings.defaultHideComments;
+  const defaultHideLiveChat = state.settings.defaultHideLiveChat;
 
   return `
     body.simple-yt-tweaks-active .simple-yt-tweaks-pip-btn.ytp-button {
@@ -210,66 +257,271 @@ function buildCss(): string {
     }
 
     ${enhancedTheater ? `
+    html.simple-yt-tweaks-scrollbar-hidden,
+    body.simple-yt-tweaks-scrollbar-hidden {
+      scrollbar-width: none !important;
+    }
+
+    html.simple-yt-tweaks-scrollbar-hidden::-webkit-scrollbar,
+    body.simple-yt-tweaks-scrollbar-hidden::-webkit-scrollbar {
+      width: 0 !important;
+      height: 0 !important;
+      background: transparent !important;
+    }
+
+    body.simple-yt-tweaks-theater {
+      overflow-x: hidden !important;
+    }
+
     body.simple-yt-tweaks-theater #page-manager,
     body.simple-yt-tweaks-theater ytd-watch-flexy,
     body.simple-yt-tweaks-theater #columns,
     body.simple-yt-tweaks-theater #primary {
       max-width: 100% !important;
       width: 100% !important;
+      min-width: 0 !important;
     }
 
-    body.simple-yt-tweaks-theater #secondary,
-    body.simple-yt-tweaks-theater #related,
-    body.simple-yt-tweaks-theater ytd-watch-next-secondary-results-renderer,
-    body.simple-yt-tweaks-theater #below,
-    body.simple-yt-tweaks-theater #meta,
-    body.simple-yt-tweaks-theater #comments {
+    body.simple-yt-tweaks-theater #page-manager,
+    body.simple-yt-tweaks-theater #content,
+    body.simple-yt-tweaks-theater ytd-watch-flexy {
+      margin-left: 0 !important;
+      padding-left: 0 !important;
+    }
+
+    body.simple-yt-tweaks-theater ytd-mini-guide-renderer,
+    body.simple-yt-tweaks-theater #guide-spacer,
+    body.simple-yt-tweaks-theater tp-yt-app-drawer {
       display: none !important;
+    }
+
+    body.simple-yt-tweaks-theater ytd-app,
+    body.simple-yt-tweaks-theater #content,
+    body.simple-yt-tweaks-theater #page-manager,
+    body.simple-yt-tweaks-theater #primary,
+    body.simple-yt-tweaks-theater #primary-inner {
+      padding-top: 0 !important;
+      margin-top: 0 !important;
     }
 
     body.simple-yt-tweaks-theater #player-container-outer,
     body.simple-yt-tweaks-theater #full-bleed-container,
+    body.simple-yt-tweaks-theater #player-full-bleed-container {
+      top: 0 !important;
+      margin-top: 0 !important;
+      max-width: 100% !important;
+      width: 100% !important;
+      min-width: 0 !important;
+      height: min(100vh, 56.25vw) !important;
+      max-height: 100vh !important;
+      min-height: 0 !important;
+      overflow: hidden !important;
+    }
+
+    body.simple-yt-tweaks-theater #full-bleed-container,
     body.simple-yt-tweaks-theater #player-full-bleed-container,
     body.simple-yt-tweaks-theater #player,
     body.simple-yt-tweaks-theater #movie_player {
-      width: 100vw !important;
-      max-width: 100vw !important;
+      height: min(100vh, 56.25vw) !important;
+      max-height: 100vh !important;
     }
 
+    body.simple-yt-tweaks-theater #player,
+    body.simple-yt-tweaks-theater #player-container,
+    body.simple-yt-tweaks-theater #player-container-inner,
     body.simple-yt-tweaks-theater #movie_player,
-    body.simple-yt-tweaks-theater .html5-video-container,
+    body.simple-yt-tweaks-theater .html5-video-player {
+      width: min(100vw, 177.777778vh) !important;
+      max-width: 100vw !important;
+      margin-right: auto !important;
+      margin-left: auto !important;
+    }
+
+    body.simple-yt-tweaks-theater .html5-video-container {
+      width: 100% !important;
+      height: 100% !important;
+      left: 0 !important;
+      top: 0 !important;
+    }
+
     body.simple-yt-tweaks-theater video.html5-main-video {
-      height: 100vh !important;
-      max-height: 100vh !important;
+      width: 100% !important;
+      height: 100% !important;
+      left: 0 !important;
+      top: 0 !important;
+      object-fit: contain !important;
     }
     ` : ''}
 
-    ${hideHeader ? `
-    body.simple-yt-tweaks-theater ${SELECTORS.masthead},
+    ${enhancedTheater && theaterHideRecommendations ? `
+    ${
+      theaterHideLiveChat
+        ? 'body.simple-yt-tweaks-theater #secondary,'
+        : 'body.simple-yt-tweaks-theater:not(.simple-yt-tweaks-has-live-chat) #secondary,'
+    }
+    body.simple-yt-tweaks-theater #related,
+    body.simple-yt-tweaks-theater ytd-watch-next-secondary-results-renderer {
+      display: none !important;
+    }
+
+    body.simple-yt-tweaks-theater #columns,
+    body.simple-yt-tweaks-theater #primary,
+    body.simple-yt-tweaks-theater #primary-inner,
+    body.simple-yt-tweaks-theater #below,
+    body.simple-yt-tweaks-theater #meta,
+    body.simple-yt-tweaks-theater #comments {
+      max-width: 100% !important;
+      width: 100% !important;
+    }
+    ` : ''}
+
+    ${enhancedTheater && theaterHideComments ? `
+    body.simple-yt-tweaks-theater #comments {
+      display: none !important;
+    }
+    ` : ''}
+
+    ${enhancedTheater && theaterHideLiveChat && !theaterShowLiveChatOverlay ? `
+    body.simple-yt-tweaks-theater.simple-yt-tweaks-has-live-chat ${SELECTORS.liveChat} {
+      display: none !important;
+    }
+    ` : ''}
+
+    ${enhancedTheater && theaterHideLiveChat && theaterShowLiveChatOverlay ? `
+    body.simple-yt-tweaks-theater.simple-yt-tweaks-has-live-chat #secondary {
+      display: contents !important;
+      width: 0 !important;
+      min-width: 0 !important;
+      max-width: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    body.simple-yt-tweaks-theater.simple-yt-tweaks-has-live-chat #chat-container,
+    body.simple-yt-tweaks-theater.simple-yt-tweaks-has-live-chat #chat {
+      display: block !important;
+      visibility: visible !important;
+      overflow: visible !important;
+      width: 0 !important;
+      height: 0 !important;
+      max-width: 0 !important;
+      max-height: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    body.simple-yt-tweaks-theater.simple-yt-tweaks-has-live-chat .${LIVE_CHAT_CLASS} {
+      position: fixed !important;
+      top: 84px !important;
+      right: 16px !important;
+      z-index: 2147483643 !important;
+      display: block !important;
+      width: min(380px, calc(100vw - 32px)) !important;
+      height: min(70vh, calc(100vh - 120px)) !important;
+      max-height: calc(100vh - 120px) !important;
+      border: 1px solid rgba(255, 255, 255, 0.16) !important;
+      border-radius: 8px !important;
+      overflow: hidden !important;
+      background: rgba(15, 15, 15, 0.92) !important;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.42) !important;
+    }
+    ` : ''}
+
+    ${enhancedTheater && theaterHideHeader ? `
+    body.simple-yt-tweaks-theater .${MASTHEAD_CLASS} {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      z-index: 2147483644 !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+      transform: translateY(-105%) !important;
+      transition:
+        opacity 0.16s ease,
+        transform 0.16s ease !important;
+    }
+
+    ${theaterShowHeaderOnHover ? `
+    body.simple-yt-tweaks-theater.simple-yt-tweaks-top-hover .${MASTHEAD_CLASS},
+    body.simple-yt-tweaks-theater .${MASTHEAD_CLASS}:focus-within {
+      opacity: 1 !important;
+      pointer-events: auto !important;
+      transform: translateY(0) !important;
+    }
+    ` : ''}
+
     body.simple-yt-tweaks-theater ${SELECTORS.guide} {
       display: none !important;
     }
     ` : ''}
 
-    ${autoHide ? `
-    body.simple-yt-tweaks-ui-idle .ytp-chrome-top,
-    body.simple-yt-tweaks-ui-idle .ytp-chrome-bottom,
-    body.simple-yt-tweaks-ui-idle .ytp-gradient-top,
-    body.simple-yt-tweaks-ui-idle .ytp-ce-element,
-    body.simple-yt-tweaks-ui-idle ${SELECTORS.masthead} {
+    ${theaterHidePlayerUI ? `
+    body.simple-yt-tweaks-player-ui-hidden .ytp-chrome-top,
+    body.simple-yt-tweaks-player-ui-hidden .ytp-chrome-bottom,
+    body.simple-yt-tweaks-player-ui-hidden .ytp-gradient-top,
+    body.simple-yt-tweaks-player-ui-hidden .ytp-gradient-bottom,
+    body.simple-yt-tweaks-player-ui-hidden .ytp-ce-element {
       opacity: 0 !important;
       pointer-events: none !important;
       transition: opacity 0.18s ease !important;
     }
 
+    body.simple-yt-tweaks-player-ui-hover .ytp-chrome-top,
+    body.simple-yt-tweaks-player-ui-hover .ytp-chrome-bottom,
+    body.simple-yt-tweaks-player-ui-hover .ytp-gradient-top,
+    body.simple-yt-tweaks-player-ui-hover .ytp-gradient-bottom,
+    body.simple-yt-tweaks-player-ui-hover .ytp-ce-element,
+    body.simple-yt-tweaks-player-ui-hidden .ytp-chrome-top:focus-within,
+    body.simple-yt-tweaks-player-ui-hidden .ytp-chrome-bottom:focus-within {
+      opacity: 1 !important;
+      pointer-events: auto !important;
+    }
+
     body.simple-yt-tweaks-active .ytp-chrome-top,
     body.simple-yt-tweaks-active .ytp-chrome-bottom,
     body.simple-yt-tweaks-active .ytp-gradient-top,
+    body.simple-yt-tweaks-active .ytp-gradient-bottom,
     body.simple-yt-tweaks-active .ytp-ce-element,
-    body.simple-yt-tweaks-active ${SELECTORS.masthead} {
+    body.simple-yt-tweaks-active .${MASTHEAD_CLASS} {
       transition: opacity 0.18s ease !important;
     }
     ` : ''}
+
+    ${defaultHideRecommendations ? `
+    body.simple-yt-tweaks-default-view #related,
+    body.simple-yt-tweaks-default-view ytd-watch-next-secondary-results-renderer {
+      display: none !important;
+    }
+    ` : ''}
+
+    ${defaultHideComments ? `
+    body.simple-yt-tweaks-default-view #comments {
+      display: none !important;
+    }
+    ` : ''}
+
+    ${defaultHideLiveChat ? `
+    body.simple-yt-tweaks-default-view ${SELECTORS.liveChat} {
+      display: none !important;
+    }
+    ` : ''}
+
+    body.simple-yt-tweaks-hide-native-miniplayer ytd-miniplayer,
+    body.simple-yt-tweaks-hide-native-miniplayer .ytp-miniplayer-ui,
+    body.simple-yt-tweaks-hide-native-miniplayer .ytp-player-minimized {
+      display: none !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+      visibility: hidden !important;
+    }
+
+    body.simple-yt-tweaks-hide-native-miniplayer #${DOCK_ID} .ytp-player-minimized {
+      display: block !important;
+      opacity: 1 !important;
+      pointer-events: auto !important;
+      visibility: visible !important;
+    }
   `;
 }
 
@@ -286,47 +538,131 @@ function ensureStyle(): void {
 }
 
 function updateTheaterClass(): void {
-  const enabled = state.settings.enhancedTheaterMode && isWatchPage() && isTheaterMode();
+  const enabled = isEnhancedTheaterActive();
   document.body.classList.toggle('simple-yt-tweaks-theater', enabled);
+  document.body.classList.toggle('simple-yt-tweaks-default-view', isDefaultWatchView());
 
   if (enabled) {
     restoreDockedPlayer();
+  } else {
+    document.body.classList.remove('simple-yt-tweaks-top-hover');
+    document.body.classList.remove('simple-yt-tweaks-player-ui-hover');
+    document.body.classList.remove('simple-yt-tweaks-player-ui-hidden');
+    document.body.classList.remove('simple-yt-tweaks-has-live-chat');
+    document.documentElement.classList.remove('simple-yt-tweaks-scrollbar-hidden');
+    document.body.classList.remove('simple-yt-tweaks-scrollbar-hidden');
+    restoreTheaterOnlyTargets();
   }
 }
 
-function showUi(): void {
-  if (!state.settings.autoHideUI) return;
+function restoreTheaterOnlyTargets(): void {
+  for (const target of queryAll<HTMLElement>(`.${MASTHEAD_CLASS}`)) {
+    target.classList.remove(MASTHEAD_CLASS);
+  }
 
-  document.body.classList.remove('simple-yt-tweaks-ui-idle');
-  window.clearTimeout(state.idleTimer);
-  state.idleTimer = window.setTimeout(() => {
-    const player = getPlayer();
-    if (!player) return;
-
-    const playerRect = player.getBoundingClientRect();
-    const playerInViewport = playerRect.bottom > 0 && playerRect.top < window.innerHeight;
-    if (playerInViewport && !player.matches(':hover')) {
-      document.body.classList.add('simple-yt-tweaks-ui-idle');
-    }
-  }, 2400);
+  for (const target of queryAll<HTMLElement>(`.${LIVE_CHAT_CLASS}`)) {
+    target.classList.remove(LIVE_CHAT_CLASS);
+  }
 }
 
-function bindActivityHandlers(): void {
-  if (state.activityHandlersBound) return;
-  state.activityHandlersBound = true;
+function updateMastheadTargets(): void {
+  const shouldMark =
+    isEnhancedTheaterActive() &&
+    state.settings.theaterHideHeader;
 
-  document.addEventListener('mousemove', showUi, { passive: true });
-  document.addEventListener('mouseenter', showUi, { passive: true });
-  document.addEventListener('keydown', showUi, { passive: true });
+  for (const target of queryAll<HTMLElement>(SELECTORS.mastheadTargets)) {
+    target.classList.toggle(MASTHEAD_CLASS, shouldMark);
+  }
+
+  if (!shouldMark) {
+    document.body.classList.remove('simple-yt-tweaks-top-hover');
+  }
+}
+
+function updateLiveChatTargets(): void {
+  const shouldUseLiveChat =
+    isEnhancedTheaterActive() &&
+    state.settings.theaterHideLiveChat;
+  const liveChatFrames = queryAll<HTMLElement>('ytd-live-chat-frame');
+  const hasLiveChat = shouldUseLiveChat && liveChatFrames.length > 0;
+
+  for (const frame of liveChatFrames) {
+    frame.classList.toggle(LIVE_CHAT_CLASS, hasLiveChat);
+  }
+
+  document.body.classList.toggle('simple-yt-tweaks-has-live-chat', hasLiveChat);
+
+  if (!hasLiveChat) {
+    for (const frame of queryAll<HTMLElement>(`.${LIVE_CHAT_CLASS}`)) {
+      frame.classList.remove(LIVE_CHAT_CLASS);
+    }
+  }
+}
+
+function updateScrollbarState(): void {
+  const shouldHideScrollbar = isEnhancedTheaterActive() && window.scrollY <= 8;
+
+  document.documentElement.classList.toggle('simple-yt-tweaks-scrollbar-hidden', shouldHideScrollbar);
+  document.body.classList.toggle('simple-yt-tweaks-scrollbar-hidden', shouldHideScrollbar);
+}
+
+function bindPointerHandlers(): void {
+  if (state.pointerHandlersBound) return;
+  state.pointerHandlersBound = true;
+
+  document.addEventListener(
+    'mousemove',
+    (event) => {
+      updateTopHoverState(event.clientY);
+      updatePlayerUiHoverState(event.clientX, event.clientY);
+    },
+    { passive: true },
+  );
   document.addEventListener(
     'mouseleave',
-    () => document.body.classList.remove('simple-yt-tweaks-ui-idle'),
+    () => {
+      document.body.classList.remove('simple-yt-tweaks-top-hover');
+      document.body.classList.remove('simple-yt-tweaks-player-ui-hover');
+    },
     { passive: true },
   );
 }
 
+function updateTopHoverState(pointerY: number): void {
+  const shouldRevealHeader =
+    isEnhancedTheaterActive() &&
+    state.settings.theaterHideHeader &&
+    state.settings.theaterShowHeaderOnHover &&
+    pointerY <= 72;
+
+  document.body.classList.toggle('simple-yt-tweaks-top-hover', shouldRevealHeader);
+}
+
+function updatePlayerUiHoverState(pointerX: number, pointerY: number): void {
+  if (!isEnhancedTheaterActive() || !state.settings.theaterHidePlayerUI) {
+    document.body.classList.remove('simple-yt-tweaks-player-ui-hover');
+    return;
+  }
+
+  const player = getPlayer();
+  if (!player) {
+    document.body.classList.remove('simple-yt-tweaks-player-ui-hover');
+    return;
+  }
+
+  const rect = player.getBoundingClientRect();
+  const isInsidePlayer =
+    pointerX >= rect.left && pointerX <= rect.right && pointerY >= rect.top && pointerY <= rect.bottom;
+  const isInControlZone = pointerY >= rect.bottom - 118;
+
+  document.body.classList.toggle(
+    'simple-yt-tweaks-player-ui-hover',
+    isInsidePlayer && isInControlZone,
+  );
+}
+
 function createPipButton(): void {
-  if (!state.settings.pipButton || !isWatchPage()) return;
+  if (!isFeatureEnabled('pipButton') || !isWatchPage()) return;
 
   const rightControls = query<HTMLElement>(SELECTORS.controlsRight);
   const video = getVideo();
@@ -431,7 +767,7 @@ function getOriginalPlayerRect(): DOMRect | null {
 
 function shouldShowDockedPlayer(): boolean {
   if (
-    !state.settings.floatingMiniPlayer ||
+    !isFeatureEnabled('floatingMiniPlayer') ||
     !isWatchPage() ||
     state.miniPlayerDismissed ||
     isTheaterMode()
@@ -528,18 +864,35 @@ function applyFeatureState(): void {
   ensureStyle();
   resetNavigationState();
   updateTheaterClass();
+  updateMastheadTargets();
+  updateLiveChatTargets();
+  updateScrollbarState();
 
-  if (state.settings.pipButton) {
+  if (isFeatureEnabled('pipButton')) {
     createPipButton();
   } else {
     removePipButton();
   }
 
-  if (state.settings.autoHideUI) {
-    bindActivityHandlers();
-    showUi();
-  } else {
-    document.body.classList.remove('simple-yt-tweaks-ui-idle');
+  if (state.settings.theaterHidePlayerUI || state.settings.theaterShowHeaderOnHover) {
+    bindPointerHandlers();
+  }
+
+  document.body.classList.toggle(
+    'simple-yt-tweaks-player-ui-hidden',
+    isEnhancedTheaterActive() && state.settings.theaterHidePlayerUI,
+  );
+  document.body.classList.toggle(
+    'simple-yt-tweaks-hide-native-miniplayer',
+    isDefaultWatchView() && isFeatureEnabled('floatingMiniPlayer'),
+  );
+
+  if (!state.settings.theaterHidePlayerUI) {
+    document.body.classList.remove('simple-yt-tweaks-player-ui-hover');
+  }
+
+  if (!state.settings.theaterShowHeaderOnHover) {
+    document.body.classList.remove('simple-yt-tweaks-top-hover');
   }
 
   updateDockedPlayer();
@@ -582,12 +935,15 @@ function observeDom(): void {
 
 function observeNavigation(): void {
   const rerun = debounce(() => applyFeatureState(), 120);
-  const updateDock = debounce(() => updateDockedPlayer(), 40);
+  const updateScrollUi = debounce(() => {
+    updateDockedPlayer();
+    updateScrollbarState();
+  }, 40);
 
   window.addEventListener('yt-navigate-finish', rerun, { passive: true });
   window.addEventListener('yt-page-data-updated', rerun, { passive: true });
   window.addEventListener('popstate', rerun, { passive: true });
-  window.addEventListener('scroll', updateDock, { passive: true });
+  window.addEventListener('scroll', updateScrollUi, { passive: true });
   window.addEventListener(
     'resize',
     debounce(() => {
@@ -596,6 +952,15 @@ function observeNavigation(): void {
     }, 80),
     { passive: true },
   );
+}
+
+function bindRuntimeMessages(): void {
+  chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+    if (message?.type !== 'SIMPLE_YT_TWEAKS_PING') return false;
+
+    sendResponse({ ok: true });
+    return false;
+  });
 }
 
 function bindVideoEvents(): void {
@@ -624,6 +989,7 @@ async function init(): Promise<void> {
   bindStorageObserver();
   observeDom();
   observeNavigation();
+  bindRuntimeMessages();
   bindVideoEvents();
   applyFeatureState();
 }

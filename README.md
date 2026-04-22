@@ -7,8 +7,11 @@ This project is not affiliated with, endorsed by, sponsored by, or otherwise ass
 ## Features
 
 - Enhanced theater mode that expands the watch layout.
-- Optional masthead/sidebar hiding while theater mode is active.
-- Auto-hide for player chrome after inactivity.
+- Optional hidden header, header hover reveal, recommendations, comments, and live chat controls while theater mode is active.
+- Optional live chat overlay for streams and premieres.
+- Compact popup settings with page support status and clamped tooltips.
+- Separate Theater and Default tabs for mode-specific layout preferences.
+- Optional hidden player controls that reappear when hovering near the control area.
 - Restored Picture-in-Picture button in the player controls.
 - Floating mini-player that docks the actual YouTube player instead of mirroring the video stream.
 
@@ -33,6 +36,14 @@ npm run package
 ```
 
 The Web Store zip is written to `release/simple-yt-tweaks-v<version>.zip`.
+
+## Compatibility
+
+Currently tested during development on:
+
+- Brave Browser 146.1.88.136 on macOS
+
+Chrome and Brave are the intended targets because the extension uses Manifest V3.
 
 ## Privacy
 
