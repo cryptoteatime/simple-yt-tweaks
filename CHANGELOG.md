@@ -13,6 +13,7 @@
 - Added restored Picture-in-Picture button support inside the YouTube player controls.
 - Added a floating mini-player that docks the actual YouTube player when scrolling below the video in default view.
 - Added theater-mode live chat controls, including an optional floating chat overlay when live chat exists.
+- Added theater scrollbar hiding so scrolling does not shift the enhanced theater player.
 - Added README, privacy policy, MIT license, changelog, and GitHub issue templates.
 
 ### Changed
@@ -26,6 +27,8 @@
 - Kept Hide Comments scoped to the actual comments section instead of hiding title, metadata, or description.
 - Hid YouTube's native mini-player in default view when Simple YT Tweaks floating mini-player is enabled.
 - Improved popup layout with compact child settings, clamped tooltips, and version/link footer controls.
+- Removed the redundant popup save-status text.
+- Added campaign parameters to popup footer links for extension traffic attribution.
 
 ### Notes
 

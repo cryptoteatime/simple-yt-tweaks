@@ -12,6 +12,7 @@ This project is not affiliated with, endorsed by, sponsored by, or otherwise ass
 - Compact popup settings with page support status and clamped tooltips.
 - Separate Theater and Default tabs for mode-specific layout preferences.
 - Optional hidden player controls that reappear when hovering near the control area.
+- Optional theater scrollbar hiding to reduce layout shift while scrolling.
 - Restored Picture-in-Picture button in the player controls.
 - Floating mini-player that docks the actual YouTube player instead of mirroring the video stream.
 

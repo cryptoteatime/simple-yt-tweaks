@@ -5,6 +5,7 @@ export type SettingKey =
   | 'theaterHideHeader'
   | 'theaterShowHeaderOnHover'
   | 'theaterHidePlayerUI'
+  | 'theaterHideScrollbarOnScroll'
   | 'theaterHideRecommendations'
   | 'theaterHideComments'
   | 'theaterHideLiveChat'
@@ -30,6 +31,7 @@ export const DEFAULT_SETTINGS: Settings = {
   theaterHideHeader: true,
   theaterShowHeaderOnHover: true,
   theaterHidePlayerUI: true,
+  theaterHideScrollbarOnScroll: true,
   theaterHideRecommendations: true,
   theaterHideComments: false,
   theaterHideLiveChat: false,
@@ -71,6 +73,13 @@ export const SETTING_DEFINITIONS: SettingDefinition[] = [
     key: 'theaterHidePlayerUI',
     label: 'Hide Player UI',
     description: 'Hides player controls until you hover near the control bar.',
+    tab: 'theater',
+    parentKey: 'enhancedTheaterMode',
+  },
+  {
+    key: 'theaterHideScrollbarOnScroll',
+    label: 'Hide Scrollbar on Scroll',
+    description: 'Keeps the page scrollbar hidden in enhanced theater mode to prevent layout shift while scrolling.',
     tab: 'theater',
     parentKey: 'enhancedTheaterMode',
   },

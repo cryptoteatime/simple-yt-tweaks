@@ -12,11 +12,9 @@ import {
 
 const settingsTabsEl = document.getElementById('settingsTabs');
 const settingsEl = document.getElementById('settings');
-const statusEl = document.getElementById('saveStatus');
 const resetBtn = document.getElementById('resetBtn');
 const pageStatusDot = document.getElementById('pageStatusDot');
 
-let statusTimer: number | undefined;
 let tooltipEl: HTMLDivElement | null = null;
 let activeTab: SettingTab = 'theater';
 let currentSettings: Settings = { ...DEFAULT_SETTINGS };
@@ -27,15 +25,6 @@ function requireElement<T extends HTMLElement>(element: T | null, name: string):
   }
 
   return element;
-}
-
-function setStatus(message: string): void {
-  const status = requireElement(statusEl, 'saveStatus');
-  status.textContent = message;
-  window.clearTimeout(statusTimer);
-  statusTimer = window.setTimeout(() => {
-    status.textContent = 'Ready';
-  }, 1400);
 }
 
 function isSettingDisabled(key: SettingKey, settings: Settings): boolean {
@@ -184,10 +173,8 @@ function renderSettings(settings: Settings): void {
         await saveSettings(nextSettings);
         currentSettings = nextSettings;
         renderSettings(nextSettings);
-        setStatus('Saved');
       } catch (error) {
         console.error('Simple YT Tweaks save failed:', error);
-        setStatus('Save failed');
       }
     });
 
@@ -209,15 +196,12 @@ async function init(): Promise<void> {
       await saveSettings(DEFAULT_SETTINGS);
       currentSettings = { ...DEFAULT_SETTINGS };
       renderSettings(DEFAULT_SETTINGS);
-      setStatus('Defaults restored');
     } catch (error) {
       console.error('Simple YT Tweaks reset failed:', error);
-      setStatus('Reset failed');
     }
   });
 }
 
 init().catch((error) => {
   console.error('Simple YT Tweaks popup failed to initialize:', error);
-  setStatus('Load failed');
 });

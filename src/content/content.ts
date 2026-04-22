@@ -3,6 +3,7 @@ type SettingKey =
   | 'theaterHideHeader'
   | 'theaterShowHeaderOnHover'
   | 'theaterHidePlayerUI'
+  | 'theaterHideScrollbarOnScroll'
   | 'theaterHideRecommendations'
   | 'theaterHideComments'
   | 'theaterHideLiveChat'
@@ -28,6 +29,7 @@ const DEFAULT_SETTINGS: Settings = {
   theaterHideHeader: true,
   theaterShowHeaderOnHover: true,
   theaterHidePlayerUI: true,
+  theaterHideScrollbarOnScroll: true,
   theaterHideRecommendations: true,
   theaterHideComments: false,
   theaterHideLiveChat: false,
@@ -68,6 +70,8 @@ const state: {
   miniPlayerDismissed: boolean;
   storageObserverBound: boolean;
   pointerHandlersBound: boolean;
+  lastEnhancedTheaterActive: boolean;
+  modeTransitionTimers: number[];
 } = {
   settings: { ...DEFAULT_SETTINGS },
   currentUrl: location.href,
@@ -76,6 +80,8 @@ const state: {
   miniPlayerDismissed: false,
   storageObserverBound: false,
   pointerHandlersBound: false,
+  lastEnhancedTheaterActive: false,
+  modeTransitionTimers: [],
 };
 
 function loadSettings(): Promise<Settings> {
@@ -258,12 +264,16 @@ function buildCss(): string {
 
     ${enhancedTheater ? `
     html.simple-yt-tweaks-scrollbar-hidden,
-    body.simple-yt-tweaks-scrollbar-hidden {
+    body.simple-yt-tweaks-scrollbar-hidden,
+    html.simple-yt-tweaks-theater-scrollbar-hidden,
+    body.simple-yt-tweaks-theater-scrollbar-hidden {
       scrollbar-width: none !important;
     }
 
     html.simple-yt-tweaks-scrollbar-hidden::-webkit-scrollbar,
-    body.simple-yt-tweaks-scrollbar-hidden::-webkit-scrollbar {
+    body.simple-yt-tweaks-scrollbar-hidden::-webkit-scrollbar,
+    html.simple-yt-tweaks-theater-scrollbar-hidden::-webkit-scrollbar,
+    body.simple-yt-tweaks-theater-scrollbar-hidden::-webkit-scrollbar {
       width: 0 !important;
       height: 0 !important;
       background: transparent !important;
@@ -539,7 +549,11 @@ function ensureStyle(): void {
 
 function updateTheaterClass(): void {
   const enabled = isEnhancedTheaterActive();
+  const wasEnabled = state.lastEnhancedTheaterActive;
+
   document.body.classList.toggle('simple-yt-tweaks-theater', enabled);
+  document.documentElement.classList.toggle('simple-yt-tweaks-theater-scrollbar-hidden', enabled && state.settings.theaterHideScrollbarOnScroll);
+  document.body.classList.toggle('simple-yt-tweaks-theater-scrollbar-hidden', enabled && state.settings.theaterHideScrollbarOnScroll);
   document.body.classList.toggle('simple-yt-tweaks-default-view', isDefaultWatchView());
 
   if (enabled) {
@@ -550,9 +564,33 @@ function updateTheaterClass(): void {
     document.body.classList.remove('simple-yt-tweaks-player-ui-hidden');
     document.body.classList.remove('simple-yt-tweaks-has-live-chat');
     document.documentElement.classList.remove('simple-yt-tweaks-scrollbar-hidden');
+    document.documentElement.classList.remove('simple-yt-tweaks-theater-scrollbar-hidden');
     document.body.classList.remove('simple-yt-tweaks-scrollbar-hidden');
+    document.body.classList.remove('simple-yt-tweaks-theater-scrollbar-hidden');
     restoreTheaterOnlyTargets();
   }
+
+  if (wasEnabled !== enabled) {
+    state.lastEnhancedTheaterActive = enabled;
+    scheduleModeStabilization();
+  }
+}
+
+function scheduleModeStabilization(): void {
+  for (const timer of state.modeTransitionTimers) {
+    window.clearTimeout(timer);
+  }
+
+  state.modeTransitionTimers = [80, 220, 520].map((delay) =>
+    window.setTimeout(() => {
+      updateTheaterClass();
+      updateMastheadTargets();
+      updateLiveChatTargets();
+      updateScrollbarState();
+      updateDockedPlayer();
+      window.dispatchEvent(new Event('resize'));
+    }, delay),
+  );
 }
 
 function restoreTheaterOnlyTargets(): void {
@@ -600,10 +638,21 @@ function updateLiveChatTargets(): void {
 }
 
 function updateScrollbarState(): void {
-  const shouldHideScrollbar = isEnhancedTheaterActive() && window.scrollY <= 8;
+  const enhancedTheaterActive = isEnhancedTheaterActive();
+  const shouldHideScrollbar =
+    enhancedTheaterActive &&
+    (state.settings.theaterHideScrollbarOnScroll || window.scrollY <= 8);
 
   document.documentElement.classList.toggle('simple-yt-tweaks-scrollbar-hidden', shouldHideScrollbar);
   document.body.classList.toggle('simple-yt-tweaks-scrollbar-hidden', shouldHideScrollbar);
+  document.documentElement.classList.toggle(
+    'simple-yt-tweaks-theater-scrollbar-hidden',
+    enhancedTheaterActive && state.settings.theaterHideScrollbarOnScroll,
+  );
+  document.body.classList.toggle(
+    'simple-yt-tweaks-theater-scrollbar-hidden',
+    enhancedTheaterActive && state.settings.theaterHideScrollbarOnScroll,
+  );
 }
 
 function bindPointerHandlers(): void {
@@ -948,6 +997,9 @@ function observeNavigation(): void {
     'resize',
     debounce(() => {
       updateTheaterClass();
+      updateMastheadTargets();
+      updateLiveChatTargets();
+      updateScrollbarState();
       updateDockedPlayer();
     }, 80),
     { passive: true },

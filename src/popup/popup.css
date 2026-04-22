@@ -315,11 +315,6 @@ input[type="checkbox"]:checked::after {
   background: rgba(69, 214, 181, 0.08);
 }
 
-#saveStatus {
-  color: var(--muted);
-  font-size: 12px;
-}
-
 .footer-meta {
   gap: 10px;
   padding-top: 10px;
