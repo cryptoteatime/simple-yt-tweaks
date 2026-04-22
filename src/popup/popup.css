@@ -19,6 +19,7 @@ body {
   width: 390px;
   min-height: 360px;
   margin: 0;
+  overflow: hidden;
   background: var(--bg);
   color: var(--text);
   font-family:
@@ -26,7 +27,7 @@ body {
 }
 
 .panel {
-  padding: 14px;
+  padding: 12px;
 }
 
 .panel__header,
@@ -38,8 +39,8 @@ body {
 }
 
 .panel__header {
-  padding-bottom: 12px;
-  margin-bottom: 12px;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
   border-bottom: 1px solid var(--line);
 }
 
@@ -79,14 +80,14 @@ body {
   grid-template-columns: 1fr 1fr;
   gap: 4px;
   padding: 4px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.03);
 }
 
 .settings-tab {
-  min-height: 30px;
+  min-height: 28px;
   border: 0;
   border-radius: 6px;
   background: transparent;
@@ -113,19 +114,19 @@ body {
 .setting-row {
   gap: 12px;
   position: relative;
-  min-height: 48px;
-  padding: 10px 14px;
+  min-height: 44px;
+  padding: 8px 14px;
   border-bottom: 1px solid var(--line);
 }
 
 .setting-row--child {
-  min-height: 38px;
-  padding: 7px 12px 7px 32px;
+  min-height: 34px;
+  padding: 5px 12px 5px 32px;
   background: rgba(255, 255, 255, 0.018);
 }
 
 .setting-row--child::before {
-  top: 12px;
+  top: 10px;
   left: 16px;
   width: 7px;
   height: 12px;
@@ -285,9 +286,12 @@ input[type="checkbox"]:checked::after {
 }
 
 .panel__footer {
-  display: block;
-  padding-top: 14px;
-  margin-top: 14px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 10px;
+  margin-top: 10px;
   border-top: 1px solid var(--line);
 }
 
@@ -299,8 +303,8 @@ input[type="checkbox"]:checked::after {
 }
 
 .ghost-btn {
-  min-height: 34px;
-  padding: 8px 10px;
+  min-height: 30px;
+  padding: 6px 9px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: transparent;
@@ -316,8 +320,9 @@ input[type="checkbox"]:checked::after {
 }
 
 .footer-meta {
+  flex: 1 1 auto;
   gap: 10px;
-  padding-top: 10px;
+  padding-top: 0;
   color: var(--muted);
   font-size: 11px;
 }

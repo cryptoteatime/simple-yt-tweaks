@@ -9,11 +9,13 @@ import {
   loadSettings,
   saveSettings,
 } from '../shared/settings';
+import packageJson from '../../package.json';
 
 const settingsTabsEl = document.getElementById('settingsTabs');
 const settingsEl = document.getElementById('settings');
 const resetBtn = document.getElementById('resetBtn');
 const pageStatusDot = document.getElementById('pageStatusDot');
+const versionLabel = document.getElementById('versionLabel');
 
 let tooltipEl: HTMLDivElement | null = null;
 let activeTab: SettingTab = 'theater';
@@ -185,6 +187,8 @@ function renderSettings(settings: Settings): void {
 }
 
 async function init(): Promise<void> {
+  requireElement(versionLabel, 'versionLabel').textContent = `v${packageJson.version}`;
+
   await updatePageStatus();
 
   currentSettings = await loadSettings();

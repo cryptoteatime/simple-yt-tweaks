@@ -29,6 +29,8 @@
 - Improved popup layout with compact child settings, clamped tooltips, and version/link footer controls.
 - Removed the redundant popup save-status text.
 - Added campaign parameters to popup footer links for extension traffic attribution.
+- Tightened popup spacing so the Theater settings fit without an awkward overflow scrollbar.
+- Made the popup footer version read from the package version instead of hardcoded text.
 
 ### Notes
 
