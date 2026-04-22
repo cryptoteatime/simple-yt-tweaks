@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simple YT Tweaks</title>
+    <script type="module" src="./popup.ts"></script>
+  </head>
+  <body>
+    <main class="panel">
+      <header class="panel__header">
+        <div>
+          <h1>Simple YT Tweaks</h1>
+          <p>player controls</p>
+        </div>
+        <span class="status-dot" aria-hidden="true"></span>
+      </header>
+
+      <section id="settings" class="settings" aria-label="Feature toggles"></section>
+
+      <footer class="panel__footer">
+        <button id="resetBtn" class="ghost-btn" type="button">Reset Defaults</button>
+        <span id="saveStatus" role="status" aria-live="polite">Ready</span>
+      </footer>
+    </main>
+  </body>
+</html>
