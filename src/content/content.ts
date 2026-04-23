@@ -986,37 +986,18 @@ function buildCss(): string {
     body.simple-yt-tweaks-fullscreen-view #${FULLSCREEN_ACTION_DOCK_ID} .${FULLSCREEN_ACTION_TARGET_CLASS} {
       position: static !important;
       inset: auto !important;
-      display: inline-flex !important;
-      align-items: center !important;
-      justify-content: flex-end !important;
+      display: block !important;
+      flex: 0 0 auto !important;
       width: auto !important;
       min-width: 0 !important;
       max-width: 100% !important;
       margin: 0 !important;
-      gap: 4px !important;
+      padding: 0 !important;
       opacity: 1 !important;
       pointer-events: auto !important;
       visibility: visible !important;
       transform: none !important;
-    }
-
-    body.simple-yt-tweaks-fullscreen-view #${FULLSCREEN_ACTION_DOCK_ID} .${FULLSCREEN_ACTION_TARGET_CLASS},
-    body.simple-yt-tweaks-fullscreen-view #${FULLSCREEN_ACTION_DOCK_ID} .${FULLSCREEN_ACTION_TARGET_CLASS} yt-player-quick-action-buttons,
-    body.simple-yt-tweaks-fullscreen-view #${FULLSCREEN_ACTION_DOCK_ID} .${FULLSCREEN_ACTION_TARGET_CLASS} like-button-view-model,
-    body.simple-yt-tweaks-fullscreen-view #${FULLSCREEN_ACTION_DOCK_ID} .${FULLSCREEN_ACTION_TARGET_CLASS} dislike-button-view-model,
-    body.simple-yt-tweaks-fullscreen-view #${FULLSCREEN_ACTION_DOCK_ID} .${FULLSCREEN_ACTION_TARGET_CLASS} button-view-model,
-    body.simple-yt-tweaks-fullscreen-view #${FULLSCREEN_ACTION_DOCK_ID} .${FULLSCREEN_ACTION_TARGET_CLASS} .ytSpecButtonViewModelHost,
-    body.simple-yt-tweaks-fullscreen-view #${FULLSCREEN_ACTION_DOCK_ID} .${FULLSCREEN_ACTION_TARGET_CLASS} .ytSpecButtonShapeNextHost {
-      display: inline-flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      position: static !important;
-      inset: auto !important;
-      margin: 0 !important;
-      max-width: 100% !important;
-      opacity: 1 !important;
-      pointer-events: auto !important;
-      visibility: visible !important;
+      overflow: visible !important;
     }
 
     @media (max-width: 1100px) {
@@ -1846,7 +1827,6 @@ function findFullscreenActionTarget(): HTMLElement | null {
 
   const candidates = [
     `${SELECTORS.overlayBottomRight} .ytp-fullscreen-quick-actions`,
-    `${SELECTORS.overlayBottomRight} yt-player-quick-action-buttons`,
     '.ytp-overlay-bottom-left .ytp-suggested-action',
     '.ytp-overlay-bottom-left [class*="ytp-suggested-action-badge-with-controls"]',
   ];
