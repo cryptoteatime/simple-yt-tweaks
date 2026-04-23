@@ -1,5 +1,8 @@
-type SettingKey =
+type FeedColumnCount = 2 | 3 | 4;
+
+type BooleanSettingKey =
   | 'generalHideEndScreenCards'
+  | 'generalPolishSidebarSections'
   | 'generalHideShorts'
   | 'generalSidebarCleanup'
   | 'generalHideSidebar'
@@ -30,7 +33,11 @@ type SettingKey =
   | 'pipButton'
   | 'floatingMiniPlayer';
 
-type Settings = Record<SettingKey, boolean>;
+type SettingKey = BooleanSettingKey | 'generalFeedColumns';
+
+type Settings = Record<BooleanSettingKey, boolean> & {
+  generalFeedColumns: FeedColumnCount;
+};
 
 type DockState = {
   target: HTMLElement;
@@ -42,8 +49,10 @@ type DockState = {
 
 const DEFAULT_SETTINGS: Settings = {
   generalHideEndScreenCards: true,
+  generalFeedColumns: 3,
   generalHideShorts: true,
   generalSidebarCleanup: true,
+  generalPolishSidebarSections: true,
   generalHideSidebar: false,
   generalHideSidebarHome: false,
   generalHideSidebarShorts: true,
@@ -108,6 +117,9 @@ const state: {
   settings: Settings;
   currentUrl: string;
   observer: MutationObserver | null;
+  watchObserver: MutationObserver | null;
+  watchObservedTarget: Element | null;
+  domRerun: (() => void) | null;
   dock: DockState | null;
   miniPlayerDismissed: boolean;
   storageObserverBound: boolean;
@@ -118,6 +130,9 @@ const state: {
   settings: { ...DEFAULT_SETTINGS },
   currentUrl: location.href,
   observer: null,
+  watchObserver: null,
+  watchObservedTarget: null,
+  domRerun: null,
   dock: null,
   miniPlayerDismissed: false,
   storageObserverBound: false,
@@ -137,6 +152,13 @@ function loadSettings(): Promise<Settings> {
 
       const settings = SETTING_KEYS.reduce<Settings>(
         (normalized, key) => {
+          if (key === 'generalFeedColumns') {
+            normalized.generalFeedColumns = isFeedColumnCount(items.generalFeedColumns)
+              ? items.generalFeedColumns
+              : DEFAULT_SETTINGS.generalFeedColumns;
+            return normalized;
+          }
+
           normalized[key] = typeof items[key] === 'boolean' ? items[key] : DEFAULT_SETTINGS[key];
           return normalized;
         },
@@ -152,7 +174,11 @@ function normalizeSettings(settings: Settings): Settings {
   return settings;
 }
 
-function isFeatureEnabled(key: SettingKey): boolean {
+function isFeedColumnCount(value: unknown): value is FeedColumnCount {
+  return value === 2 || value === 3 || value === 4;
+}
+
+function isFeatureEnabled(key: BooleanSettingKey): boolean {
   if (key === 'floatingMiniPlayer') {
     return state.settings.pipButton && state.settings.floatingMiniPlayer;
   }
@@ -251,6 +277,7 @@ function elementMatchesAnyLabel(element: Element, labels: readonly string[]): bo
 
 function buildCss(): string {
   const generalHideEndScreenCards = state.settings.generalHideEndScreenCards;
+  const generalFeedColumns = state.settings.generalFeedColumns;
   const generalHideShorts = state.settings.generalHideShorts && !isDedicatedShortsPage();
   const generalSidebarCleanup = state.settings.generalSidebarCleanup;
   const generalHideSidebar = generalSidebarCleanup && state.settings.generalHideSidebar;
@@ -286,6 +313,16 @@ function buildCss(): string {
       width: 24px;
       height: 24px;
       fill: currentColor;
+    }
+
+    body.simple-yt-tweaks-active ytd-browse[page-subtype="home"] ytd-rich-grid-renderer,
+    body.simple-yt-tweaks-active ytd-browse[page-subtype="home"] ytd-rich-grid-renderer #contents,
+    body.simple-yt-tweaks-active ytd-browse[page-subtype="subscriptions"] ytd-rich-grid-renderer,
+    body.simple-yt-tweaks-active ytd-browse[page-subtype="subscriptions"] ytd-rich-grid-renderer #contents {
+      --ytd-rich-grid-items-per-row: ${generalFeedColumns} !important;
+      --ytd-rich-grid-posts-per-row: ${generalFeedColumns} !important;
+      --ytd-rich-grid-slim-items-per-row: ${generalFeedColumns} !important;
+      --ytd-rich-grid-game-cards-per-row: ${generalFeedColumns} !important;
     }
 
     #${DOCK_ID} {
@@ -921,6 +958,54 @@ function getSidebarSection(kind: 'subscriptions' | 'you' | 'explore' | 'moreFrom
   return null;
 }
 
+function clickElement(element: HTMLElement | null): void {
+  if (!element) return;
+
+  element.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+}
+
+function updateSidebarSectionPolish(): void {
+  if (
+    !state.settings.generalSidebarCleanup ||
+    !state.settings.generalPolishSidebarSections ||
+    state.settings.generalHideSidebar
+  ) {
+    return;
+  }
+
+  const subscriptionsSection = getSidebarSection('subscriptions');
+  if (subscriptionsSection && !state.settings.generalHideSidebarSubscriptions) {
+    const subscriptionsItems = query<HTMLElement>('#items', subscriptionsSection);
+    if (subscriptionsItems) {
+      for (const child of Array.from(subscriptionsItems.children)) {
+        if (child.tagName === 'YTD-GUIDE-COLLAPSIBLE-SECTION-ENTRY-RENDERER') continue;
+        hideElement(child);
+      }
+    }
+
+    hideElement(query('#section-items', subscriptionsSection));
+    hideElement(query('ytd-guide-collapsible-entry-renderer', subscriptionsSection));
+    hideElement(query('#header-entry .arrow-icon', subscriptionsSection));
+  }
+
+  const youSection = getSidebarSection('you');
+  if (youSection && !state.settings.generalHideSidebarYou) {
+    const youCollapsible = query<HTMLElement>('ytd-guide-collapsible-entry-renderer', youSection);
+    const expanded = youCollapsible ? query<HTMLElement>('#expanded', youCollapsible) : null;
+    const expanderItem = youCollapsible ? query<HTMLElement>('#expander-item', youCollapsible) : null;
+    const isExpanded = expanded
+      ? !expanded.hasAttribute('hidden') && window.getComputedStyle(expanded).display !== 'none'
+      : true;
+
+    if (expanderItem && !isExpanded) {
+      clickElement(expanderItem);
+    }
+
+    hideElement(expanderItem);
+    hideElement(youCollapsible ? query('#collapser-item', youCollapsible) : null);
+  }
+}
+
 function updateSidebarFooterVisibility(): void {
   if (!state.settings.generalSidebarCleanup || !state.settings.generalHideSidebarFooter) return;
 
@@ -1021,6 +1106,7 @@ function updateGeneralVisibility(): void {
   clearGeneralHiddenTargets();
   if (state.settings.generalSidebarCleanup || state.settings.generalHideShorts) {
     updateSidebarItemVisibility();
+    updateSidebarSectionPolish();
   }
   updateShortsVisibility();
 }
@@ -1303,6 +1389,10 @@ function resetNavigationState(): void {
 function applyFeatureState(): void {
   if (!document.body) return;
 
+  if (state.domRerun) {
+    syncWatchObserver(state.domRerun);
+  }
+
   ensureStyle();
   resetNavigationState();
   updateViewportHeightVar();
@@ -1352,8 +1442,16 @@ function bindStorageObserver(): void {
     let touched = false;
     for (const key of SETTING_KEYS) {
       const change = changes[key as SettingKey];
-      if (change && typeof change.newValue === 'boolean') {
-        state.settings[key] = change.newValue;
+      if (!change) continue;
+
+      if (key === 'generalFeedColumns' && isFeedColumnCount(change.newValue)) {
+        state.settings.generalFeedColumns = change.newValue;
+        touched = true;
+        continue;
+      }
+
+      if (typeof change.newValue === 'boolean') {
+        state.settings[key as BooleanSettingKey] = change.newValue;
         touched = true;
       }
     }
@@ -1365,17 +1463,37 @@ function bindStorageObserver(): void {
   });
 }
 
+function syncWatchObserver(onChange: () => void): void {
+  const watchFlexy = query<HTMLElement>(SELECTORS.watchFlexy);
+  if (watchFlexy === state.watchObservedTarget) return;
+
+  state.watchObserver?.disconnect();
+  state.watchObserver = null;
+  state.watchObservedTarget = watchFlexy;
+
+  if (!watchFlexy) return;
+
+  state.watchObserver = new MutationObserver(() => onChange());
+  state.watchObserver.observe(watchFlexy, {
+    attributes: true,
+    attributeFilter: ['class', 'theater'],
+  });
+}
+
 function observeDom(): void {
   state.observer?.disconnect();
+  state.watchObserver?.disconnect();
+  state.watchObserver = null;
+  state.watchObservedTarget = null;
 
   const debouncedApply = debounce(() => applyFeatureState(), 150);
+  state.domRerun = debouncedApply;
   state.observer = new MutationObserver(() => debouncedApply());
   state.observer.observe(document.documentElement, {
     childList: true,
     subtree: true,
-    attributes: true,
-    attributeFilter: ['class', 'theater', 'hidden'],
   });
+  syncWatchObserver(debouncedApply);
 }
 
 function observeNavigation(): void {

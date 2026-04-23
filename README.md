@@ -11,7 +11,9 @@ This project is not affiliated with, endorsed by, sponsored by, or otherwise ass
 - Optional live chat overlay for streams and premieres.
 - Compact popup settings with page support status and clamped tooltips.
 - Separate General, Theater View, and Default View tabs for global and mode-specific preferences.
+- Home feed column control with 2, 3, and 4-column layouts.
 - Optional grouped sidebar cleanup controls for hiding the main sidebar, navigation entries, product links, and sidebar footer clutter.
+- Sidebar section polish that keeps Subscriptions compact and keeps You expanded by default.
 - Optional Shorts hiding across home, feed, search, and recommendation surfaces while leaving the dedicated Shorts page available.
 - Optional Report History sidebar cleanup without tying it to the You section.
 - Optional end-screen card hiding.

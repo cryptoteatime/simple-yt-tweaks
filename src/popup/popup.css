@@ -125,6 +125,10 @@ body {
   background: rgba(255, 255, 255, 0.018);
 }
 
+.setting-row--choice {
+  min-height: 50px;
+}
+
 .setting-row--depth-2 {
   padding-left: 48px;
 }
@@ -229,10 +233,64 @@ body {
 }
 
 .setting-state {
-  min-width: 20px;
+  min-width: 32px;
   color: var(--muted);
   font-size: 11px;
   text-align: right;
+}
+
+.choice-group {
+  display: inline-flex;
+  gap: 6px;
+}
+
+.choice-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 44px;
+  min-height: 28px;
+  padding: 0 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 7px;
+  background: var(--panel-soft);
+  color: var(--muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.choice-btn[data-selected="true"] {
+  border-color: rgba(69, 214, 181, 0.46);
+  background: var(--accent-soft);
+  color: var(--text);
+}
+
+.choice-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
+.choice-icon {
+  display: inline-grid;
+  grid-auto-flow: column;
+  gap: 2px;
+  align-items: end;
+  height: 11px;
+}
+
+.choice-icon span {
+  width: 4px;
+  height: 11px;
+  border-radius: 2px;
+  background: currentColor;
+  opacity: 0.82;
+}
+
+.choice-label {
+  min-width: 6px;
+  text-align: center;
 }
 
 input[type="checkbox"] {

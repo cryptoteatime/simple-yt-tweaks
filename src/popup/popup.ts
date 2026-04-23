@@ -3,6 +3,7 @@ import {
   DEFAULT_SETTINGS,
   SETTING_DEFINITIONS,
   SETTING_TABS,
+  type FeedColumnCount,
   type SettingKey,
   type SettingTab,
   type Settings,
@@ -50,7 +51,11 @@ function getSettingDepth(key: SettingKey): number {
 function getTabDefaults(tab: SettingTab): Partial<Settings> {
   return SETTING_DEFINITIONS.reduce<Partial<Settings>>((defaults, definition) => {
     if (definition.tab === tab) {
-      defaults[definition.key] = DEFAULT_SETTINGS[definition.key];
+      if (definition.key === 'generalFeedColumns') {
+        defaults.generalFeedColumns = DEFAULT_SETTINGS.generalFeedColumns;
+      } else {
+        defaults[definition.key] = DEFAULT_SETTINGS[definition.key];
+      }
     }
 
     return defaults;
@@ -146,11 +151,12 @@ function renderSettings(settings: Settings): void {
   container.dataset.tab = activeTab;
   hideTooltip();
 
-  for (const { key, label, description, parentKey, tab } of SETTING_DEFINITIONS) {
+  for (const { key, label, description, parentKey, tab, kind = 'toggle', options } of SETTING_DEFINITIONS) {
     if (tab !== activeTab) continue;
 
     const row = document.createElement('div');
     row.className = 'setting-row';
+    if (kind === 'choice') row.classList.add('setting-row--choice');
     const depth = getSettingDepth(key);
     if (parentKey) row.classList.add('setting-row--child', `setting-row--depth-${depth}`);
 
@@ -185,31 +191,79 @@ function renderSettings(settings: Settings): void {
     const text = document.createElement('span');
     text.className = 'setting-state';
     const value = settings[key];
-    text.textContent = value ? 'On' : 'Off';
 
-    const input = document.createElement('input');
-    input.type = 'checkbox';
-    input.id = key;
-    input.checked = value;
-    input.disabled = isDisabled;
-    input.setAttribute('aria-describedby', `${key}-tip`);
-    input.addEventListener('change', async () => {
-      const nextSettings = { ...currentSettings, [key]: input.checked };
-      if (key === 'generalHideShorts' && input.checked) {
-        nextSettings.generalSidebarCleanup = true;
-        nextSettings.generalHideSidebarShorts = true;
+    if (kind === 'choice' && options) {
+      text.textContent = `${value}-col`;
+
+      const choiceGroup = document.createElement('div');
+      choiceGroup.className = 'choice-group';
+      choiceGroup.setAttribute('role', 'group');
+      choiceGroup.setAttribute('aria-describedby', `${key}-tip`);
+
+      for (const option of options) {
+        const button = document.createElement('button');
+        button.className = 'choice-btn';
+        button.type = 'button';
+        button.dataset.selected = String(value === option.value);
+        button.dataset.columns = String(option.value);
+        button.setAttribute('aria-pressed', String(value === option.value));
+        button.setAttribute('aria-label', `${label}: ${option.value} columns`);
+        button.title = `${option.value} columns`;
+        button.disabled = isDisabled;
+        button.innerHTML = `
+          <span class="choice-icon choice-icon--${option.value}" aria-hidden="true">
+            ${Array.from({ length: option.value }, () => '<span></span>').join('')}
+          </span>
+          <span class="choice-label">${option.label}</span>
+        `;
+        button.addEventListener('click', async () => {
+          if (currentSettings[key] === option.value) return;
+
+          const nextSettings = {
+            ...currentSettings,
+            [key]: option.value as FeedColumnCount,
+          };
+
+          try {
+            await saveSettings(nextSettings);
+            currentSettings = nextSettings;
+            renderSettings(nextSettings);
+          } catch (error) {
+            console.error('Simple YT Tweaks save failed:', error);
+          }
+        });
+        choiceGroup.append(button);
       }
 
-      try {
-        await saveSettings(nextSettings);
-        currentSettings = nextSettings;
-        renderSettings(nextSettings);
-      } catch (error) {
-        console.error('Simple YT Tweaks save failed:', error);
-      }
-    });
+      control.append(text, choiceGroup);
+    } else {
+      text.textContent = value ? 'On' : 'Off';
 
-    control.append(text, input);
+      const input = document.createElement('input');
+      input.type = 'checkbox';
+      input.id = key;
+      input.checked = value as boolean;
+      input.disabled = isDisabled;
+      input.setAttribute('aria-describedby', `${key}-tip`);
+      input.addEventListener('change', async () => {
+        const nextSettings = { ...currentSettings, [key]: input.checked };
+        if (key === 'generalHideShorts' && input.checked) {
+          nextSettings.generalSidebarCleanup = true;
+          nextSettings.generalHideSidebarShorts = true;
+        }
+
+        try {
+          await saveSettings(nextSettings);
+          currentSettings = nextSettings;
+          renderSettings(nextSettings);
+        } catch (error) {
+          console.error('Simple YT Tweaks save failed:', error);
+        }
+      });
+
+      control.append(text, input);
+    }
+
     row.append(copy, control);
     container.append(row);
   }

@@ -1,7 +1,9 @@
 export type SettingTab = 'general' | 'theater' | 'default';
+export type FeedColumnCount = 2 | 3 | 4;
 
-export type SettingKey =
+export type BooleanSettingKey =
   | 'generalHideEndScreenCards'
+  | 'generalPolishSidebarSections'
   | 'generalHideShorts'
   | 'generalSidebarCleanup'
   | 'generalHideSidebar'
@@ -32,20 +34,33 @@ export type SettingKey =
   | 'pipButton'
   | 'floatingMiniPlayer';
 
-export type Settings = Record<SettingKey, boolean>;
+export type SettingKey = BooleanSettingKey | 'generalFeedColumns';
+
+export type Settings = Record<BooleanSettingKey, boolean> & {
+  generalFeedColumns: FeedColumnCount;
+};
+
+export type SettingOption = {
+  value: FeedColumnCount;
+  label: string;
+};
 
 export type SettingDefinition = {
   key: SettingKey;
   label: string;
   description: string;
   tab: SettingTab;
-  parentKey?: SettingKey;
+  parentKey?: BooleanSettingKey;
+  kind?: 'toggle' | 'choice';
+  options?: SettingOption[];
 };
 
 export const DEFAULT_SETTINGS: Settings = {
   generalHideEndScreenCards: true,
+  generalFeedColumns: 3,
   generalHideShorts: true,
   generalSidebarCleanup: true,
+  generalPolishSidebarSections: true,
   generalHideSidebar: false,
   generalHideSidebarHome: false,
   generalHideSidebarShorts: true,
@@ -89,6 +104,18 @@ export const SETTING_DEFINITIONS: SettingDefinition[] = [
     tab: 'general',
   },
   {
+    key: 'generalFeedColumns',
+    label: 'Home Feed Columns',
+    description: 'Controls the number of columns shown on the YouTube home feed.',
+    tab: 'general',
+    kind: 'choice',
+    options: [
+      { value: 2, label: '2' },
+      { value: 3, label: '3' },
+      { value: 4, label: '4' },
+    ],
+  },
+  {
     key: 'generalHideShorts',
     label: 'Hide Shorts',
     description: 'Hides Shorts shelves, results, and recommendations while leaving the dedicated Shorts page available.',
@@ -99,6 +126,13 @@ export const SETTING_DEFINITIONS: SettingDefinition[] = [
     label: 'Sidebar Cleanup',
     description: 'Enables left sidebar cleanup options for YouTube navigation.',
     tab: 'general',
+  },
+  {
+    key: 'generalPolishSidebarSections',
+    label: 'Polish Sidebar Sections',
+    description: 'Keeps Subscriptions compact, expands You by default, and removes extra show-more and show-less clutter.',
+    tab: 'general',
+    parentKey: 'generalSidebarCleanup',
   },
   {
     key: 'generalHideSidebar',
@@ -287,9 +321,20 @@ export const SETTING_DEFINITIONS: SettingDefinition[] = [
 
 export const SETTING_KEYS = SETTING_DEFINITIONS.map(({ key }) => key);
 
+function isFeedColumnCount(value: unknown): value is FeedColumnCount {
+  return value === 2 || value === 3 || value === 4;
+}
+
 export function normalizeSettings(items: Partial<Record<SettingKey, unknown>>): Settings {
   return SETTING_KEYS.reduce<Settings>(
     (settings, key) => {
+      if (key === 'generalFeedColumns') {
+        settings.generalFeedColumns = isFeedColumnCount(items.generalFeedColumns)
+          ? items.generalFeedColumns
+          : DEFAULT_SETTINGS.generalFeedColumns;
+        return settings;
+      }
+
       settings[key] = typeof items[key] === 'boolean' ? items[key] : DEFAULT_SETTINGS[key];
       return settings;
     },
