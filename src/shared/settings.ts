@@ -35,6 +35,7 @@ export type BooleanSettingKey =
   | 'fullscreenHideTitleOverlay'
   | 'fullscreenHidePlayerUI'
   | 'fullscreenHideRecommendationOverlays'
+  | 'fullscreenHideActionOverlay'
   | 'pipButton'
   | 'floatingMiniPlayer';
 
@@ -94,6 +95,7 @@ export const DEFAULT_SETTINGS: Settings = {
   fullscreenHideTitleOverlay: true,
   fullscreenHidePlayerUI: true,
   fullscreenHideRecommendationOverlays: true,
+  fullscreenHideActionOverlay: true,
   pipButton: true,
   floatingMiniPlayer: true,
 };
@@ -140,6 +142,19 @@ export const SETTING_DEFINITIONS: SettingDefinition[] = [
     label: 'Hide End-Screen Cards',
     description: 'Hides YouTube end-screen overlays that appear over the video near the end.',
     topTab: 'general',
+  },
+  {
+    key: 'pipButton',
+    label: 'Restore PiP Button',
+    description: 'Adds a Picture-in-Picture button to the YouTube player controls across supported watch modes.',
+    topTab: 'general',
+  },
+  {
+    key: 'floatingMiniPlayer',
+    label: 'Floating Mini-Player',
+    description: 'Docks the actual YouTube player in the corner when you scroll below it.',
+    topTab: 'general',
+    parentKey: 'pipButton',
   },
   {
     key: 'generalSidebarCleanup',
@@ -334,24 +349,9 @@ export const SETTING_DEFINITIONS: SettingDefinition[] = [
     viewMode: 'default',
   },
   {
-    key: 'pipButton',
-    label: 'Restore PiP Button',
-    description: 'Adds a Picture-in-Picture button to the YouTube player controls.',
-    topTab: 'views',
-    viewMode: 'default',
-  },
-  {
-    key: 'floatingMiniPlayer',
-    label: 'Floating Mini-Player',
-    description: 'Docks the actual YouTube player in the corner when you scroll below it.',
-    topTab: 'views',
-    viewMode: 'default',
-    parentKey: 'pipButton',
-  },
-  {
     key: 'fullscreenHideTitleOverlay',
     label: 'Hide Title Overlay',
-    description: 'Hides the fullscreen title overlay until player chrome is shown.',
+    description: 'Keeps the fullscreen title hidden until the player controls are intentionally revealed.',
     topTab: 'views',
     viewMode: 'fullscreen',
   },
@@ -366,6 +366,13 @@ export const SETTING_DEFINITIONS: SettingDefinition[] = [
     key: 'fullscreenHideRecommendationOverlays',
     label: 'Hide More Videos Overlay',
     description: 'Hides the More videos button and similar recommendation overlays in native fullscreen.',
+    topTab: 'views',
+    viewMode: 'fullscreen',
+  },
+  {
+    key: 'fullscreenHideActionOverlay',
+    label: 'Hide Action Overlay',
+    description: 'Hides fullscreen overlays for comments, reactions, and related watch actions instead of showing them over the video.',
     topTab: 'views',
     viewMode: 'fullscreen',
   },

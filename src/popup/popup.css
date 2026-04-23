@@ -116,10 +116,11 @@ body {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 4px;
-  padding: 4px;
-  margin-bottom: 7px;
+  padding: 4px 4px 0;
+  margin-bottom: 0;
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-bottom: 0;
+  border-radius: 8px 8px 0 0;
   background: rgba(255, 255, 255, 0.025);
 }
 
@@ -130,7 +131,7 @@ body {
 .settings-subtab {
   min-height: 25px;
   border: 0;
-  border-radius: 6px;
+  border-radius: 6px 6px 0 0;
   background: transparent;
   color: var(--muted);
   cursor: pointer;
@@ -151,6 +152,12 @@ body {
   border-radius: 8px;
   background: var(--panel);
   box-shadow: var(--shadow);
+}
+
+.settings-subtabs:not([hidden]) + .settings {
+  margin-top: -1px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
 }
 
 .setting-row {

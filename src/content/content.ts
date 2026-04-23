@@ -33,6 +33,7 @@ type BooleanSettingKey =
   | 'fullscreenHideTitleOverlay'
   | 'fullscreenHidePlayerUI'
   | 'fullscreenHideRecommendationOverlays'
+  | 'fullscreenHideActionOverlay'
   | 'pipButton'
   | 'floatingMiniPlayer';
 
@@ -76,6 +77,7 @@ const DEFAULT_SETTINGS: Settings = {
   fullscreenHideTitleOverlay: true,
   fullscreenHidePlayerUI: true,
   fullscreenHideRecommendationOverlays: true,
+  fullscreenHideActionOverlay: true,
   pipButton: true,
   floatingMiniPlayer: true,
 };
@@ -276,6 +278,7 @@ function isTheaterMinimalLayoutActive(): boolean {
     state.settings.theaterHideRecommendations &&
     state.settings.theaterHideComments &&
     state.settings.theaterHideMetadata &&
+    !state.settings.theaterShowPrimaryMetadata &&
     state.settings.theaterHideLiveChat
   );
 }
@@ -335,6 +338,7 @@ function buildCss(): string {
   const fullscreenHideTitleOverlay = state.settings.fullscreenHideTitleOverlay;
   const fullscreenHidePlayerUI = state.settings.fullscreenHidePlayerUI;
   const fullscreenHideRecommendationOverlays = state.settings.fullscreenHideRecommendationOverlays;
+  const fullscreenHideActionOverlay = state.settings.fullscreenHideActionOverlay;
 
   return `
     .${GENERAL_HIDDEN_CLASS} {
@@ -827,9 +831,12 @@ function buildCss(): string {
     body.simple-yt-tweaks-fullscreen-view .ytp-title,
     body.simple-yt-tweaks-fullscreen-view .ytp-title-channel,
     body.simple-yt-tweaks-fullscreen-view .ytp-title-text,
-    body.simple-yt-tweaks-fullscreen-view .ytp-title-link {
+    body.simple-yt-tweaks-fullscreen-view .ytp-title-link,
+    body.simple-yt-tweaks-fullscreen-view .ytp-title-text > a,
+    body.simple-yt-tweaks-fullscreen-view .ytp-gradient-top {
       opacity: 0 !important;
       pointer-events: none !important;
+      visibility: hidden !important;
       transition: opacity 0.18s ease !important;
     }
 
@@ -837,12 +844,17 @@ function buildCss(): string {
     body.simple-yt-tweaks-fullscreen-view.simple-yt-tweaks-player-ui-hover .ytp-title-channel,
     body.simple-yt-tweaks-fullscreen-view.simple-yt-tweaks-player-ui-hover .ytp-title-text,
     body.simple-yt-tweaks-fullscreen-view.simple-yt-tweaks-player-ui-hover .ytp-title-link,
+    body.simple-yt-tweaks-fullscreen-view.simple-yt-tweaks-player-ui-hover .ytp-title-text > a,
+    body.simple-yt-tweaks-fullscreen-view.simple-yt-tweaks-player-ui-hover .ytp-gradient-top,
     body.simple-yt-tweaks-fullscreen-view .ytp-chrome-top:focus-within .ytp-title,
     body.simple-yt-tweaks-fullscreen-view .ytp-chrome-top:focus-within .ytp-title-channel,
     body.simple-yt-tweaks-fullscreen-view .ytp-chrome-top:focus-within .ytp-title-text,
-    body.simple-yt-tweaks-fullscreen-view .ytp-chrome-top:focus-within .ytp-title-link {
+    body.simple-yt-tweaks-fullscreen-view .ytp-chrome-top:focus-within .ytp-title-link,
+    body.simple-yt-tweaks-fullscreen-view .ytp-chrome-top:focus-within .ytp-title-text > a,
+    body.simple-yt-tweaks-fullscreen-view .ytp-chrome-top:focus-within .ytp-gradient-top {
       opacity: 1 !important;
       pointer-events: auto !important;
+      visibility: visible !important;
     }
     ` : ''}
 
@@ -855,6 +867,23 @@ function buildCss(): string {
     body.simple-yt-tweaks-fullscreen-view .ytp-cards-button,
     body.simple-yt-tweaks-fullscreen-view .ytp-cards-teaser,
     body.simple-yt-tweaks-fullscreen-view .ytp-cards-teaser-box {
+      display: none !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+      visibility: hidden !important;
+    }
+    ` : ''}
+
+    ${fullscreenHideActionOverlay ? `
+    body.simple-yt-tweaks-fullscreen-view .ytp-watch-metadata,
+    body.simple-yt-tweaks-fullscreen-view .ytp-watch-info-bar,
+    body.simple-yt-tweaks-fullscreen-view .ytp-info-panel-preview,
+    body.simple-yt-tweaks-fullscreen-view .ytp-suggested-action,
+    body.simple-yt-tweaks-fullscreen-view #actions,
+    body.simple-yt-tweaks-fullscreen-view #actions-inner,
+    body.simple-yt-tweaks-fullscreen-view ytd-menu-renderer,
+    body.simple-yt-tweaks-fullscreen-view ytd-comments-entry-point-header-renderer,
+    body.simple-yt-tweaks-fullscreen-view ytd-video-view-count-renderer {
       display: none !important;
       opacity: 0 !important;
       pointer-events: none !important;
@@ -1423,12 +1452,12 @@ function updatePlayerUiHoverState(pointerX: number, pointerY: number): void {
   const rect = player.getBoundingClientRect();
   const isInsidePlayer =
     pointerX >= rect.left && pointerX <= rect.right && pointerY >= rect.top && pointerY <= rect.bottom;
-  const isInControlZone = pointerY >= rect.bottom - 118;
-  const isInFullscreenTitleZone = fullscreenActive && pointerY <= rect.top + 132;
+  const controlZoneHeight = fullscreenActive ? 138 : 118;
+  const isInControlZone = pointerY >= rect.bottom - controlZoneHeight;
 
   document.body.classList.toggle(
     'simple-yt-tweaks-player-ui-hover',
-    isInsidePlayer && (isInControlZone || isInFullscreenTitleZone),
+    isInsidePlayer && isInControlZone,
   );
 }
 
