@@ -18,7 +18,7 @@ const pageStatusDot = document.getElementById('pageStatusDot');
 const versionLabel = document.getElementById('versionLabel');
 
 let tooltipEl: HTMLDivElement | null = null;
-let activeTab: SettingTab = 'theater';
+let activeTab: SettingTab = 'general';
 let currentSettings: Settings = { ...DEFAULT_SETTINGS };
 
 function requireElement<T extends HTMLElement>(element: T | null, name: string): T {

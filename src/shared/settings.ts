@@ -1,6 +1,14 @@
-export type SettingTab = 'theater' | 'default';
+export type SettingTab = 'general' | 'theater' | 'default';
 
 export type SettingKey =
+  | 'generalHideEndScreenCards'
+  | 'generalHideShorts'
+  | 'generalHideSidebar'
+  | 'generalHideSidebarHome'
+  | 'generalHideSidebarShorts'
+  | 'generalHideSidebarSubscriptions'
+  | 'generalHideSidebarYou'
+  | 'generalHideSidebarExplore'
   | 'enhancedTheaterMode'
   | 'theaterHideHeader'
   | 'theaterShowHeaderOnHover'
@@ -31,6 +39,14 @@ export type SettingDefinition = {
 };
 
 export const DEFAULT_SETTINGS: Settings = {
+  generalHideEndScreenCards: false,
+  generalHideShorts: false,
+  generalHideSidebar: false,
+  generalHideSidebarHome: false,
+  generalHideSidebarShorts: false,
+  generalHideSidebarSubscriptions: false,
+  generalHideSidebarYou: false,
+  generalHideSidebarExplore: false,
   enhancedTheaterMode: true,
   theaterHideHeader: true,
   theaterShowHeaderOnHover: true,
@@ -52,11 +68,60 @@ export const DEFAULT_SETTINGS: Settings = {
 };
 
 export const SETTING_TABS: Array<{ id: SettingTab; label: string }> = [
-  { id: 'theater', label: 'Theater' },
-  { id: 'default', label: 'Default' },
+  { id: 'general', label: 'General' },
+  { id: 'theater', label: 'Theater View' },
+  { id: 'default', label: 'Default View' },
 ];
 
 export const SETTING_DEFINITIONS: SettingDefinition[] = [
+  {
+    key: 'generalHideEndScreenCards',
+    label: 'Hide End-Screen Cards',
+    description: 'Hides YouTube end-screen overlays that appear over the video near the end.',
+    tab: 'general',
+  },
+  {
+    key: 'generalHideShorts',
+    label: 'Hide Shorts',
+    description: 'Hides Shorts shelves, Shorts links, and Shorts results across common YouTube surfaces.',
+    tab: 'general',
+  },
+  {
+    key: 'generalHideSidebar',
+    label: 'Hide Sidebar',
+    description: 'Hides the main YouTube left navigation sidebar and mini guide.',
+    tab: 'general',
+  },
+  {
+    key: 'generalHideSidebarHome',
+    label: 'Hide Home',
+    description: 'Hides Home entries from the YouTube sidebar.',
+    tab: 'general',
+  },
+  {
+    key: 'generalHideSidebarShorts',
+    label: 'Hide Shorts Entry',
+    description: 'Hides Shorts entries from the YouTube sidebar.',
+    tab: 'general',
+  },
+  {
+    key: 'generalHideSidebarSubscriptions',
+    label: 'Hide Subscriptions',
+    description: 'Hides Subscriptions entries from the YouTube sidebar.',
+    tab: 'general',
+  },
+  {
+    key: 'generalHideSidebarYou',
+    label: 'Hide You',
+    description: 'Hides You, History, Playlists, and similar personal library entries from the sidebar.',
+    tab: 'general',
+  },
+  {
+    key: 'generalHideSidebarExplore',
+    label: 'Hide Explore',
+    description: 'Hides Explore and category entries from the YouTube sidebar.',
+    tab: 'general',
+  },
   {
     key: 'enhancedTheaterMode',
     label: 'Enhanced Theater Mode',

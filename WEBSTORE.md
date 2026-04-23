@@ -33,7 +33,7 @@ Detailed description:
 ```text
 Simple YT Tweaks is an unofficial Chrome and Brave extension that adds lightweight YouTube watch-page controls for cleaner viewing.
 
-Features include enhanced theater mode, optional header hiding, player control hiding, metadata hiding, recommendation/comment/live chat controls, restored Picture-in-Picture access, and a docked mini-player for scrolling through comments.
+Features include enhanced theater mode, optional header hiding, player control hiding, metadata hiding, recommendation/comment/live chat controls, sidebar cleanup, Shorts hiding, end-screen card hiding, restored Picture-in-Picture access, and a docked mini-player for scrolling through comments.
 
 This extension does not collect, transmit, sell, or share user data. Settings are stored with Chrome extension storage.
 
@@ -55,6 +55,7 @@ Simple YT Tweaks is not affiliated with, endorsed by, sponsored by, or otherwise
 - Screenshots:
   - Popup settings panel on YouTube
   - Enhanced theater mode with hidden header
+  - General settings with sidebar and Shorts controls
   - Default view with floating mini-player
   - Picture-in-Picture button in the player controls
 

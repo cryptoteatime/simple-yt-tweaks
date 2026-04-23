@@ -10,7 +10,10 @@ This project is not affiliated with, endorsed by, sponsored by, or otherwise ass
 - Optional hidden header, header hover reveal, recommendations, comments, and live chat controls while theater mode is active.
 - Optional live chat overlay for streams and premieres.
 - Compact popup settings with page support status and clamped tooltips.
-- Separate Theater and Default tabs for mode-specific layout preferences.
+- Separate General, Theater View, and Default View tabs for global and mode-specific preferences.
+- Optional sidebar cleanup controls for hiding the main sidebar or individual sidebar entries.
+- Optional Shorts hiding across common navigation, home, feed, search, and recommendation surfaces.
+- Optional end-screen card hiding.
 - Optional hidden player controls that reappear when hovering near the control area.
 - Optional theater scrollbar hiding to reduce layout shift while scrolling.
 - Optional metadata hiding, with a title and top-row keep-visible option.

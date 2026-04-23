@@ -1,4 +1,12 @@
 type SettingKey =
+  | 'generalHideEndScreenCards'
+  | 'generalHideShorts'
+  | 'generalHideSidebar'
+  | 'generalHideSidebarHome'
+  | 'generalHideSidebarShorts'
+  | 'generalHideSidebarSubscriptions'
+  | 'generalHideSidebarYou'
+  | 'generalHideSidebarExplore'
   | 'enhancedTheaterMode'
   | 'theaterHideHeader'
   | 'theaterShowHeaderOnHover'
@@ -29,6 +37,14 @@ type DockState = {
 };
 
 const DEFAULT_SETTINGS: Settings = {
+  generalHideEndScreenCards: false,
+  generalHideShorts: false,
+  generalHideSidebar: false,
+  generalHideSidebarHome: false,
+  generalHideSidebarShorts: false,
+  generalHideSidebarSubscriptions: false,
+  generalHideSidebarYou: false,
+  generalHideSidebarExplore: false,
   enhancedTheaterMode: true,
   theaterHideHeader: true,
   theaterShowHeaderOnHover: true,
@@ -68,6 +84,15 @@ const PIP_BUTTON_ID = 'simple-yt-tweaks-pip-button';
 const DOCK_ID = 'simple-yt-tweaks-dock';
 const MASTHEAD_CLASS = 'simple-yt-tweaks-masthead';
 const LIVE_CHAT_CLASS = 'simple-yt-tweaks-live-chat';
+const GENERAL_HIDDEN_CLASS = 'simple-yt-tweaks-hidden';
+
+const SIDEBAR_ITEM_MATCHERS = {
+  home: [/\bhome\b/i],
+  shorts: [/\bshorts\b/i],
+  subscriptions: [/\bsubscriptions\b/i],
+  you: [/\byou\b/i, /\bhistory\b/i, /\bplaylists?\b/i, /\byour videos\b/i, /\bdownloads\b/i, /\bwatch later\b/i, /\bliked videos\b/i],
+  explore: [/\bexplore\b/i, /\btrending\b/i, /\bshopping\b/i, /\bmusic\b/i, /\bmovies?\b/i, /\blive\b/i, /\bgaming\b/i, /\bnews\b/i, /\bsports\b/i, /\blearning\b/i, /\bfashion & beauty\b/i, /\bpodcasts\b/i],
+} as const;
 
 const state: {
   settings: Settings;
@@ -176,7 +201,26 @@ function isDefaultWatchView(): boolean {
   return isWatchPage() && !isTheaterMode();
 }
 
+function getElementLabel(element: Element): string {
+  const ariaLabel = element.getAttribute('aria-label') ?? '';
+  const title = element.getAttribute('title') ?? '';
+  const text = element.textContent ?? '';
+
+  return `${ariaLabel} ${title} ${text}`.replace(/\s+/g, ' ').trim();
+}
+
+function elementMatchesAnyLabel(element: Element, patterns: readonly RegExp[]): boolean {
+  const label = getElementLabel(element);
+  if (!label) return false;
+
+  return patterns.some((pattern) => pattern.test(label));
+}
+
 function buildCss(): string {
+  const generalHideEndScreenCards = state.settings.generalHideEndScreenCards;
+  const generalHideShorts = state.settings.generalHideShorts;
+  const generalHideSidebar = state.settings.generalHideSidebar;
+  const generalHideSidebarShorts = state.settings.generalHideSidebarShorts;
   const enhancedTheater = state.settings.enhancedTheaterMode;
   const theaterHideHeader = state.settings.theaterHideHeader;
   const theaterShowHeaderOnHover = state.settings.theaterShowHeaderOnHover;
@@ -194,6 +238,10 @@ function buildCss(): string {
   const defaultHideLiveChat = state.settings.defaultHideLiveChat;
 
   return `
+    .${GENERAL_HIDDEN_CLASS} {
+      display: none !important;
+    }
+
     body.simple-yt-tweaks-active .simple-yt-tweaks-pip-btn.ytp-button {
       display: inline-flex !important;
       align-items: center;
@@ -272,6 +320,60 @@ function buildCss(): string {
       min-height: 220px;
       background: transparent;
     }
+
+    ${generalHideEndScreenCards ? `
+    body.simple-yt-tweaks-active .ytp-ce-element,
+    body.simple-yt-tweaks-active .ytp-ce-video,
+    body.simple-yt-tweaks-active .ytp-ce-playlist,
+    body.simple-yt-tweaks-active .ytp-ce-channel,
+    body.simple-yt-tweaks-active .ytp-endscreen-content {
+      display: none !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+      visibility: hidden !important;
+    }
+    ` : ''}
+
+    ${generalHideSidebar ? `
+    body.simple-yt-tweaks-active #guide,
+    body.simple-yt-tweaks-active #guide-content,
+    body.simple-yt-tweaks-active ytd-guide-renderer,
+    body.simple-yt-tweaks-active ytd-mini-guide-renderer,
+    body.simple-yt-tweaks-active #guide-spacer {
+      display: none !important;
+    }
+
+    body.simple-yt-tweaks-active #page-manager,
+    body.simple-yt-tweaks-active ytd-page-manager,
+    body.simple-yt-tweaks-active #content {
+      margin-left: 0 !important;
+    }
+    ` : ''}
+
+    ${(generalHideShorts || generalHideSidebarShorts) ? `
+    body.simple-yt-tweaks-active ytd-mini-guide-entry-renderer[aria-label*="Shorts"],
+    body.simple-yt-tweaks-active ytd-mini-guide-entry-renderer[title*="Shorts"],
+    body.simple-yt-tweaks-active ytd-guide-entry-renderer:has(a[href^="/shorts"]),
+    body.simple-yt-tweaks-active ytd-guide-entry-renderer:has(a[title*="Shorts"]),
+    body.simple-yt-tweaks-active ytd-guide-entry-renderer:has(a[aria-label*="Shorts"]) {
+      display: none !important;
+    }
+    ` : ''}
+
+    ${generalHideShorts ? `
+    body.simple-yt-tweaks-active ytd-rich-shelf-renderer[is-shorts],
+    body.simple-yt-tweaks-active ytd-reel-shelf-renderer,
+    body.simple-yt-tweaks-active ytd-reel-video-renderer,
+    body.simple-yt-tweaks-active ytd-shorts,
+    body.simple-yt-tweaks-active ytd-video-renderer:has(a[href^="/shorts/"]),
+    body.simple-yt-tweaks-active ytd-grid-video-renderer:has(a[href^="/shorts/"]),
+    body.simple-yt-tweaks-active ytd-rich-item-renderer:has(a[href^="/shorts/"]),
+    body.simple-yt-tweaks-active ytd-compact-video-renderer:has(a[href^="/shorts/"]),
+    body.simple-yt-tweaks-active ytd-shelf-renderer:has(a[href^="/shorts/"]),
+    body.simple-yt-tweaks-active ytd-item-section-renderer:has(ytd-reel-shelf-renderer) {
+      display: none !important;
+    }
+    ` : ''}
 
     ${enhancedTheater ? `
     html.simple-yt-tweaks-scrollbar-hidden,
@@ -700,6 +802,93 @@ function updateLiveChatTargets(): void {
   }
 }
 
+function clearGeneralHiddenTargets(): void {
+  for (const target of queryAll<HTMLElement>(`.${GENERAL_HIDDEN_CLASS}`)) {
+    target.classList.remove(GENERAL_HIDDEN_CLASS);
+  }
+}
+
+function hideElement(element: Element | null): void {
+  if (element instanceof HTMLElement) {
+    element.classList.add(GENERAL_HIDDEN_CLASS);
+  }
+}
+
+function hideClosest(element: Element, selector: string): void {
+  hideElement(element.closest(selector));
+}
+
+function updateSidebarItemVisibility(): void {
+  if (state.settings.generalHideSidebar) return;
+
+  const enabledCategories: Array<keyof typeof SIDEBAR_ITEM_MATCHERS> = [];
+  if (state.settings.generalHideSidebarHome) enabledCategories.push('home');
+  if (state.settings.generalHideSidebarShorts || state.settings.generalHideShorts) enabledCategories.push('shorts');
+  if (state.settings.generalHideSidebarSubscriptions) enabledCategories.push('subscriptions');
+  if (state.settings.generalHideSidebarYou) enabledCategories.push('you');
+  if (state.settings.generalHideSidebarExplore) enabledCategories.push('explore');
+
+  if (enabledCategories.length === 0) return;
+
+  const sidebarItems = queryAll<HTMLElement>(
+    [
+      '#guide ytd-guide-entry-renderer',
+      '#guide ytd-guide-collapsible-entry-renderer',
+      '#guide tp-yt-paper-item',
+      'ytd-guide-renderer ytd-guide-entry-renderer',
+      'ytd-guide-renderer ytd-guide-collapsible-entry-renderer',
+      'ytd-guide-renderer tp-yt-paper-item',
+      'ytd-mini-guide-renderer ytd-mini-guide-entry-renderer',
+    ].join(','),
+  );
+
+  for (const item of sidebarItems) {
+    for (const category of enabledCategories) {
+      if (elementMatchesAnyLabel(item, SIDEBAR_ITEM_MATCHERS[category])) {
+        hideElement(item);
+        break;
+      }
+    }
+  }
+}
+
+function updateShortsVisibility(): void {
+  if (!state.settings.generalHideShorts) return;
+
+  for (const target of queryAll<HTMLElement>('ytd-rich-shelf-renderer[is-shorts], ytd-reel-shelf-renderer, ytd-reel-video-renderer')) {
+    hideElement(target);
+  }
+
+  for (const link of queryAll<HTMLAnchorElement>('a[href^="/shorts/"], a[href="/shorts"]')) {
+    hideClosest(
+      link,
+      [
+        'ytd-rich-item-renderer',
+        'ytd-video-renderer',
+        'ytd-grid-video-renderer',
+        'ytd-compact-video-renderer',
+        'ytd-reel-video-renderer',
+        'ytd-guide-entry-renderer',
+        'ytd-mini-guide-entry-renderer',
+        'ytd-shelf-renderer',
+        'tp-yt-paper-item',
+      ].join(','),
+    );
+  }
+
+  for (const item of queryAll<HTMLElement>('ytd-rich-section-renderer, ytd-item-section-renderer, ytd-shelf-renderer')) {
+    if (elementMatchesAnyLabel(item, [/shorts/i]) && query<HTMLAnchorElement>('a[href^="/shorts/"], a[href="/shorts"]', item)) {
+      hideElement(item);
+    }
+  }
+}
+
+function updateGeneralVisibility(): void {
+  clearGeneralHiddenTargets();
+  updateSidebarItemVisibility();
+  updateShortsVisibility();
+}
+
 function updateScrollbarState(): void {
   const enhancedTheaterActive = isEnhancedTheaterActive();
   const shouldHideScrollbar =
@@ -978,6 +1167,7 @@ function applyFeatureState(): void {
   updateTheaterClass();
   updateMastheadTargets();
   updateLiveChatTargets();
+  updateGeneralVisibility();
   updateScrollbarState();
 
   if (isFeatureEnabled('pipButton')) {
