@@ -16,6 +16,7 @@
 }
 
 body {
+  display: flex;
   width: 390px;
   min-height: 360px;
   margin: 0;
@@ -27,6 +28,9 @@ body {
 }
 
 .panel {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
   padding: 10px;
 }
 
@@ -141,6 +145,7 @@ body {
 }
 
 .settings {
+  flex: 1 1 auto;
   overflow: visible;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -362,8 +367,9 @@ input[type="checkbox"]:checked::after {
   gap: 12px;
   align-items: center;
   justify-content: space-between;
+  margin-top: auto;
   padding-top: 8px;
-  margin-top: 8px;
+  min-height: 40px;
   border-top: 1px solid var(--line);
 }
 

@@ -144,7 +144,7 @@ export const SETTING_DEFINITIONS: SettingDefinition[] = [
   {
     key: 'generalSidebarCleanup',
     label: 'Sidebar Cleanup',
-    description: 'Enables the cleaned-up left sidebar layout and its section controls.',
+    description: 'Enables a cleaner sidebar layout, keeps Subscriptions compact, keeps You expanded, and unlocks the cleanup toggles below.',
     topTab: 'sidebar',
   },
   {
@@ -364,8 +364,8 @@ export const SETTING_DEFINITIONS: SettingDefinition[] = [
   },
   {
     key: 'fullscreenHideRecommendationOverlays',
-    label: 'Hide Recommendation Overlays',
-    description: 'Hides end-screen cards and similar recommendation overlays in native fullscreen.',
+    label: 'Hide More Videos Overlay',
+    description: 'Hides the More videos button and similar recommendation overlays in native fullscreen.',
     topTab: 'views',
     viewMode: 'fullscreen',
   },

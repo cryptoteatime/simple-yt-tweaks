@@ -151,6 +151,12 @@ const SIDEBAR_ITEM_LABELS = {
   reportHistory: ['report history'],
 } as const;
 
+const SUBSCRIPTIONS_ICON_SVG = `
+  <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" focusable="false" aria-hidden="true" style="pointer-events: none; display: inherit; width: 100%; height: 100%;">
+    <path d="M18 1H6a2 2 0 00-2 2h16a2 2 0 00-2-2Zm3 4H3a2 2 0 00-2 2v13a2 2 0 002 2h18a2 2 0 002-2V7a2 2 0 00-2-2ZM3 20V7h18v13H3Zm13-6.5L10 10v7l6-3.5Z"></path>
+  </svg>
+`;
+
 const state: {
   settings: Settings;
   currentUrl: string;
@@ -305,7 +311,6 @@ function elementMatchesAnyLabel(element: Element, labels: readonly string[]): bo
 }
 
 function buildCss(): string {
-  const generalHideSponsoredPosts = state.settings.generalHideSponsoredPosts;
   const generalHideEndScreenCards = state.settings.generalHideEndScreenCards;
   const generalFeedColumns = state.settings.generalFeedColumns;
   const generalHideShorts = state.settings.generalHideShorts && !isDedicatedShortsPage();
@@ -328,6 +333,7 @@ function buildCss(): string {
   const defaultShowPrimaryMetadata = state.settings.defaultShowPrimaryMetadata;
   const defaultHideLiveChat = state.settings.defaultHideLiveChat;
   const fullscreenHideTitleOverlay = state.settings.fullscreenHideTitleOverlay;
+  const fullscreenHidePlayerUI = state.settings.fullscreenHidePlayerUI;
   const fullscreenHideRecommendationOverlays = state.settings.fullscreenHideRecommendationOverlays;
 
   return `
@@ -443,23 +449,27 @@ function buildCss(): string {
 
     ${generalSidebarCleanup ? `
     body.simple-yt-tweaks-active .${SIDEBAR_SUBSCRIPTIONS_CLASS} #header-entry .guide-icon,
-    body.simple-yt-tweaks-active .${SIDEBAR_SUBSCRIPTIONS_CLASS} #header-entry yt-icon,
-    body.simple-yt-tweaks-active .${SIDEBAR_SUBSCRIPTIONS_CLASS} #header-entry yt-img-shadow {
+    body.simple-yt-tweaks-active .${SIDEBAR_SUBSCRIPTIONS_CLASS} #header-entry yt-icon {
       display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
       visibility: visible !important;
+    }
+
+    body.simple-yt-tweaks-active .${SIDEBAR_SUBSCRIPTIONS_CLASS} #header-entry yt-img-shadow {
+      display: none !important;
+      visibility: hidden !important;
+    }
+
+    body.simple-yt-tweaks-active .${SIDEBAR_SUBSCRIPTIONS_CLASS} .simple-yt-tweaks-sidebar-subscriptions-icon {
+      display: inline-flex !important;
+      width: 24px !important;
+      height: 24px !important;
+      color: currentColor !important;
     }
 
     body.simple-yt-tweaks-active .${SIDEBAR_SUBSCRIPTIONS_CLASS} #header-entry .arrow-icon {
       display: none !important;
-    }
-    ` : ''}
-
-    ${generalHideSponsoredPosts ? `
-    body.simple-yt-tweaks-active ${SPONSORED_CARD_SELECTORS.join(',\n    body.simple-yt-tweaks-active ')} {
-      display: none !important;
-      opacity: 0 !important;
-      pointer-events: none !important;
-      visibility: hidden !important;
     }
     ` : ''}
 
@@ -781,7 +791,7 @@ function buildCss(): string {
     ` : ''}
     ` : ''}
 
-    ${theaterHidePlayerUI ? `
+    ${theaterHidePlayerUI || fullscreenHidePlayerUI ? `
     body.simple-yt-tweaks-player-ui-hidden .ytp-chrome-top,
     body.simple-yt-tweaks-player-ui-hidden .ytp-chrome-bottom,
     body.simple-yt-tweaks-player-ui-hidden .ytp-gradient-top,
@@ -841,7 +851,10 @@ function buildCss(): string {
     body.simple-yt-tweaks-fullscreen-view .ytp-endscreen-content,
     body.simple-yt-tweaks-fullscreen-view .ytp-pause-overlay,
     body.simple-yt-tweaks-fullscreen-view .ytp-upnext,
-    body.simple-yt-tweaks-fullscreen-view .ytp-scroll-min {
+    body.simple-yt-tweaks-fullscreen-view .ytp-scroll-min,
+    body.simple-yt-tweaks-fullscreen-view .ytp-cards-button,
+    body.simple-yt-tweaks-fullscreen-view .ytp-cards-teaser,
+    body.simple-yt-tweaks-fullscreen-view .ytp-cards-teaser-box {
       display: none !important;
       opacity: 0 !important;
       pointer-events: none !important;
@@ -1123,6 +1136,23 @@ function updateSidebarSectionPolish(): void {
   const subscriptionsSection = getSidebarSection('subscriptions');
   if (subscriptionsSection && !state.settings.generalHideSidebarSubscriptions) {
     subscriptionsSection.classList.add(SIDEBAR_SUBSCRIPTIONS_CLASS);
+    const headerEntry = query<HTMLElement>('#header-entry', subscriptionsSection);
+    const guideIcon = query<HTMLElement>('#header-entry .guide-icon', subscriptionsSection);
+    const title = query<HTMLElement>('#header-entry .title', subscriptionsSection);
+
+    if (headerEntry && guideIcon) {
+      guideIcon.removeAttribute('hidden');
+      guideIcon.innerHTML = `
+        <span class="simple-yt-tweaks-sidebar-subscriptions-icon">
+          ${SUBSCRIPTIONS_ICON_SVG}
+        </span>
+      `;
+
+      if (title && guideIcon.nextElementSibling !== title) {
+        title.parentElement?.insertBefore(guideIcon, title);
+      }
+    }
+
     const subscriptionsItems = query<HTMLElement>('#items', subscriptionsSection);
     if (subscriptionsItems) {
       for (const child of Array.from(subscriptionsItems.children)) {
@@ -1166,17 +1196,6 @@ function isVisibleNode(element: HTMLElement): boolean {
   );
 }
 
-function isConfidentSponsoredCard(element: HTMLElement): boolean {
-  if (query(SPONSORED_CARD_SELECTORS.join(','), element)) {
-    return true;
-  }
-
-  const label = normalizeLabel(element.textContent ?? '');
-  if (!label) return false;
-
-  return label.includes('sponsored') || label.includes('promoted');
-}
-
 function updateSponsoredVisibility(): void {
   if (!state.settings.generalHideSponsoredPosts) return;
 
@@ -1192,21 +1211,9 @@ function updateSponsoredVisibility(): void {
         'ytd-item-section-renderer',
         'ytd-search-pyv-renderer',
         'ytd-companion-slot-renderer',
+        'ytd-feed-nudge-renderer',
       ].join(','),
     );
-  }
-
-  for (const card of queryAll<HTMLElement>(
-    [
-      'ytd-browse[page-subtype="home"] ytd-rich-item-renderer',
-      'ytd-browse[page-subtype="home"] ytd-rich-section-renderer',
-      'ytd-search ytd-video-renderer',
-      'ytd-watch-next-secondary-results-renderer ytd-compact-video-renderer',
-    ].join(','),
-  )) {
-    if (isConfidentSponsoredCard(card)) {
-      hideElement(card);
-    }
   }
 }
 
