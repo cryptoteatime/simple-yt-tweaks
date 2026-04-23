@@ -30,10 +30,20 @@ function requireElement<T extends HTMLElement>(element: T | null, name: string):
 }
 
 function isSettingDisabled(key: SettingKey, settings: Settings): boolean {
+  if (key === 'generalSidebarCleanup' && settings.generalHideShorts) return true;
+  if (key === 'generalHideSidebarShorts' && settings.generalHideShorts) return true;
+
   const definition = SETTING_DEFINITIONS.find((item) => item.key === key);
   if (!definition?.parentKey) return false;
 
   return !settings[definition.parentKey] || isSettingDisabled(definition.parentKey, settings);
+}
+
+function getEffectiveSettingValue(key: SettingKey, settings: Settings): boolean {
+  if (key === 'generalSidebarCleanup' && settings.generalHideShorts) return true;
+  if (key === 'generalHideSidebarShorts' && settings.generalHideShorts) return true;
+
+  return settings[key];
 }
 
 function getSettingDepth(key: SettingKey): number {
@@ -170,16 +180,22 @@ function renderSettings(settings: Settings): void {
     const isDisabled = isSettingDisabled(key, settings);
     const text = document.createElement('span');
     text.className = 'setting-state';
-    text.textContent = isDisabled ? 'Off' : settings[key] ? 'On' : 'Off';
+    const effectiveValue = getEffectiveSettingValue(key, settings);
+    text.textContent = effectiveValue ? 'On' : 'Off';
 
     const input = document.createElement('input');
     input.type = 'checkbox';
     input.id = key;
-    input.checked = isDisabled ? false : settings[key];
+    input.checked = effectiveValue;
     input.disabled = isDisabled;
     input.setAttribute('aria-describedby', `${key}-tip`);
     input.addEventListener('change', async () => {
       const nextSettings = { ...currentSettings, [key]: input.checked };
+      if (key === 'generalHideShorts' && input.checked) {
+        nextSettings.generalSidebarCleanup = true;
+        nextSettings.generalHideSidebarShorts = true;
+      }
+
       try {
         await saveSettings(nextSettings);
         currentSettings = nextSettings;

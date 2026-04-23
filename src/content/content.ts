@@ -9,6 +9,7 @@ type SettingKey =
   | 'generalHideSidebarYou'
   | 'generalHideSidebarExplore'
   | 'generalHideSidebarMoreFromYouTube'
+  | 'generalHideSidebarReportHistory'
   | 'generalHideSidebarFooter'
   | 'enhancedTheaterMode'
   | 'theaterHideHeader'
@@ -50,6 +51,7 @@ const DEFAULT_SETTINGS: Settings = {
   generalHideSidebarYou: false,
   generalHideSidebarExplore: false,
   generalHideSidebarMoreFromYouTube: false,
+  generalHideSidebarReportHistory: false,
   generalHideSidebarFooter: false,
   enhancedTheaterMode: true,
   theaterHideHeader: true,
@@ -92,13 +94,14 @@ const MASTHEAD_CLASS = 'simple-yt-tweaks-masthead';
 const LIVE_CHAT_CLASS = 'simple-yt-tweaks-live-chat';
 const GENERAL_HIDDEN_CLASS = 'simple-yt-tweaks-hidden';
 
-const SIDEBAR_ITEM_MATCHERS = {
-  home: [/\bhome\b/i],
-  shorts: [/\bshorts\b/i],
-  subscriptions: [/\bsubscriptions\b/i],
-  you: [/\byou\b/i, /\byour channel\b/i, /\bhistory\b/i, /\bplaylists?\b/i, /\byour videos\b/i, /\bdownloads\b/i, /\bwatch later\b/i, /\bliked videos\b/i],
-  explore: [/\bexplore\b/i, /\btrending\b/i, /\bshopping\b/i, /\bmusic\b/i, /\bmovies?\b/i, /\blive\b/i, /\bgaming\b/i, /\bnews\b/i, /\bsports\b/i, /\blearning\b/i, /\bfashion & beauty\b/i, /\bpodcasts\b/i],
-  moreFromYouTube: [/\bmore from youtube\b/i, /\byoutube premium\b/i, /\byoutube studio\b/i, /\byoutube music\b/i, /\byoutube kids\b/i, /\byoutube tv\b/i],
+const SIDEBAR_ITEM_LABELS = {
+  home: ['home'],
+  shorts: ['shorts'],
+  subscriptions: ['subscriptions'],
+  you: ['you', 'your channel', 'history', 'playlists', 'your videos', 'downloads', 'watch later', 'liked videos'],
+  explore: ['explore', 'trending', 'shopping', 'music', 'movies', 'movies & tv', 'live', 'gaming', 'news', 'sports', 'learning', 'fashion & beauty', 'podcasts'],
+  moreFromYouTube: ['more from youtube', 'youtube premium', 'youtube studio', 'youtube music', 'youtube kids', 'youtube tv'],
+  reportHistory: ['report history'],
 } as const;
 
 const state: {
@@ -140,9 +143,21 @@ function loadSettings(): Promise<Settings> {
         { ...DEFAULT_SETTINGS },
       );
 
-      resolve(settings);
+      resolve(normalizeSettings(settings));
     });
   });
+}
+
+function normalizeSettings(settings: Settings): Settings {
+  if (settings.generalHideShorts) {
+    return {
+      ...settings,
+      generalSidebarCleanup: true,
+      generalHideSidebarShorts: true,
+    };
+  }
+
+  return settings;
 }
 
 function isFeatureEnabled(key: SettingKey): boolean {
@@ -208,19 +223,34 @@ function isDefaultWatchView(): boolean {
   return isWatchPage() && !isTheaterMode();
 }
 
+function normalizeLabel(value: string): string {
+  return value.toLowerCase().replace(/[›>]/g, '').replace(/\s+/g, ' ').trim();
+}
+
 function getElementLabel(element: Element): string {
   const ariaLabel = element.getAttribute('aria-label') ?? '';
   const title = element.getAttribute('title') ?? '';
   const text = element.textContent ?? '';
 
-  return `${ariaLabel} ${title} ${text}`.replace(/\s+/g, ' ').trim();
+  return normalizeLabel(`${ariaLabel} ${title} ${text}`);
 }
 
-function elementMatchesAnyLabel(element: Element, patterns: readonly RegExp[]): boolean {
+function labelMatchesEntry(label: string, entry: string): boolean {
+  const normalizedEntry = normalizeLabel(entry);
+
+  return (
+    label === normalizedEntry ||
+    label === `${normalizedEntry} ${normalizedEntry}` ||
+    label.startsWith(`${normalizedEntry} selected`) ||
+    label.startsWith(`${normalizedEntry} link`)
+  );
+}
+
+function elementMatchesAnyLabel(element: Element, labels: readonly string[]): boolean {
   const label = getElementLabel(element);
   if (!label) return false;
 
-  return patterns.some((pattern) => pattern.test(label));
+  return labels.some((entry) => labelMatchesEntry(label, entry));
 }
 
 function buildCss(): string {
@@ -351,6 +381,13 @@ function buildCss(): string {
       display: none !important;
     }
 
+    body.simple-yt-tweaks-active #guide-button,
+    body.simple-yt-tweaks-active ytd-masthead #guide-button,
+    body.simple-yt-tweaks-active ytd-masthead button[aria-label*="Guide"],
+    body.simple-yt-tweaks-active ytd-masthead button[aria-label*="menu"] {
+      display: none !important;
+    }
+
     body.simple-yt-tweaks-active #page-manager,
     body.simple-yt-tweaks-active ytd-page-manager,
     body.simple-yt-tweaks-active #content {
@@ -437,8 +474,8 @@ function buildCss(): string {
       max-width: 100% !important;
       width: 100% !important;
       min-width: 0 !important;
-      height: min(100vh, 56.25vw) !important;
-      max-height: 100vh !important;
+      height: min(var(--simple-yt-tweaks-vh, 100vh), 56.25vw) !important;
+      max-height: var(--simple-yt-tweaks-vh, 100vh) !important;
       min-height: 0 !important;
       overflow: hidden !important;
     }
@@ -447,8 +484,8 @@ function buildCss(): string {
     body.simple-yt-tweaks-theater #player-full-bleed-container,
     body.simple-yt-tweaks-theater #player,
     body.simple-yt-tweaks-theater #movie_player {
-      height: min(100vh, 56.25vw) !important;
-      max-height: 100vh !important;
+      height: min(var(--simple-yt-tweaks-vh, 100vh), 56.25vw) !important;
+      max-height: var(--simple-yt-tweaks-vh, 100vh) !important;
     }
 
     body.simple-yt-tweaks-theater #player,
@@ -475,6 +512,17 @@ function buildCss(): string {
       left: 0 !important;
       top: 0 !important;
       object-fit: contain !important;
+    }
+
+    @media (display-mode: standalone), (display-mode: minimal-ui) {
+      body.simple-yt-tweaks-theater #player-container-outer,
+      body.simple-yt-tweaks-theater #full-bleed-container,
+      body.simple-yt-tweaks-theater #player-full-bleed-container,
+      body.simple-yt-tweaks-theater #player,
+      body.simple-yt-tweaks-theater #movie_player {
+        height: var(--simple-yt-tweaks-vh, 100vh) !important;
+        max-height: var(--simple-yt-tweaks-vh, 100vh) !important;
+      }
     }
     ` : ''}
 
@@ -756,6 +804,7 @@ function scheduleModeStabilization(): void {
 
   state.modeTransitionTimers = [80, 220, 520].map((delay) =>
     window.setTimeout(() => {
+      updateViewportHeightVar();
       updateTheaterClass();
       updateMastheadTargets();
       updateLiveChatTargets();
@@ -826,7 +875,16 @@ function hideClosest(element: Element, selector: string): void {
   hideElement(element.closest(selector));
 }
 
-function hideSidebarSection(category: keyof typeof SIDEBAR_ITEM_MATCHERS): void {
+function getSidebarSectionHeading(section: HTMLElement): string {
+  const heading = query<HTMLElement>(
+    '#guide-section-title, #title, h3, yt-formatted-string',
+    section,
+  );
+
+  return heading ? getElementLabel(heading) : '';
+}
+
+function hideSidebarSection(category: keyof typeof SIDEBAR_ITEM_LABELS): void {
   const sections = queryAll<HTMLElement>(
     [
       '#guide ytd-guide-section-renderer',
@@ -837,7 +895,9 @@ function hideSidebarSection(category: keyof typeof SIDEBAR_ITEM_MATCHERS): void 
   );
 
   for (const section of sections) {
-    if (elementMatchesAnyLabel(section, SIDEBAR_ITEM_MATCHERS[category])) {
+    const heading = getSidebarSectionHeading(section);
+    const matchesHeading = heading && SIDEBAR_ITEM_LABELS[category].some((label) => labelMatchesEntry(heading, label));
+    if (matchesHeading || elementMatchesAnyLabel(section, SIDEBAR_ITEM_LABELS[category])) {
       hideElement(section);
     }
   }
@@ -862,13 +922,14 @@ function updateSidebarFooterVisibility(): void {
 function updateSidebarItemVisibility(): void {
   if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebar) return;
 
-  const enabledCategories: Array<keyof typeof SIDEBAR_ITEM_MATCHERS> = [];
+  const enabledCategories: Array<keyof typeof SIDEBAR_ITEM_LABELS> = [];
   if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarHome) enabledCategories.push('home');
   if ((state.settings.generalSidebarCleanup && state.settings.generalHideSidebarShorts) || state.settings.generalHideShorts) enabledCategories.push('shorts');
   if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarSubscriptions) enabledCategories.push('subscriptions');
   if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarYou) enabledCategories.push('you');
   if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarExplore) enabledCategories.push('explore');
   if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarMoreFromYouTube) enabledCategories.push('moreFromYouTube');
+  if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarReportHistory) enabledCategories.push('reportHistory');
 
   updateSidebarFooterVisibility();
 
@@ -894,7 +955,7 @@ function updateSidebarItemVisibility(): void {
 
   for (const item of sidebarItems) {
     for (const category of enabledCategories) {
-      if (elementMatchesAnyLabel(item, SIDEBAR_ITEM_MATCHERS[category])) {
+      if (elementMatchesAnyLabel(item, SIDEBAR_ITEM_LABELS[category])) {
         hideElement(item);
         break;
       }
@@ -927,7 +988,7 @@ function updateShortsVisibility(): void {
   }
 
   for (const item of queryAll<HTMLElement>('ytd-rich-section-renderer, ytd-item-section-renderer, ytd-shelf-renderer')) {
-    if (elementMatchesAnyLabel(item, [/shorts/i]) && query<HTMLAnchorElement>('a[href^="/shorts/"], a[href="/shorts"]', item)) {
+    if (elementMatchesAnyLabel(item, SIDEBAR_ITEM_LABELS.shorts) && query<HTMLAnchorElement>('a[href^="/shorts/"], a[href="/shorts"]', item)) {
       hideElement(item);
     }
   }
@@ -939,6 +1000,11 @@ function updateGeneralVisibility(): void {
     updateSidebarItemVisibility();
   }
   updateShortsVisibility();
+}
+
+function updateViewportHeightVar(): void {
+  const height = Math.round(window.visualViewport?.height ?? window.innerHeight);
+  document.documentElement.style.setProperty('--simple-yt-tweaks-vh', `${height}px`);
 }
 
 function updateScrollbarState(): void {
@@ -1216,6 +1282,7 @@ function applyFeatureState(): void {
 
   ensureStyle();
   resetNavigationState();
+  updateViewportHeightVar();
   updateTheaterClass();
   updateMastheadTargets();
   updateLiveChatTargets();
@@ -1269,6 +1336,7 @@ function bindStorageObserver(): void {
     }
 
     if (touched) {
+      state.settings = normalizeSettings(state.settings);
       applyFeatureState();
     }
   });
@@ -1293,22 +1361,21 @@ function observeNavigation(): void {
     updateDockedPlayer();
     updateScrollbarState();
   }, 40);
+  const updateViewportUi = debounce(() => {
+    updateViewportHeightVar();
+    updateTheaterClass();
+    updateMastheadTargets();
+    updateLiveChatTargets();
+    updateScrollbarState();
+    updateDockedPlayer();
+  }, 80);
 
   window.addEventListener('yt-navigate-finish', rerun, { passive: true });
   window.addEventListener('yt-page-data-updated', rerun, { passive: true });
   window.addEventListener('popstate', rerun, { passive: true });
   window.addEventListener('scroll', updateScrollUi, { passive: true });
-  window.addEventListener(
-    'resize',
-    debounce(() => {
-      updateTheaterClass();
-      updateMastheadTargets();
-      updateLiveChatTargets();
-      updateScrollbarState();
-      updateDockedPlayer();
-    }, 80),
-    { passive: true },
-  );
+  window.addEventListener('resize', updateViewportUi, { passive: true });
+  window.visualViewport?.addEventListener('resize', updateViewportUi, { passive: true });
 }
 
 function bindRuntimeMessages(): void {

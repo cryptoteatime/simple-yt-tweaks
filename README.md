@@ -13,6 +13,7 @@ This project is not affiliated with, endorsed by, sponsored by, or otherwise ass
 - Separate General, Theater View, and Default View tabs for global and mode-specific preferences.
 - Optional grouped sidebar cleanup controls for hiding the main sidebar, navigation entries, product links, and sidebar footer clutter.
 - Optional Shorts hiding across common navigation, home, feed, search, and recommendation surfaces.
+- Optional Report History sidebar cleanup without tying it to the You section.
 - Optional end-screen card hiding.
 - Optional hidden player controls that reappear when hovering near the control area.
 - Optional theater scrollbar hiding to reduce layout shift while scrolling.

@@ -11,6 +11,7 @@ export type SettingKey =
   | 'generalHideSidebarYou'
   | 'generalHideSidebarExplore'
   | 'generalHideSidebarMoreFromYouTube'
+  | 'generalHideSidebarReportHistory'
   | 'generalHideSidebarFooter'
   | 'enhancedTheaterMode'
   | 'theaterHideHeader'
@@ -52,6 +53,7 @@ export const DEFAULT_SETTINGS: Settings = {
   generalHideSidebarYou: false,
   generalHideSidebarExplore: false,
   generalHideSidebarMoreFromYouTube: false,
+  generalHideSidebarReportHistory: false,
   generalHideSidebarFooter: false,
   enhancedTheaterMode: true,
   theaterHideHeader: true,
@@ -107,14 +109,14 @@ export const SETTING_DEFINITIONS: SettingDefinition[] = [
   },
   {
     key: 'generalHideSidebarHome',
-    label: 'Hide Home',
+    label: 'Hide Home Link',
     description: 'Hides Home entries from the YouTube sidebar.',
     tab: 'general',
     parentKey: 'generalSidebarCleanup',
   },
   {
     key: 'generalHideSidebarShorts',
-    label: 'Hide Shorts Entry',
+    label: 'Hide Shorts Link',
     description: 'Hides Shorts entries from the YouTube sidebar.',
     tab: 'general',
     parentKey: 'generalSidebarCleanup',
@@ -144,6 +146,13 @@ export const SETTING_DEFINITIONS: SettingDefinition[] = [
     key: 'generalHideSidebarMoreFromYouTube',
     label: 'Hide More from YouTube',
     description: 'Hides YouTube Premium, YouTube TV, Kids, Music, and similar product links from the sidebar.',
+    tab: 'general',
+    parentKey: 'generalSidebarCleanup',
+  },
+  {
+    key: 'generalHideSidebarReportHistory',
+    label: 'Hide Report History',
+    description: 'Hides the Report history sidebar link without tying it to the You section.',
     tab: 'general',
     parentKey: 'generalSidebarCleanup',
   },
@@ -279,13 +288,20 @@ export const SETTING_DEFINITIONS: SettingDefinition[] = [
 export const SETTING_KEYS = SETTING_DEFINITIONS.map(({ key }) => key);
 
 export function normalizeSettings(items: Partial<Record<SettingKey, unknown>>): Settings {
-  return SETTING_KEYS.reduce<Settings>(
+  const settings = SETTING_KEYS.reduce<Settings>(
     (settings, key) => {
       settings[key] = typeof items[key] === 'boolean' ? items[key] : DEFAULT_SETTINGS[key];
       return settings;
     },
     { ...DEFAULT_SETTINGS },
   );
+
+  if (settings.generalHideShorts) {
+    settings.generalSidebarCleanup = true;
+    settings.generalHideSidebarShorts = true;
+  }
+
+  return settings;
 }
 
 export function loadSettings(): Promise<Settings> {
