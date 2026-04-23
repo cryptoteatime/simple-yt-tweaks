@@ -45,6 +45,7 @@ body {
 }
 
 .panel__header {
+  padding-right: 2px;
   padding-bottom: 8px;
   margin-bottom: 8px;
   border-bottom: 1px solid var(--line);
@@ -66,24 +67,25 @@ body {
 .status-dot {
   width: 12px;
   height: 12px;
+  margin-right: 2px;
   border-radius: 999px;
   background: var(--warm);
-  box-shadow: 0 0 0 6px rgba(255, 107, 107, 0.12);
+  box-shadow: 0 0 0 5px rgba(255, 107, 107, 0.12);
 }
 
 .status-dot[data-status="active"] {
   background: var(--accent);
-  box-shadow: 0 0 0 6px rgba(69, 214, 181, 0.14);
+  box-shadow: 0 0 0 5px rgba(69, 214, 181, 0.14);
 }
 
 .status-dot[data-status="inactive"] {
   background: var(--warm);
-  box-shadow: 0 0 0 6px rgba(255, 107, 107, 0.12);
+  box-shadow: 0 0 0 5px rgba(255, 107, 107, 0.12);
 }
 
 .status-dot[data-status="reload"] {
   background: #f3b34c;
-  box-shadow: 0 0 0 6px rgba(243, 179, 76, 0.14);
+  box-shadow: 0 0 0 5px rgba(243, 179, 76, 0.14);
 }
 
 .settings-tabs {
@@ -160,10 +162,36 @@ body {
   min-height: 0;
   overflow-x: hidden;
   overflow-y: auto;
+  padding-bottom: 8px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--panel);
   box-shadow: var(--shadow);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(168, 175, 189, 0.58) rgba(255, 255, 255, 0.05);
+  scrollbar-gutter: stable;
+}
+
+.settings::-webkit-scrollbar {
+  width: 10px;
+}
+
+.settings::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.045);
+  border-left: 1px solid rgba(255, 255, 255, 0.035);
+  border-radius: 999px;
+}
+
+.settings::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background: rgba(168, 175, 189, 0.48);
+  background-clip: padding-box;
+}
+
+.settings::-webkit-scrollbar-thumb:hover {
+  background: rgba(69, 214, 181, 0.52);
+  background-clip: padding-box;
 }
 
 .settings-subtabs:not([hidden]) + .settings {
@@ -387,9 +415,11 @@ input[type="checkbox"]:checked::after {
   align-items: center;
   justify-content: space-between;
   margin-top: auto;
-  padding-top: 8px;
+  padding: 10px 4px 0;
   min-height: 40px;
   border-top: 1px solid var(--line);
+  background:
+    linear-gradient(180deg, rgba(17, 18, 22, 0) 0%, rgba(17, 18, 22, 0.84) 38%, rgba(17, 18, 22, 1) 100%);
 }
 
 .footer-actions,

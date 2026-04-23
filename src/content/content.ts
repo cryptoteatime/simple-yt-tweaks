@@ -877,7 +877,10 @@ function buildCss(): string {
     body.simple-yt-tweaks-fullscreen-view .ytp-title-link,
     body.simple-yt-tweaks-fullscreen-view .ytp-title-expanded-overlay,
     body.simple-yt-tweaks-fullscreen-view .ytp-title-text > a,
-    body.simple-yt-tweaks-fullscreen-view .ytp-gradient-top {
+    body.simple-yt-tweaks-fullscreen-view .ytp-gradient-top,
+    body.simple-yt-tweaks-fullscreen-view .ytp-fullscreen-metadata,
+    body.simple-yt-tweaks-fullscreen-view .ytp-fullscreen-metadata yt-player-overlay-video-details-renderer,
+    body.simple-yt-tweaks-fullscreen-view .ytp-fullscreen-metadata .ytPlayerOverlayVideoDetailsRendererHost {
       opacity: 0 !important;
       pointer-events: none !important;
       visibility: hidden !important;
@@ -892,7 +895,7 @@ function buildCss(): string {
     }
 
     body.simple-yt-tweaks-fullscreen-view.simple-yt-tweaks-player-ui-hover .ytp-chrome-top,
-    body.simple-yt-tweaks-fullscreen-view .ytp-chrome-top:focus-within {
+    body.simple-yt-tweaks-fullscreen-view #movie_player:focus-within .ytp-chrome-top {
       opacity: 1 !important;
       pointer-events: auto !important;
       visibility: visible !important;
@@ -907,14 +910,20 @@ function buildCss(): string {
     body.simple-yt-tweaks-fullscreen-view.simple-yt-tweaks-player-ui-hover .ytp-title-expanded-overlay,
     body.simple-yt-tweaks-fullscreen-view.simple-yt-tweaks-player-ui-hover .ytp-title-text > a,
     body.simple-yt-tweaks-fullscreen-view.simple-yt-tweaks-player-ui-hover .ytp-gradient-top,
-    body.simple-yt-tweaks-fullscreen-view .ytp-chrome-top:focus-within .ytp-title,
-    body.simple-yt-tweaks-fullscreen-view .ytp-chrome-top:focus-within .ytp-title-channel,
-    body.simple-yt-tweaks-fullscreen-view .ytp-chrome-top:focus-within .ytp-title-channel-logo,
-    body.simple-yt-tweaks-fullscreen-view .ytp-chrome-top:focus-within .ytp-title-text,
-    body.simple-yt-tweaks-fullscreen-view .ytp-chrome-top:focus-within .ytp-title-link,
-    body.simple-yt-tweaks-fullscreen-view .ytp-chrome-top:focus-within .ytp-title-expanded-overlay,
-    body.simple-yt-tweaks-fullscreen-view .ytp-chrome-top:focus-within .ytp-title-text > a,
-    body.simple-yt-tweaks-fullscreen-view .ytp-chrome-top:focus-within .ytp-gradient-top {
+    body.simple-yt-tweaks-fullscreen-view.simple-yt-tweaks-player-ui-hover .ytp-fullscreen-metadata,
+    body.simple-yt-tweaks-fullscreen-view.simple-yt-tweaks-player-ui-hover .ytp-fullscreen-metadata yt-player-overlay-video-details-renderer,
+    body.simple-yt-tweaks-fullscreen-view.simple-yt-tweaks-player-ui-hover .ytp-fullscreen-metadata .ytPlayerOverlayVideoDetailsRendererHost,
+    body.simple-yt-tweaks-fullscreen-view #movie_player:focus-within .ytp-title,
+    body.simple-yt-tweaks-fullscreen-view #movie_player:focus-within .ytp-title-channel,
+    body.simple-yt-tweaks-fullscreen-view #movie_player:focus-within .ytp-title-channel-logo,
+    body.simple-yt-tweaks-fullscreen-view #movie_player:focus-within .ytp-title-text,
+    body.simple-yt-tweaks-fullscreen-view #movie_player:focus-within .ytp-title-link,
+    body.simple-yt-tweaks-fullscreen-view #movie_player:focus-within .ytp-title-expanded-overlay,
+    body.simple-yt-tweaks-fullscreen-view #movie_player:focus-within .ytp-title-text > a,
+    body.simple-yt-tweaks-fullscreen-view #movie_player:focus-within .ytp-gradient-top,
+    body.simple-yt-tweaks-fullscreen-view #movie_player:focus-within .ytp-fullscreen-metadata,
+    body.simple-yt-tweaks-fullscreen-view #movie_player:focus-within .ytp-fullscreen-metadata yt-player-overlay-video-details-renderer,
+    body.simple-yt-tweaks-fullscreen-view #movie_player:focus-within .ytp-fullscreen-metadata .ytPlayerOverlayVideoDetailsRendererHost {
       opacity: 1 !important;
       pointer-events: auto !important;
       visibility: visible !important;
@@ -943,17 +952,8 @@ function buildCss(): string {
     ` : ''}
 
     ${fullscreenHideActionOverlay ? `
-    body.simple-yt-tweaks-fullscreen-view .ytp-watch-metadata:not(.${FULLSCREEN_ACTION_TARGET_CLASS}),
-    body.simple-yt-tweaks-fullscreen-view [class*="ytp-watch-metadata"]:not(.${FULLSCREEN_ACTION_TARGET_CLASS}),
-    body.simple-yt-tweaks-fullscreen-view .ytp-watch-info-bar:not(.${FULLSCREEN_ACTION_TARGET_CLASS}),
-    body.simple-yt-tweaks-fullscreen-view .ytp-info-panel-preview:not(.${FULLSCREEN_ACTION_TARGET_CLASS}),
-    body.simple-yt-tweaks-fullscreen-view .ytp-suggested-action:not(.${FULLSCREEN_ACTION_TARGET_CLASS}),
-    body.simple-yt-tweaks-fullscreen-view [class*="ytp-suggested-action"]:not(.${FULLSCREEN_ACTION_TARGET_CLASS}),
-    body.simple-yt-tweaks-fullscreen-view #actions:not(.${FULLSCREEN_ACTION_TARGET_CLASS}),
-    body.simple-yt-tweaks-fullscreen-view #actions-inner:not(.${FULLSCREEN_ACTION_TARGET_CLASS}),
-    body.simple-yt-tweaks-fullscreen-view ytd-menu-renderer:not(.${FULLSCREEN_ACTION_TARGET_CLASS}),
-    body.simple-yt-tweaks-fullscreen-view ytd-comments-entry-point-header-renderer:not(.${FULLSCREEN_ACTION_TARGET_CLASS}),
-    body.simple-yt-tweaks-fullscreen-view ytd-video-view-count-renderer:not(.${FULLSCREEN_ACTION_TARGET_CLASS}) {
+    body.simple-yt-tweaks-fullscreen-view .ytp-overlay-bottom-left .ytp-suggested-action:not(.${FULLSCREEN_ACTION_TARGET_CLASS}),
+    body.simple-yt-tweaks-fullscreen-view .ytp-overlay-bottom-left [class*="ytp-suggested-action-badge-with-controls"]:not(.${FULLSCREEN_ACTION_TARGET_CLASS}) {
       display: none !important;
       opacity: 0 !important;
       pointer-events: none !important;
@@ -966,6 +966,8 @@ function buildCss(): string {
       justify-content: flex-end !important;
       height: 100% !important;
       margin-left: 8px !important;
+      gap: 8px !important;
+      flex: 0 0 auto !important;
       opacity: 1 !important;
       pointer-events: auto !important;
       visibility: visible !important;
@@ -981,10 +983,23 @@ function buildCss(): string {
       min-width: 0 !important;
       max-width: none !important;
       margin: 0 !important;
+      gap: 6px !important;
       opacity: 1 !important;
       pointer-events: auto !important;
       visibility: visible !important;
       transform: none !important;
+    }
+
+    body.simple-yt-tweaks-fullscreen-view #${FULLSCREEN_ACTION_DOCK_ID} .${FULLSCREEN_ACTION_TARGET_CLASS} > .ytp-button,
+    body.simple-yt-tweaks-fullscreen-view #${FULLSCREEN_ACTION_DOCK_ID} .${FULLSCREEN_ACTION_TARGET_CLASS} [class*="ytp-suggested-action-badge"] {
+      display: inline-flex !important;
+      align-items: center !important;
+      position: static !important;
+      inset: auto !important;
+      margin: 0 !important;
+      opacity: 1 !important;
+      pointer-events: auto !important;
+      visibility: visible !important;
     }
     ` : ''}
 
@@ -1132,6 +1147,7 @@ function scheduleModeStabilization(): void {
       updateMastheadTargets();
       updateLiveChatTargets();
       updateScrollbarState();
+      updateFullscreenActionDock();
       updateDockedPlayer();
       window.dispatchEvent(new Event('resize'));
     }, delay),
@@ -1581,11 +1597,16 @@ function updatePlayerUiHoverState(pointerX: number, pointerY: number): void {
     pointerX >= rect.left && pointerX <= rect.right && pointerY >= rect.top && pointerY <= rect.bottom;
   const controlZoneHeight = fullscreenActive ? 138 : 118;
   const isInControlZone = pointerY >= rect.bottom - controlZoneHeight;
+  const shouldRevealPlayerUi = isInsidePlayer && isInControlZone;
 
   document.body.classList.toggle(
     'simple-yt-tweaks-player-ui-hover',
-    isInsidePlayer && isInControlZone,
+    shouldRevealPlayerUi,
   );
+
+  if (fullscreenActive && state.settings.fullscreenHideActionOverlay) {
+    updateFullscreenActionDock();
+  }
 }
 
 function createPipButton(): void {
@@ -1645,31 +1666,65 @@ function ensureFullscreenActionDockShell(): HTMLElement | null {
   return shell;
 }
 
+function getFullscreenActionCandidate(element: HTMLElement): HTMLElement | null {
+  if (element.id === FULLSCREEN_ACTION_DOCK_ID) return null;
+
+  const target = element.matches('.ytp-suggested-action')
+    ? element
+    : element.closest<HTMLElement>('.ytp-suggested-action');
+
+  if (!target || target.closest(`#${FULLSCREEN_ACTION_DOCK_ID}`)) {
+    return null;
+  }
+
+  return target;
+}
+
 function findFullscreenActionTarget(): HTMLElement | null {
   const currentTarget = state.fullscreenActionDock?.target;
   if (currentTarget?.isConnected) return currentTarget;
 
   const candidates = [
-    '.ytp-watch-metadata',
-    '.ytp-watch-info-bar',
-    '[class*="ytp-watch-metadata"]',
-    '.ytp-suggested-action',
-    '[class*="ytp-suggested-action"]',
+    '.ytp-overlay-bottom-left .ytp-suggested-action',
+    '.ytp-overlay-bottom-left [class*="ytp-suggested-action-badge-with-controls"]',
+    '.ytp-overlay-bottom-left [class*="ytp-suggested-action-badge-expanded"]',
+    '.ytp-overlay-bottom-left [class*="ytp-suggested-action-badge-fullscreen"]',
   ];
+
+  let bestTarget: HTMLElement | null = null;
+  let bestScore = -Infinity;
 
   for (const selector of candidates) {
     for (const element of queryAll<HTMLElement>(selector)) {
-      if (element.closest(`#${FULLSCREEN_ACTION_DOCK_ID}`)) continue;
-      if (!isVisibleNode(element)) continue;
-      return element;
+      const target = getFullscreenActionCandidate(element);
+      if (!target) continue;
+
+      let score = 0;
+      if (target.querySelector('[class*="ytp-suggested-action-badge-with-controls"]')) score += 6;
+      if (target.querySelector('.ytp-button.ytp-suggested-action-badge')) score += 4;
+      if (target.querySelector('[class*="ytp-suggested-action-badge-expanded"]')) score += 3;
+      if (target.querySelector('[class*="ytp-featured-product"]')) score -= 5;
+      if (isVisibleNode(target)) score += 2;
+
+      if (score > bestScore) {
+        bestScore = score;
+        bestTarget = target;
+      }
     }
   }
 
-  return null;
+  return bestTarget;
 }
 
 function dockFullscreenActions(): void {
-  if (state.fullscreenActionDock) return;
+  if (state.fullscreenActionDock) {
+    const dock = state.fullscreenActionDock;
+    if (dock.target.isConnected && dock.shell.isConnected && dock.shell.contains(dock.target)) {
+      return;
+    }
+
+    restoreFullscreenActionDock();
+  }
 
   const target = findFullscreenActionTarget();
   const shell = ensureFullscreenActionDockShell();
@@ -1713,6 +1768,14 @@ function updateFullscreenActionDock(): void {
     isNativeFullscreenActive() &&
     isWatchPage() &&
     state.settings.fullscreenHideActionOverlay;
+
+  if (
+    shouldDock &&
+    state.fullscreenActionDock &&
+    (!state.fullscreenActionDock.target.isConnected || !state.fullscreenActionDock.shell.isConnected)
+  ) {
+    restoreFullscreenActionDock();
+  }
 
   if (shouldDock) {
     dockFullscreenActions();
