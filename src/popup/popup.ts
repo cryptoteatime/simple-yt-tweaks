@@ -173,13 +173,25 @@ async function updatePageStatus(): Promise<void> {
       return;
     }
 
+    const isYouTubePage = typeof tab.url === 'string' && tab.url.startsWith('https://www.youtube.com/');
+
     chrome.tabs.sendMessage(tab.id, { type: 'SIMPLE_YT_TWEAKS_PING' }, (response) => {
       const isSupported = !chrome.runtime.lastError && response?.ok === true;
-      dot.dataset.status = isSupported ? 'active' : 'inactive';
-      dot.setAttribute(
-        'aria-label',
-        isSupported ? 'Simple YT Tweaks is active on this page' : 'Simple YT Tweaks cannot run on this page',
-      );
+
+      if (isSupported) {
+        dot.dataset.status = 'active';
+        dot.setAttribute('aria-label', 'Simple YT Tweaks is active on this page');
+        return;
+      }
+
+      if (isYouTubePage) {
+        dot.dataset.status = 'reload';
+        dot.setAttribute('aria-label', 'Reload this YouTube tab to activate Simple YT Tweaks after updating');
+        return;
+      }
+
+      dot.dataset.status = 'inactive';
+      dot.setAttribute('aria-label', 'Simple YT Tweaks cannot run on this page');
     });
   });
 }

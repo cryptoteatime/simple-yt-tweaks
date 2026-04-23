@@ -75,6 +75,11 @@ body {
   box-shadow: 0 0 0 6px rgba(255, 107, 107, 0.12);
 }
 
+.status-dot[data-status="reload"] {
+  background: #f3b34c;
+  box-shadow: 0 0 0 6px rgba(243, 179, 76, 0.14);
+}
+
 .settings-tabs {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

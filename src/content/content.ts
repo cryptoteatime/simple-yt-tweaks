@@ -168,6 +168,16 @@ function isNativeFullscreenActive(): boolean {
   return isWatchPage() && Boolean(document.fullscreenElement);
 }
 
+function isTheaterMinimalLayoutActive(): boolean {
+  return (
+    isEnhancedTheaterActive() &&
+    state.settings.theaterHideRecommendations &&
+    state.settings.theaterHideComments &&
+    state.settings.theaterHideMetadata &&
+    state.settings.theaterHideLiveChat
+  );
+}
+
 function normalizeLabel(value: string): string {
   return value.toLowerCase().replace(/[›>]/g, '').replace(/\s+/g, ' ').trim();
 }
@@ -439,6 +449,12 @@ function buildCss(): string {
       overflow-x: hidden !important;
     }
 
+    body.simple-yt-tweaks-theater.simple-yt-tweaks-theater-minimal,
+    body.simple-yt-tweaks-theater.simple-yt-tweaks-theater-minimal ytd-app {
+      overflow-y: hidden !important;
+      max-height: var(--simple-yt-tweaks-vh, 100vh) !important;
+    }
+
     body.simple-yt-tweaks-theater #page-manager,
     body.simple-yt-tweaks-theater ytd-watch-flexy,
     body.simple-yt-tweaks-theater #columns,
@@ -629,6 +645,21 @@ function buildCss(): string {
     }
     ` : ''}
 
+    ${isTheaterMinimalLayoutActive() ? `
+    body.simple-yt-tweaks-theater.simple-yt-tweaks-theater-minimal #below,
+    body.simple-yt-tweaks-theater.simple-yt-tweaks-theater-minimal #secondary,
+    body.simple-yt-tweaks-theater.simple-yt-tweaks-theater-minimal #related,
+    body.simple-yt-tweaks-theater.simple-yt-tweaks-theater-minimal #comments,
+    body.simple-yt-tweaks-theater.simple-yt-tweaks-theater-minimal ytd-watch-metadata {
+      display: none !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      min-height: 0 !important;
+      max-height: 0 !important;
+      overflow: hidden !important;
+    }
+    ` : ''}
+
     ${enhancedTheater && theaterHideHeader ? `
     body.simple-yt-tweaks-theater .${MASTHEAD_CLASS} {
       position: fixed !important;
@@ -811,6 +842,7 @@ function updateTheaterClass(): void {
   document.body.classList.toggle('simple-yt-tweaks-theater', theaterEnabled);
   document.body.classList.toggle('simple-yt-tweaks-default-view', isDefaultWatchView());
   document.body.classList.toggle('simple-yt-tweaks-fullscreen-view', fullscreenEnabled);
+  document.body.classList.toggle('simple-yt-tweaks-theater-minimal', isTheaterMinimalLayoutActive());
   document.documentElement.classList.toggle(
     'simple-yt-tweaks-theater-scrollbar-hidden',
     theaterEnabled && state.settings.theaterHideScrollbarOnScroll,
@@ -825,6 +857,7 @@ function updateTheaterClass(): void {
   } else {
     document.body.classList.remove('simple-yt-tweaks-top-hover');
     document.body.classList.remove('simple-yt-tweaks-has-live-chat');
+    document.body.classList.remove('simple-yt-tweaks-theater-minimal');
     document.documentElement.classList.remove('simple-yt-tweaks-scrollbar-hidden');
     document.documentElement.classList.remove('simple-yt-tweaks-theater-scrollbar-hidden');
     document.body.classList.remove('simple-yt-tweaks-scrollbar-hidden');
@@ -1401,24 +1434,26 @@ function getOriginalPlayerRect(): DOMRect | null {
 }
 
 function shouldShowDockedPlayer(): boolean {
-  if (
-    !isFeatureEnabled('floatingMiniPlayer') ||
-    !isWatchPage() ||
-    state.miniPlayerDismissed ||
-    isTheaterMode()
-  ) {
+  if (!isFeatureEnabled('floatingMiniPlayer') || !isWatchPage() || state.miniPlayerDismissed || isNativeFullscreenActive()) {
     return false;
   }
 
-  const comments = query<HTMLElement>(SELECTORS.comments);
   const playerRect = getOriginalPlayerRect();
-  if (!comments || !playerRect) return false;
+  if (!playerRect) return false;
 
-  const commentsRect = comments.getBoundingClientRect();
+  const belowTargets = [
+    query<HTMLElement>('#below'),
+    query<HTMLElement>(SELECTORS.comments),
+    query<HTMLElement>('#secondary'),
+    query<HTMLElement>('ytd-watch-metadata'),
+  ].filter((element): element is HTMLElement => Boolean(element) && isVisibleNode(element as HTMLElement));
+
+  if (belowTargets.length === 0) return false;
+
   const playerMostlyOffscreen = playerRect.bottom < 120;
-  const commentsEnteredViewport = commentsRect.top < window.innerHeight;
+  const belowContentEnteredViewport = belowTargets.some((target) => target.getBoundingClientRect().top < window.innerHeight);
 
-  return playerMostlyOffscreen && commentsEnteredViewport;
+  return playerMostlyOffscreen && belowContentEnteredViewport;
 }
 
 function dockPlayer(): void {

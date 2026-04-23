@@ -101,7 +101,7 @@ export const DEFAULT_SETTINGS: Settings = {
 export const SETTING_TABS: Array<{ id: TopLevelTab; label: string }> = [
   { id: 'general', label: 'General' },
   { id: 'sidebar', label: 'Sidebar' },
-  { id: 'views', label: 'Views' },
+  { id: 'views', label: 'Modes' },
 ];
 
 export const VIEW_MODES: Array<{ id: ViewMode; label: string }> = [
