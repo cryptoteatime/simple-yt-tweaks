@@ -1764,7 +1764,7 @@ function ensureFullscreenActionDockShell(): HTMLElement | null {
 
   shell = document.createElement('div');
   shell.id = FULLSCREEN_ACTION_DOCK_ID;
-  rightControls.append(shell);
+  rightControls.prepend(shell);
   return shell;
 }
 
@@ -1801,9 +1801,6 @@ function getFullscreenActionCandidate(element: HTMLElement): HTMLElement | null 
 }
 
 function isEligibleFullscreenActionTarget(target: HTMLElement): boolean {
-  if (!isVisibleNode(target)) return false;
-  if (target.querySelector('[class*="ytp-featured-product"]')) return false;
-
   if (target.matches('.ytp-fullscreen-quick-actions')) {
     return Boolean(
       target.querySelector('yt-player-quick-action-buttons') &&
@@ -1817,6 +1814,9 @@ function isEligibleFullscreenActionTarget(target: HTMLElement): boolean {
         ),
     );
   }
+
+  if (!isVisibleNode(target)) return false;
+  if (target.querySelector('[class*="ytp-featured-product"]')) return false;
 
   return Boolean(
     target.querySelector('[class*="ytp-suggested-action-badge-with-controls"], .ytp-button.ytp-suggested-action-badge'),
