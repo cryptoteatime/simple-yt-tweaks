@@ -89,15 +89,15 @@ export const SETTING_DEFINITIONS: SettingDefinition[] = [
     tab: 'general',
   },
   {
-    key: 'generalHideShorts',
-    label: 'Hide Shorts',
-    description: 'Hides Shorts shelves, Shorts links, and Shorts results across common YouTube surfaces.',
-    tab: 'general',
-  },
-  {
     key: 'generalSidebarCleanup',
     label: 'Sidebar Cleanup',
     description: 'Enables left sidebar cleanup options for YouTube navigation.',
+    tab: 'general',
+  },
+  {
+    key: 'generalHideShorts',
+    label: 'Hide Shorts',
+    description: 'Hides Shorts shelves, Shorts links, and Shorts results across common YouTube surfaces.',
     tab: 'general',
   },
   {
@@ -297,7 +297,6 @@ export function normalizeSettings(items: Partial<Record<SettingKey, unknown>>): 
   );
 
   if (settings.generalHideShorts) {
-    settings.generalSidebarCleanup = true;
     settings.generalHideSidebarShorts = true;
   }
 

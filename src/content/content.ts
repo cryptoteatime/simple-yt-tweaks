@@ -152,7 +152,6 @@ function normalizeSettings(settings: Settings): Settings {
   if (settings.generalHideShorts) {
     return {
       ...settings,
-      generalSidebarCleanup: true,
       generalHideSidebarShorts: true,
     };
   }
@@ -258,7 +257,7 @@ function buildCss(): string {
   const generalHideShorts = state.settings.generalHideShorts;
   const generalSidebarCleanup = state.settings.generalSidebarCleanup;
   const generalHideSidebar = generalSidebarCleanup && state.settings.generalHideSidebar;
-  const generalHideSidebarShorts = generalSidebarCleanup && state.settings.generalHideSidebarShorts;
+  const generalHideSidebarShorts = state.settings.generalHideSidebarShorts;
   const enhancedTheater = state.settings.enhancedTheaterMode;
   const theaterHideHeader = state.settings.theaterHideHeader;
   const theaterShowHeaderOnHover = state.settings.theaterShowHeaderOnHover;
@@ -877,15 +876,15 @@ function hideClosest(element: Element, selector: string): void {
 
 function getSidebarSectionHeading(section: HTMLElement): string {
   const heading = query<HTMLElement>(
-    '#guide-section-title, #title, h3, yt-formatted-string',
+    '#guide-section-title, #title, h3',
     section,
   );
 
   return heading ? getElementLabel(heading) : '';
 }
 
-function hideSidebarSection(category: keyof typeof SIDEBAR_ITEM_LABELS): void {
-  const sections = queryAll<HTMLElement>(
+function getSidebarSections(): HTMLElement[] {
+  return queryAll<HTMLElement>(
     [
       '#guide ytd-guide-section-renderer',
       '#guide ytd-guide-collapsible-section-entry-renderer',
@@ -893,11 +892,17 @@ function hideSidebarSection(category: keyof typeof SIDEBAR_ITEM_LABELS): void {
       'ytd-guide-renderer ytd-guide-collapsible-section-entry-renderer',
     ].join(','),
   );
+}
 
-  for (const section of sections) {
+function getSidebarSectionByPosition(position: number): HTMLElement | null {
+  return getSidebarSections()[position - 1] ?? null;
+}
+
+function hideSidebarSection(category: keyof typeof SIDEBAR_ITEM_LABELS): void {
+  for (const section of getSidebarSections()) {
     const heading = getSidebarSectionHeading(section);
     const matchesHeading = heading && SIDEBAR_ITEM_LABELS[category].some((label) => labelMatchesEntry(heading, label));
-    if (matchesHeading || elementMatchesAnyLabel(section, SIDEBAR_ITEM_LABELS[category])) {
+    if (matchesHeading) {
       hideElement(section);
     }
   }
@@ -924,7 +929,7 @@ function updateSidebarItemVisibility(): void {
 
   const enabledCategories: Array<keyof typeof SIDEBAR_ITEM_LABELS> = [];
   if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarHome) enabledCategories.push('home');
-  if ((state.settings.generalSidebarCleanup && state.settings.generalHideSidebarShorts) || state.settings.generalHideShorts) enabledCategories.push('shorts');
+  if (state.settings.generalHideSidebarShorts || state.settings.generalHideShorts) enabledCategories.push('shorts');
   if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarSubscriptions) enabledCategories.push('subscriptions');
   if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarYou) enabledCategories.push('you');
   if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarExplore) enabledCategories.push('explore');
@@ -948,10 +953,21 @@ function updateSidebarItemVisibility(): void {
     ].join(','),
   );
 
-  if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarSubscriptions) hideSidebarSection('subscriptions');
-  if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarYou) hideSidebarSection('you');
-  if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarExplore) hideSidebarSection('explore');
-  if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarMoreFromYouTube) hideSidebarSection('moreFromYouTube');
+  if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarSubscriptions) {
+    hideElement(getSidebarSectionByPosition(2));
+    hideSidebarSection('subscriptions');
+  }
+  if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarYou) {
+    hideElement(getSidebarSectionByPosition(1));
+  }
+  if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarExplore) {
+    hideElement(getSidebarSectionByPosition(3));
+    hideSidebarSection('explore');
+  }
+  if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarMoreFromYouTube) {
+    hideElement(getSidebarSectionByPosition(4));
+    hideSidebarSection('moreFromYouTube');
+  }
 
   for (const item of sidebarItems) {
     for (const category of enabledCategories) {

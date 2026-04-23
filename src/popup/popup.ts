@@ -30,9 +30,6 @@ function requireElement<T extends HTMLElement>(element: T | null, name: string):
 }
 
 function isSettingDisabled(key: SettingKey, settings: Settings): boolean {
-  if (key === 'generalSidebarCleanup' && settings.generalHideShorts) return true;
-  if (key === 'generalHideSidebarShorts' && settings.generalHideShorts) return true;
-
   const definition = SETTING_DEFINITIONS.find((item) => item.key === key);
   if (!definition?.parentKey) return false;
 
@@ -40,7 +37,6 @@ function isSettingDisabled(key: SettingKey, settings: Settings): boolean {
 }
 
 function getEffectiveSettingValue(key: SettingKey, settings: Settings): boolean {
-  if (key === 'generalSidebarCleanup' && settings.generalHideShorts) return true;
   if (key === 'generalHideSidebarShorts' && settings.generalHideShorts) return true;
 
   return settings[key];
@@ -192,7 +188,6 @@ function renderSettings(settings: Settings): void {
     input.addEventListener('change', async () => {
       const nextSettings = { ...currentSettings, [key]: input.checked };
       if (key === 'generalHideShorts' && input.checked) {
-        nextSettings.generalSidebarCleanup = true;
         nextSettings.generalHideSidebarShorts = true;
       }
 
