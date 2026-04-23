@@ -18,7 +18,8 @@
 body {
   display: flex;
   width: 390px;
-  min-height: 360px;
+  height: 432px;
+  min-height: 432px;
   margin: 0;
   overflow: hidden;
   background: var(--bg);
@@ -31,6 +32,7 @@ body {
   display: flex;
   flex: 1 1 auto;
   flex-direction: column;
+  min-height: 100%;
   padding: 10px;
 }
 
@@ -115,13 +117,11 @@ body {
 .settings-subtabs {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 4px;
-  padding: 4px 4px 0;
+  gap: 0;
+  padding: 0 8px;
   margin-bottom: 0;
-  border: 1px solid var(--line);
-  border-bottom: 0;
-  border-radius: 8px 8px 0 0;
-  background: rgba(255, 255, 255, 0.025);
+  border: 0;
+  background: transparent;
 }
 
 .settings-subtabs[hidden] {
@@ -129,10 +129,12 @@ body {
 }
 
 .settings-subtab {
-  min-height: 25px;
-  border: 0;
-  border-radius: 6px 6px 0 0;
-  background: transparent;
+  min-height: 29px;
+  margin-right: 3px;
+  border: 1px solid var(--line);
+  border-bottom: 0;
+  border-radius: 8px 8px 0 0;
+  background: rgba(255, 255, 255, 0.025);
   color: var(--muted);
   cursor: pointer;
   font: inherit;
@@ -140,13 +142,18 @@ body {
   font-weight: 650;
 }
 
+.settings-subtab:last-child {
+  margin-right: 0;
+}
+
 .settings-subtab[aria-selected="true"] {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--panel);
   color: var(--text);
 }
 
 .settings {
   flex: 1 1 auto;
+  min-height: 0;
   overflow: visible;
   border: 1px solid var(--line);
   border-radius: 8px;

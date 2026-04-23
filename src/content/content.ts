@@ -132,6 +132,8 @@ const MASTHEAD_CLASS = 'simple-yt-tweaks-masthead';
 const LIVE_CHAT_CLASS = 'simple-yt-tweaks-live-chat';
 const GENERAL_HIDDEN_CLASS = 'simple-yt-tweaks-hidden';
 const SIDEBAR_SUBSCRIPTIONS_CLASS = 'simple-yt-tweaks-sidebar-subscriptions';
+const SIDEBAR_SUBSCRIPTIONS_ICON_CLASS = 'simple-yt-tweaks-sidebar-subscriptions-icon';
+const THEATER_PRIMARY_METADATA_CLASS = 'simple-yt-tweaks-theater-primary-metadata';
 
 const SPONSORED_CARD_SELECTORS = [
   'ytd-display-ad-renderer',
@@ -140,6 +142,7 @@ const SPONSORED_CARD_SELECTORS = [
   'ytd-in-feed-ad-layout-renderer',
   'ytd-banner-promo-renderer',
   'ytd-search-pyv-renderer',
+  'ytd-companion-slot-renderer',
   'ytm-promoted-sparkles-web-renderer',
 ] as const;
 
@@ -453,23 +456,26 @@ function buildCss(): string {
 
     ${generalSidebarCleanup ? `
     body.simple-yt-tweaks-active .${SIDEBAR_SUBSCRIPTIONS_CLASS} #header-entry .guide-icon,
-    body.simple-yt-tweaks-active .${SIDEBAR_SUBSCRIPTIONS_CLASS} #header-entry yt-icon {
-      display: inline-flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      visibility: visible !important;
-    }
-
+    body.simple-yt-tweaks-active .${SIDEBAR_SUBSCRIPTIONS_CLASS} #header-entry yt-icon,
     body.simple-yt-tweaks-active .${SIDEBAR_SUBSCRIPTIONS_CLASS} #header-entry yt-img-shadow {
       display: none !important;
       visibility: hidden !important;
     }
 
-    body.simple-yt-tweaks-active .${SIDEBAR_SUBSCRIPTIONS_CLASS} .simple-yt-tweaks-sidebar-subscriptions-icon {
+    body.simple-yt-tweaks-active .${SIDEBAR_SUBSCRIPTIONS_CLASS} .${SIDEBAR_SUBSCRIPTIONS_ICON_CLASS} {
       display: inline-flex !important;
       width: 24px !important;
       height: 24px !important;
+      margin-right: 24px !important;
+      align-items: center !important;
+      justify-content: center !important;
       color: currentColor !important;
+    }
+
+    body.simple-yt-tweaks-active .${SIDEBAR_SUBSCRIPTIONS_CLASS} .${SIDEBAR_SUBSCRIPTIONS_ICON_CLASS} svg {
+      width: 24px !important;
+      height: 24px !important;
+      fill: currentColor !important;
     }
 
     body.simple-yt-tweaks-active .${SIDEBAR_SUBSCRIPTIONS_CLASS} #header-entry .arrow-icon {
@@ -687,6 +693,19 @@ function buildCss(): string {
     ` : ''}
 
     ${enhancedTheater && theaterHideMetadata && theaterShowPrimaryMetadata ? `
+    body.simple-yt-tweaks-theater.${THEATER_PRIMARY_METADATA_CLASS},
+    body.simple-yt-tweaks-theater.${THEATER_PRIMARY_METADATA_CLASS} ytd-app {
+      overflow-y: auto !important;
+      max-height: none !important;
+    }
+
+    body.simple-yt-tweaks-theater.${THEATER_PRIMARY_METADATA_CLASS} #below,
+    body.simple-yt-tweaks-theater.${THEATER_PRIMARY_METADATA_CLASS} ytd-watch-metadata {
+      display: block !important;
+      max-height: none !important;
+      overflow: visible !important;
+    }
+
     body.simple-yt-tweaks-theater ytd-watch-metadata #bottom-row,
     body.simple-yt-tweaks-theater ytd-watch-metadata #description,
     body.simple-yt-tweaks-theater ytd-watch-metadata #description-inline-expander,
@@ -828,10 +847,13 @@ function buildCss(): string {
     ` : ''}
 
     ${fullscreenHideTitleOverlay ? `
+    body.simple-yt-tweaks-fullscreen-view .ytp-chrome-top,
     body.simple-yt-tweaks-fullscreen-view .ytp-title,
     body.simple-yt-tweaks-fullscreen-view .ytp-title-channel,
+    body.simple-yt-tweaks-fullscreen-view .ytp-title-channel-logo,
     body.simple-yt-tweaks-fullscreen-view .ytp-title-text,
     body.simple-yt-tweaks-fullscreen-view .ytp-title-link,
+    body.simple-yt-tweaks-fullscreen-view .ytp-title-expanded-overlay,
     body.simple-yt-tweaks-fullscreen-view .ytp-title-text > a,
     body.simple-yt-tweaks-fullscreen-view .ytp-gradient-top {
       opacity: 0 !important;
@@ -840,16 +862,35 @@ function buildCss(): string {
       transition: opacity 0.18s ease !important;
     }
 
+    body.simple-yt-tweaks-fullscreen-view .ytp-chrome-top {
+      transform: translateY(-8px) !important;
+      transition:
+        opacity 0.18s ease !important,
+        transform 0.18s ease !important;
+    }
+
+    body.simple-yt-tweaks-fullscreen-view.simple-yt-tweaks-player-ui-hover .ytp-chrome-top,
+    body.simple-yt-tweaks-fullscreen-view .ytp-chrome-top:focus-within {
+      opacity: 1 !important;
+      pointer-events: auto !important;
+      visibility: visible !important;
+      transform: translateY(0) !important;
+    }
+
     body.simple-yt-tweaks-fullscreen-view.simple-yt-tweaks-player-ui-hover .ytp-title,
     body.simple-yt-tweaks-fullscreen-view.simple-yt-tweaks-player-ui-hover .ytp-title-channel,
+    body.simple-yt-tweaks-fullscreen-view.simple-yt-tweaks-player-ui-hover .ytp-title-channel-logo,
     body.simple-yt-tweaks-fullscreen-view.simple-yt-tweaks-player-ui-hover .ytp-title-text,
     body.simple-yt-tweaks-fullscreen-view.simple-yt-tweaks-player-ui-hover .ytp-title-link,
+    body.simple-yt-tweaks-fullscreen-view.simple-yt-tweaks-player-ui-hover .ytp-title-expanded-overlay,
     body.simple-yt-tweaks-fullscreen-view.simple-yt-tweaks-player-ui-hover .ytp-title-text > a,
     body.simple-yt-tweaks-fullscreen-view.simple-yt-tweaks-player-ui-hover .ytp-gradient-top,
     body.simple-yt-tweaks-fullscreen-view .ytp-chrome-top:focus-within .ytp-title,
     body.simple-yt-tweaks-fullscreen-view .ytp-chrome-top:focus-within .ytp-title-channel,
+    body.simple-yt-tweaks-fullscreen-view .ytp-chrome-top:focus-within .ytp-title-channel-logo,
     body.simple-yt-tweaks-fullscreen-view .ytp-chrome-top:focus-within .ytp-title-text,
     body.simple-yt-tweaks-fullscreen-view .ytp-chrome-top:focus-within .ytp-title-link,
+    body.simple-yt-tweaks-fullscreen-view .ytp-chrome-top:focus-within .ytp-title-expanded-overlay,
     body.simple-yt-tweaks-fullscreen-view .ytp-chrome-top:focus-within .ytp-title-text > a,
     body.simple-yt-tweaks-fullscreen-view .ytp-chrome-top:focus-within .ytp-gradient-top {
       opacity: 1 !important;
@@ -864,6 +905,11 @@ function buildCss(): string {
     body.simple-yt-tweaks-fullscreen-view .ytp-pause-overlay,
     body.simple-yt-tweaks-fullscreen-view .ytp-upnext,
     body.simple-yt-tweaks-fullscreen-view .ytp-scroll-min,
+    body.simple-yt-tweaks-fullscreen-view .ytp-more-videos-container,
+    body.simple-yt-tweaks-fullscreen-view .ytp-more-videos-view,
+    body.simple-yt-tweaks-fullscreen-view .ytp-more-videos-title,
+    body.simple-yt-tweaks-fullscreen-view .ytp-button[aria-label*="More videos"],
+    body.simple-yt-tweaks-fullscreen-view .ytp-button[title*="More videos"],
     body.simple-yt-tweaks-fullscreen-view .ytp-cards-button,
     body.simple-yt-tweaks-fullscreen-view .ytp-cards-teaser,
     body.simple-yt-tweaks-fullscreen-view .ytp-cards-teaser-box {
@@ -876,9 +922,11 @@ function buildCss(): string {
 
     ${fullscreenHideActionOverlay ? `
     body.simple-yt-tweaks-fullscreen-view .ytp-watch-metadata,
+    body.simple-yt-tweaks-fullscreen-view [class*="ytp-watch-metadata"],
     body.simple-yt-tweaks-fullscreen-view .ytp-watch-info-bar,
     body.simple-yt-tweaks-fullscreen-view .ytp-info-panel-preview,
     body.simple-yt-tweaks-fullscreen-view .ytp-suggested-action,
+    body.simple-yt-tweaks-fullscreen-view [class*="ytp-suggested-action"],
     body.simple-yt-tweaks-fullscreen-view #actions,
     body.simple-yt-tweaks-fullscreen-view #actions-inner,
     body.simple-yt-tweaks-fullscreen-view ytd-menu-renderer,
@@ -981,6 +1029,10 @@ function updateTheaterClass(): void {
   document.body.classList.toggle('simple-yt-tweaks-default-view', isDefaultWatchView());
   document.body.classList.toggle('simple-yt-tweaks-fullscreen-view', fullscreenEnabled);
   document.body.classList.toggle('simple-yt-tweaks-theater-minimal', isTheaterMinimalLayoutActive());
+  document.body.classList.toggle(
+    THEATER_PRIMARY_METADATA_CLASS,
+    theaterEnabled && state.settings.theaterHideMetadata && state.settings.theaterShowPrimaryMetadata,
+  );
   document.documentElement.classList.toggle(
     'simple-yt-tweaks-theater-scrollbar-hidden',
     theaterEnabled && state.settings.theaterHideScrollbarOnScroll,
@@ -1089,6 +1141,10 @@ function clearGeneralHiddenTargets(): void {
   for (const target of queryAll<HTMLElement>(`.${SIDEBAR_SUBSCRIPTIONS_CLASS}`)) {
     target.classList.remove(SIDEBAR_SUBSCRIPTIONS_CLASS);
   }
+
+  for (const target of queryAll<HTMLElement>(`.${SIDEBAR_SUBSCRIPTIONS_ICON_CLASS}`)) {
+    target.remove();
+  }
 }
 
 function hideElement(element: Element | null): void {
@@ -1099,6 +1155,19 @@ function hideElement(element: Element | null): void {
 
 function hideClosest(element: Element, selector: string): void {
   hideElement(element.closest(selector));
+}
+
+function hideClosestTag(element: Element, tagNames: readonly string[]): void {
+  let current: Element | null = element;
+
+  while (current && current !== document.documentElement) {
+    if (tagNames.includes(current.tagName.toLowerCase())) {
+      hideElement(current);
+      return;
+    }
+
+    current = current.parentElement;
+  }
 }
 
 function getSidebarSectionHeading(section: HTMLElement): string {
@@ -1167,19 +1236,19 @@ function updateSidebarSectionPolish(): void {
     subscriptionsSection.classList.add(SIDEBAR_SUBSCRIPTIONS_CLASS);
     const headerEntry = query<HTMLElement>('#header-entry', subscriptionsSection);
     const guideIcon = query<HTMLElement>('#header-entry .guide-icon', subscriptionsSection);
+    const imageShadow = query<HTMLElement>('#header-entry yt-img-shadow', subscriptionsSection);
     const title = query<HTMLElement>('#header-entry .title', subscriptionsSection);
+    const existingCustomIcon = query<HTMLElement>(`.${SIDEBAR_SUBSCRIPTIONS_ICON_CLASS}`, subscriptionsSection);
 
-    if (headerEntry && guideIcon) {
-      guideIcon.removeAttribute('hidden');
-      guideIcon.innerHTML = `
-        <span class="simple-yt-tweaks-sidebar-subscriptions-icon">
-          ${SUBSCRIPTIONS_ICON_SVG}
-        </span>
-      `;
+    hideElement(guideIcon);
+    hideElement(imageShadow);
 
-      if (title && guideIcon.nextElementSibling !== title) {
-        title.parentElement?.insertBefore(guideIcon, title);
-      }
+    if (headerEntry && title && !existingCustomIcon) {
+      const icon = document.createElement('span');
+      icon.className = SIDEBAR_SUBSCRIPTIONS_ICON_CLASS;
+      icon.setAttribute('aria-hidden', 'true');
+      icon.innerHTML = SUBSCRIPTIONS_ICON_SVG;
+      title.parentElement?.insertBefore(icon, title);
     }
 
     const subscriptionsItems = query<HTMLElement>('#items', subscriptionsSection);
@@ -1229,18 +1298,27 @@ function updateSponsoredVisibility(): void {
   if (!state.settings.generalHideSponsoredPosts) return;
 
   for (const target of queryAll<HTMLElement>(SPONSORED_CARD_SELECTORS.join(','))) {
+    const onHomeFeed = Boolean(target.closest('ytd-browse[page-subtype="home"]'));
+
+    if (onHomeFeed) {
+      hideClosestTag(target, [
+        'ytd-rich-item-renderer',
+        'ytd-rich-section-renderer',
+        'ytd-feed-nudge-renderer',
+      ]);
+      continue;
+    }
+
     hideClosest(
       target,
       [
-        'ytd-rich-item-renderer',
-        'ytd-video-renderer',
-        'ytd-grid-video-renderer',
-        'ytd-compact-video-renderer',
-        'ytd-rich-section-renderer',
-        'ytd-item-section-renderer',
         'ytd-search-pyv-renderer',
         'ytd-companion-slot-renderer',
-        'ytd-feed-nudge-renderer',
+        'ytd-display-ad-renderer',
+        'ytd-promoted-sparkles-web-renderer',
+        'ytd-ad-slot-renderer',
+        'ytd-in-feed-ad-layout-renderer',
+        'ytd-banner-promo-renderer',
       ].join(','),
     );
   }

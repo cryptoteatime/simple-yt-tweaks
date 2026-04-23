@@ -59,7 +59,7 @@ function getSettingDepth(key: SettingKey): number {
 
 function matchesActivePane(definition: SettingDefinition): boolean {
   if (definition.topTab !== activeTopTab) return false;
-  if (activeTopTab !== 'views') return true;
+  if (activeTopTab !== 'modes') return true;
 
   return definition.viewMode === activeViewMode;
 }
@@ -101,9 +101,9 @@ function renderTopTabs(): void {
 function renderViewModes(): void {
   const container = requireElement(viewModesEl, 'viewModes');
   container.textContent = '';
-  container.hidden = activeTopTab !== 'views';
+  container.hidden = activeTopTab !== 'modes';
 
-  if (activeTopTab !== 'views') return;
+  if (activeTopTab !== 'modes') return;
 
   for (const mode of VIEW_MODES) {
     const button = document.createElement('button');
@@ -206,7 +206,7 @@ function renderSettings(settings: Settings): void {
   const container = requireElement(settingsEl, 'settings');
   container.textContent = '';
   container.dataset.topTab = activeTopTab;
-  container.dataset.viewMode = activeTopTab === 'views' ? activeViewMode : '';
+  container.dataset.viewMode = activeTopTab === 'modes' ? activeViewMode : '';
   hideTooltip();
 
   for (const definition of SETTING_DEFINITIONS) {

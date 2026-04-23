@@ -1,6 +1,6 @@
 {
   "name": "simple-yt-tweaks",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Unofficial player usability tweaks for YouTube.",
   "type": "module",
   "private": true,
@@ -14,7 +14,8 @@
     "prebuild": "npm run version:sync",
     "build": "vite build",
     "validate": "node scripts/validate-extension.mjs",
-    "package": "npm run build && npm run validate && node scripts/package-extension.mjs"
+    "validate:packaged": "node scripts/validate-extension.mjs --packaged",
+    "package": "npm run build && npm run validate && node scripts/package-extension.mjs && npm run validate:packaged"
   },
   "keywords": [
     "chrome-extension",

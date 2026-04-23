@@ -1,59 +1,32 @@
 # Changelog
 
-## 0.1.0
+## 0.2.0
 
 ### Added
 
-- Created the initial Manifest V3 Chrome/Brave extension scaffold for Simple YT Tweaks.
-- Added an npm, TypeScript, Vite, and ESLint development workflow.
-- Added validation and packaging scripts for Chrome Web Store zip output.
-- Added generated extension icons and a release-ready manifest with narrow YouTube host permissions.
-- Added a popup settings panel with page support status, feature toggles, reset defaults, tooltips, and footer links.
-- Added separate General, Sidebar, and Views settings tabs, with Theater, Default, and Fullscreen sub-tabs under Views.
-- Added optional grouped sidebar cleanup controls for the main sidebar, navigation entries, product links, and footer clutter.
-- Added optional Shorts hiding across common YouTube navigation, feed, search, and recommendation surfaces.
-- Added optional end-screen card hiding.
-- Added a dedicated Report History sidebar cleanup control.
-- Added tab-scoped reset defaults.
-- Added a home feed column selector with 2, 3, and 4-column layouts.
-- Added default-on sponsored and promoted post hiding.
-- Added native fullscreen cleanup controls for title overlays, player UI, and recommendation overlays.
-- Added restored Picture-in-Picture button support inside the YouTube player controls.
-- Added a floating mini-player that docks the actual YouTube player when scrolling below the video in default view.
-- Added theater-mode live chat controls, including an optional floating chat overlay when live chat exists.
-- Added theater scrollbar hiding so scrolling does not shift the enhanced theater player.
-- Added metadata hiding controls, including an option to keep the title, channel row, and action buttons visible.
-- Added a version sync script for package, lockfile, and manifest version management.
-- Added README, privacy policy, MIT license, changelog, and GitHub issue templates.
+- Added a release-candidate workflow with packaging, validation, and Web Store submission notes.
+- Added store-ready listing assets, including screenshots and a small promo tile.
+- Added release validation for docs, store assets, and packaged zip version naming.
+- Added native fullscreen cleanup controls for title overlays, player UI, recommendation overlays, and action overlays.
 
 ### Changed
 
-- Reworked enhanced theater mode sizing so the player fits the viewport without cropping or horizontal overflow.
-- Made theater mode clean up correctly when switching back to default view.
-- Kept hidden-header behavior theater-only, with optional top-edge hover reveal.
-- Kept the YouTube left navigation independent from the hidden-header setting.
-- Made global Shorts hiding turn on the Shorts sidebar link cleanup once without locking that child setting.
-- Kept the dedicated Shorts page available when global Shorts hiding is enabled.
-- Folded sidebar polish into Sidebar Cleanup so compact Subscriptions and expanded You are part of the default cleaned-up sidebar behavior.
-- Set General defaults to hide Shorts, end-screen cards, and sidebar clutter while keeping primary navigation visible.
-- Matched sidebar cleanup to real top-level guide sections so You, Subscriptions, Explore, More from YouTube, and Report History hide independently.
-- Reduced DOM observer churn by watching general subtree changes separately from theater-mode attribute changes.
-- Hid YouTube's menu button when the entire sidebar is hidden.
-- Improved theater sizing in standalone YouTube app windows.
-- Made hidden player controls theater-only, with controls revealed from the player control-bar area.
-- Split recommendation, comment, and live-chat hiding between Theater and Default views.
-- Added native fullscreen handling without introducing a custom fullscreen comments overlay mode.
-- Allowed the below-video area, title, description, and comments to expand when theater recommendations are hidden.
-- Kept Hide Comments scoped to the actual comments section instead of hiding title, metadata, or description.
-- Hid YouTube's native mini-player in default view when Simple YT Tweaks floating mini-player is enabled.
-- Improved popup layout with compact child settings, clamped tooltips, version/link footer controls, and cleaner tab grouping.
-- Removed the redundant popup save-status text.
-- Added campaign parameters to popup footer links for extension traffic attribution.
-- Tightened popup spacing so the Theater settings fit without an awkward overflow scrollbar.
-- Made the popup footer version read from the package version instead of hardcoded text.
-- Rebuilt the home feed grid so removed Shorts and sponsored cards collapse cleanly instead of leaving broken rows behind.
+- Reorganized the popup into `General`, `Sidebar`, and `Modes` tabs, with `Modes > Theater / Default / Fullscreen`.
+- Moved shared PiP controls into `General` so restore-PiP and floating mini-player settings live in one place.
+- Tightened sidebar cleanup so it uses a clean Subscriptions icon row, keeps You expanded by default, and explains that behavior more clearly in the UI.
+- Updated public docs and Web Store copy to match the shipped UI and feature layout.
+- Bumped the first public release candidate to `0.2.0`.
+
+### Fixed
+
+- Restored self-contained MV3 content-script packaging so tweaks reliably run on YouTube after reloads.
+- Improved theater-mode stabilization when switching between default, theater, and fullscreen states.
+- Reduced false positives in sponsored-post hiding so normal watch-page recommendations are not removed accidentally.
+- Improved fullscreen hover behavior so title and control overlays follow the intended control-zone reveal behavior more closely.
+- Tightened popup layout so the footer sits consistently at the bottom across shorter tabs.
+- Fixed sidebar Subscriptions cleanup so the icon row renders cleanly instead of mixing image/icon states.
 
 ### Notes
 
-- The repository remains private while the extension is being tested and prepared for Chrome Web Store submission.
-- The Web Store package is generated locally in `release/` and is intentionally not tracked in Git.
+- This is the first public release candidate intended for GitHub publication and Chrome Web Store submission.
+- The packaged upload is generated locally in `release/simple-yt-tweaks-v0.2.0.zip`.

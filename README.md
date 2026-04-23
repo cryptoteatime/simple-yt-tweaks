@@ -1,30 +1,24 @@
 # Simple YT Tweaks
 
-Simple YT Tweaks is an unofficial Chrome/Brave extension that bundles a few player usability tweaks for YouTube into one small Manifest V3 extension.
+Simple YT Tweaks is an unofficial Manifest V3 Chrome/Brave extension that bundles a focused set of YouTube usability tweaks into one small package.
 
 This project is not affiliated with, endorsed by, sponsored by, or otherwise associated with YouTube or Google.
 
-## Features
+## What It Does
 
-- Enhanced theater mode that expands the watch layout.
-- Optional hidden header, header hover reveal, recommendations, comments, and live chat controls while theater mode is active.
-- Optional live chat overlay for streams and premieres.
-- Compact popup settings with page support status and clamped tooltips.
-- Separate General, Sidebar, and Views tabs, with Theater, Default, and Fullscreen sub-tabs under Views.
-- Home feed column control with 2, 3, and 4-column layouts rendered as a dropdown.
-- Optional sponsored and promoted post hiding, with home-feed reflow so removed cards do not leave broken rows behind.
-- Optional grouped sidebar cleanup controls for hiding the main sidebar, navigation entries, product links, report history, and sidebar footer clutter.
-- Sidebar cleanup keeps Subscriptions compact and icon-based while keeping You expanded by default.
-- Optional Shorts hiding across home, feed, search, and recommendation surfaces while leaving the dedicated Shorts page available.
-- Optional Report History sidebar cleanup without tying it to the You section.
-- Optional end-screen card hiding.
-- Tab-scoped reset defaults so one settings pane does not wipe preferences from another pane.
-- Optional hidden player controls that reappear when hovering near the control area.
-- Optional theater scrollbar hiding to reduce layout shift while scrolling.
-- Optional metadata hiding, with a title and top-row keep-visible option.
-- Optional native fullscreen cleanup for title overlays, player UI, and recommendation overlays.
-- Restored Picture-in-Picture button in the player controls.
-- Floating mini-player that docks the actual YouTube player instead of mirroring the video stream.
+- Cleans up watch pages with separate `Modes` settings for `Theater`, `Default`, and `Fullscreen`.
+- Adds optional header, player UI, metadata, comments, recommendations, and live chat cleanup controls.
+- Restores a PiP button in the player controls and supports a floating mini-player while scrolling.
+- Cleans up the left sidebar with optional section-level visibility controls.
+- Hides Shorts and end-screen cards.
+- Hides sponsored/promoted surfaces where they can be identified confidently.
+- Lets you choose a 2, 3, or 4-column home feed layout.
+
+## Popup Layout
+
+- `General`: home feed columns, sponsored hiding, Shorts hiding, end-screen cards, PiP, floating mini-player
+- `Sidebar`: sidebar cleanup and section-level sidebar visibility controls
+- `Modes`: separate `Theater`, `Default`, and `Fullscreen` behavior
 
 ## Development
 
@@ -34,9 +28,9 @@ npm run icons
 npm run dev
 ```
 
-Load the generated `dist/` folder as an unpacked extension from `chrome://extensions` or `brave://extensions` with Developer mode enabled.
+Load `/Users/d4ngl/Git Repos/Codex/simple-yt-tweaks/dist` as an unpacked extension from `chrome://extensions` or `brave://extensions` with Developer mode enabled.
 
-## Release Build
+## Release Candidate Workflow
 
 ```bash
 npm run typecheck
@@ -46,30 +40,44 @@ npm run validate
 npm run package
 ```
 
-The Web Store zip is written to `release/simple-yt-tweaks-v<version>.zip`.
+The packaged upload is written to:
+
+`/Users/d4ngl/Git Repos/Codex/simple-yt-tweaks/release/simple-yt-tweaks-v<version>.zip`
+
+### Manual Smoke Checklist
+
+- Homepage: verify home feed columns, sponsored hiding, Shorts hiding, and sidebar cleanup
+- Watch page in Default mode: verify recommendations/comments/metadata/live chat controls
+- Watch page in Theater mode: verify enhanced theater layout, header hover, metadata behavior, and scrollbar behavior
+- Fullscreen mode: verify title, player UI, recommendation overlay, and action overlay behavior
+- Popup: verify settings persist after closing/reopening the popup and after YouTube navigation
+- PiP / floating mini-player: verify restore button, dock behavior, close/restore, and navigation cleanup
 
 ## Versioning
 
-The extension version is shared by `package.json`, `package-lock.json`, and `public/manifest.json`.
+The extension version is synced across `package.json`, `package-lock.json`, and `public/manifest.json`.
 
 ```bash
-npm run version:sync
-npm run version:set -- 0.1.1
+npm run version:set -- 0.2.0
 ```
 
-Use `version:set` only when preparing a new Web Store upload or GitHub release. Normal development commits can stay on the current version.
+Use `version:set` only when preparing a new release candidate or Web Store upload.
 
 ## Compatibility
 
-Currently tested during development on:
+Tested during development on:
 
 - Brave Browser 146.1.88.136 on macOS
 
-Chrome and Brave are the intended targets because the extension uses Manifest V3.
+Chrome and Brave are the intended targets. Chrome stable should get one final smoke pass before the first public listing is submitted.
+
+## Support
+
+Feature requests and bug reports are welcome through GitHub issues. Maintenance is best-effort and there is no guaranteed support SLA.
 
 ## Privacy
 
-Simple YT Tweaks does not collect, transmit, sell, or share user data. Feature settings are stored with Chrome extension storage. See [PRIVACY.md](PRIVACY.md).
+Simple YT Tweaks does not collect, transmit, sell, or share user data. Settings are stored with Chrome extension storage only. See [PRIVACY.md](PRIVACY.md).
 
 ## License
 

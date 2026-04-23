@@ -1,11 +1,18 @@
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 const root = process.cwd();
 const distDir = resolve(root, 'dist');
-const packageJson = JSON.parse(readFileSync(resolve(root, 'package.json'), 'utf8'));
+const releaseDir = resolve(root, 'release');
+const packageJsonPath = resolve(root, 'package.json');
+const packageLockPath = resolve(root, 'package-lock.json');
 const manifestPath = resolve(distDir, 'manifest.json');
+const screenshotsDir = resolve(root, 'store-assets', 'screenshots');
+const promoTilePath = resolve(root, 'store-assets', 'promo', 'small-promo-tile-440x280.png');
+const packagedMode = process.argv.includes('--packaged');
 
+const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8'));
+const packageLock = JSON.parse(readFileSync(packageLockPath, 'utf8'));
 const failures = [];
 
 function fail(message) {
@@ -32,7 +39,62 @@ function readPngSize(path) {
   };
 }
 
+function assertPngSize(path, width, height, label) {
+  assertExists(path, label);
+  if (!existsSync(path)) return;
+
+  const dimensions = readPngSize(path);
+  if (!dimensions) return;
+
+  if (dimensions.width !== width || dimensions.height !== height) {
+    fail(`${label} must be ${width}x${height}`);
+  }
+}
+
+function assertScreenshotDirectory() {
+  assertExists(screenshotsDir, 'Store screenshots directory');
+  if (!existsSync(screenshotsDir)) return;
+
+  const screenshots = readdirSync(screenshotsDir)
+    .filter((file) => file.toLowerCase().endsWith('.png'))
+    .sort();
+
+  if (screenshots.length === 0) {
+    fail('At least one store screenshot is required in store-assets/screenshots');
+    return;
+  }
+
+  for (const screenshot of screenshots) {
+    const screenshotPath = resolve(screenshotsDir, screenshot);
+    const dimensions = readPngSize(screenshotPath);
+    if (!dimensions) continue;
+
+    const validSize =
+      (dimensions.width === 1280 && dimensions.height === 800) ||
+      (dimensions.width === 640 && dimensions.height === 400);
+
+    if (!validSize) {
+      fail(`Store screenshot ${screenshot} must be 1280x800 or 640x400`);
+    }
+  }
+}
+
+assertExists(resolve(root, 'README.md'), 'README');
+assertExists(resolve(root, 'CHANGELOG.md'), 'CHANGELOG');
+assertExists(resolve(root, 'PRIVACY.md'), 'PRIVACY');
+assertExists(resolve(root, 'LICENSE'), 'LICENSE');
+assertExists(resolve(root, 'WEBSTORE.md'), 'WEBSTORE');
+assertPngSize(promoTilePath, 440, 280, 'Small promo tile');
+assertScreenshotDirectory();
 assertExists(manifestPath, 'Built manifest');
+
+if (packageLock.version !== packageJson.version) {
+  fail('package-lock.json version must match package.json');
+}
+
+if (packageLock.packages?.['']?.version !== packageJson.version) {
+  fail('package-lock.json packages[""] version must match package.json');
+}
 
 if (failures.length === 0) {
   const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
@@ -79,16 +141,13 @@ if (failures.length === 0) {
     if (iconPath !== `icons/icon${size}.png`) fail(`icons.${size} must be icons/icon${size}.png`);
     if (actionIconPath !== `icons/icon${size}.png`) fail(`action.default_icon.${size} must be icons/icon${size}.png`);
 
-    const builtIconPath = resolve(distDir, `icons/icon${size}.png`);
-    assertExists(builtIconPath, `${size}px icon`);
-
-    if (existsSync(builtIconPath)) {
-      const dimensions = readPngSize(builtIconPath);
-      if (dimensions && (dimensions.width !== size || dimensions.height !== size)) {
-        fail(`icons/icon${size}.png must be ${size}x${size}`);
-      }
-    }
+    assertPngSize(resolve(distDir, `icons/icon${size}.png`), size, size, `${size}px icon`);
   }
+}
+
+if (packagedMode) {
+  const expectedZipPath = resolve(releaseDir, `simple-yt-tweaks-v${packageJson.version}.zip`);
+  assertExists(expectedZipPath, 'Packaged release zip');
 }
 
 if (failures.length > 0) {
@@ -99,4 +158,4 @@ if (failures.length > 0) {
   process.exit(1);
 }
 
-console.log('Extension validation passed.');
+console.log(`Extension validation passed${packagedMode ? ' (packaged)' : ''}.`);

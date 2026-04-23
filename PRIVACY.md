@@ -6,4 +6,6 @@ The extension stores feature preferences using Chrome extension storage so your 
 
 The extension does not use analytics, ads, account systems, tracking pixels, remote code, or external network services.
 
+Simple YT Tweaks has a single purpose: improving the YouTube viewing experience with optional layout and player usability controls.
+
 Simple YT Tweaks is not affiliated with, endorsed by, sponsored by, or otherwise associated with YouTube or Google.
