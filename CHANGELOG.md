@@ -30,6 +30,7 @@
 - Kept hidden-header behavior theater-only, with optional top-edge hover reveal.
 - Kept the YouTube left navigation independent from the hidden-header setting.
 - Made global Shorts hiding turn on the Shorts sidebar link cleanup once without locking that child setting.
+- Kept the dedicated Shorts page available when global Shorts hiding is enabled.
 - Set General defaults to hide Shorts, end-screen cards, and sidebar clutter while keeping primary navigation visible.
 - Hid YouTube's menu button when the entire sidebar is hidden.
 - Improved theater sizing in standalone YouTube app windows.

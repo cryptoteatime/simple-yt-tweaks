@@ -89,15 +89,15 @@ export const SETTING_DEFINITIONS: SettingDefinition[] = [
     tab: 'general',
   },
   {
-    key: 'generalSidebarCleanup',
-    label: 'Sidebar Cleanup',
-    description: 'Enables left sidebar cleanup options for YouTube navigation.',
+    key: 'generalHideShorts',
+    label: 'Hide Shorts',
+    description: 'Hides Shorts shelves, results, and recommendations while leaving the dedicated Shorts page available.',
     tab: 'general',
   },
   {
-    key: 'generalHideShorts',
-    label: 'Hide Shorts',
-    description: 'Hides Shorts shelves, Shorts links, and Shorts results across common YouTube surfaces.',
+    key: 'generalSidebarCleanup',
+    label: 'Sidebar Cleanup',
+    description: 'Enables left sidebar cleanup options for YouTube navigation.',
     tab: 'general',
   },
   {

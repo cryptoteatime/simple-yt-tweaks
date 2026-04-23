@@ -12,7 +12,7 @@ This project is not affiliated with, endorsed by, sponsored by, or otherwise ass
 - Compact popup settings with page support status and clamped tooltips.
 - Separate General, Theater View, and Default View tabs for global and mode-specific preferences.
 - Optional grouped sidebar cleanup controls for hiding the main sidebar, navigation entries, product links, and sidebar footer clutter.
-- Optional Shorts hiding across common navigation, home, feed, search, and recommendation surfaces.
+- Optional Shorts hiding across home, feed, search, and recommendation surfaces while leaving the dedicated Shorts page available.
 - Optional Report History sidebar cleanup without tying it to the You section.
 - Optional end-screen card hiding.
 - Tab-scoped reset defaults so one settings view does not wipe preferences from another view.

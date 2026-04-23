@@ -197,6 +197,10 @@ function isWatchPage(): boolean {
   return location.pathname === '/watch';
 }
 
+function isDedicatedShortsPage(): boolean {
+  return location.pathname === '/shorts' || location.pathname.startsWith('/shorts/');
+}
+
 function isTheaterMode(): boolean {
   const watchFlexy = query<HTMLElement>(SELECTORS.watchFlexy);
 
@@ -247,10 +251,10 @@ function elementMatchesAnyLabel(element: Element, labels: readonly string[]): bo
 
 function buildCss(): string {
   const generalHideEndScreenCards = state.settings.generalHideEndScreenCards;
-  const generalHideShorts = state.settings.generalHideShorts;
+  const generalHideShorts = state.settings.generalHideShorts && !isDedicatedShortsPage();
   const generalSidebarCleanup = state.settings.generalSidebarCleanup;
   const generalHideSidebar = generalSidebarCleanup && state.settings.generalHideSidebar;
-  const generalHideSidebarShorts = state.settings.generalHideSidebarShorts;
+  const generalHideSidebarShorts = generalSidebarCleanup && state.settings.generalHideSidebarShorts;
   const enhancedTheater = state.settings.enhancedTheaterMode;
   const theaterHideHeader = state.settings.theaterHideHeader;
   const theaterShowHeaderOnHover = state.settings.theaterShowHeaderOnHover;
@@ -922,7 +926,7 @@ function updateSidebarItemVisibility(): void {
 
   const enabledCategories: Array<keyof typeof SIDEBAR_ITEM_LABELS> = [];
   if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarHome) enabledCategories.push('home');
-  if (state.settings.generalHideSidebarShorts) enabledCategories.push('shorts');
+  if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarShorts) enabledCategories.push('shorts');
   if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarSubscriptions) enabledCategories.push('subscriptions');
   if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarYou) enabledCategories.push('you');
   if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarExplore) enabledCategories.push('explore');
@@ -973,7 +977,7 @@ function updateSidebarItemVisibility(): void {
 }
 
 function updateShortsVisibility(): void {
-  if (!state.settings.generalHideShorts) return;
+  if (!state.settings.generalHideShorts || isDedicatedShortsPage()) return;
 
   for (const target of queryAll<HTMLElement>('ytd-rich-shelf-renderer[is-shorts], ytd-reel-shelf-renderer, ytd-reel-video-renderer')) {
     hideElement(target);
