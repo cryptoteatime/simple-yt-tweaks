@@ -254,7 +254,7 @@ function buildCss(): string {
   const generalHideShorts = state.settings.generalHideShorts && !isDedicatedShortsPage();
   const generalSidebarCleanup = state.settings.generalSidebarCleanup;
   const generalHideSidebar = generalSidebarCleanup && state.settings.generalHideSidebar;
-  const generalHideSidebarShorts = generalSidebarCleanup && state.settings.generalHideSidebarShorts;
+  const generalHideSidebarShorts = state.settings.generalHideSidebarShorts && (generalSidebarCleanup || state.settings.generalHideShorts);
   const enhancedTheater = state.settings.enhancedTheaterMode;
   const theaterHideHeader = state.settings.theaterHideHeader;
   const theaterShowHeaderOnHover = state.settings.theaterShowHeaderOnHover;
@@ -880,29 +880,45 @@ function getSidebarSectionHeading(section: HTMLElement): string {
   return heading ? getElementLabel(heading) : '';
 }
 
-function getSidebarSections(): HTMLElement[] {
+function getTopLevelSidebarSections(): HTMLElement[] {
   return queryAll<HTMLElement>(
     [
-      '#guide ytd-guide-section-renderer',
-      '#guide ytd-guide-collapsible-section-entry-renderer',
-      'ytd-guide-renderer ytd-guide-section-renderer',
-      'ytd-guide-renderer ytd-guide-collapsible-section-entry-renderer',
+      '#guide ytd-guide-renderer > #sections > ytd-guide-section-renderer',
+      'ytd-guide-renderer > #sections > ytd-guide-section-renderer',
     ].join(','),
   );
 }
 
-function getSidebarSectionByPosition(position: number): HTMLElement | null {
-  return getSidebarSections()[position - 1] ?? null;
+function sectionHasSidebarLink(section: HTMLElement, href: string): boolean {
+  return Boolean(query(`a[href="${href}"]`, section));
 }
 
-function hideSidebarSection(category: keyof typeof SIDEBAR_ITEM_LABELS): void {
-  for (const section of getSidebarSections()) {
+function getSidebarSection(kind: 'subscriptions' | 'you' | 'explore' | 'moreFromYouTube' | 'reportHistory'): HTMLElement | null {
+  for (const section of getTopLevelSidebarSections()) {
     const heading = getSidebarSectionHeading(section);
-    const matchesHeading = heading && SIDEBAR_ITEM_LABELS[category].some((label) => labelMatchesEntry(heading, label));
-    if (matchesHeading) {
-      hideElement(section);
+
+    if (kind === 'subscriptions' && sectionHasSidebarLink(section, '/feed/subscriptions')) {
+      return section;
+    }
+
+    if (kind === 'you' && sectionHasSidebarLink(section, '/feed/you')) {
+      return section;
+    }
+
+    if (kind === 'explore' && labelMatchesEntry(heading, 'explore')) {
+      return section;
+    }
+
+    if (kind === 'moreFromYouTube' && labelMatchesEntry(heading, 'more from youtube')) {
+      return section;
+    }
+
+    if (kind === 'reportHistory' && sectionHasSidebarLink(section, '/reporthistory')) {
+      return section;
     }
   }
+
+  return null;
 }
 
 function updateSidebarFooterVisibility(): void {
@@ -922,20 +938,31 @@ function updateSidebarFooterVisibility(): void {
 }
 
 function updateSidebarItemVisibility(): void {
-  if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebar) return;
+  const shortsLinkCleanupEnabled = state.settings.generalHideSidebarShorts && (state.settings.generalSidebarCleanup || state.settings.generalHideShorts);
+  const homeLinkCleanupEnabled = state.settings.generalSidebarCleanup && state.settings.generalHideSidebarHome;
+  const sectionCleanupEnabled = state.settings.generalSidebarCleanup;
 
-  const enabledCategories: Array<keyof typeof SIDEBAR_ITEM_LABELS> = [];
-  if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarHome) enabledCategories.push('home');
-  if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarShorts) enabledCategories.push('shorts');
-  if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarSubscriptions) enabledCategories.push('subscriptions');
-  if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarYou) enabledCategories.push('you');
-  if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarExplore) enabledCategories.push('explore');
-  if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarMoreFromYouTube) enabledCategories.push('moreFromYouTube');
-  if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarReportHistory) enabledCategories.push('reportHistory');
+  if (sectionCleanupEnabled && state.settings.generalHideSidebar) return;
 
   updateSidebarFooterVisibility();
 
-  if (enabledCategories.length === 0) return;
+  if (sectionCleanupEnabled && state.settings.generalHideSidebarSubscriptions) {
+    hideElement(getSidebarSection('subscriptions'));
+  }
+  if (sectionCleanupEnabled && state.settings.generalHideSidebarYou) {
+    hideElement(getSidebarSection('you'));
+  }
+  if (sectionCleanupEnabled && state.settings.generalHideSidebarExplore) {
+    hideElement(getSidebarSection('explore'));
+  }
+  if (sectionCleanupEnabled && state.settings.generalHideSidebarMoreFromYouTube) {
+    hideElement(getSidebarSection('moreFromYouTube'));
+  }
+  if (sectionCleanupEnabled && state.settings.generalHideSidebarReportHistory) {
+    hideElement(getSidebarSection('reportHistory'));
+  }
+
+  if (!homeLinkCleanupEnabled && !shortsLinkCleanupEnabled) return;
 
   const sidebarItems = queryAll<HTMLElement>(
     [
@@ -950,28 +977,14 @@ function updateSidebarItemVisibility(): void {
     ].join(','),
   );
 
-  if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarSubscriptions) {
-    hideElement(getSidebarSectionByPosition(2));
-    hideSidebarSection('subscriptions');
-  }
-  if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarYou) {
-    hideElement(getSidebarSectionByPosition(1));
-  }
-  if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarExplore) {
-    hideElement(getSidebarSectionByPosition(3));
-    hideSidebarSection('explore');
-  }
-  if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarMoreFromYouTube) {
-    hideElement(getSidebarSectionByPosition(4));
-    hideSidebarSection('moreFromYouTube');
-  }
-
   for (const item of sidebarItems) {
-    for (const category of enabledCategories) {
-      if (elementMatchesAnyLabel(item, SIDEBAR_ITEM_LABELS[category])) {
-        hideElement(item);
-        break;
-      }
+    if (homeLinkCleanupEnabled && elementMatchesAnyLabel(item, SIDEBAR_ITEM_LABELS.home)) {
+      hideElement(item);
+      continue;
+    }
+
+    if (shortsLinkCleanupEnabled && elementMatchesAnyLabel(item, SIDEBAR_ITEM_LABELS.shorts)) {
+      hideElement(item);
     }
   }
 }
