@@ -122,6 +122,7 @@ async function updatePageStatus(): Promise<void> {
 function renderSettings(settings: Settings): void {
   const container = requireElement(settingsEl, 'settings');
   container.textContent = '';
+  container.dataset.tab = activeTab;
   hideTooltip();
 
   for (const { key, label, description, parentKey, tab } of SETTING_DEFINITIONS) {

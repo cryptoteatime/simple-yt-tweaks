@@ -13,6 +13,7 @@ This project is not affiliated with, endorsed by, sponsored by, or otherwise ass
 - Separate Theater and Default tabs for mode-specific layout preferences.
 - Optional hidden player controls that reappear when hovering near the control area.
 - Optional theater scrollbar hiding to reduce layout shift while scrolling.
+- Optional metadata hiding, with a title and top-row keep-visible option.
 - Restored Picture-in-Picture button in the player controls.
 - Floating mini-player that docks the actual YouTube player instead of mirroring the video stream.
 
@@ -37,6 +38,17 @@ npm run package
 ```
 
 The Web Store zip is written to `release/simple-yt-tweaks-v<version>.zip`.
+
+## Versioning
+
+The extension version is shared by `package.json`, `package-lock.json`, and `public/manifest.json`.
+
+```bash
+npm run version:sync
+npm run version:set -- 0.1.1
+```
+
+Use `version:set` only when preparing a new Web Store upload or GitHub release. Normal development commits can stay on the current version.
 
 ## Compatibility
 

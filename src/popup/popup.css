@@ -27,7 +27,7 @@ body {
 }
 
 .panel {
-  padding: 12px;
+  padding: 10px;
 }
 
 .panel__header,
@@ -39,19 +39,19 @@ body {
 }
 
 .panel__header {
-  padding-bottom: 10px;
-  margin-bottom: 10px;
+  padding-bottom: 8px;
+  margin-bottom: 8px;
   border-bottom: 1px solid var(--line);
 }
 
 .panel__header h1 {
   margin: 0;
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 700;
 }
 
 .panel__header p {
-  margin: 4px 0 0;
+  margin: 3px 0 0;
   color: var(--muted);
   font-size: 11px;
   text-transform: uppercase;
@@ -80,14 +80,14 @@ body {
   grid-template-columns: 1fr 1fr;
   gap: 4px;
   padding: 4px;
-  margin-bottom: 8px;
+  margin-bottom: 7px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.03);
 }
 
 .settings-tab {
-  min-height: 28px;
+  min-height: 27px;
   border: 0;
   border-radius: 6px;
   background: transparent;
@@ -114,19 +114,19 @@ body {
 .setting-row {
   gap: 12px;
   position: relative;
-  min-height: 44px;
-  padding: 8px 14px;
+  min-height: 42px;
+  padding: 7px 14px;
   border-bottom: 1px solid var(--line);
 }
 
 .setting-row--child {
-  min-height: 34px;
-  padding: 5px 12px 5px 32px;
+  min-height: 31px;
+  padding: 4px 12px 4px 32px;
   background: rgba(255, 255, 255, 0.018);
 }
 
 .setting-row--child::before {
-  top: 10px;
+  top: 8px;
   left: 16px;
   width: 7px;
   height: 12px;
@@ -150,13 +150,13 @@ body {
 }
 
 .setting-label {
-  font-size: 13px;
+  font-size: 12px;
   line-height: 1.35;
   cursor: pointer;
 }
 
 .setting-row--child .setting-label {
-  font-size: 12px;
+  font-size: 11.5px;
 }
 
 .help-btn {
@@ -229,8 +229,8 @@ body {
 
 input[type="checkbox"] {
   position: relative;
-  width: 40px;
-  height: 22px;
+  width: 38px;
+  height: 21px;
   flex: 0 0 auto;
   appearance: none;
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -243,8 +243,8 @@ input[type="checkbox"] {
 }
 
 .setting-row--child input[type="checkbox"] {
-  width: 36px;
-  height: 20px;
+  width: 34px;
+  height: 19px;
 }
 
 input[type="checkbox"]:disabled {
@@ -256,8 +256,8 @@ input[type="checkbox"]::after {
   position: absolute;
   top: 2px;
   left: 2px;
-  width: 16px;
-  height: 16px;
+  width: 15px;
+  height: 15px;
   content: "";
   border-radius: 999px;
   background: #d7dbe5;
@@ -267,8 +267,8 @@ input[type="checkbox"]::after {
 }
 
 .setting-row--child input[type="checkbox"]::after {
-  width: 14px;
-  height: 14px;
+  width: 13px;
+  height: 13px;
 }
 
 input[type="checkbox"]:checked {
@@ -278,11 +278,11 @@ input[type="checkbox"]:checked {
 
 input[type="checkbox"]:checked::after {
   background: var(--accent);
-  transform: translateX(18px);
+  transform: translateX(17px);
 }
 
 .setting-row--child input[type="checkbox"]:checked::after {
-  transform: translateX(16px);
+  transform: translateX(15px);
 }
 
 .panel__footer {
@@ -290,8 +290,8 @@ input[type="checkbox"]:checked::after {
   gap: 12px;
   align-items: center;
   justify-content: space-between;
-  padding-top: 10px;
-  margin-top: 10px;
+  padding-top: 8px;
+  margin-top: 8px;
   border-top: 1px solid var(--line);
 }
 
@@ -303,8 +303,8 @@ input[type="checkbox"]:checked::after {
 }
 
 .ghost-btn {
-  min-height: 30px;
-  padding: 6px 9px;
+  min-height: 28px;
+  padding: 5px 8px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: transparent;

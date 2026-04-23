@@ -6,10 +6,14 @@ type SettingKey =
   | 'theaterHideScrollbarOnScroll'
   | 'theaterHideRecommendations'
   | 'theaterHideComments'
+  | 'theaterHideMetadata'
+  | 'theaterShowPrimaryMetadata'
   | 'theaterHideLiveChat'
   | 'theaterShowLiveChatOverlay'
   | 'defaultHideRecommendations'
   | 'defaultHideComments'
+  | 'defaultHideMetadata'
+  | 'defaultShowPrimaryMetadata'
   | 'defaultHideLiveChat'
   | 'pipButton'
   | 'floatingMiniPlayer';
@@ -32,10 +36,14 @@ const DEFAULT_SETTINGS: Settings = {
   theaterHideScrollbarOnScroll: true,
   theaterHideRecommendations: true,
   theaterHideComments: false,
+  theaterHideMetadata: false,
+  theaterShowPrimaryMetadata: true,
   theaterHideLiveChat: false,
   theaterShowLiveChatOverlay: false,
   defaultHideRecommendations: false,
   defaultHideComments: false,
+  defaultHideMetadata: false,
+  defaultShowPrimaryMetadata: true,
   defaultHideLiveChat: false,
   pipButton: true,
   floatingMiniPlayer: true,
@@ -176,10 +184,14 @@ function buildCss(): string {
   const theaterHidePlayerUI = state.settings.theaterHidePlayerUI;
   const theaterHideRecommendations = state.settings.theaterHideRecommendations;
   const theaterHideComments = state.settings.theaterHideComments;
+  const theaterHideMetadata = state.settings.theaterHideMetadata;
+  const theaterShowPrimaryMetadata = state.settings.theaterShowPrimaryMetadata;
   const theaterHideLiveChat = state.settings.theaterHideLiveChat;
   const theaterShowLiveChatOverlay = state.settings.theaterShowLiveChatOverlay;
   const defaultHideRecommendations = state.settings.defaultHideRecommendations;
   const defaultHideComments = state.settings.defaultHideComments;
+  const defaultHideMetadata = state.settings.defaultHideMetadata;
+  const defaultShowPrimaryMetadata = state.settings.defaultShowPrimaryMetadata;
   const defaultHideLiveChat = state.settings.defaultHideLiveChat;
 
   return `
@@ -391,6 +403,37 @@ function buildCss(): string {
     }
     ` : ''}
 
+    ${enhancedTheater && theaterHideMetadata && !theaterShowPrimaryMetadata ? `
+    body.simple-yt-tweaks-theater ytd-watch-metadata,
+    body.simple-yt-tweaks-theater #info-contents ytd-video-primary-info-renderer,
+    body.simple-yt-tweaks-theater #meta-contents ytd-video-secondary-info-renderer {
+      display: none !important;
+    }
+    ` : ''}
+
+    ${enhancedTheater && theaterHideMetadata && theaterShowPrimaryMetadata ? `
+    body.simple-yt-tweaks-theater ytd-watch-metadata #bottom-row,
+    body.simple-yt-tweaks-theater ytd-watch-metadata #description,
+    body.simple-yt-tweaks-theater ytd-watch-metadata #description-inline-expander,
+    body.simple-yt-tweaks-theater ytd-watch-metadata ytd-text-inline-expander,
+    body.simple-yt-tweaks-theater #info-contents ytd-video-primary-info-renderer #info,
+    body.simple-yt-tweaks-theater #meta-contents ytd-video-secondary-info-renderer #description,
+    body.simple-yt-tweaks-theater #meta-contents ytd-video-secondary-info-renderer #metadata,
+    body.simple-yt-tweaks-theater #meta-contents ytd-video-secondary-info-renderer ytd-expander {
+      display: none !important;
+    }
+
+    body.simple-yt-tweaks-theater ytd-watch-metadata #title,
+    body.simple-yt-tweaks-theater #info-contents ytd-video-primary-info-renderer #title {
+      display: block !important;
+    }
+
+    body.simple-yt-tweaks-theater ytd-watch-metadata #top-row,
+    body.simple-yt-tweaks-theater #meta-contents ytd-video-secondary-info-renderer #owner {
+      display: flex !important;
+    }
+    ` : ''}
+
     ${enhancedTheater && theaterHideLiveChat && !theaterShowLiveChatOverlay ? `
     body.simple-yt-tweaks-theater.simple-yt-tweaks-has-live-chat ${SELECTORS.liveChat} {
       display: none !important;
@@ -508,6 +551,37 @@ function buildCss(): string {
     ${defaultHideComments ? `
     body.simple-yt-tweaks-default-view #comments {
       display: none !important;
+    }
+    ` : ''}
+
+    ${defaultHideMetadata && !defaultShowPrimaryMetadata ? `
+    body.simple-yt-tweaks-default-view ytd-watch-metadata,
+    body.simple-yt-tweaks-default-view #info-contents ytd-video-primary-info-renderer,
+    body.simple-yt-tweaks-default-view #meta-contents ytd-video-secondary-info-renderer {
+      display: none !important;
+    }
+    ` : ''}
+
+    ${defaultHideMetadata && defaultShowPrimaryMetadata ? `
+    body.simple-yt-tweaks-default-view ytd-watch-metadata #bottom-row,
+    body.simple-yt-tweaks-default-view ytd-watch-metadata #description,
+    body.simple-yt-tweaks-default-view ytd-watch-metadata #description-inline-expander,
+    body.simple-yt-tweaks-default-view ytd-watch-metadata ytd-text-inline-expander,
+    body.simple-yt-tweaks-default-view #info-contents ytd-video-primary-info-renderer #info,
+    body.simple-yt-tweaks-default-view #meta-contents ytd-video-secondary-info-renderer #description,
+    body.simple-yt-tweaks-default-view #meta-contents ytd-video-secondary-info-renderer #metadata,
+    body.simple-yt-tweaks-default-view #meta-contents ytd-video-secondary-info-renderer ytd-expander {
+      display: none !important;
+    }
+
+    body.simple-yt-tweaks-default-view ytd-watch-metadata #title,
+    body.simple-yt-tweaks-default-view #info-contents ytd-video-primary-info-renderer #title {
+      display: block !important;
+    }
+
+    body.simple-yt-tweaks-default-view ytd-watch-metadata #top-row,
+    body.simple-yt-tweaks-default-view #meta-contents ytd-video-secondary-info-renderer #owner {
+      display: flex !important;
     }
     ` : ''}
 

@@ -14,6 +14,8 @@
 - Added a floating mini-player that docks the actual YouTube player when scrolling below the video in default view.
 - Added theater-mode live chat controls, including an optional floating chat overlay when live chat exists.
 - Added theater scrollbar hiding so scrolling does not shift the enhanced theater player.
+- Added metadata hiding controls, including an option to keep the title, channel row, and action buttons visible.
+- Added a version sync script for package, lockfile, and manifest version management.
 - Added README, privacy policy, MIT license, changelog, and GitHub issue templates.
 
 ### Changed

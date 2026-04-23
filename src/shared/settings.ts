@@ -8,10 +8,14 @@ export type SettingKey =
   | 'theaterHideScrollbarOnScroll'
   | 'theaterHideRecommendations'
   | 'theaterHideComments'
+  | 'theaterHideMetadata'
+  | 'theaterShowPrimaryMetadata'
   | 'theaterHideLiveChat'
   | 'theaterShowLiveChatOverlay'
   | 'defaultHideRecommendations'
   | 'defaultHideComments'
+  | 'defaultHideMetadata'
+  | 'defaultShowPrimaryMetadata'
   | 'defaultHideLiveChat'
   | 'pipButton'
   | 'floatingMiniPlayer';
@@ -34,10 +38,14 @@ export const DEFAULT_SETTINGS: Settings = {
   theaterHideScrollbarOnScroll: true,
   theaterHideRecommendations: true,
   theaterHideComments: false,
+  theaterHideMetadata: false,
+  theaterShowPrimaryMetadata: true,
   theaterHideLiveChat: false,
   theaterShowLiveChatOverlay: false,
   defaultHideRecommendations: false,
   defaultHideComments: false,
+  defaultHideMetadata: false,
+  defaultShowPrimaryMetadata: true,
   defaultHideLiveChat: false,
   pipButton: true,
   floatingMiniPlayer: true,
@@ -98,6 +106,20 @@ export const SETTING_DEFINITIONS: SettingDefinition[] = [
     parentKey: 'enhancedTheaterMode',
   },
   {
+    key: 'theaterHideMetadata',
+    label: 'Hide Metadata',
+    description: 'Hides the title, channel row, actions, description, views, date, and other below-video metadata.',
+    tab: 'theater',
+    parentKey: 'enhancedTheaterMode',
+  },
+  {
+    key: 'theaterShowPrimaryMetadata',
+    label: 'Show Title and Top Row',
+    description: 'Keeps the video title, channel row, and action buttons visible while hiding the description and extra metadata.',
+    tab: 'theater',
+    parentKey: 'theaterHideMetadata',
+  },
+  {
     key: 'theaterHideLiveChat',
     label: 'Hide Live Chat',
     description: 'Hides live chat while enhanced theater mode is active.',
@@ -122,6 +144,19 @@ export const SETTING_DEFINITIONS: SettingDefinition[] = [
     label: 'Hide Comments',
     description: 'Hides only the comments section in the normal watch-page view.',
     tab: 'default',
+  },
+  {
+    key: 'defaultHideMetadata',
+    label: 'Hide Metadata',
+    description: 'Hides the title, channel row, actions, description, views, date, and other below-video metadata.',
+    tab: 'default',
+  },
+  {
+    key: 'defaultShowPrimaryMetadata',
+    label: 'Show Title and Top Row',
+    description: 'Keeps the video title, channel row, and action buttons visible while hiding the description and extra metadata.',
+    tab: 'default',
+    parentKey: 'defaultHideMetadata',
   },
   {
     key: 'defaultHideLiveChat',

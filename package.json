@@ -7,8 +7,11 @@
   "scripts": {
     "dev": "vite build --watch",
     "icons": "node scripts/generate-icons.mjs",
+    "version:sync": "node scripts/sync-version.mjs",
+    "version:set": "node scripts/sync-version.mjs",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
+    "prebuild": "npm run version:sync",
     "build": "vite build",
     "validate": "node scripts/validate-extension.mjs",
     "package": "npm run build && npm run validate && node scripts/package-extension.mjs"
