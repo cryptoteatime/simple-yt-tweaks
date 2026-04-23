@@ -189,6 +189,7 @@ const state: {
   miniPlayerDismissed: boolean;
   storageObserverBound: boolean;
   pointerHandlersBound: boolean;
+  lastPointerY: number;
   lastEnhancedTheaterActive: boolean;
   modeTransitionTimers: number[];
 } = {
@@ -205,6 +206,7 @@ const state: {
   miniPlayerDismissed: false,
   storageObserverBound: false,
   pointerHandlersBound: false,
+  lastPointerY: Number.POSITIVE_INFINITY,
   lastEnhancedTheaterActive: false,
   modeTransitionTimers: [],
 };
@@ -1158,6 +1160,7 @@ function scheduleModeStabilization(): void {
       updateViewportHeightVar();
       updateTheaterClass();
       updateMastheadTargets();
+      clearStaleGuideFocus();
       updateLiveChatTargets();
       updateScrollbarState();
       updateFullscreenActionDock();
@@ -1565,6 +1568,7 @@ function bindPointerHandlers(): void {
   document.addEventListener(
     'mousemove',
     (event) => {
+      state.lastPointerY = event.clientY;
       updateTopHoverState(event.clientY);
       updatePlayerUiHoverState(event.clientX, event.clientY);
     },
@@ -1573,6 +1577,7 @@ function bindPointerHandlers(): void {
   document.addEventListener(
     'mouseleave',
     () => {
+      state.lastPointerY = Number.POSITIVE_INFINITY;
       document.body.classList.remove('simple-yt-tweaks-top-hover');
       document.body.classList.remove('simple-yt-tweaks-player-ui-hover');
     },
@@ -1600,6 +1605,48 @@ function updateTopHoverState(pointerY: number): void {
     pointerY <= 72;
 
   document.body.classList.toggle('simple-yt-tweaks-top-hover', shouldRevealHeader);
+}
+
+function isSidebarExpanded(): boolean {
+  const sidebarCandidates = queryAll<HTMLElement>('#guide, #guide-content, ytd-guide-renderer');
+
+  return sidebarCandidates.some((element) => {
+    const rect = element.getBoundingClientRect();
+    const style = window.getComputedStyle(element);
+
+    return (
+      rect.width >= 180 &&
+      rect.height > 0 &&
+      style.display !== 'none' &&
+      style.visibility !== 'hidden'
+    );
+  });
+}
+
+function clearStaleGuideFocus(): void {
+  const shouldManageGuideFocus =
+    isEnhancedTheaterActive() &&
+    state.settings.theaterHideHeader &&
+    state.settings.theaterShowHeaderOnHover;
+
+  if (!shouldManageGuideFocus) return;
+  if (document.body.classList.contains('simple-yt-tweaks-top-hover')) return;
+  if (state.lastPointerY <= 72) return;
+  if (isSidebarExpanded()) return;
+
+  const activeElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+  if (!activeElement) return;
+
+  const isGuideButton = Boolean(
+    activeElement.closest(
+      '#guide-button, ytd-masthead #guide-button, button[aria-label*="Guide"], button[aria-label*="menu"]',
+    ),
+  );
+
+  if (!isGuideButton) return;
+
+  activeElement.blur();
+  document.body.classList.remove('simple-yt-tweaks-top-hover');
 }
 
 function getPlayerUiFocusHost(target: Element | null): HTMLElement | null {
@@ -2144,6 +2191,7 @@ function applyFeatureState(): void {
   updateViewportHeightVar();
   updateTheaterClass();
   updateMastheadTargets();
+  clearStaleGuideFocus();
   updateLiveChatTargets();
   updateGeneralVisibility();
   updateScrollbarState();
@@ -2264,6 +2312,7 @@ function observeNavigation(): void {
     updateViewportHeightVar();
     updateTheaterClass();
     updateMastheadTargets();
+    clearStaleGuideFocus();
     updateLiveChatTargets();
     updateScrollbarState();
     updateFullscreenActionDock();
