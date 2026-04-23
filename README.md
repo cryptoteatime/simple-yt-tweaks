@@ -11,7 +11,7 @@ This project is not affiliated with, endorsed by, sponsored by, or otherwise ass
 - Optional live chat overlay for streams and premieres.
 - Compact popup settings with page support status and clamped tooltips.
 - Separate General, Theater View, and Default View tabs for global and mode-specific preferences.
-- Optional sidebar cleanup controls for hiding the main sidebar or individual sidebar entries.
+- Optional grouped sidebar cleanup controls for hiding the main sidebar, navigation entries, product links, and sidebar footer clutter.
 - Optional Shorts hiding across common navigation, home, feed, search, and recommendation surfaces.
 - Optional end-screen card hiding.
 - Optional hidden player controls that reappear when hovering near the control area.

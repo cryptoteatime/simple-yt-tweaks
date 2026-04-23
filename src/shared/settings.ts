@@ -3,12 +3,15 @@ export type SettingTab = 'general' | 'theater' | 'default';
 export type SettingKey =
   | 'generalHideEndScreenCards'
   | 'generalHideShorts'
+  | 'generalSidebarCleanup'
   | 'generalHideSidebar'
   | 'generalHideSidebarHome'
   | 'generalHideSidebarShorts'
   | 'generalHideSidebarSubscriptions'
   | 'generalHideSidebarYou'
   | 'generalHideSidebarExplore'
+  | 'generalHideSidebarMoreFromYouTube'
+  | 'generalHideSidebarFooter'
   | 'enhancedTheaterMode'
   | 'theaterHideHeader'
   | 'theaterShowHeaderOnHover'
@@ -41,12 +44,15 @@ export type SettingDefinition = {
 export const DEFAULT_SETTINGS: Settings = {
   generalHideEndScreenCards: false,
   generalHideShorts: false,
+  generalSidebarCleanup: false,
   generalHideSidebar: false,
   generalHideSidebarHome: false,
   generalHideSidebarShorts: false,
   generalHideSidebarSubscriptions: false,
   generalHideSidebarYou: false,
   generalHideSidebarExplore: false,
+  generalHideSidebarMoreFromYouTube: false,
+  generalHideSidebarFooter: false,
   enhancedTheaterMode: true,
   theaterHideHeader: true,
   theaterShowHeaderOnHover: true,
@@ -87,40 +93,66 @@ export const SETTING_DEFINITIONS: SettingDefinition[] = [
     tab: 'general',
   },
   {
+    key: 'generalSidebarCleanup',
+    label: 'Sidebar Cleanup',
+    description: 'Enables left sidebar cleanup options for YouTube navigation.',
+    tab: 'general',
+  },
+  {
     key: 'generalHideSidebar',
-    label: 'Hide Sidebar',
+    label: 'Hide Entire Sidebar',
     description: 'Hides the main YouTube left navigation sidebar and mini guide.',
     tab: 'general',
+    parentKey: 'generalSidebarCleanup',
   },
   {
     key: 'generalHideSidebarHome',
     label: 'Hide Home',
     description: 'Hides Home entries from the YouTube sidebar.',
     tab: 'general',
+    parentKey: 'generalSidebarCleanup',
   },
   {
     key: 'generalHideSidebarShorts',
     label: 'Hide Shorts Entry',
     description: 'Hides Shorts entries from the YouTube sidebar.',
     tab: 'general',
+    parentKey: 'generalSidebarCleanup',
   },
   {
     key: 'generalHideSidebarSubscriptions',
     label: 'Hide Subscriptions',
-    description: 'Hides Subscriptions entries from the YouTube sidebar.',
+    description: 'Hides the Subscriptions sidebar section, including channel shortcuts and show-more controls.',
     tab: 'general',
+    parentKey: 'generalSidebarCleanup',
   },
   {
     key: 'generalHideSidebarYou',
     label: 'Hide You',
-    description: 'Hides You, History, Playlists, and similar personal library entries from the sidebar.',
+    description: 'Hides You, Your channel, History, Playlists, and similar personal library entries from the sidebar.',
     tab: 'general',
+    parentKey: 'generalSidebarCleanup',
   },
   {
     key: 'generalHideSidebarExplore',
     label: 'Hide Explore',
     description: 'Hides Explore and category entries from the YouTube sidebar.',
     tab: 'general',
+    parentKey: 'generalSidebarCleanup',
+  },
+  {
+    key: 'generalHideSidebarMoreFromYouTube',
+    label: 'Hide More from YouTube',
+    description: 'Hides YouTube Premium, YouTube TV, Kids, Music, and similar product links from the sidebar.',
+    tab: 'general',
+    parentKey: 'generalSidebarCleanup',
+  },
+  {
+    key: 'generalHideSidebarFooter',
+    label: 'Hide Sidebar Footer',
+    description: 'Hides the About, Press, Copyright, Terms, Privacy, and related footer links in the sidebar.',
+    tab: 'general',
+    parentKey: 'generalSidebarCleanup',
   },
   {
     key: 'enhancedTheaterMode',

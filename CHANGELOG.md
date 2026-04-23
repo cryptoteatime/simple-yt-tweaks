@@ -10,7 +10,7 @@
 - Added generated extension icons and a release-ready manifest with narrow YouTube host permissions.
 - Added a popup settings panel with page support status, feature toggles, reset defaults, tooltips, and footer links.
 - Added separate General, Theater View, and Default View settings tabs for global and mode-specific behavior.
-- Added optional sidebar cleanup controls for the main sidebar and individual sidebar entries.
+- Added optional grouped sidebar cleanup controls for the main sidebar, navigation entries, product links, and footer clutter.
 - Added optional Shorts hiding across common YouTube navigation, feed, search, and recommendation surfaces.
 - Added optional end-screen card hiding.
 - Added restored Picture-in-Picture button support inside the YouTube player controls.

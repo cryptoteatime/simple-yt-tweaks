@@ -1,12 +1,15 @@
 type SettingKey =
   | 'generalHideEndScreenCards'
   | 'generalHideShorts'
+  | 'generalSidebarCleanup'
   | 'generalHideSidebar'
   | 'generalHideSidebarHome'
   | 'generalHideSidebarShorts'
   | 'generalHideSidebarSubscriptions'
   | 'generalHideSidebarYou'
   | 'generalHideSidebarExplore'
+  | 'generalHideSidebarMoreFromYouTube'
+  | 'generalHideSidebarFooter'
   | 'enhancedTheaterMode'
   | 'theaterHideHeader'
   | 'theaterShowHeaderOnHover'
@@ -39,12 +42,15 @@ type DockState = {
 const DEFAULT_SETTINGS: Settings = {
   generalHideEndScreenCards: false,
   generalHideShorts: false,
+  generalSidebarCleanup: false,
   generalHideSidebar: false,
   generalHideSidebarHome: false,
   generalHideSidebarShorts: false,
   generalHideSidebarSubscriptions: false,
   generalHideSidebarYou: false,
   generalHideSidebarExplore: false,
+  generalHideSidebarMoreFromYouTube: false,
+  generalHideSidebarFooter: false,
   enhancedTheaterMode: true,
   theaterHideHeader: true,
   theaterShowHeaderOnHover: true,
@@ -90,8 +96,9 @@ const SIDEBAR_ITEM_MATCHERS = {
   home: [/\bhome\b/i],
   shorts: [/\bshorts\b/i],
   subscriptions: [/\bsubscriptions\b/i],
-  you: [/\byou\b/i, /\bhistory\b/i, /\bplaylists?\b/i, /\byour videos\b/i, /\bdownloads\b/i, /\bwatch later\b/i, /\bliked videos\b/i],
+  you: [/\byou\b/i, /\byour channel\b/i, /\bhistory\b/i, /\bplaylists?\b/i, /\byour videos\b/i, /\bdownloads\b/i, /\bwatch later\b/i, /\bliked videos\b/i],
   explore: [/\bexplore\b/i, /\btrending\b/i, /\bshopping\b/i, /\bmusic\b/i, /\bmovies?\b/i, /\blive\b/i, /\bgaming\b/i, /\bnews\b/i, /\bsports\b/i, /\blearning\b/i, /\bfashion & beauty\b/i, /\bpodcasts\b/i],
+  moreFromYouTube: [/\bmore from youtube\b/i, /\byoutube premium\b/i, /\byoutube studio\b/i, /\byoutube music\b/i, /\byoutube kids\b/i, /\byoutube tv\b/i],
 } as const;
 
 const state: {
@@ -219,8 +226,9 @@ function elementMatchesAnyLabel(element: Element, patterns: readonly RegExp[]): 
 function buildCss(): string {
   const generalHideEndScreenCards = state.settings.generalHideEndScreenCards;
   const generalHideShorts = state.settings.generalHideShorts;
-  const generalHideSidebar = state.settings.generalHideSidebar;
-  const generalHideSidebarShorts = state.settings.generalHideSidebarShorts;
+  const generalSidebarCleanup = state.settings.generalSidebarCleanup;
+  const generalHideSidebar = generalSidebarCleanup && state.settings.generalHideSidebar;
+  const generalHideSidebarShorts = generalSidebarCleanup && state.settings.generalHideSidebarShorts;
   const enhancedTheater = state.settings.enhancedTheaterMode;
   const theaterHideHeader = state.settings.theaterHideHeader;
   const theaterShowHeaderOnHover = state.settings.theaterShowHeaderOnHover;
@@ -818,15 +826,51 @@ function hideClosest(element: Element, selector: string): void {
   hideElement(element.closest(selector));
 }
 
+function hideSidebarSection(category: keyof typeof SIDEBAR_ITEM_MATCHERS): void {
+  const sections = queryAll<HTMLElement>(
+    [
+      '#guide ytd-guide-section-renderer',
+      '#guide ytd-guide-collapsible-section-entry-renderer',
+      'ytd-guide-renderer ytd-guide-section-renderer',
+      'ytd-guide-renderer ytd-guide-collapsible-section-entry-renderer',
+    ].join(','),
+  );
+
+  for (const section of sections) {
+    if (elementMatchesAnyLabel(section, SIDEBAR_ITEM_MATCHERS[category])) {
+      hideElement(section);
+    }
+  }
+}
+
+function updateSidebarFooterVisibility(): void {
+  if (!state.settings.generalSidebarCleanup || !state.settings.generalHideSidebarFooter) return;
+
+  for (const target of queryAll<HTMLElement>(
+    [
+      '#guide #footer',
+      '#guide #copyright',
+      'ytd-guide-renderer #footer',
+      'ytd-guide-renderer #copyright',
+      'ytd-guide-renderer #legal',
+    ].join(','),
+  )) {
+    hideElement(target);
+  }
+}
+
 function updateSidebarItemVisibility(): void {
-  if (state.settings.generalHideSidebar) return;
+  if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebar) return;
 
   const enabledCategories: Array<keyof typeof SIDEBAR_ITEM_MATCHERS> = [];
-  if (state.settings.generalHideSidebarHome) enabledCategories.push('home');
-  if (state.settings.generalHideSidebarShorts || state.settings.generalHideShorts) enabledCategories.push('shorts');
-  if (state.settings.generalHideSidebarSubscriptions) enabledCategories.push('subscriptions');
-  if (state.settings.generalHideSidebarYou) enabledCategories.push('you');
-  if (state.settings.generalHideSidebarExplore) enabledCategories.push('explore');
+  if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarHome) enabledCategories.push('home');
+  if ((state.settings.generalSidebarCleanup && state.settings.generalHideSidebarShorts) || state.settings.generalHideShorts) enabledCategories.push('shorts');
+  if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarSubscriptions) enabledCategories.push('subscriptions');
+  if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarYou) enabledCategories.push('you');
+  if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarExplore) enabledCategories.push('explore');
+  if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarMoreFromYouTube) enabledCategories.push('moreFromYouTube');
+
+  updateSidebarFooterVisibility();
 
   if (enabledCategories.length === 0) return;
 
@@ -839,8 +883,14 @@ function updateSidebarItemVisibility(): void {
       'ytd-guide-renderer ytd-guide-collapsible-entry-renderer',
       'ytd-guide-renderer tp-yt-paper-item',
       'ytd-mini-guide-renderer ytd-mini-guide-entry-renderer',
+      'ytd-guide-renderer a',
     ].join(','),
   );
+
+  if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarSubscriptions) hideSidebarSection('subscriptions');
+  if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarYou) hideSidebarSection('you');
+  if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarExplore) hideSidebarSection('explore');
+  if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarMoreFromYouTube) hideSidebarSection('moreFromYouTube');
 
   for (const item of sidebarItems) {
     for (const category of enabledCategories) {
@@ -885,7 +935,9 @@ function updateShortsVisibility(): void {
 
 function updateGeneralVisibility(): void {
   clearGeneralHiddenTargets();
-  updateSidebarItemVisibility();
+  if (state.settings.generalSidebarCleanup || state.settings.generalHideShorts) {
+    updateSidebarItemVisibility();
+  }
   updateShortsVisibility();
 }
 
