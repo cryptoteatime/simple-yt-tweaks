@@ -119,9 +119,11 @@ body {
   grid-template-columns: repeat(3, 1fr);
   gap: 0;
   padding: 0 8px;
-  margin-bottom: 0;
+  margin-bottom: -1px;
   border: 0;
   background: transparent;
+  position: relative;
+  z-index: 1;
 }
 
 .settings-subtabs[hidden] {
@@ -149,12 +151,15 @@ body {
 .settings-subtab[aria-selected="true"] {
   background: var(--panel);
   color: var(--text);
+  position: relative;
+  z-index: 1;
 }
 
 .settings {
   flex: 1 1 auto;
   min-height: 0;
-  overflow: visible;
+  overflow-x: hidden;
+  overflow-y: auto;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--panel);

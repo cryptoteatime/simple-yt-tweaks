@@ -113,6 +113,13 @@ type DockState = {
   shell: HTMLElement;
 };
 
+type FullscreenActionDockState = {
+  target: HTMLElement;
+  originalParent: Node;
+  originalNextSibling: ChildNode | null;
+  shell: HTMLElement;
+};
+
 const SELECTORS = {
   masthead: '#masthead-container, ytd-masthead',
   mastheadTargets: '#masthead-container, ytd-masthead, ytd-masthead #container',
@@ -128,12 +135,14 @@ const SELECTORS = {
 const STYLE_ID = 'simple-yt-tweaks-style';
 const PIP_BUTTON_ID = 'simple-yt-tweaks-pip-button';
 const DOCK_ID = 'simple-yt-tweaks-dock';
+const FULLSCREEN_ACTION_DOCK_ID = 'simple-yt-tweaks-fullscreen-actions';
 const MASTHEAD_CLASS = 'simple-yt-tweaks-masthead';
 const LIVE_CHAT_CLASS = 'simple-yt-tweaks-live-chat';
 const GENERAL_HIDDEN_CLASS = 'simple-yt-tweaks-hidden';
 const SIDEBAR_SUBSCRIPTIONS_CLASS = 'simple-yt-tweaks-sidebar-subscriptions';
 const SIDEBAR_SUBSCRIPTIONS_ICON_CLASS = 'simple-yt-tweaks-sidebar-subscriptions-icon';
 const THEATER_PRIMARY_METADATA_CLASS = 'simple-yt-tweaks-theater-primary-metadata';
+const FULLSCREEN_ACTION_TARGET_CLASS = 'simple-yt-tweaks-fullscreen-action-target';
 
 const SPONSORED_CARD_SELECTORS = [
   'ytd-display-ad-renderer',
@@ -170,6 +179,7 @@ const state: {
   watchObservedTarget: Element | null;
   domRerun: (() => void) | null;
   dock: DockState | null;
+  fullscreenActionDock: FullscreenActionDockState | null;
   miniPlayerDismissed: boolean;
   storageObserverBound: boolean;
   pointerHandlersBound: boolean;
@@ -183,6 +193,7 @@ const state: {
   watchObservedTarget: null,
   domRerun: null,
   dock: null,
+  fullscreenActionDock: null,
   miniPlayerDismissed: false,
   storageObserverBound: false,
   pointerHandlersBound: false,
@@ -694,9 +705,15 @@ function buildCss(): string {
 
     ${enhancedTheater && theaterHideMetadata && theaterShowPrimaryMetadata ? `
     body.simple-yt-tweaks-theater.${THEATER_PRIMARY_METADATA_CLASS},
-    body.simple-yt-tweaks-theater.${THEATER_PRIMARY_METADATA_CLASS} ytd-app {
-      overflow-y: auto !important;
+    body.simple-yt-tweaks-theater.${THEATER_PRIMARY_METADATA_CLASS} ytd-app,
+    body.simple-yt-tweaks-theater.${THEATER_PRIMARY_METADATA_CLASS} ytd-watch-flexy,
+    body.simple-yt-tweaks-theater.${THEATER_PRIMARY_METADATA_CLASS} #columns,
+    body.simple-yt-tweaks-theater.${THEATER_PRIMARY_METADATA_CLASS} #primary,
+    body.simple-yt-tweaks-theater.${THEATER_PRIMARY_METADATA_CLASS} #primary-inner,
+    body.simple-yt-tweaks-theater.${THEATER_PRIMARY_METADATA_CLASS} #below {
+      overflow: visible !important;
       max-height: none !important;
+      height: auto !important;
     }
 
     body.simple-yt-tweaks-theater.${THEATER_PRIMARY_METADATA_CLASS} #below,
@@ -704,6 +721,11 @@ function buildCss(): string {
       display: block !important;
       max-height: none !important;
       overflow: visible !important;
+    }
+
+    body.simple-yt-tweaks-theater.${THEATER_PRIMARY_METADATA_CLASS} #below {
+      padding-top: 8px !important;
+      min-height: fit-content !important;
     }
 
     body.simple-yt-tweaks-theater ytd-watch-metadata #bottom-row,
@@ -921,21 +943,48 @@ function buildCss(): string {
     ` : ''}
 
     ${fullscreenHideActionOverlay ? `
-    body.simple-yt-tweaks-fullscreen-view .ytp-watch-metadata,
-    body.simple-yt-tweaks-fullscreen-view [class*="ytp-watch-metadata"],
-    body.simple-yt-tweaks-fullscreen-view .ytp-watch-info-bar,
-    body.simple-yt-tweaks-fullscreen-view .ytp-info-panel-preview,
-    body.simple-yt-tweaks-fullscreen-view .ytp-suggested-action,
-    body.simple-yt-tweaks-fullscreen-view [class*="ytp-suggested-action"],
-    body.simple-yt-tweaks-fullscreen-view #actions,
-    body.simple-yt-tweaks-fullscreen-view #actions-inner,
-    body.simple-yt-tweaks-fullscreen-view ytd-menu-renderer,
-    body.simple-yt-tweaks-fullscreen-view ytd-comments-entry-point-header-renderer,
-    body.simple-yt-tweaks-fullscreen-view ytd-video-view-count-renderer {
+    body.simple-yt-tweaks-fullscreen-view .ytp-watch-metadata:not(.${FULLSCREEN_ACTION_TARGET_CLASS}),
+    body.simple-yt-tweaks-fullscreen-view [class*="ytp-watch-metadata"]:not(.${FULLSCREEN_ACTION_TARGET_CLASS}),
+    body.simple-yt-tweaks-fullscreen-view .ytp-watch-info-bar:not(.${FULLSCREEN_ACTION_TARGET_CLASS}),
+    body.simple-yt-tweaks-fullscreen-view .ytp-info-panel-preview:not(.${FULLSCREEN_ACTION_TARGET_CLASS}),
+    body.simple-yt-tweaks-fullscreen-view .ytp-suggested-action:not(.${FULLSCREEN_ACTION_TARGET_CLASS}),
+    body.simple-yt-tweaks-fullscreen-view [class*="ytp-suggested-action"]:not(.${FULLSCREEN_ACTION_TARGET_CLASS}),
+    body.simple-yt-tweaks-fullscreen-view #actions:not(.${FULLSCREEN_ACTION_TARGET_CLASS}),
+    body.simple-yt-tweaks-fullscreen-view #actions-inner:not(.${FULLSCREEN_ACTION_TARGET_CLASS}),
+    body.simple-yt-tweaks-fullscreen-view ytd-menu-renderer:not(.${FULLSCREEN_ACTION_TARGET_CLASS}),
+    body.simple-yt-tweaks-fullscreen-view ytd-comments-entry-point-header-renderer:not(.${FULLSCREEN_ACTION_TARGET_CLASS}),
+    body.simple-yt-tweaks-fullscreen-view ytd-video-view-count-renderer:not(.${FULLSCREEN_ACTION_TARGET_CLASS}) {
       display: none !important;
       opacity: 0 !important;
       pointer-events: none !important;
       visibility: hidden !important;
+    }
+
+    body.simple-yt-tweaks-fullscreen-view #${FULLSCREEN_ACTION_DOCK_ID} {
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: flex-end !important;
+      height: 100% !important;
+      margin-left: 8px !important;
+      opacity: 1 !important;
+      pointer-events: auto !important;
+      visibility: visible !important;
+    }
+
+    body.simple-yt-tweaks-fullscreen-view #${FULLSCREEN_ACTION_DOCK_ID} .${FULLSCREEN_ACTION_TARGET_CLASS} {
+      position: static !important;
+      inset: auto !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: flex-end !important;
+      width: auto !important;
+      min-width: 0 !important;
+      max-width: none !important;
+      margin: 0 !important;
+      opacity: 1 !important;
+      pointer-events: auto !important;
+      visibility: visible !important;
+      transform: none !important;
     }
     ` : ''}
 
@@ -1583,6 +1632,96 @@ function removePipButton(): void {
   document.getElementById(PIP_BUTTON_ID)?.remove();
 }
 
+function ensureFullscreenActionDockShell(): HTMLElement | null {
+  const rightControls = query<HTMLElement>(SELECTORS.controlsRight);
+  if (!rightControls) return null;
+
+  let shell = document.getElementById(FULLSCREEN_ACTION_DOCK_ID);
+  if (shell) return shell;
+
+  shell = document.createElement('div');
+  shell.id = FULLSCREEN_ACTION_DOCK_ID;
+  rightControls.append(shell);
+  return shell;
+}
+
+function findFullscreenActionTarget(): HTMLElement | null {
+  const currentTarget = state.fullscreenActionDock?.target;
+  if (currentTarget?.isConnected) return currentTarget;
+
+  const candidates = [
+    '.ytp-watch-metadata',
+    '.ytp-watch-info-bar',
+    '[class*="ytp-watch-metadata"]',
+    '.ytp-suggested-action',
+    '[class*="ytp-suggested-action"]',
+  ];
+
+  for (const selector of candidates) {
+    for (const element of queryAll<HTMLElement>(selector)) {
+      if (element.closest(`#${FULLSCREEN_ACTION_DOCK_ID}`)) continue;
+      if (!isVisibleNode(element)) continue;
+      return element;
+    }
+  }
+
+  return null;
+}
+
+function dockFullscreenActions(): void {
+  if (state.fullscreenActionDock) return;
+
+  const target = findFullscreenActionTarget();
+  const shell = ensureFullscreenActionDockShell();
+  if (!target || !target.parentNode || !shell) return;
+
+  const originalParent = target.parentNode;
+  const originalNextSibling = target.nextSibling;
+
+  target.classList.add(FULLSCREEN_ACTION_TARGET_CLASS);
+  shell.append(target);
+
+  state.fullscreenActionDock = {
+    target,
+    originalParent,
+    originalNextSibling,
+    shell,
+  };
+}
+
+function restoreFullscreenActionDock(): void {
+  const dock = state.fullscreenActionDock;
+  const shell = document.getElementById(FULLSCREEN_ACTION_DOCK_ID);
+
+  if (!dock) {
+    shell?.remove();
+    return;
+  }
+
+  dock.target.classList.remove(FULLSCREEN_ACTION_TARGET_CLASS);
+
+  if (dock.originalParent.isConnected) {
+    dock.originalParent.insertBefore(dock.target, dock.originalNextSibling);
+  }
+
+  dock.shell.remove();
+  state.fullscreenActionDock = null;
+}
+
+function updateFullscreenActionDock(): void {
+  const shouldDock =
+    isNativeFullscreenActive() &&
+    isWatchPage() &&
+    state.settings.fullscreenHideActionOverlay;
+
+  if (shouldDock) {
+    dockFullscreenActions();
+    return;
+  }
+
+  restoreFullscreenActionDock();
+}
+
 function ensureDockShell(): HTMLElement {
   let shell = document.getElementById(DOCK_ID);
   if (shell) return shell;
@@ -1736,6 +1875,7 @@ function resetNavigationState(): void {
   state.currentUrl = location.href;
   state.miniPlayerDismissed = false;
   restoreDockedPlayer();
+  restoreFullscreenActionDock();
 }
 
 function applyFeatureState(): void {
@@ -1759,6 +1899,8 @@ function applyFeatureState(): void {
   } else {
     removePipButton();
   }
+
+  updateFullscreenActionDock();
 
   if (
     state.settings.theaterHidePlayerUI ||
