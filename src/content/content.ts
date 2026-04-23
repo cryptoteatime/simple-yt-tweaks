@@ -126,6 +126,7 @@ const SELECTORS = {
   watchFlexy: 'ytd-watch-flexy',
   player: '#movie_player',
   html5Video: 'video.html5-main-video',
+  chromeControls: '.ytp-chrome-controls',
   chromeBottom: '.ytp-chrome-bottom',
   controlsRight: '.ytp-right-controls',
   overlaysContainer: '.ytp-overlays-container',
@@ -970,12 +971,13 @@ function buildCss(): string {
       display: inline-flex !important;
       align-items: center !important;
       justify-content: flex-end !important;
-      height: 100% !important;
-      margin-left: 8px !important;
+      align-self: center !important;
+      height: auto !important;
+      margin: 0 8px 0 0 !important;
       max-width: min(40vw, 320px) !important;
       gap: 6px !important;
       flex: 0 0 auto !important;
-      overflow: hidden !important;
+      overflow: visible !important;
       opacity: 1 !important;
       pointer-events: auto !important;
       visibility: visible !important;
@@ -1019,7 +1021,7 @@ function buildCss(): string {
 
     @media (max-width: 1100px) {
       body.simple-yt-tweaks-fullscreen-view #${FULLSCREEN_ACTION_DOCK_ID} {
-        margin-left: 4px !important;
+        margin-right: 4px !important;
         max-width: min(46vw, 260px) !important;
         gap: 4px !important;
       }
@@ -1756,15 +1758,24 @@ function removePipButton(): void {
 }
 
 function ensureFullscreenActionDockShell(): HTMLElement | null {
+  const chromeControls = query<HTMLElement>(SELECTORS.chromeControls);
   const rightControls = query<HTMLElement>(SELECTORS.controlsRight);
-  if (!rightControls) return null;
+  if (!chromeControls || !rightControls) return null;
 
   let shell = document.getElementById(FULLSCREEN_ACTION_DOCK_ID);
-  if (shell) return shell;
+  if (!shell) {
+    shell = document.createElement('div');
+    shell.id = FULLSCREEN_ACTION_DOCK_ID;
+  }
 
-  shell = document.createElement('div');
-  shell.id = FULLSCREEN_ACTION_DOCK_ID;
-  rightControls.prepend(shell);
+  if (rightControls.parentNode === chromeControls) {
+    if (shell.parentNode !== chromeControls || shell.nextSibling !== rightControls) {
+      chromeControls.insertBefore(shell, rightControls);
+    }
+  } else if (shell.parentNode !== chromeControls) {
+    chromeControls.append(shell);
+  }
+
   return shell;
 }
 

@@ -170,7 +170,6 @@ body {
   box-shadow: 0 12px 26px rgba(0, 0, 0, 0.22);
   scrollbar-width: thin;
   scrollbar-color: rgba(69, 214, 181, 0.34) transparent;
-  scrollbar-gutter: stable;
 }
 
 .settings::-webkit-scrollbar {
@@ -219,7 +218,7 @@ body {
 }
 
 .setting-row--select {
-  min-height: 50px;
+  min-height: 42px;
 }
 
 .setting-row--depth-2 {
@@ -334,7 +333,7 @@ body {
 
 .setting-select {
   min-width: 116px;
-  min-height: 30px;
+  min-height: 28px;
   padding: 0 10px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 7px;
