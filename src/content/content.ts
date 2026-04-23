@@ -1,11 +1,107 @@
-import {
-  DEFAULT_SETTINGS,
-  SETTING_KEYS,
-  normalizeSettings,
-  type BooleanSettingKey,
-  type SettingKey,
-  type Settings,
-} from '../shared/settings';
+type FeedColumnCount = 2 | 3 | 4;
+
+type BooleanSettingKey =
+  | 'generalHideSponsoredPosts'
+  | 'generalHideEndScreenCards'
+  | 'generalHideShorts'
+  | 'generalSidebarCleanup'
+  | 'generalHideSidebar'
+  | 'generalHideSidebarHome'
+  | 'generalHideSidebarShorts'
+  | 'generalHideSidebarSubscriptions'
+  | 'generalHideSidebarYou'
+  | 'generalHideSidebarExplore'
+  | 'generalHideSidebarMoreFromYouTube'
+  | 'generalHideSidebarReportHistory'
+  | 'generalHideSidebarFooter'
+  | 'enhancedTheaterMode'
+  | 'theaterHideHeader'
+  | 'theaterShowHeaderOnHover'
+  | 'theaterHidePlayerUI'
+  | 'theaterHideScrollbarOnScroll'
+  | 'theaterHideRecommendations'
+  | 'theaterHideComments'
+  | 'theaterHideMetadata'
+  | 'theaterShowPrimaryMetadata'
+  | 'theaterHideLiveChat'
+  | 'theaterShowLiveChatOverlay'
+  | 'defaultHideRecommendations'
+  | 'defaultHideComments'
+  | 'defaultHideMetadata'
+  | 'defaultShowPrimaryMetadata'
+  | 'defaultHideLiveChat'
+  | 'fullscreenHideTitleOverlay'
+  | 'fullscreenHidePlayerUI'
+  | 'fullscreenHideRecommendationOverlays'
+  | 'pipButton'
+  | 'floatingMiniPlayer';
+
+type SettingKey = BooleanSettingKey | 'generalFeedColumns';
+
+type Settings = Record<BooleanSettingKey, boolean> & {
+  generalFeedColumns: FeedColumnCount;
+};
+
+const DEFAULT_SETTINGS: Settings = {
+  generalHideSponsoredPosts: true,
+  generalHideEndScreenCards: true,
+  generalFeedColumns: 3,
+  generalHideShorts: true,
+  generalSidebarCleanup: true,
+  generalHideSidebar: false,
+  generalHideSidebarHome: false,
+  generalHideSidebarShorts: true,
+  generalHideSidebarSubscriptions: false,
+  generalHideSidebarYou: false,
+  generalHideSidebarExplore: false,
+  generalHideSidebarMoreFromYouTube: true,
+  generalHideSidebarReportHistory: true,
+  generalHideSidebarFooter: true,
+  enhancedTheaterMode: true,
+  theaterHideHeader: true,
+  theaterShowHeaderOnHover: true,
+  theaterHidePlayerUI: true,
+  theaterHideScrollbarOnScroll: true,
+  theaterHideRecommendations: true,
+  theaterHideComments: false,
+  theaterHideMetadata: false,
+  theaterShowPrimaryMetadata: true,
+  theaterHideLiveChat: false,
+  theaterShowLiveChatOverlay: false,
+  defaultHideRecommendations: false,
+  defaultHideComments: false,
+  defaultHideMetadata: false,
+  defaultShowPrimaryMetadata: true,
+  defaultHideLiveChat: false,
+  fullscreenHideTitleOverlay: true,
+  fullscreenHidePlayerUI: true,
+  fullscreenHideRecommendationOverlays: true,
+  pipButton: true,
+  floatingMiniPlayer: true,
+};
+
+const SETTING_KEYS = Object.keys(DEFAULT_SETTINGS) as SettingKey[];
+
+function isFeedColumnCount(value: unknown): value is FeedColumnCount {
+  return value === 2 || value === 3 || value === 4;
+}
+
+function normalizeSettings(items: Partial<Record<SettingKey, unknown>>): Settings {
+  const settings = { ...DEFAULT_SETTINGS };
+
+  for (const key of SETTING_KEYS) {
+    if (key === 'generalFeedColumns') {
+      settings.generalFeedColumns = isFeedColumnCount(items.generalFeedColumns)
+        ? items.generalFeedColumns
+        : DEFAULT_SETTINGS.generalFeedColumns;
+      continue;
+    }
+
+    settings[key] = typeof items[key] === 'boolean' ? items[key] : DEFAULT_SETTINGS[key];
+  }
+
+  return settings;
+}
 
 type DockState = {
   target: HTMLElement;
