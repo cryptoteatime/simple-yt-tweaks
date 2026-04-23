@@ -41,18 +41,18 @@ type DockState = {
 };
 
 const DEFAULT_SETTINGS: Settings = {
-  generalHideEndScreenCards: false,
-  generalHideShorts: false,
-  generalSidebarCleanup: false,
+  generalHideEndScreenCards: true,
+  generalHideShorts: true,
+  generalSidebarCleanup: true,
   generalHideSidebar: false,
   generalHideSidebarHome: false,
-  generalHideSidebarShorts: false,
+  generalHideSidebarShorts: true,
   generalHideSidebarSubscriptions: false,
   generalHideSidebarYou: false,
   generalHideSidebarExplore: false,
-  generalHideSidebarMoreFromYouTube: false,
-  generalHideSidebarReportHistory: false,
-  generalHideSidebarFooter: false,
+  generalHideSidebarMoreFromYouTube: true,
+  generalHideSidebarReportHistory: true,
+  generalHideSidebarFooter: true,
   enhancedTheaterMode: true,
   theaterHideHeader: true,
   theaterShowHeaderOnHover: true,
@@ -149,13 +149,6 @@ function loadSettings(): Promise<Settings> {
 }
 
 function normalizeSettings(settings: Settings): Settings {
-  if (settings.generalHideShorts) {
-    return {
-      ...settings,
-      generalHideSidebarShorts: true,
-    };
-  }
-
   return settings;
 }
 
@@ -394,7 +387,7 @@ function buildCss(): string {
     }
     ` : ''}
 
-    ${(generalHideShorts || generalHideSidebarShorts) ? `
+    ${generalHideSidebarShorts ? `
     body.simple-yt-tweaks-active ytd-mini-guide-entry-renderer[aria-label*="Shorts"],
     body.simple-yt-tweaks-active ytd-mini-guide-entry-renderer[title*="Shorts"],
     body.simple-yt-tweaks-active ytd-guide-entry-renderer:has(a[href^="/shorts"]),
@@ -929,7 +922,7 @@ function updateSidebarItemVisibility(): void {
 
   const enabledCategories: Array<keyof typeof SIDEBAR_ITEM_LABELS> = [];
   if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarHome) enabledCategories.push('home');
-  if (state.settings.generalHideSidebarShorts || state.settings.generalHideShorts) enabledCategories.push('shorts');
+  if (state.settings.generalHideSidebarShorts) enabledCategories.push('shorts');
   if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarSubscriptions) enabledCategories.push('subscriptions');
   if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarYou) enabledCategories.push('you');
   if (state.settings.generalSidebarCleanup && state.settings.generalHideSidebarExplore) enabledCategories.push('explore');
@@ -995,10 +988,7 @@ function updateShortsVisibility(): void {
         'ytd-grid-video-renderer',
         'ytd-compact-video-renderer',
         'ytd-reel-video-renderer',
-        'ytd-guide-entry-renderer',
-        'ytd-mini-guide-entry-renderer',
         'ytd-shelf-renderer',
-        'tp-yt-paper-item',
       ].join(','),
     );
   }

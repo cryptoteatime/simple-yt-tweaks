@@ -14,6 +14,7 @@
 - Added optional Shorts hiding across common YouTube navigation, feed, search, and recommendation surfaces.
 - Added optional end-screen card hiding.
 - Added a dedicated Report History sidebar cleanup control.
+- Added tab-scoped reset defaults.
 - Added restored Picture-in-Picture button support inside the YouTube player controls.
 - Added a floating mini-player that docks the actual YouTube player when scrolling below the video in default view.
 - Added theater-mode live chat controls, including an optional floating chat overlay when live chat exists.
@@ -28,7 +29,8 @@
 - Made theater mode clean up correctly when switching back to default view.
 - Kept hidden-header behavior theater-only, with optional top-edge hover reveal.
 - Kept the YouTube left navigation independent from the hidden-header setting.
-- Made global Shorts hiding force the Shorts sidebar link cleanup state.
+- Made global Shorts hiding turn on the Shorts sidebar link cleanup once without locking that child setting.
+- Set General defaults to hide Shorts, end-screen cards, and sidebar clutter while keeping primary navigation visible.
 - Hid YouTube's menu button when the entire sidebar is hidden.
 - Improved theater sizing in standalone YouTube app windows.
 - Made hidden player controls theater-only, with controls revealed from the player control-bar area.

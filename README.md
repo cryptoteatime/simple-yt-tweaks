@@ -15,6 +15,7 @@ This project is not affiliated with, endorsed by, sponsored by, or otherwise ass
 - Optional Shorts hiding across common navigation, home, feed, search, and recommendation surfaces.
 - Optional Report History sidebar cleanup without tying it to the You section.
 - Optional end-screen card hiding.
+- Tab-scoped reset defaults so one settings view does not wipe preferences from another view.
 - Optional hidden player controls that reappear when hovering near the control area.
 - Optional theater scrollbar hiding to reduce layout shift while scrolling.
 - Optional metadata hiding, with a title and top-row keep-visible option.

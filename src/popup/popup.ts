@@ -36,17 +36,21 @@ function isSettingDisabled(key: SettingKey, settings: Settings): boolean {
   return !settings[definition.parentKey] || isSettingDisabled(definition.parentKey, settings);
 }
 
-function getEffectiveSettingValue(key: SettingKey, settings: Settings): boolean {
-  if (key === 'generalHideSidebarShorts' && settings.generalHideShorts) return true;
-
-  return settings[key];
-}
-
 function getSettingDepth(key: SettingKey): number {
   const definition = SETTING_DEFINITIONS.find((item) => item.key === key);
   if (!definition?.parentKey) return 0;
 
   return getSettingDepth(definition.parentKey) + 1;
+}
+
+function getTabDefaults(tab: SettingTab): Partial<Settings> {
+  return SETTING_DEFINITIONS.reduce<Partial<Settings>>((defaults, definition) => {
+    if (definition.tab === tab) {
+      defaults[definition.key] = DEFAULT_SETTINGS[definition.key];
+    }
+
+    return defaults;
+  }, {});
 }
 
 function renderTabs(): void {
@@ -176,13 +180,13 @@ function renderSettings(settings: Settings): void {
     const isDisabled = isSettingDisabled(key, settings);
     const text = document.createElement('span');
     text.className = 'setting-state';
-    const effectiveValue = getEffectiveSettingValue(key, settings);
-    text.textContent = effectiveValue ? 'On' : 'Off';
+    const value = settings[key];
+    text.textContent = value ? 'On' : 'Off';
 
     const input = document.createElement('input');
     input.type = 'checkbox';
     input.id = key;
-    input.checked = effectiveValue;
+    input.checked = value;
     input.disabled = isDisabled;
     input.setAttribute('aria-describedby', `${key}-tip`);
     input.addEventListener('change', async () => {
@@ -217,9 +221,13 @@ async function init(): Promise<void> {
 
   requireElement(resetBtn, 'resetBtn').addEventListener('click', async () => {
     try {
-      await saveSettings(DEFAULT_SETTINGS);
-      currentSettings = { ...DEFAULT_SETTINGS };
-      renderSettings(DEFAULT_SETTINGS);
+      const nextSettings = {
+        ...currentSettings,
+        ...getTabDefaults(activeTab),
+      };
+      await saveSettings(nextSettings);
+      currentSettings = nextSettings;
+      renderSettings(nextSettings);
     } catch (error) {
       console.error('Simple YT Tweaks reset failed:', error);
     }

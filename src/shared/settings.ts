@@ -43,18 +43,18 @@ export type SettingDefinition = {
 };
 
 export const DEFAULT_SETTINGS: Settings = {
-  generalHideEndScreenCards: false,
-  generalHideShorts: false,
-  generalSidebarCleanup: false,
+  generalHideEndScreenCards: true,
+  generalHideShorts: true,
+  generalSidebarCleanup: true,
   generalHideSidebar: false,
   generalHideSidebarHome: false,
-  generalHideSidebarShorts: false,
+  generalHideSidebarShorts: true,
   generalHideSidebarSubscriptions: false,
   generalHideSidebarYou: false,
   generalHideSidebarExplore: false,
-  generalHideSidebarMoreFromYouTube: false,
-  generalHideSidebarReportHistory: false,
-  generalHideSidebarFooter: false,
+  generalHideSidebarMoreFromYouTube: true,
+  generalHideSidebarReportHistory: true,
+  generalHideSidebarFooter: true,
   enhancedTheaterMode: true,
   theaterHideHeader: true,
   theaterShowHeaderOnHover: true,
@@ -288,19 +288,13 @@ export const SETTING_DEFINITIONS: SettingDefinition[] = [
 export const SETTING_KEYS = SETTING_DEFINITIONS.map(({ key }) => key);
 
 export function normalizeSettings(items: Partial<Record<SettingKey, unknown>>): Settings {
-  const settings = SETTING_KEYS.reduce<Settings>(
+  return SETTING_KEYS.reduce<Settings>(
     (settings, key) => {
       settings[key] = typeof items[key] === 'boolean' ? items[key] : DEFAULT_SETTINGS[key];
       return settings;
     },
     { ...DEFAULT_SETTINGS },
   );
-
-  if (settings.generalHideShorts) {
-    settings.generalHideSidebarShorts = true;
-  }
-
-  return settings;
 }
 
 export function loadSettings(): Promise<Settings> {
