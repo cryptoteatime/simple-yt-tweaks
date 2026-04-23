@@ -36,6 +36,13 @@ function isSettingDisabled(key: SettingKey, settings: Settings): boolean {
   return !settings[definition.parentKey] || isSettingDisabled(definition.parentKey, settings);
 }
 
+function getSettingDepth(key: SettingKey): number {
+  const definition = SETTING_DEFINITIONS.find((item) => item.key === key);
+  if (!definition?.parentKey) return 0;
+
+  return getSettingDepth(definition.parentKey) + 1;
+}
+
 function renderTabs(): void {
   const container = requireElement(settingsTabsEl, 'settingsTabs');
   container.textContent = '';
@@ -130,7 +137,8 @@ function renderSettings(settings: Settings): void {
 
     const row = document.createElement('div');
     row.className = 'setting-row';
-    if (parentKey) row.classList.add('setting-row--child');
+    const depth = getSettingDepth(key);
+    if (parentKey) row.classList.add('setting-row--child', `setting-row--depth-${depth}`);
 
     const copy = document.createElement('div');
     copy.className = 'setting-copy';

@@ -23,6 +23,7 @@
 - Reworked enhanced theater mode sizing so the player fits the viewport without cropping or horizontal overflow.
 - Made theater mode clean up correctly when switching back to default view.
 - Kept hidden-header behavior theater-only, with optional top-edge hover reveal.
+- Kept the YouTube left navigation independent from the hidden-header setting.
 - Made hidden player controls theater-only, with controls revealed from the player control-bar area.
 - Split recommendation, comment, and live-chat hiding between Theater and Default views.
 - Allowed the below-video area, title, description, and comments to expand when theater recommendations are hidden.

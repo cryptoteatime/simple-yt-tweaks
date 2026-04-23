@@ -54,7 +54,6 @@ const SETTING_KEYS = Object.keys(DEFAULT_SETTINGS) as SettingKey[];
 const SELECTORS = {
   masthead: '#masthead-container, ytd-masthead',
   mastheadTargets: '#masthead-container, ytd-masthead, ytd-masthead #container',
-  guide: '#guide, ytd-guide-renderer, #guide-content',
   watchFlexy: 'ytd-watch-flexy',
   player: '#movie_player',
   html5Video: 'video.html5-main-video',
@@ -311,12 +310,6 @@ function buildCss(): string {
       padding-left: 0 !important;
     }
 
-    body.simple-yt-tweaks-theater ytd-mini-guide-renderer,
-    body.simple-yt-tweaks-theater #guide-spacer,
-    body.simple-yt-tweaks-theater tp-yt-app-drawer {
-      display: none !important;
-    }
-
     body.simple-yt-tweaks-theater ytd-app,
     body.simple-yt-tweaks-theater #content,
     body.simple-yt-tweaks-theater #page-manager,
@@ -503,10 +496,6 @@ function buildCss(): string {
       transform: translateY(0) !important;
     }
     ` : ''}
-
-    body.simple-yt-tweaks-theater ${SELECTORS.guide} {
-      display: none !important;
-    }
     ` : ''}
 
     ${theaterHidePlayerUI ? `
