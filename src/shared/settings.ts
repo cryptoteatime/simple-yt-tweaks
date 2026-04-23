@@ -1,9 +1,10 @@
-export type SettingTab = 'general' | 'theater' | 'default';
+export type TopLevelTab = 'general' | 'sidebar' | 'views';
+export type ViewMode = 'theater' | 'default' | 'fullscreen';
 export type FeedColumnCount = 2 | 3 | 4;
 
 export type BooleanSettingKey =
+  | 'generalHideSponsoredPosts'
   | 'generalHideEndScreenCards'
-  | 'generalPolishSidebarSections'
   | 'generalHideShorts'
   | 'generalSidebarCleanup'
   | 'generalHideSidebar'
@@ -31,6 +32,9 @@ export type BooleanSettingKey =
   | 'defaultHideMetadata'
   | 'defaultShowPrimaryMetadata'
   | 'defaultHideLiveChat'
+  | 'fullscreenHideTitleOverlay'
+  | 'fullscreenHidePlayerUI'
+  | 'fullscreenHideRecommendationOverlays'
   | 'pipButton'
   | 'floatingMiniPlayer';
 
@@ -49,18 +53,19 @@ export type SettingDefinition = {
   key: SettingKey;
   label: string;
   description: string;
-  tab: SettingTab;
+  topTab: TopLevelTab;
+  viewMode?: ViewMode;
   parentKey?: BooleanSettingKey;
-  kind?: 'toggle' | 'choice';
+  kind?: 'toggle' | 'select';
   options?: SettingOption[];
 };
 
 export const DEFAULT_SETTINGS: Settings = {
+  generalHideSponsoredPosts: true,
   generalHideEndScreenCards: true,
   generalFeedColumns: 3,
   generalHideShorts: true,
   generalSidebarCleanup: true,
-  generalPolishSidebarSections: true,
   generalHideSidebar: false,
   generalHideSidebarHome: false,
   generalHideSidebarShorts: true,
@@ -86,240 +91,287 @@ export const DEFAULT_SETTINGS: Settings = {
   defaultHideMetadata: false,
   defaultShowPrimaryMetadata: true,
   defaultHideLiveChat: false,
+  fullscreenHideTitleOverlay: true,
+  fullscreenHidePlayerUI: true,
+  fullscreenHideRecommendationOverlays: true,
   pipButton: true,
   floatingMiniPlayer: true,
 };
 
-export const SETTING_TABS: Array<{ id: SettingTab; label: string }> = [
+export const SETTING_TABS: Array<{ id: TopLevelTab; label: string }> = [
   { id: 'general', label: 'General' },
-  { id: 'theater', label: 'Theater View' },
-  { id: 'default', label: 'Default View' },
+  { id: 'sidebar', label: 'Sidebar' },
+  { id: 'views', label: 'Views' },
+];
+
+export const VIEW_MODES: Array<{ id: ViewMode; label: string }> = [
+  { id: 'theater', label: 'Theater' },
+  { id: 'default', label: 'Default' },
+  { id: 'fullscreen', label: 'Fullscreen' },
 ];
 
 export const SETTING_DEFINITIONS: SettingDefinition[] = [
   {
-    key: 'generalHideEndScreenCards',
-    label: 'Hide End-Screen Cards',
-    description: 'Hides YouTube end-screen overlays that appear over the video near the end.',
-    tab: 'general',
-  },
-  {
     key: 'generalFeedColumns',
     label: 'Home Feed Columns',
     description: 'Controls the number of columns shown on the YouTube home feed.',
-    tab: 'general',
-    kind: 'choice',
+    topTab: 'general',
+    kind: 'select',
     options: [
-      { value: 2, label: '2' },
-      { value: 3, label: '3' },
-      { value: 4, label: '4' },
+      { value: 2, label: '2 columns' },
+      { value: 3, label: '3 columns' },
+      { value: 4, label: '4 columns' },
     ],
+  },
+  {
+    key: 'generalHideSponsoredPosts',
+    label: 'Hide Sponsored Posts',
+    description: 'Hides sponsored and promoted cards where they can be identified confidently.',
+    topTab: 'general',
   },
   {
     key: 'generalHideShorts',
     label: 'Hide Shorts',
     description: 'Hides Shorts shelves, results, and recommendations while leaving the dedicated Shorts page available.',
-    tab: 'general',
+    topTab: 'general',
+  },
+  {
+    key: 'generalHideEndScreenCards',
+    label: 'Hide End-Screen Cards',
+    description: 'Hides YouTube end-screen overlays that appear over the video near the end.',
+    topTab: 'general',
   },
   {
     key: 'generalSidebarCleanup',
     label: 'Sidebar Cleanup',
-    description: 'Enables left sidebar cleanup options for YouTube navigation.',
-    tab: 'general',
-  },
-  {
-    key: 'generalPolishSidebarSections',
-    label: 'Polish Sidebar Sections',
-    description: 'Keeps Subscriptions compact, expands You by default, and removes extra show-more and show-less clutter.',
-    tab: 'general',
-    parentKey: 'generalSidebarCleanup',
+    description: 'Enables the cleaned-up left sidebar layout and its section controls.',
+    topTab: 'sidebar',
   },
   {
     key: 'generalHideSidebar',
     label: 'Hide Entire Sidebar',
     description: 'Hides the main YouTube left navigation sidebar and mini guide.',
-    tab: 'general',
+    topTab: 'sidebar',
     parentKey: 'generalSidebarCleanup',
   },
   {
     key: 'generalHideSidebarHome',
     label: 'Hide Home Link',
     description: 'Hides Home entries from the YouTube sidebar.',
-    tab: 'general',
+    topTab: 'sidebar',
     parentKey: 'generalSidebarCleanup',
   },
   {
     key: 'generalHideSidebarShorts',
     label: 'Hide Shorts Link',
     description: 'Hides Shorts entries from the YouTube sidebar.',
-    tab: 'general',
+    topTab: 'sidebar',
     parentKey: 'generalSidebarCleanup',
   },
   {
     key: 'generalHideSidebarSubscriptions',
     label: 'Hide Subscriptions',
-    description: 'Hides the Subscriptions sidebar section, including channel shortcuts and show-more controls.',
-    tab: 'general',
+    description: 'Hides the Subscriptions sidebar section.',
+    topTab: 'sidebar',
     parentKey: 'generalSidebarCleanup',
   },
   {
     key: 'generalHideSidebarYou',
     label: 'Hide You',
     description: 'Hides You, Your channel, History, Playlists, and similar personal library entries from the sidebar.',
-    tab: 'general',
+    topTab: 'sidebar',
     parentKey: 'generalSidebarCleanup',
   },
   {
     key: 'generalHideSidebarExplore',
     label: 'Hide Explore',
     description: 'Hides Explore and category entries from the YouTube sidebar.',
-    tab: 'general',
+    topTab: 'sidebar',
     parentKey: 'generalSidebarCleanup',
   },
   {
     key: 'generalHideSidebarMoreFromYouTube',
     label: 'Hide More from YouTube',
     description: 'Hides YouTube Premium, YouTube TV, Kids, Music, and similar product links from the sidebar.',
-    tab: 'general',
+    topTab: 'sidebar',
     parentKey: 'generalSidebarCleanup',
   },
   {
     key: 'generalHideSidebarReportHistory',
     label: 'Hide Report History',
     description: 'Hides the Report history sidebar link without tying it to the You section.',
-    tab: 'general',
+    topTab: 'sidebar',
     parentKey: 'generalSidebarCleanup',
   },
   {
     key: 'generalHideSidebarFooter',
     label: 'Hide Sidebar Footer',
     description: 'Hides the About, Press, Copyright, Terms, Privacy, and related footer links in the sidebar.',
-    tab: 'general',
+    topTab: 'sidebar',
     parentKey: 'generalSidebarCleanup',
   },
   {
     key: 'enhancedTheaterMode',
     label: 'Enhanced Theater Mode',
     description: 'Expands YouTube theater mode into a cleaner full-window viewing layout.',
-    tab: 'theater',
+    topTab: 'views',
+    viewMode: 'theater',
   },
   {
     key: 'theaterHideHeader',
     label: 'Hide Header',
     description: 'Hides the YouTube header while enhanced theater mode is active.',
-    tab: 'theater',
+    topTab: 'views',
+    viewMode: 'theater',
     parentKey: 'enhancedTheaterMode',
   },
   {
     key: 'theaterShowHeaderOnHover',
     label: 'Show Header on Hover',
     description: 'Reveals the hidden header when you hover near the top of the page.',
-    tab: 'theater',
+    topTab: 'views',
+    viewMode: 'theater',
     parentKey: 'theaterHideHeader',
   },
   {
     key: 'theaterHidePlayerUI',
     label: 'Hide Player UI',
     description: 'Hides player controls until you hover near the control bar.',
-    tab: 'theater',
+    topTab: 'views',
+    viewMode: 'theater',
     parentKey: 'enhancedTheaterMode',
   },
   {
     key: 'theaterHideScrollbarOnScroll',
     label: 'Hide Scrollbar on Scroll',
     description: 'Keeps the page scrollbar hidden in enhanced theater mode to prevent layout shift while scrolling.',
-    tab: 'theater',
+    topTab: 'views',
+    viewMode: 'theater',
     parentKey: 'enhancedTheaterMode',
   },
   {
     key: 'theaterHideRecommendations',
     label: 'Hide Recommendations',
     description: 'Hides the right-side recommendations column while enhanced theater mode is active.',
-    tab: 'theater',
+    topTab: 'views',
+    viewMode: 'theater',
     parentKey: 'enhancedTheaterMode',
   },
   {
     key: 'theaterHideComments',
     label: 'Hide Comments',
     description: 'Hides only the comments section while enhanced theater mode is active.',
-    tab: 'theater',
+    topTab: 'views',
+    viewMode: 'theater',
     parentKey: 'enhancedTheaterMode',
   },
   {
     key: 'theaterHideMetadata',
     label: 'Hide Metadata',
     description: 'Hides the title, channel row, actions, description, views, date, and other below-video metadata.',
-    tab: 'theater',
+    topTab: 'views',
+    viewMode: 'theater',
     parentKey: 'enhancedTheaterMode',
   },
   {
     key: 'theaterShowPrimaryMetadata',
     label: 'Show Title and Top Row',
     description: 'Keeps the video title, channel row, and action buttons visible while hiding the description and extra metadata.',
-    tab: 'theater',
+    topTab: 'views',
+    viewMode: 'theater',
     parentKey: 'theaterHideMetadata',
   },
   {
     key: 'theaterHideLiveChat',
     label: 'Hide Live Chat',
     description: 'Hides live chat while enhanced theater mode is active.',
-    tab: 'theater',
+    topTab: 'views',
+    viewMode: 'theater',
     parentKey: 'enhancedTheaterMode',
   },
   {
     key: 'theaterShowLiveChatOverlay',
     label: 'Show Chat Overlay',
     description: 'Shows live chat as a floating overlay on top of the video when chat exists.',
-    tab: 'theater',
+    topTab: 'views',
+    viewMode: 'theater',
     parentKey: 'theaterHideLiveChat',
   },
   {
     key: 'defaultHideRecommendations',
     label: 'Hide Recommendations',
     description: 'Hides recommendations in the normal watch-page view.',
-    tab: 'default',
+    topTab: 'views',
+    viewMode: 'default',
   },
   {
     key: 'defaultHideComments',
     label: 'Hide Comments',
     description: 'Hides only the comments section in the normal watch-page view.',
-    tab: 'default',
+    topTab: 'views',
+    viewMode: 'default',
   },
   {
     key: 'defaultHideMetadata',
     label: 'Hide Metadata',
     description: 'Hides the title, channel row, actions, description, views, date, and other below-video metadata.',
-    tab: 'default',
+    topTab: 'views',
+    viewMode: 'default',
   },
   {
     key: 'defaultShowPrimaryMetadata',
     label: 'Show Title and Top Row',
     description: 'Keeps the video title, channel row, and action buttons visible while hiding the description and extra metadata.',
-    tab: 'default',
+    topTab: 'views',
+    viewMode: 'default',
     parentKey: 'defaultHideMetadata',
   },
   {
     key: 'defaultHideLiveChat',
     label: 'Hide Live Chat',
     description: 'Hides live chat in the normal watch-page view.',
-    tab: 'default',
+    topTab: 'views',
+    viewMode: 'default',
   },
   {
     key: 'pipButton',
     label: 'Restore PiP Button',
     description: 'Adds a Picture-in-Picture button to the YouTube player controls.',
-    tab: 'default',
+    topTab: 'views',
+    viewMode: 'default',
   },
   {
     key: 'floatingMiniPlayer',
     label: 'Floating Mini-Player',
     description: 'Docks the actual YouTube player in the corner when you scroll below it.',
-    tab: 'default',
+    topTab: 'views',
+    viewMode: 'default',
     parentKey: 'pipButton',
+  },
+  {
+    key: 'fullscreenHideTitleOverlay',
+    label: 'Hide Title Overlay',
+    description: 'Hides the fullscreen title overlay until player chrome is shown.',
+    topTab: 'views',
+    viewMode: 'fullscreen',
+  },
+  {
+    key: 'fullscreenHidePlayerUI',
+    label: 'Hide Player UI',
+    description: 'Hides fullscreen player controls until you hover near the control bar.',
+    topTab: 'views',
+    viewMode: 'fullscreen',
+  },
+  {
+    key: 'fullscreenHideRecommendationOverlays',
+    label: 'Hide Recommendation Overlays',
+    description: 'Hides end-screen cards and similar recommendation overlays in native fullscreen.',
+    topTab: 'views',
+    viewMode: 'fullscreen',
   },
 ];
 
-export const SETTING_KEYS = SETTING_DEFINITIONS.map(({ key }) => key);
+export const SETTING_KEYS = Object.keys(DEFAULT_SETTINGS) as SettingKey[];
 
 function isFeedColumnCount(value: unknown): value is FeedColumnCount {
   return value === 2 || value === 3 || value === 4;

@@ -1,43 +1,11 @@
-type FeedColumnCount = 2 | 3 | 4;
-
-type BooleanSettingKey =
-  | 'generalHideEndScreenCards'
-  | 'generalPolishSidebarSections'
-  | 'generalHideShorts'
-  | 'generalSidebarCleanup'
-  | 'generalHideSidebar'
-  | 'generalHideSidebarHome'
-  | 'generalHideSidebarShorts'
-  | 'generalHideSidebarSubscriptions'
-  | 'generalHideSidebarYou'
-  | 'generalHideSidebarExplore'
-  | 'generalHideSidebarMoreFromYouTube'
-  | 'generalHideSidebarReportHistory'
-  | 'generalHideSidebarFooter'
-  | 'enhancedTheaterMode'
-  | 'theaterHideHeader'
-  | 'theaterShowHeaderOnHover'
-  | 'theaterHidePlayerUI'
-  | 'theaterHideScrollbarOnScroll'
-  | 'theaterHideRecommendations'
-  | 'theaterHideComments'
-  | 'theaterHideMetadata'
-  | 'theaterShowPrimaryMetadata'
-  | 'theaterHideLiveChat'
-  | 'theaterShowLiveChatOverlay'
-  | 'defaultHideRecommendations'
-  | 'defaultHideComments'
-  | 'defaultHideMetadata'
-  | 'defaultShowPrimaryMetadata'
-  | 'defaultHideLiveChat'
-  | 'pipButton'
-  | 'floatingMiniPlayer';
-
-type SettingKey = BooleanSettingKey | 'generalFeedColumns';
-
-type Settings = Record<BooleanSettingKey, boolean> & {
-  generalFeedColumns: FeedColumnCount;
-};
+import {
+  DEFAULT_SETTINGS,
+  SETTING_KEYS,
+  normalizeSettings,
+  type BooleanSettingKey,
+  type SettingKey,
+  type Settings,
+} from '../shared/settings';
 
 type DockState = {
   target: HTMLElement;
@@ -46,43 +14,6 @@ type DockState = {
   placeholder: HTMLElement;
   shell: HTMLElement;
 };
-
-const DEFAULT_SETTINGS: Settings = {
-  generalHideEndScreenCards: true,
-  generalFeedColumns: 3,
-  generalHideShorts: true,
-  generalSidebarCleanup: true,
-  generalPolishSidebarSections: true,
-  generalHideSidebar: false,
-  generalHideSidebarHome: false,
-  generalHideSidebarShorts: true,
-  generalHideSidebarSubscriptions: false,
-  generalHideSidebarYou: false,
-  generalHideSidebarExplore: false,
-  generalHideSidebarMoreFromYouTube: true,
-  generalHideSidebarReportHistory: true,
-  generalHideSidebarFooter: true,
-  enhancedTheaterMode: true,
-  theaterHideHeader: true,
-  theaterShowHeaderOnHover: true,
-  theaterHidePlayerUI: true,
-  theaterHideScrollbarOnScroll: true,
-  theaterHideRecommendations: true,
-  theaterHideComments: false,
-  theaterHideMetadata: false,
-  theaterShowPrimaryMetadata: true,
-  theaterHideLiveChat: false,
-  theaterShowLiveChatOverlay: false,
-  defaultHideRecommendations: false,
-  defaultHideComments: false,
-  defaultHideMetadata: false,
-  defaultShowPrimaryMetadata: true,
-  defaultHideLiveChat: false,
-  pipButton: true,
-  floatingMiniPlayer: true,
-};
-
-const SETTING_KEYS = Object.keys(DEFAULT_SETTINGS) as SettingKey[];
 
 const SELECTORS = {
   masthead: '#masthead-container, ytd-masthead',
@@ -102,6 +33,17 @@ const DOCK_ID = 'simple-yt-tweaks-dock';
 const MASTHEAD_CLASS = 'simple-yt-tweaks-masthead';
 const LIVE_CHAT_CLASS = 'simple-yt-tweaks-live-chat';
 const GENERAL_HIDDEN_CLASS = 'simple-yt-tweaks-hidden';
+const SIDEBAR_SUBSCRIPTIONS_CLASS = 'simple-yt-tweaks-sidebar-subscriptions';
+
+const SPONSORED_CARD_SELECTORS = [
+  'ytd-display-ad-renderer',
+  'ytd-promoted-sparkles-web-renderer',
+  'ytd-ad-slot-renderer',
+  'ytd-in-feed-ad-layout-renderer',
+  'ytd-banner-promo-renderer',
+  'ytd-search-pyv-renderer',
+  'ytm-promoted-sparkles-web-renderer',
+] as const;
 
 const SIDEBAR_ITEM_LABELS = {
   home: ['home'],
@@ -150,32 +92,9 @@ function loadSettings(): Promise<Settings> {
         return;
       }
 
-      const settings = SETTING_KEYS.reduce<Settings>(
-        (normalized, key) => {
-          if (key === 'generalFeedColumns') {
-            normalized.generalFeedColumns = isFeedColumnCount(items.generalFeedColumns)
-              ? items.generalFeedColumns
-              : DEFAULT_SETTINGS.generalFeedColumns;
-            return normalized;
-          }
-
-          normalized[key] = typeof items[key] === 'boolean' ? items[key] : DEFAULT_SETTINGS[key];
-          return normalized;
-        },
-        { ...DEFAULT_SETTINGS },
-      );
-
-      resolve(normalizeSettings(settings));
+      resolve(normalizeSettings(items));
     });
   });
-}
-
-function normalizeSettings(settings: Settings): Settings {
-  return settings;
-}
-
-function isFeedColumnCount(value: unknown): value is FeedColumnCount {
-  return value === 2 || value === 3 || value === 4;
 }
 
 function isFeatureEnabled(key: BooleanSettingKey): boolean {
@@ -245,6 +164,10 @@ function isDefaultWatchView(): boolean {
   return isWatchPage() && !isTheaterMode();
 }
 
+function isNativeFullscreenActive(): boolean {
+  return isWatchPage() && Boolean(document.fullscreenElement);
+}
+
 function normalizeLabel(value: string): string {
   return value.toLowerCase().replace(/[›>]/g, '').replace(/\s+/g, ' ').trim();
 }
@@ -276,6 +199,7 @@ function elementMatchesAnyLabel(element: Element, labels: readonly string[]): bo
 }
 
 function buildCss(): string {
+  const generalHideSponsoredPosts = state.settings.generalHideSponsoredPosts;
   const generalHideEndScreenCards = state.settings.generalHideEndScreenCards;
   const generalFeedColumns = state.settings.generalFeedColumns;
   const generalHideShorts = state.settings.generalHideShorts && !isDedicatedShortsPage();
@@ -297,6 +221,8 @@ function buildCss(): string {
   const defaultHideMetadata = state.settings.defaultHideMetadata;
   const defaultShowPrimaryMetadata = state.settings.defaultShowPrimaryMetadata;
   const defaultHideLiveChat = state.settings.defaultHideLiveChat;
+  const fullscreenHideTitleOverlay = state.settings.fullscreenHideTitleOverlay;
+  const fullscreenHideRecommendationOverlays = state.settings.fullscreenHideRecommendationOverlays;
 
   return `
     .${GENERAL_HIDDEN_CLASS} {
@@ -316,13 +242,30 @@ function buildCss(): string {
     }
 
     body.simple-yt-tweaks-active ytd-browse[page-subtype="home"] ytd-rich-grid-renderer,
-    body.simple-yt-tweaks-active ytd-browse[page-subtype="home"] ytd-rich-grid-renderer #contents,
-    body.simple-yt-tweaks-active ytd-browse[page-subtype="subscriptions"] ytd-rich-grid-renderer,
-    body.simple-yt-tweaks-active ytd-browse[page-subtype="subscriptions"] ytd-rich-grid-renderer #contents {
+    body.simple-yt-tweaks-active ytd-browse[page-subtype="home"] ytd-rich-grid-renderer #contents {
       --ytd-rich-grid-items-per-row: ${generalFeedColumns} !important;
       --ytd-rich-grid-posts-per-row: ${generalFeedColumns} !important;
       --ytd-rich-grid-slim-items-per-row: ${generalFeedColumns} !important;
       --ytd-rich-grid-game-cards-per-row: ${generalFeedColumns} !important;
+    }
+
+    body.simple-yt-tweaks-active ytd-browse[page-subtype="home"] ytd-rich-grid-renderer #contents {
+      display: grid !important;
+      grid-template-columns: repeat(${generalFeedColumns}, minmax(0, 1fr)) !important;
+      align-items: start !important;
+      column-gap: 16px !important;
+      row-gap: 24px !important;
+    }
+
+    body.simple-yt-tweaks-active ytd-browse[page-subtype="home"] ytd-rich-grid-row {
+      display: contents !important;
+    }
+
+    body.simple-yt-tweaks-active ytd-browse[page-subtype="home"] ytd-rich-item-renderer {
+      width: auto !important;
+      margin: 0 !important;
+      min-width: 0 !important;
+      max-width: none !important;
     }
 
     #${DOCK_ID} {
@@ -391,6 +334,28 @@ function buildCss(): string {
       min-height: 220px;
       background: transparent;
     }
+
+    ${generalSidebarCleanup ? `
+    body.simple-yt-tweaks-active .${SIDEBAR_SUBSCRIPTIONS_CLASS} #header-entry .guide-icon,
+    body.simple-yt-tweaks-active .${SIDEBAR_SUBSCRIPTIONS_CLASS} #header-entry yt-icon,
+    body.simple-yt-tweaks-active .${SIDEBAR_SUBSCRIPTIONS_CLASS} #header-entry yt-img-shadow {
+      display: inline-flex !important;
+      visibility: visible !important;
+    }
+
+    body.simple-yt-tweaks-active .${SIDEBAR_SUBSCRIPTIONS_CLASS} #header-entry .arrow-icon {
+      display: none !important;
+    }
+    ` : ''}
+
+    ${generalHideSponsoredPosts ? `
+    body.simple-yt-tweaks-active ${SPONSORED_CARD_SELECTORS.join(',\n    body.simple-yt-tweaks-active ')} {
+      display: none !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+      visibility: hidden !important;
+    }
+    ` : ''}
 
     ${generalHideEndScreenCards ? `
     body.simple-yt-tweaks-active .ytp-ce-element,
@@ -721,6 +686,42 @@ function buildCss(): string {
     }
     ` : ''}
 
+    ${fullscreenHideTitleOverlay ? `
+    body.simple-yt-tweaks-fullscreen-view .ytp-title,
+    body.simple-yt-tweaks-fullscreen-view .ytp-title-channel,
+    body.simple-yt-tweaks-fullscreen-view .ytp-title-text,
+    body.simple-yt-tweaks-fullscreen-view .ytp-title-link {
+      opacity: 0 !important;
+      pointer-events: none !important;
+      transition: opacity 0.18s ease !important;
+    }
+
+    body.simple-yt-tweaks-fullscreen-view.simple-yt-tweaks-player-ui-hover .ytp-title,
+    body.simple-yt-tweaks-fullscreen-view.simple-yt-tweaks-player-ui-hover .ytp-title-channel,
+    body.simple-yt-tweaks-fullscreen-view.simple-yt-tweaks-player-ui-hover .ytp-title-text,
+    body.simple-yt-tweaks-fullscreen-view.simple-yt-tweaks-player-ui-hover .ytp-title-link,
+    body.simple-yt-tweaks-fullscreen-view .ytp-chrome-top:focus-within .ytp-title,
+    body.simple-yt-tweaks-fullscreen-view .ytp-chrome-top:focus-within .ytp-title-channel,
+    body.simple-yt-tweaks-fullscreen-view .ytp-chrome-top:focus-within .ytp-title-text,
+    body.simple-yt-tweaks-fullscreen-view .ytp-chrome-top:focus-within .ytp-title-link {
+      opacity: 1 !important;
+      pointer-events: auto !important;
+    }
+    ` : ''}
+
+    ${fullscreenHideRecommendationOverlays ? `
+    body.simple-yt-tweaks-fullscreen-view .ytp-ce-element,
+    body.simple-yt-tweaks-fullscreen-view .ytp-endscreen-content,
+    body.simple-yt-tweaks-fullscreen-view .ytp-pause-overlay,
+    body.simple-yt-tweaks-fullscreen-view .ytp-upnext,
+    body.simple-yt-tweaks-fullscreen-view .ytp-scroll-min {
+      display: none !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+      visibility: hidden !important;
+    }
+    ` : ''}
+
     ${defaultHideRecommendations ? `
     body.simple-yt-tweaks-default-view #related,
     body.simple-yt-tweaks-default-view ytd-watch-next-secondary-results-renderer {
@@ -802,20 +803,27 @@ function ensureStyle(): void {
 }
 
 function updateTheaterClass(): void {
-  const enabled = isEnhancedTheaterActive();
-  const wasEnabled = state.lastEnhancedTheaterActive;
+  const theaterEnabled = isEnhancedTheaterActive();
+  const fullscreenEnabled = isNativeFullscreenActive();
+  const wasTheaterEnabled = state.lastEnhancedTheaterActive;
+  const wasFullscreenEnabled = document.body.classList.contains('simple-yt-tweaks-fullscreen-view');
 
-  document.body.classList.toggle('simple-yt-tweaks-theater', enabled);
-  document.documentElement.classList.toggle('simple-yt-tweaks-theater-scrollbar-hidden', enabled && state.settings.theaterHideScrollbarOnScroll);
-  document.body.classList.toggle('simple-yt-tweaks-theater-scrollbar-hidden', enabled && state.settings.theaterHideScrollbarOnScroll);
+  document.body.classList.toggle('simple-yt-tweaks-theater', theaterEnabled);
   document.body.classList.toggle('simple-yt-tweaks-default-view', isDefaultWatchView());
+  document.body.classList.toggle('simple-yt-tweaks-fullscreen-view', fullscreenEnabled);
+  document.documentElement.classList.toggle(
+    'simple-yt-tweaks-theater-scrollbar-hidden',
+    theaterEnabled && state.settings.theaterHideScrollbarOnScroll,
+  );
+  document.body.classList.toggle(
+    'simple-yt-tweaks-theater-scrollbar-hidden',
+    theaterEnabled && state.settings.theaterHideScrollbarOnScroll,
+  );
 
-  if (enabled) {
+  if (theaterEnabled) {
     restoreDockedPlayer();
   } else {
     document.body.classList.remove('simple-yt-tweaks-top-hover');
-    document.body.classList.remove('simple-yt-tweaks-player-ui-hover');
-    document.body.classList.remove('simple-yt-tweaks-player-ui-hidden');
     document.body.classList.remove('simple-yt-tweaks-has-live-chat');
     document.documentElement.classList.remove('simple-yt-tweaks-scrollbar-hidden');
     document.documentElement.classList.remove('simple-yt-tweaks-theater-scrollbar-hidden');
@@ -824,8 +832,18 @@ function updateTheaterClass(): void {
     restoreTheaterOnlyTargets();
   }
 
-  if (wasEnabled !== enabled) {
-    state.lastEnhancedTheaterActive = enabled;
+  const shouldHidePlayerUi =
+    (theaterEnabled && state.settings.theaterHidePlayerUI) ||
+    (fullscreenEnabled && state.settings.fullscreenHidePlayerUI);
+
+  document.body.classList.toggle('simple-yt-tweaks-player-ui-hidden', shouldHidePlayerUi);
+
+  if (!shouldHidePlayerUi) {
+    document.body.classList.remove('simple-yt-tweaks-player-ui-hover');
+  }
+
+  if (wasTheaterEnabled !== theaterEnabled || wasFullscreenEnabled !== fullscreenEnabled) {
+    state.lastEnhancedTheaterActive = theaterEnabled;
     scheduleModeStabilization();
   }
 }
@@ -896,6 +914,10 @@ function clearGeneralHiddenTargets(): void {
   for (const target of queryAll<HTMLElement>(`.${GENERAL_HIDDEN_CLASS}`)) {
     target.classList.remove(GENERAL_HIDDEN_CLASS);
   }
+
+  for (const target of queryAll<HTMLElement>(`.${SIDEBAR_SUBSCRIPTIONS_CLASS}`)) {
+    target.classList.remove(SIDEBAR_SUBSCRIPTIONS_CLASS);
+  }
 }
 
 function hideElement(element: Element | null): void {
@@ -965,16 +987,13 @@ function clickElement(element: HTMLElement | null): void {
 }
 
 function updateSidebarSectionPolish(): void {
-  if (
-    !state.settings.generalSidebarCleanup ||
-    !state.settings.generalPolishSidebarSections ||
-    state.settings.generalHideSidebar
-  ) {
+  if (!state.settings.generalSidebarCleanup || state.settings.generalHideSidebar) {
     return;
   }
 
   const subscriptionsSection = getSidebarSection('subscriptions');
   if (subscriptionsSection && !state.settings.generalHideSidebarSubscriptions) {
+    subscriptionsSection.classList.add(SIDEBAR_SUBSCRIPTIONS_CLASS);
     const subscriptionsItems = query<HTMLElement>('#items', subscriptionsSection);
     if (subscriptionsItems) {
       for (const child of Array.from(subscriptionsItems.children)) {
@@ -1003,6 +1022,62 @@ function updateSidebarSectionPolish(): void {
 
     hideElement(expanderItem);
     hideElement(youCollapsible ? query('#collapser-item', youCollapsible) : null);
+  }
+}
+
+function isVisibleNode(element: HTMLElement): boolean {
+  const styles = window.getComputedStyle(element);
+
+  return (
+    !element.classList.contains(GENERAL_HIDDEN_CLASS) &&
+    styles.display !== 'none' &&
+    styles.visibility !== 'hidden' &&
+    styles.opacity !== '0' &&
+    (element.offsetWidth > 0 || element.offsetHeight > 0)
+  );
+}
+
+function isConfidentSponsoredCard(element: HTMLElement): boolean {
+  if (query(SPONSORED_CARD_SELECTORS.join(','), element)) {
+    return true;
+  }
+
+  const label = normalizeLabel(element.textContent ?? '');
+  if (!label) return false;
+
+  return label.includes('sponsored') || label.includes('promoted');
+}
+
+function updateSponsoredVisibility(): void {
+  if (!state.settings.generalHideSponsoredPosts) return;
+
+  for (const target of queryAll<HTMLElement>(SPONSORED_CARD_SELECTORS.join(','))) {
+    hideClosest(
+      target,
+      [
+        'ytd-rich-item-renderer',
+        'ytd-video-renderer',
+        'ytd-grid-video-renderer',
+        'ytd-compact-video-renderer',
+        'ytd-rich-section-renderer',
+        'ytd-item-section-renderer',
+        'ytd-search-pyv-renderer',
+        'ytd-companion-slot-renderer',
+      ].join(','),
+    );
+  }
+
+  for (const card of queryAll<HTMLElement>(
+    [
+      'ytd-browse[page-subtype="home"] ytd-rich-item-renderer',
+      'ytd-browse[page-subtype="home"] ytd-rich-section-renderer',
+      'ytd-search ytd-video-renderer',
+      'ytd-watch-next-secondary-results-renderer ytd-compact-video-renderer',
+    ].join(','),
+  )) {
+    if (isConfidentSponsoredCard(card)) {
+      hideElement(card);
+    }
   }
 }
 
@@ -1102,13 +1177,41 @@ function updateShortsVisibility(): void {
   }
 }
 
+function normalizeHomeFeedLayout(): void {
+  const homeFeed = query<HTMLElement>('ytd-browse[page-subtype="home"] ytd-rich-grid-renderer #contents');
+  if (!homeFeed) return;
+
+  for (const item of queryAll<HTMLElement>('ytd-rich-item-renderer', homeFeed)) {
+    const hasVisibleChild = Array.from(item.children).some(
+      (child) => child instanceof HTMLElement && isVisibleNode(child),
+    );
+
+    if (!hasVisibleChild) {
+      hideElement(item);
+    }
+  }
+
+  for (const row of queryAll<HTMLElement>('ytd-rich-grid-row', homeFeed)) {
+    const visibleItems = queryAll<HTMLElement>('ytd-rich-item-renderer', row).filter(isVisibleNode);
+    if (visibleItems.length === 0) {
+      hideElement(row);
+    }
+  }
+}
+
 function updateGeneralVisibility(): void {
   clearGeneralHiddenTargets();
   if (state.settings.generalSidebarCleanup || state.settings.generalHideShorts) {
     updateSidebarItemVisibility();
+  }
+
+  if (state.settings.generalSidebarCleanup) {
     updateSidebarSectionPolish();
   }
+
+  updateSponsoredVisibility();
   updateShortsVisibility();
+  normalizeHomeFeedLayout();
 }
 
 function updateViewportHeightVar(): void {
@@ -1167,7 +1270,10 @@ function updateTopHoverState(pointerY: number): void {
 }
 
 function updatePlayerUiHoverState(pointerX: number, pointerY: number): void {
-  if (!isEnhancedTheaterActive() || !state.settings.theaterHidePlayerUI) {
+  const theaterActive = isEnhancedTheaterActive() && state.settings.theaterHidePlayerUI;
+  const fullscreenActive = isNativeFullscreenActive() && state.settings.fullscreenHidePlayerUI;
+
+  if (!theaterActive && !fullscreenActive) {
     document.body.classList.remove('simple-yt-tweaks-player-ui-hover');
     return;
   }
@@ -1182,10 +1288,11 @@ function updatePlayerUiHoverState(pointerX: number, pointerY: number): void {
   const isInsidePlayer =
     pointerX >= rect.left && pointerX <= rect.right && pointerY >= rect.top && pointerY <= rect.bottom;
   const isInControlZone = pointerY >= rect.bottom - 118;
+  const isInFullscreenTitleZone = fullscreenActive && pointerY <= rect.top + 132;
 
   document.body.classList.toggle(
     'simple-yt-tweaks-player-ui-hover',
-    isInsidePlayer && isInControlZone,
+    isInsidePlayer && (isInControlZone || isInFullscreenTitleZone),
   );
 }
 
@@ -1408,20 +1515,19 @@ function applyFeatureState(): void {
     removePipButton();
   }
 
-  if (state.settings.theaterHidePlayerUI || state.settings.theaterShowHeaderOnHover) {
+  if (
+    state.settings.theaterHidePlayerUI ||
+    state.settings.theaterShowHeaderOnHover ||
+    state.settings.fullscreenHidePlayerUI
+  ) {
     bindPointerHandlers();
   }
-
-  document.body.classList.toggle(
-    'simple-yt-tweaks-player-ui-hidden',
-    isEnhancedTheaterActive() && state.settings.theaterHidePlayerUI,
-  );
   document.body.classList.toggle(
     'simple-yt-tweaks-hide-native-miniplayer',
     isDefaultWatchView() && isFeatureEnabled('floatingMiniPlayer'),
   );
 
-  if (!state.settings.theaterHidePlayerUI) {
+  if (!state.settings.theaterHidePlayerUI && !state.settings.fullscreenHidePlayerUI) {
     document.body.classList.remove('simple-yt-tweaks-player-ui-hover');
   }
 
@@ -1444,7 +1550,10 @@ function bindStorageObserver(): void {
       const change = changes[key as SettingKey];
       if (!change) continue;
 
-      if (key === 'generalFeedColumns' && isFeedColumnCount(change.newValue)) {
+      if (
+        key === 'generalFeedColumns' &&
+        (change.newValue === 2 || change.newValue === 3 || change.newValue === 4)
+      ) {
         state.settings.generalFeedColumns = change.newValue;
         touched = true;
         continue;

@@ -3,23 +3,28 @@ import {
   DEFAULT_SETTINGS,
   SETTING_DEFINITIONS,
   SETTING_TABS,
+  VIEW_MODES,
   type FeedColumnCount,
+  type SettingDefinition,
   type SettingKey,
-  type SettingTab,
   type Settings,
+  type TopLevelTab,
+  type ViewMode,
   loadSettings,
   saveSettings,
 } from '../shared/settings';
 import packageJson from '../../package.json';
 
 const settingsTabsEl = document.getElementById('settingsTabs');
+const viewModesEl = document.getElementById('viewModes');
 const settingsEl = document.getElementById('settings');
 const resetBtn = document.getElementById('resetBtn');
 const pageStatusDot = document.getElementById('pageStatusDot');
 const versionLabel = document.getElementById('versionLabel');
 
 let tooltipEl: HTMLDivElement | null = null;
-let activeTab: SettingTab = 'general';
+let activeTopTab: TopLevelTab = 'general';
+let activeViewMode: ViewMode = 'theater';
 let currentSettings: Settings = { ...DEFAULT_SETTINGS };
 
 function requireElement<T extends HTMLElement>(element: T | null, name: string): T {
@@ -30,39 +35,50 @@ function requireElement<T extends HTMLElement>(element: T | null, name: string):
   return element;
 }
 
+function getDefinition(key: SettingKey): SettingDefinition | undefined {
+  return SETTING_DEFINITIONS.find((item) => item.key === key);
+}
+
 function isSettingDisabled(key: SettingKey, settings: Settings): boolean {
   if (key === 'generalHideSidebarShorts' && settings.generalHideShorts) {
     return false;
   }
 
-  const definition = SETTING_DEFINITIONS.find((item) => item.key === key);
+  const definition = getDefinition(key);
   if (!definition?.parentKey) return false;
 
   return !settings[definition.parentKey] || isSettingDisabled(definition.parentKey, settings);
 }
 
 function getSettingDepth(key: SettingKey): number {
-  const definition = SETTING_DEFINITIONS.find((item) => item.key === key);
+  const definition = getDefinition(key);
   if (!definition?.parentKey) return 0;
 
   return getSettingDepth(definition.parentKey) + 1;
 }
 
-function getTabDefaults(tab: SettingTab): Partial<Settings> {
+function matchesActivePane(definition: SettingDefinition): boolean {
+  if (definition.topTab !== activeTopTab) return false;
+  if (activeTopTab !== 'views') return true;
+
+  return definition.viewMode === activeViewMode;
+}
+
+function getVisiblePaneDefaults(): Partial<Settings> {
   return SETTING_DEFINITIONS.reduce<Partial<Settings>>((defaults, definition) => {
-    if (definition.tab === tab) {
-      if (definition.key === 'generalFeedColumns') {
-        defaults.generalFeedColumns = DEFAULT_SETTINGS.generalFeedColumns;
-      } else {
-        defaults[definition.key] = DEFAULT_SETTINGS[definition.key];
-      }
+    if (!matchesActivePane(definition)) return defaults;
+
+    if (definition.key === 'generalFeedColumns') {
+      defaults.generalFeedColumns = DEFAULT_SETTINGS.generalFeedColumns;
+    } else {
+      defaults[definition.key] = DEFAULT_SETTINGS[definition.key];
     }
 
     return defaults;
   }, {});
 }
 
-function renderTabs(): void {
+function renderTopTabs(): void {
   const container = requireElement(settingsTabsEl, 'settingsTabs');
   container.textContent = '';
 
@@ -71,10 +87,33 @@ function renderTabs(): void {
     button.className = 'settings-tab';
     button.type = 'button';
     button.textContent = tab.label;
-    button.setAttribute('aria-selected', String(tab.id === activeTab));
+    button.setAttribute('aria-selected', String(tab.id === activeTopTab));
     button.addEventListener('click', () => {
-      activeTab = tab.id;
-      renderTabs();
+      activeTopTab = tab.id;
+      renderTopTabs();
+      renderViewModes();
+      renderSettings(currentSettings);
+    });
+    container.append(button);
+  }
+}
+
+function renderViewModes(): void {
+  const container = requireElement(viewModesEl, 'viewModes');
+  container.textContent = '';
+  container.hidden = activeTopTab !== 'views';
+
+  if (activeTopTab !== 'views') return;
+
+  for (const mode of VIEW_MODES) {
+    const button = document.createElement('button');
+    button.className = 'settings-subtab';
+    button.type = 'button';
+    button.textContent = mode.label;
+    button.setAttribute('aria-selected', String(mode.id === activeViewMode));
+    button.addEventListener('click', () => {
+      activeViewMode = mode.id;
+      renderViewModes();
       renderSettings(currentSettings);
     });
     container.append(button);
@@ -145,18 +184,26 @@ async function updatePageStatus(): Promise<void> {
   });
 }
 
+async function persistSettings(nextSettings: Settings): Promise<void> {
+  await saveSettings(nextSettings);
+  currentSettings = nextSettings;
+  renderSettings(nextSettings);
+}
+
 function renderSettings(settings: Settings): void {
   const container = requireElement(settingsEl, 'settings');
   container.textContent = '';
-  container.dataset.tab = activeTab;
+  container.dataset.topTab = activeTopTab;
+  container.dataset.viewMode = activeTopTab === 'views' ? activeViewMode : '';
   hideTooltip();
 
-  for (const { key, label, description, parentKey, tab, kind = 'toggle', options } of SETTING_DEFINITIONS) {
-    if (tab !== activeTab) continue;
+  for (const definition of SETTING_DEFINITIONS) {
+    if (!matchesActivePane(definition)) continue;
 
+    const { key, label, description, parentKey, kind = 'toggle', options } = definition;
     const row = document.createElement('div');
     row.className = 'setting-row';
-    if (kind === 'choice') row.classList.add('setting-row--choice');
+    if (kind === 'select') row.classList.add('setting-row--select');
     const depth = getSettingDepth(key);
     if (parentKey) row.classList.add('setting-row--child', `setting-row--depth-${depth}`);
 
@@ -175,7 +222,6 @@ function renderSettings(settings: Settings): void {
     help.id = `${key}-tip`;
     help.setAttribute('aria-label', `${label}: ${description}`);
     help.setAttribute('aria-describedby', 'settingsTooltip');
-    help.dataset.tooltip = description;
     help.textContent = '?';
     help.addEventListener('mouseenter', () => showTooltip(help, description));
     help.addEventListener('focus', () => showTooltip(help, description));
@@ -188,61 +234,49 @@ function renderSettings(settings: Settings): void {
     control.className = 'setting-control';
 
     const isDisabled = isSettingDisabled(key, settings);
-    const text = document.createElement('span');
-    text.className = 'setting-state';
-    const value = settings[key];
 
-    if (kind === 'choice' && options) {
-      text.textContent = `${value}-col`;
+    if (kind === 'select' && options) {
+      const text = document.createElement('span');
+      text.className = 'setting-state';
+      text.textContent = `${settings.generalFeedColumns}-col`;
 
-      const choiceGroup = document.createElement('div');
-      choiceGroup.className = 'choice-group';
-      choiceGroup.setAttribute('role', 'group');
-      choiceGroup.setAttribute('aria-describedby', `${key}-tip`);
+      const select = document.createElement('select');
+      select.className = 'setting-select';
+      select.id = key;
+      select.disabled = isDisabled;
+      select.setAttribute('aria-describedby', `${key}-tip`);
 
       for (const option of options) {
-        const button = document.createElement('button');
-        button.className = 'choice-btn';
-        button.type = 'button';
-        button.dataset.selected = String(value === option.value);
-        button.dataset.columns = String(option.value);
-        button.setAttribute('aria-pressed', String(value === option.value));
-        button.setAttribute('aria-label', `${label}: ${option.value} columns`);
-        button.title = `${option.value} columns`;
-        button.disabled = isDisabled;
-        button.innerHTML = `
-          <span class="choice-icon choice-icon--${option.value}" aria-hidden="true">
-            ${Array.from({ length: option.value }, () => '<span></span>').join('')}
-          </span>
-          <span class="choice-label">${option.label}</span>
-        `;
-        button.addEventListener('click', async () => {
-          if (currentSettings[key] === option.value) return;
-
-          const nextSettings = {
-            ...currentSettings,
-            [key]: option.value as FeedColumnCount,
-          };
-
-          try {
-            await saveSettings(nextSettings);
-            currentSettings = nextSettings;
-            renderSettings(nextSettings);
-          } catch (error) {
-            console.error('Simple YT Tweaks save failed:', error);
-          }
-        });
-        choiceGroup.append(button);
+        const optionEl = document.createElement('option');
+        optionEl.value = String(option.value);
+        optionEl.textContent = option.label;
+        optionEl.selected = settings.generalFeedColumns === option.value;
+        select.append(optionEl);
       }
 
-      control.append(text, choiceGroup);
+      select.addEventListener('change', async () => {
+        const nextSettings = {
+          ...currentSettings,
+          generalFeedColumns: Number(select.value) as FeedColumnCount,
+        };
+
+        try {
+          await persistSettings(nextSettings);
+        } catch (error) {
+          console.error('Simple YT Tweaks save failed:', error);
+        }
+      });
+
+      control.append(text, select);
     } else {
-      text.textContent = value ? 'On' : 'Off';
+      const text = document.createElement('span');
+      text.className = 'setting-state';
+      text.textContent = settings[key] ? 'On' : 'Off';
 
       const input = document.createElement('input');
       input.type = 'checkbox';
       input.id = key;
-      input.checked = value as boolean;
+      input.checked = settings[key] as boolean;
       input.disabled = isDisabled;
       input.setAttribute('aria-describedby', `${key}-tip`);
       input.addEventListener('change', async () => {
@@ -253,9 +287,7 @@ function renderSettings(settings: Settings): void {
         }
 
         try {
-          await saveSettings(nextSettings);
-          currentSettings = nextSettings;
-          renderSettings(nextSettings);
+          await persistSettings(nextSettings);
         } catch (error) {
           console.error('Simple YT Tweaks save failed:', error);
         }
@@ -275,18 +307,17 @@ async function init(): Promise<void> {
   await updatePageStatus();
 
   currentSettings = await loadSettings();
-  renderTabs();
+  renderTopTabs();
+  renderViewModes();
   renderSettings(currentSettings);
 
   requireElement(resetBtn, 'resetBtn').addEventListener('click', async () => {
     try {
       const nextSettings = {
         ...currentSettings,
-        ...getTabDefaults(activeTab),
+        ...getVisiblePaneDefaults(),
       };
-      await saveSettings(nextSettings);
-      currentSettings = nextSettings;
-      renderSettings(nextSettings);
+      await persistSettings(nextSettings);
     } catch (error) {
       console.error('Simple YT Tweaks reset failed:', error);
     }

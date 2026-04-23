@@ -10,17 +10,19 @@ This project is not affiliated with, endorsed by, sponsored by, or otherwise ass
 - Optional hidden header, header hover reveal, recommendations, comments, and live chat controls while theater mode is active.
 - Optional live chat overlay for streams and premieres.
 - Compact popup settings with page support status and clamped tooltips.
-- Separate General, Theater View, and Default View tabs for global and mode-specific preferences.
-- Home feed column control with 2, 3, and 4-column layouts.
-- Optional grouped sidebar cleanup controls for hiding the main sidebar, navigation entries, product links, and sidebar footer clutter.
-- Sidebar section polish that keeps Subscriptions compact and keeps You expanded by default.
+- Separate General, Sidebar, and Views tabs, with Theater, Default, and Fullscreen sub-tabs under Views.
+- Home feed column control with 2, 3, and 4-column layouts rendered as a dropdown.
+- Optional sponsored and promoted post hiding, with home-feed reflow so removed cards do not leave broken rows behind.
+- Optional grouped sidebar cleanup controls for hiding the main sidebar, navigation entries, product links, report history, and sidebar footer clutter.
+- Sidebar cleanup keeps Subscriptions compact and icon-based while keeping You expanded by default.
 - Optional Shorts hiding across home, feed, search, and recommendation surfaces while leaving the dedicated Shorts page available.
 - Optional Report History sidebar cleanup without tying it to the You section.
 - Optional end-screen card hiding.
-- Tab-scoped reset defaults so one settings view does not wipe preferences from another view.
+- Tab-scoped reset defaults so one settings pane does not wipe preferences from another pane.
 - Optional hidden player controls that reappear when hovering near the control area.
 - Optional theater scrollbar hiding to reduce layout shift while scrolling.
 - Optional metadata hiding, with a title and top-row keep-visible option.
+- Optional native fullscreen cleanup for title overlays, player UI, and recommendation overlays.
 - Restored Picture-in-Picture button in the player controls.
 - Floating mini-player that docks the actual YouTube player instead of mirroring the video stream.
 

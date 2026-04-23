@@ -9,13 +9,15 @@
 - Added validation and packaging scripts for Chrome Web Store zip output.
 - Added generated extension icons and a release-ready manifest with narrow YouTube host permissions.
 - Added a popup settings panel with page support status, feature toggles, reset defaults, tooltips, and footer links.
-- Added separate General, Theater View, and Default View settings tabs for global and mode-specific behavior.
+- Added separate General, Sidebar, and Views settings tabs, with Theater, Default, and Fullscreen sub-tabs under Views.
 - Added optional grouped sidebar cleanup controls for the main sidebar, navigation entries, product links, and footer clutter.
 - Added optional Shorts hiding across common YouTube navigation, feed, search, and recommendation surfaces.
 - Added optional end-screen card hiding.
 - Added a dedicated Report History sidebar cleanup control.
 - Added tab-scoped reset defaults.
 - Added a home feed column selector with 2, 3, and 4-column layouts.
+- Added default-on sponsored and promoted post hiding.
+- Added native fullscreen cleanup controls for title overlays, player UI, and recommendation overlays.
 - Added restored Picture-in-Picture button support inside the YouTube player controls.
 - Added a floating mini-player that docks the actual YouTube player when scrolling below the video in default view.
 - Added theater-mode live chat controls, including an optional floating chat overlay when live chat exists.
@@ -32,7 +34,7 @@
 - Kept the YouTube left navigation independent from the hidden-header setting.
 - Made global Shorts hiding turn on the Shorts sidebar link cleanup once without locking that child setting.
 - Kept the dedicated Shorts page available when global Shorts hiding is enabled.
-- Added default sidebar section polish that keeps Subscriptions compact and keeps You expanded.
+- Folded sidebar polish into Sidebar Cleanup so compact Subscriptions and expanded You are part of the default cleaned-up sidebar behavior.
 - Set General defaults to hide Shorts, end-screen cards, and sidebar clutter while keeping primary navigation visible.
 - Matched sidebar cleanup to real top-level guide sections so You, Subscriptions, Explore, More from YouTube, and Report History hide independently.
 - Reduced DOM observer churn by watching general subtree changes separately from theater-mode attribute changes.
@@ -40,14 +42,16 @@
 - Improved theater sizing in standalone YouTube app windows.
 - Made hidden player controls theater-only, with controls revealed from the player control-bar area.
 - Split recommendation, comment, and live-chat hiding between Theater and Default views.
+- Added native fullscreen handling without introducing a custom fullscreen comments overlay mode.
 - Allowed the below-video area, title, description, and comments to expand when theater recommendations are hidden.
 - Kept Hide Comments scoped to the actual comments section instead of hiding title, metadata, or description.
 - Hid YouTube's native mini-player in default view when Simple YT Tweaks floating mini-player is enabled.
-- Improved popup layout with compact child settings, clamped tooltips, and version/link footer controls.
+- Improved popup layout with compact child settings, clamped tooltips, version/link footer controls, and cleaner tab grouping.
 - Removed the redundant popup save-status text.
 - Added campaign parameters to popup footer links for extension traffic attribution.
 - Tightened popup spacing so the Theater settings fit without an awkward overflow scrollbar.
 - Made the popup footer version read from the package version instead of hardcoded text.
+- Rebuilt the home feed grid so removed Shorts and sponsored cards collapse cleanly instead of leaving broken rows behind.
 
 ### Notes
 
