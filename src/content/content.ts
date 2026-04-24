@@ -964,6 +964,11 @@ function buildCss(): string {
       pointer-events: none !important;
       visibility: hidden !important;
     }
+
+    body.simple-yt-tweaks-fullscreen-view #movie_player {
+      --ytp-grid-peek-height: 0px !important;
+      --ytp-grid-scroll-percentage: 0 !important;
+    }
     ` : ''}
 
     ${fullscreenHideActionOverlay ? `
