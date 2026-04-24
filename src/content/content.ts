@@ -1746,6 +1746,30 @@ function updatePlayerUiHoverState(pointerX: number, pointerY: number): void {
   }
 }
 
+async function toggleBrowserPictureInPicture(): Promise<void> {
+  const video = getVideo();
+  if (!video) return;
+
+  if (state.dock) {
+    state.manualDockRequested = false;
+    state.miniPlayerDismissed = false;
+    restoreDockedPlayer();
+  }
+
+  try {
+    if (document.pictureInPictureElement) {
+      await document.exitPictureInPicture();
+      return;
+    }
+
+    if (document.pictureInPictureEnabled && !video.disablePictureInPicture) {
+      await video.requestPictureInPicture();
+    }
+  } catch (error) {
+    console.warn('Simple YT Tweaks PiP failed:', error);
+  }
+}
+
 function createPipButton(): void {
   if (!isFeatureEnabled('pipButton') || !isWatchPage()) return;
 
@@ -1767,17 +1791,7 @@ function createPipButton(): void {
   button.addEventListener('click', async (event) => {
     event.preventDefault();
     event.stopPropagation();
-
-    if (state.dock) {
-      state.manualDockRequested = false;
-      state.miniPlayerDismissed = false;
-      restoreDockedPlayer();
-      return;
-    }
-
-    state.manualDockRequested = true;
-    state.miniPlayerDismissed = false;
-    dockPlayer();
+    await toggleBrowserPictureInPicture();
   });
 
   rightControls.prepend(button);
@@ -1819,9 +1833,7 @@ function bindMiniplayerInterception(): void {
         event.stopImmediatePropagation();
       }
 
-      state.manualDockRequested = true;
-      state.miniPlayerDismissed = false;
-      dockPlayer();
+      void toggleBrowserPictureInPicture();
     },
     true,
   );
@@ -2120,29 +2132,8 @@ function findDockTarget(): HTMLElement | null {
   return target;
 }
 
-function getOriginalPlayerRect(): DOMRect | null {
-  if (state.dock?.placeholder.isConnected) {
-    return state.dock.placeholder.getBoundingClientRect();
-  }
-
-  return findDockTarget()?.getBoundingClientRect() ?? null;
-}
-
 function shouldShowDockedPlayer(): boolean {
-  if (!isFeatureEnabled('floatingMiniPlayer') || !isWatchPage() || state.miniPlayerDismissed || isNativeFullscreenActive()) {
-    return false;
-  }
-
-  if (state.manualDockRequested) {
-    return true;
-  }
-
-  const playerRect = getOriginalPlayerRect();
-  if (!playerRect) return false;
-  const playerMostlyOffscreen = playerRect.bottom < 120;
-  const pageHasScrolled = window.scrollY > 120;
-
-  return playerMostlyOffscreen && pageHasScrolled;
+  return false;
 }
 
 function dockPlayer(): void {

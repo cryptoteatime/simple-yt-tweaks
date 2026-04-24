@@ -146,7 +146,7 @@ export const SETTING_DEFINITIONS: SettingDefinition[] = [
   {
     key: 'pipButton',
     label: 'Restore PiP Button',
-    description: 'Adds a Picture-in-Picture button to the YouTube player controls and keeps the docked mini-player behavior active while you scroll.',
+    description: 'Adds a real browser Picture-in-Picture button to the YouTube player controls.',
     topTab: 'general',
   },
   {
