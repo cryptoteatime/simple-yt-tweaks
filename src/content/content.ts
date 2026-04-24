@@ -1214,6 +1214,7 @@ function scheduleModeStabilization(): void {
       updateTheaterClass();
       updateMastheadTargets();
       clearStaleGuideFocus();
+      clearStaleSidebarItemFocus();
       updateLiveChatTargets();
       updateScrollbarState();
       updateFullscreenActionDock();
@@ -2047,6 +2048,25 @@ async function invokeNativeMiniplayer(): Promise<boolean> {
   const result = await runPageContext<{ ok?: boolean }>(
     `async () => {
       const wait = (ms) => new Promise((resolve) => window.setTimeout(resolve, ms));
+      const makeShortcutEvent = (target) => ({
+        key: 'i',
+        code: 'KeyI',
+        keyCode: 73,
+        which: 73,
+        altKey: false,
+        ctrlKey: false,
+        metaKey: false,
+        shiftKey: false,
+        repeat: false,
+        defaultPrevented: false,
+        target,
+        currentTarget: target,
+        preventDefault() {
+          this.defaultPrevented = true;
+        },
+        stopPropagation() {},
+        stopImmediatePropagation() {},
+      });
 
       const isVisible = (element) => {
         if (!element) return false;
@@ -2126,6 +2146,51 @@ async function invokeNativeMiniplayer(): Promise<boolean> {
         return false;
       };
 
+      const tryShortcutMethods = async (host, target) => {
+        if (!host) return false;
+
+        const shortcutMethods = [
+          'handleGlobalKeyDown',
+          'handleGlobalKeyDown_',
+          'onGlobalKeyDown',
+          'onGlobalKeyDown_',
+          'handleKeyDown',
+          'handleKeyDown_',
+          'onKeyDown',
+          'onKeyDown_',
+          'handleKeyPress',
+          'handleKeyPress_',
+          'onKeyPress',
+          'onKeyPress_',
+          'handleShortcut',
+          'handleShortcut_',
+          'onShortcut',
+          'onShortcut_',
+          'handleKeyboardShortcut',
+          'handleKeyboardShortcut_',
+          'executeKeyboardShortcut',
+          'executeKeyboardShortcut_',
+        ];
+
+        const event = makeShortcutEvent(target);
+
+        for (const methodName of shortcutMethods) {
+          const candidate = host[methodName];
+          if (typeof candidate !== 'function') continue;
+
+          try {
+            candidate.call(host, event);
+            if (isActive()) return true;
+            await wait(60);
+            if (isActive()) return true;
+            await wait(120);
+            if (isActive()) return true;
+          } catch {}
+        }
+
+        return false;
+      };
+
       const player = document.querySelector('#movie_player');
       const api = player && typeof player.getApi === 'function' ? player.getApi() : null;
       const watchFlexy = document.querySelector('ytd-watch-flexy');
@@ -2169,7 +2234,7 @@ async function invokeNativeMiniplayer(): Promise<boolean> {
       for (const host of Array.from(hostSet)) {
         for (const [key, value] of Object.entries(host || {})) {
           if (!value || typeof value !== 'object') continue;
-          if (/(mini(player)?|minimi[sz]e|watchNext|videoManager)/i.test(key)) {
+          if (/(mini(player)?|minimi[sz]e|watchNext|videoManager|shortcut|keyboard|key)/i.test(key)) {
             addHost(hostSet, value);
             addHost(hostSet, value.polymerController);
             addHost(hostSet, value.inst);
@@ -2180,6 +2245,12 @@ async function invokeNativeMiniplayer(): Promise<boolean> {
 
       for (const host of hostSet) {
         if (await tryMethods(host)) {
+          return { ok: true };
+        }
+      }
+
+      for (const host of hostSet) {
+        if (await tryShortcutMethods(host, player || document.body || document.documentElement)) {
           return { ok: true };
         }
       }
@@ -2786,6 +2857,7 @@ function applyFeatureState(): void {
   resetFullscreenGridPeekState();
   updateMastheadTargets();
   clearStaleGuideFocus();
+  clearStaleSidebarItemFocus();
   updateLiveChatTargets();
   updateGeneralVisibility();
   updateScrollbarState();
