@@ -414,7 +414,7 @@ input[type="checkbox"]:checked::after {
   align-items: center;
   justify-content: space-between;
   margin-top: 10px;
-  padding: 10px 8px 4px;
+  padding: 4px 8px;
   min-height: 46px;
   border-top: 1px solid var(--line);
   border-radius: 10px;
