@@ -7,6 +7,8 @@ const releaseDir = resolve(root, 'release');
 const packageJsonPath = resolve(root, 'package.json');
 const packageLockPath = resolve(root, 'package-lock.json');
 const manifestPath = resolve(distDir, 'manifest.json');
+const sharedSettingsPath = resolve(root, 'src', 'shared', 'settings.ts');
+const contentSettingsPath = resolve(root, 'src', 'content', 'settings.ts');
 const screenshotsDir = resolve(root, 'store-assets', 'screenshots');
 const promoTilePath = resolve(root, 'store-assets', 'promo', 'small-promo-tile-440x280.png');
 const packagedMode = process.argv.includes('--packaged');
@@ -79,11 +81,94 @@ function assertScreenshotDirectory() {
   }
 }
 
+function extractTypeBlock(source, typeName) {
+  const match = source.match(new RegExp(`type\\s+${typeName}\\s*=\\s*([\\s\\S]*?);`));
+  return match?.[1] ?? null;
+}
+
+function extractQuotedLiterals(block) {
+  return [...block.matchAll(/'([^']+)'/g)].map((match) => match[1]).sort();
+}
+
+function extractFeedColumns(source) {
+  const block = extractTypeBlock(source, 'FeedColumnCount');
+  if (!block) return null;
+
+  return block
+    .split('|')
+    .map((part) => Number.parseInt(part.trim(), 10))
+    .filter((value) => Number.isFinite(value))
+    .sort((a, b) => a - b);
+}
+
+function extractDefaultSettings(source) {
+  const match = source.match(/DEFAULT_SETTINGS:\s*Settings\s*=\s*{([\s\S]*?)};/);
+  if (!match) return null;
+
+  const entries = match[1]
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .filter((line) => line.includes(':'))
+    .map((line) => line.replace(/,$/, ''));
+
+  const settings = {};
+  for (const entry of entries) {
+    const separatorIndex = entry.indexOf(':');
+    const key = entry.slice(0, separatorIndex).trim();
+    const rawValue = entry.slice(separatorIndex + 1).trim();
+    if (rawValue === 'true' || rawValue === 'false') {
+      settings[key] = rawValue === 'true';
+      continue;
+    }
+
+    const numericValue = Number.parseInt(rawValue, 10);
+    if (Number.isFinite(numericValue)) {
+      settings[key] = numericValue;
+    }
+  }
+
+  return settings;
+}
+
+function assertSettingsParity() {
+  assertExists(sharedSettingsPath, 'Shared settings module');
+  assertExists(contentSettingsPath, 'Content settings module');
+  if (!existsSync(sharedSettingsPath) || !existsSync(contentSettingsPath)) return;
+
+  const sharedSource = readFileSync(sharedSettingsPath, 'utf8');
+  const contentSource = readFileSync(contentSettingsPath, 'utf8');
+
+  const sharedBooleanKeys = extractQuotedLiterals(extractTypeBlock(sharedSource, 'BooleanSettingKey') ?? '');
+  const contentBooleanKeys = extractQuotedLiterals(extractTypeBlock(contentSource, 'BooleanSettingKey') ?? '');
+  if (JSON.stringify(sharedBooleanKeys) !== JSON.stringify(contentBooleanKeys)) {
+    fail('Content and shared BooleanSettingKey definitions must match');
+  }
+
+  const sharedFeedColumns = extractFeedColumns(sharedSource);
+  const contentFeedColumns = extractFeedColumns(contentSource);
+  if (JSON.stringify(sharedFeedColumns) !== JSON.stringify(contentFeedColumns)) {
+    fail('Content and shared FeedColumnCount values must match');
+  }
+
+  const sharedDefaults = extractDefaultSettings(sharedSource);
+  const contentDefaults = extractDefaultSettings(contentSource);
+  if (!sharedDefaults || !contentDefaults) {
+    fail('Could not parse DEFAULT_SETTINGS from shared or content settings module');
+    return;
+  }
+
+  if (JSON.stringify(sharedDefaults) !== JSON.stringify(contentDefaults)) {
+    fail('Content and shared DEFAULT_SETTINGS must match');
+  }
+}
+
 assertExists(resolve(root, 'README.md'), 'README');
 assertExists(resolve(root, 'CHANGELOG.md'), 'CHANGELOG');
 assertExists(resolve(root, 'PRIVACY.md'), 'PRIVACY');
 assertExists(resolve(root, 'LICENSE'), 'LICENSE');
 assertExists(resolve(root, 'WEBSTORE.md'), 'WEBSTORE');
+assertSettingsParity();
 assertPngSize(promoTilePath, 440, 280, 'Small promo tile');
 assertScreenshotDirectory();
 assertExists(manifestPath, 'Built manifest');
