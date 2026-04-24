@@ -200,6 +200,7 @@ async function init(): Promise<void> {
     onScrollUi: () => {
       resetFullscreenGridPeekState();
       updateScrollbarState();
+      refreshInteractionUiState();
       updateFullscreenActionDock();
       ensureMiniPlayerPipButton();
     },
