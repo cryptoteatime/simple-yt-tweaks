@@ -139,6 +139,7 @@ const SELECTORS = {
 
 const STYLE_ID = 'simple-yt-tweaks-style';
 const PIP_BUTTON_ID = 'simple-yt-tweaks-pip-button';
+const MINIPLAYER_PIP_BUTTON_ID = 'simple-yt-tweaks-miniplayer-pip-button';
 const DOCK_ID = 'simple-yt-tweaks-dock';
 const FULLSCREEN_ACTION_DOCK_ID = 'simple-yt-tweaks-fullscreen-actions';
 const MASTHEAD_CLASS = 'simple-yt-tweaks-masthead';
@@ -383,6 +384,22 @@ function buildCss(): string {
     body.simple-yt-tweaks-active .simple-yt-tweaks-pip-btn svg {
       width: 24px;
       height: 24px;
+      fill: currentColor;
+    }
+
+    body.simple-yt-tweaks-active .simple-yt-tweaks-miniplayer-pip-btn.ytp-button {
+      display: inline-flex !important;
+      align-items: center;
+      justify-content: center;
+      width: 36px !important;
+      min-width: 36px !important;
+      height: 36px !important;
+      flex: 0 0 auto !important;
+    }
+
+    body.simple-yt-tweaks-active .simple-yt-tweaks-miniplayer-pip-btn svg {
+      width: 22px;
+      height: 22px;
       fill: currentColor;
     }
 
@@ -958,16 +975,23 @@ function buildCss(): string {
     body.simple-yt-tweaks-fullscreen-view .ytp-button[title*="More videos"],
     body.simple-yt-tweaks-fullscreen-view .ytp-cards-button,
     body.simple-yt-tweaks-fullscreen-view .ytp-cards-teaser,
-    body.simple-yt-tweaks-fullscreen-view .ytp-cards-teaser-box {
+    body.simple-yt-tweaks-fullscreen-view .ytp-cards-teaser-box,
+    body.simple-yt-tweaks-fullscreen-view .ytp-fullscreen-grid-main-content,
+    body.simple-yt-tweaks-fullscreen-view .ytp-fullscreen-grid-stills-container,
+    body.simple-yt-tweaks-fullscreen-view .ytp-modern-videowall,
+    body.simple-yt-tweaks-fullscreen-view .ytp-modern-videowall-still {
       display: none !important;
       opacity: 0 !important;
       pointer-events: none !important;
       visibility: hidden !important;
     }
 
-    body.simple-yt-tweaks-fullscreen-view #movie_player {
+    body.simple-yt-tweaks-fullscreen-view #movie_player,
+    body.simple-yt-tweaks-fullscreen-view #movie_player.ytp-grid-scrollable,
+    body.simple-yt-tweaks-fullscreen-view #movie_player.ytp-fullscreen-grid-peeking {
       --ytp-grid-peek-height: 0px !important;
       --ytp-grid-scroll-percentage: 0 !important;
+      transform: none !important;
     }
     ` : ''}
 
@@ -1764,11 +1788,13 @@ async function toggleBrowserPictureInPicture(): Promise<void> {
   try {
     if (document.pictureInPictureElement) {
       await document.exitPictureInPicture();
+      updateNativeMiniplayerState();
       return;
     }
 
     if (document.pictureInPictureEnabled && !video.disablePictureInPicture) {
       await video.requestPictureInPicture();
+      updateNativeMiniplayerState();
     }
   } catch (error) {
     console.warn('Simple YT Tweaks PiP failed:', error);
@@ -1806,41 +1832,81 @@ function removePipButton(): void {
   document.getElementById(PIP_BUTTON_ID)?.remove();
 }
 
-function bindMiniplayerInterception(): void {
-  if (state.miniplayerInterceptionBound) return;
-  state.miniplayerInterceptionBound = true;
+function removeMiniPlayerPipButton(): void {
+  document.getElementById(MINIPLAYER_PIP_BUTTON_ID)?.remove();
+}
 
-  document.addEventListener(
-    'click',
-    (event) => {
-      const target = event.target;
-      if (!(target instanceof Element)) return;
-      if (!isFeatureEnabled('floatingMiniPlayer') || !isWatchPage() || isNativeFullscreenActive()) return;
+function ensureMiniPlayerPipButton(): void {
+  if (!isFeatureEnabled('pipButton') || !isWatchPage() || isNativeFullscreenActive()) {
+    removeMiniPlayerPipButton();
+    return;
+  }
 
-      const trigger = target.closest<HTMLElement>(
-        [
-          '.ytp-miniplayer-button',
-          '.ytp-button[data-title-no-tooltip="Miniplayer"]',
-          '.ytp-button[title*="Miniplayer"]',
-          '.ytp-button[aria-label*="Miniplayer"]',
-          '.ytp-menuitem[aria-label*="Miniplayer"]',
-        ].join(','),
-      );
+  const miniplayerUi = query<HTMLElement>('ytd-miniplayer, .ytp-miniplayer-ui');
+  if (!miniplayerUi || !isVisibleNode(miniplayerUi)) {
+    removeMiniPlayerPipButton();
+    return;
+  }
 
-      if (!trigger) return;
+  const controls =
+    query<HTMLElement>(
+      [
+        '.ytp-miniplayer-controls',
+        '.ytp-miniplayer-buttons',
+        '.ytdMiniplayerComponentContent',
+        '.ytdMiniplayerInfoBarContent',
+      ].join(','),
+      miniplayerUi,
+    ) ?? miniplayerUi;
 
-      const triggerLabel = getElementLabel(trigger);
-      if (!triggerLabel.includes('miniplayer')) return;
+  let button = document.getElementById(MINIPLAYER_PIP_BUTTON_ID) as HTMLButtonElement | null;
+  if (!button) {
+    button = document.createElement('button');
+    button.id = MINIPLAYER_PIP_BUTTON_ID;
+    button.className = 'ytp-button simple-yt-tweaks-miniplayer-pip-btn';
+    button.type = 'button';
+    button.setAttribute('aria-label', 'Picture in Picture');
+    button.setAttribute('title', 'Picture in Picture');
+    button.innerHTML = `
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M19 7H5v10h14V7zm0-2c1.1 0 2 .9 2 2v10c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V7c0-1.1.9-2 2-2h14zm-1 8h-6v4h6v-4z"></path>
+      </svg>
+    `;
 
+    button.addEventListener('click', async (event) => {
       event.preventDefault();
       event.stopPropagation();
-      if ('stopImmediatePropagation' in event) {
-        event.stopImmediatePropagation();
-      }
+      await toggleBrowserPictureInPicture();
+    });
+  }
 
-      void toggleBrowserPictureInPicture();
-    },
-    true,
+  if (button.parentElement !== controls) {
+    const anchor = query<HTMLElement>(
+      [
+        '.ytp-miniplayer-close-button',
+        '.ytp-miniplayer-expand-watch-page-button',
+      ].join(','),
+      controls,
+    );
+
+    if (anchor && anchor.parentElement === controls) {
+      controls.insertBefore(button, anchor);
+    } else {
+      controls.append(button);
+    }
+  }
+}
+
+function shouldHideNativeMiniplayer(): boolean {
+  return isWatchPage() && Boolean(document.pictureInPictureElement);
+}
+
+function updateNativeMiniplayerState(): void {
+  if (!document.body) return;
+
+  document.body.classList.toggle(
+    'simple-yt-tweaks-hide-native-miniplayer',
+    shouldHideNativeMiniplayer(),
   );
 }
 
@@ -2241,6 +2307,8 @@ function applyFeatureState(): void {
     removePipButton();
   }
 
+  ensureMiniPlayerPipButton();
+
   updateFullscreenActionDock();
 
   if (
@@ -2252,11 +2320,7 @@ function applyFeatureState(): void {
   ) {
     bindPointerHandlers();
   }
-  bindMiniplayerInterception();
-  document.body.classList.toggle(
-    'simple-yt-tweaks-hide-native-miniplayer',
-    isWatchPage() && isFeatureEnabled('floatingMiniPlayer'),
-  );
+  updateNativeMiniplayerState();
 
   if (
     !state.settings.theaterHidePlayerUI &&
@@ -2383,8 +2447,22 @@ function bindVideoEvents(): void {
     if (!video || video.dataset.simpleYtTweaksBound === '1') return;
 
     video.dataset.simpleYtTweaksBound = '1';
-    video.addEventListener('enterpictureinpicture', () => updateDockedPlayer(), { passive: true });
-    video.addEventListener('leavepictureinpicture', () => updateDockedPlayer(), { passive: true });
+    video.addEventListener(
+      'enterpictureinpicture',
+      () => {
+        updateNativeMiniplayerState();
+        updateDockedPlayer();
+      },
+      { passive: true },
+    );
+    video.addEventListener(
+      'leavepictureinpicture',
+      () => {
+        updateNativeMiniplayerState();
+        updateDockedPlayer();
+      },
+      { passive: true },
+    );
   };
 
   attach();
