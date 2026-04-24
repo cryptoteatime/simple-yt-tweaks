@@ -25,6 +25,7 @@ export function bindPointerHandlers(handlers: {
   clearStaleSidebarItemFocus: () => void;
   updateSidebarHomeSelectionState: () => void;
   updatePlayerUiFocusState: () => void;
+  refreshInteractionUiState: () => void;
 }): void {
   if (state.pointerHandlersBound) return;
   state.pointerHandlersBound = true;
@@ -58,6 +59,13 @@ export function bindPointerHandlers(handlers: {
   document.addEventListener('focusout', () => {
     window.setTimeout(() => handlers.updatePlayerUiFocusState(), 0);
   });
+  document.addEventListener(
+    'click',
+    () => {
+      window.setTimeout(() => handlers.refreshInteractionUiState(), 0);
+    },
+    { passive: true },
+  );
 
   window.addEventListener(
     'blur',
@@ -163,14 +171,23 @@ export function bindRuntimeMessages(): void {
   });
 }
 
-export function bindVideoEvents(onPipChange: () => void): void {
+export function bindVideoEvents(handlers: {
+  onPipChange: () => void;
+  onPlaybackStateChange: () => void;
+}): void {
   const attach = () => {
     const video = getVideo();
     if (!video || video.dataset.simpleYtTweaksBound === '1') return;
 
     video.dataset.simpleYtTweaksBound = '1';
-    video.addEventListener('enterpictureinpicture', onPipChange, { passive: true });
-    video.addEventListener('leavepictureinpicture', onPipChange, { passive: true });
+    const refreshPlaybackUi = () => {
+      window.setTimeout(() => handlers.onPlaybackStateChange(), 0);
+    };
+
+    video.addEventListener('enterpictureinpicture', handlers.onPipChange, { passive: true });
+    video.addEventListener('leavepictureinpicture', handlers.onPipChange, { passive: true });
+    video.addEventListener('play', refreshPlaybackUi, { passive: true });
+    video.addEventListener('pause', refreshPlaybackUi, { passive: true });
   };
 
   attach();

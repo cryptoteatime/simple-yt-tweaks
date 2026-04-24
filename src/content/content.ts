@@ -119,6 +119,13 @@ function stabilizeUi(): void {
   updateFullscreenActionDock();
 }
 
+function refreshInteractionUiState(): void {
+  updatePlayerUiHoverState(state.lastPointerX, state.lastPointerY);
+  updatePlayerUiFocusState();
+  resetFullscreenGridPeekState();
+  updateFullscreenActionDock();
+}
+
 function applyFeatureState(): void {
   if (!document.body) return;
 
@@ -154,6 +161,7 @@ function applyFeatureState(): void {
       clearStaleSidebarItemFocus,
       updateSidebarHomeSelectionState,
       updatePlayerUiFocusState,
+      refreshInteractionUiState,
     });
   }
 
@@ -198,8 +206,13 @@ async function init(): Promise<void> {
     onViewportUi: stabilizeUi,
   });
   bindRuntimeMessages();
-  bindVideoEvents(() => {
-    ensureMiniPlayerPipButton();
+  bindVideoEvents({
+    onPipChange: () => {
+      ensureMiniPlayerPipButton();
+    },
+    onPlaybackStateChange: () => {
+      refreshInteractionUiState();
+    },
   });
   applyFeatureState();
 }

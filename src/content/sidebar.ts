@@ -110,11 +110,11 @@ export function buildSidebarCss(settings: Settings): string {
       display: none !important;
     }
 
-    body.simple-yt-tweaks-active ytd-browse[page-subtype="home"] .${SIDEBAR_HOME_NEUTRAL_CLASS},
-    body.simple-yt-tweaks-active ytd-browse[page-subtype="home"] .${SIDEBAR_HOME_NEUTRAL_CLASS} #endpoint,
-    body.simple-yt-tweaks-active ytd-browse[page-subtype="home"] .${SIDEBAR_HOME_NEUTRAL_CLASS} tp-yt-paper-item,
-    body.simple-yt-tweaks-active ytd-browse[page-subtype="home"] .${SIDEBAR_HOME_NEUTRAL_CLASS} a,
-    body.simple-yt-tweaks-active ytd-browse[page-subtype="home"] .${SIDEBAR_HOME_NEUTRAL_CLASS} #contentContainer {
+    body.simple-yt-tweaks-active .${SIDEBAR_HOME_NEUTRAL_CLASS},
+    body.simple-yt-tweaks-active .${SIDEBAR_HOME_NEUTRAL_CLASS} #endpoint,
+    body.simple-yt-tweaks-active .${SIDEBAR_HOME_NEUTRAL_CLASS} tp-yt-paper-item,
+    body.simple-yt-tweaks-active .${SIDEBAR_HOME_NEUTRAL_CLASS} a,
+    body.simple-yt-tweaks-active .${SIDEBAR_HOME_NEUTRAL_CLASS} #contentContainer {
       background: transparent !important;
       box-shadow: none !important;
     }
@@ -269,6 +269,30 @@ function stripSidebarSelectedState(entry: HTMLElement): void {
     }
     target.classList.remove('iron-selected');
     target.classList.remove('selected');
+  }
+}
+
+function entryMatchesCurrentLocation(entry: HTMLElement): boolean {
+  const endpoint =
+    query<HTMLAnchorElement>('#endpoint[href], a[href]', entry) ??
+    query<HTMLAnchorElement>('a[href]', entry);
+  if (!endpoint) return false;
+
+  try {
+    const url = new URL(endpoint.href, location.origin);
+    if (url.origin !== location.origin) return false;
+
+    if (location.pathname === '/' || location.pathname === '') {
+      return url.pathname === '/' || url.pathname === '';
+    }
+
+    if (location.pathname.startsWith('/shorts/')) {
+      return url.pathname === '/shorts';
+    }
+
+    return url.pathname === location.pathname;
+  } catch {
+    return false;
   }
 }
 
@@ -541,7 +565,7 @@ export function clearStaleSidebarItemFocus(): void {
 }
 
 export function updateSidebarHomeSelectionState(): void {
-  if (!state.settings.generalSidebarCleanup || location.pathname !== '/') return;
+  if (!state.settings.generalSidebarCleanup) return;
 
   const shouldNeutralize = !isPointerInsideVisibleSidebar();
   const entries = queryAll<HTMLElement>(
@@ -553,8 +577,10 @@ export function updateSidebarHomeSelectionState(): void {
   );
 
   for (const entry of entries) {
-    const homeLink = query<HTMLAnchorElement>('a[href="/"], a[href="https://www.youtube.com/"]', entry);
-    if (homeLink) continue;
+    if (entryMatchesCurrentLocation(entry)) {
+      entry.classList.remove(SIDEBAR_HOME_NEUTRAL_CLASS);
+      continue;
+    }
 
     stripSidebarSelectedState(entry);
     entry.classList.toggle(SIDEBAR_HOME_NEUTRAL_CLASS, shouldNeutralize);
