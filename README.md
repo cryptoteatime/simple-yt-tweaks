@@ -4,11 +4,14 @@ Simple YT Tweaks is an unofficial Manifest V3 Chrome/Brave extension that bundle
 
 This project is not affiliated with, endorsed by, sponsored by, or otherwise associated with YouTube or Google.
 
+![Simple YT Tweaks banner](store-assets/repo/readme-banner-1280x640.png)
+
 ## What It Does
 
 - Cleans up watch pages with separate `Modes` settings for `Theater`, `Default`, and `Fullscreen`.
 - Adds optional header, player UI, metadata, comments, recommendations, and live chat cleanup controls.
-- Restores a PiP button in the player controls and supports a floating mini-player while scrolling.
+- Restores a real browser Picture-in-Picture button in the player controls.
+- Adds a PiP handoff button inside YouTube's native miniplayer when YouTube shows that miniplayer naturally.
 - Cleans up the left sidebar with optional section-level visibility controls.
 - Hides Shorts and end-screen cards.
 - Hides sponsored/promoted surfaces where they can be identified confidently.
@@ -16,9 +19,19 @@ This project is not affiliated with, endorsed by, sponsored by, or otherwise ass
 
 ## Popup Layout
 
-- `General`: home feed columns, sponsored hiding, Shorts hiding, end-screen cards, PiP, floating mini-player
+- `General`: home feed columns, sponsored hiding, Shorts hiding, end-screen cards, PiP
 - `Sidebar`: sidebar cleanup and section-level sidebar visibility controls
 - `Modes`: separate `Theater`, `Default`, and `Fullscreen` behavior
+
+## Screenshots
+
+![General settings](store-assets/screenshots/general-settings-640x400.png)
+![Sidebar cleanup](store-assets/screenshots/sidebar-cleanup-1280x800.png)
+![Fullscreen settings](store-assets/screenshots/fullscreen-settings-640x400.png)
+
+## Known Limitations
+
+Current known limitations are tracked in [KNOWN_ISSUES.md](KNOWN_ISSUES.md). The main Picture-in-Picture button opens true browser PiP; native YouTube miniplayer behavior is owned by YouTube and the browser, and the extension does not try to force or suppress it.
 
 ## Development
 
@@ -47,11 +60,11 @@ The packaged upload is written to:
 ### Manual Smoke Checklist
 
 - Homepage: verify home feed columns, sponsored hiding, Shorts hiding, and sidebar cleanup
-- Watch page in Default mode: verify recommendations/comments/metadata/live chat controls
+- Watch page in Default mode: verify recommendations/comments/metadata/live chat controls and PiP button behavior
 - Watch page in Theater mode: verify enhanced theater layout, header hover, metadata behavior, and scrollbar behavior
 - Fullscreen mode: verify title, player UI, recommendation overlay, and action overlay behavior
 - Popup: verify settings persist after closing/reopening the popup and after YouTube navigation
-- PiP / floating mini-player: verify restore button, dock behavior, close/restore, and navigation cleanup
+- PiP: verify the restored button opens true browser PiP and the miniplayer PiP handoff appears only when YouTube's native miniplayer is present
 
 ## Versioning
 

@@ -35,7 +35,7 @@ Unofficial player usability tweaks for YouTube.
 ```text
 Simple YT Tweaks is an unofficial Chrome and Brave extension that gives YouTube a cleaner, less distracting viewing experience without adding bloat.
 
-It includes grouped controls for Theater, Default, and Fullscreen viewing modes, optional sidebar cleanup, Shorts hiding, sponsored/promoted post hiding, end-screen card removal, a restored Picture-in-Picture button, and a floating mini-player for scrolling through watch pages.
+It includes grouped controls for Theater, Default, and Fullscreen viewing modes, optional sidebar cleanup, Shorts hiding, sponsored/promoted post hiding, end-screen card removal, and a restored browser Picture-in-Picture button.
 
 Settings are stored with Chrome extension storage so your preferences persist between sessions.
 
@@ -62,10 +62,11 @@ Simple YT Tweaks does not collect, transmit, sell, or share user data. It is not
 
 - Store icon: `public/icons/icon128.png`
 - Small promo tile: `store-assets/promo/small-promo-tile-440x280.png`
+- Repo/public banner: `store-assets/repo/readme-banner-1280x640.png`
 - Screenshots:
-  - `store-assets/screenshots/general-settings-1280x800.png`
+  - `store-assets/screenshots/general-settings-640x400.png`
   - `store-assets/screenshots/sidebar-cleanup-1280x800.png`
-  - `store-assets/screenshots/fullscreen-settings-1280x800.png`
+  - `store-assets/screenshots/fullscreen-settings-640x400.png`
 
 ## Manual Smoke Checklist
 
@@ -74,14 +75,20 @@ Simple YT Tweaks does not collect, transmit, sell, or share user data. It is not
   - sponsored and Shorts hiding do not leave broken rows
   - sidebar cleanup behaves correctly
 - Watch page in Default mode
-  - comments, recommendations, live chat, metadata, PiP, and mini-player behave correctly
+  - comments, recommendations, live chat, metadata, and PiP behavior are correct
 - Watch page in Theater mode
-  - enhanced theater layout, header reveal, metadata controls, and docked mini-player behave correctly
+  - enhanced theater layout, header reveal, and metadata controls behave correctly
 - Fullscreen mode
   - title overlay, player UI, recommendation overlay, and action overlay toggles behave correctly
 - Popup
   - status dot turns green on YouTube
   - settings persist after refresh/navigation
+
+## Known Issues / Limitations
+
+- Watch-page sidebar state can occasionally leave a non-current sidebar entry visually highlighted until another pointer update occurs.
+- Some fullscreen scroll/reveal flows can briefly desync YouTube's own overlay state from the extension's reveal styling.
+- Native YouTube miniplayer behavior is not overridden by the extension and may vary by YouTube/browser build.
 
 ## Submission Notes
 

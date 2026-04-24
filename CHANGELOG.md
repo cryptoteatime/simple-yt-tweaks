@@ -12,9 +12,10 @@
 ### Changed
 
 - Reorganized the popup into `General`, `Sidebar`, and `Modes` tabs, with `Modes > Theater / Default / Fullscreen`.
-- Moved shared PiP controls into `General` so restore-PiP and floating mini-player settings live in one place.
+- Moved shared PiP controls into `General` so the restored browser PiP flow lives in one place.
 - Tightened sidebar cleanup so it uses a clean Subscriptions icon row, keeps You expanded by default, and explains that behavior more clearly in the UI.
 - Updated public docs and Web Store copy to match the shipped UI and feature layout.
+- Refactored the content script into focused modules so fullscreen, theater, sidebar, PiP, and lifecycle behavior are easier to debug and maintain.
 - Bumped the first public release candidate to `0.2.0`.
 
 ### Fixed
@@ -30,3 +31,4 @@
 
 - This is the first public release candidate intended for GitHub publication and Chrome Web Store submission.
 - The packaged upload is generated locally in `release/simple-yt-tweaks-v0.2.0.zip`.
+- Current known limitations are tracked in `KNOWN_ISSUES.md`.

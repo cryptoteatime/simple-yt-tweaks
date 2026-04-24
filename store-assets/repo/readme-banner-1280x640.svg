@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="66" y1="44" x2="1180" y2="604" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#141922"/>
+      <stop offset="1" stop-color="#090C12"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#40E0BA"/>
+      <stop offset="1" stop-color="#31C3EA"/>
+    </linearGradient>
+    <filter id="cardShadow" x="0" y="0" width="1280" height="640" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="24" stdDeviation="28" flood-color="#000000" flood-opacity="0.34"/>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="640" rx="32" fill="url(#bg)"/>
+  <rect x="1" y="1" width="1278" height="638" rx="31" stroke="rgba(255,255,255,0.06)"/>
+
+  <g opacity="0.85">
+    <circle cx="1120" cy="108" r="180" fill="#12242A"/>
+    <circle cx="1090" cy="118" r="150" fill="#0D1820"/>
+  </g>
+
+  <g transform="translate(70 66)">
+    <rect width="132" height="34" rx="17" fill="#121821" stroke="#28303C"/>
+    <circle cx="27" cy="17" r="8" fill="url(#accent)"/>
+    <text x="44" y="22" fill="#F5F8FC" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700">Simple YT Tweaks</text>
+  </g>
+
+  <text x="70" y="186" fill="#F6F9FC" font-family="Inter, Arial, sans-serif" font-size="64" font-weight="800">A cleaner YouTube</text>
+  <text x="70" y="258" fill="#F6F9FC" font-family="Inter, Arial, sans-serif" font-size="64" font-weight="800">watching experience.</text>
+
+  <text x="70" y="314" fill="#A8B3C2" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="500">Unofficial Chrome and Brave extension with focused layout</text>
+  <text x="70" y="346" fill="#A8B3C2" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="500">and player controls for a cleaner YouTube experience.</text>
+
+  <g transform="translate(70 392)">
+    <rect width="152" height="36" rx="18" fill="#151B24" stroke="#2B3442"/>
+    <text x="23" y="24" fill="#F4F7FB" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700">Modes cleanup</text>
+
+    <rect x="166" width="164" height="36" rx="18" fill="#151B24" stroke="#2B3442"/>
+    <text x="187" y="24" fill="#F4F7FB" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700">Sidebar control</text>
+
+    <rect x="344" width="152" height="36" rx="18" fill="#151B24" stroke="#2B3442"/>
+    <text x="369" y="24" fill="#F4F7FB" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700">Shorts hiding</text>
+
+    <rect x="510" width="194" height="36" rx="18" fill="#151B24" stroke="#2B3442"/>
+    <text x="533" y="24" fill="#F4F7FB" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700">Real browser PiP</text>
+  </g>
+
+  <g filter="url(#cardShadow)">
+    <rect x="778" y="94" width="430" height="452" rx="26" fill="#10151D" stroke="#262E3A"/>
+    <text x="812" y="130" fill="#F4F7FB" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="800">Simple YT Tweaks</text>
+    <circle cx="1150" cy="120" r="12" fill="url(#accent)"/>
+    <text x="812" y="160" fill="#93A1B5" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="600">YOUTUBE CONTROLS</text>
+
+    <rect x="810" y="184" width="366" height="48" rx="14" fill="#131924" stroke="#2A313F"/>
+    <rect x="820" y="194" width="110" height="28" rx="10" fill="rgba(64,224,186,0.22)" stroke="rgba(64,224,186,0.46)"/>
+    <text x="857" y="212" fill="#F4F8FB" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="800">General</text>
+    <text x="968" y="212" fill="#9BA7B8" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="800">Sidebar</text>
+    <text x="1088" y="212" fill="#9BA7B8" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="800">Modes</text>
+
+    <rect x="810" y="254" width="366" height="238" rx="18" fill="#131922" stroke="#2A313F"/>
+
+    <g transform="translate(834 286)">
+      <text x="0" y="0" fill="#F4F8FB" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700">Home Feed Columns</text>
+      <rect x="228" y="-18" width="104" height="34" rx="11" fill="#171E28" stroke="#333B49"/>
+      <text x="260" y="4" fill="#DCE3EB" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700">3 columns</text>
+
+      <text x="0" y="66" fill="#F4F8FB" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700">Hide Shorts</text>
+      <rect x="286" y="44" width="52" height="28" rx="14" fill="#173C37" stroke="#2CCCA9"/>
+      <circle cx="321" cy="58" r="11" fill="#46E0C2"/>
+
+      <text x="0" y="132" fill="#F4F8FB" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700">Hide Sponsored Posts</text>
+      <rect x="286" y="110" width="52" height="28" rx="14" fill="#173C37" stroke="#2CCCA9"/>
+      <circle cx="321" cy="124" r="11" fill="#46E0C2"/>
+
+      <text x="0" y="198" fill="#F4F8FB" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700">Restore PiP Button</text>
+      <rect x="286" y="176" width="52" height="28" rx="14" fill="#173C37" stroke="#2CCCA9"/>
+      <circle cx="321" cy="190" r="11" fill="#46E0C2"/>
+    </g>
+  </g>
+
+  <text x="70" y="564" fill="#8997AA" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="500">
+    Modes • sidebar cleanup • Shorts hiding • sponsored cleanup • end-screen cleanup • PiP
+  </text>
+</svg>
