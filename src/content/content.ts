@@ -193,6 +193,7 @@ const state: {
   storageObserverBound: boolean;
   pointerHandlersBound: boolean;
   miniplayerInterceptionBound: boolean;
+  nativeMiniplayerAttemptInFlight: boolean;
   lastPointerY: number;
   lastEnhancedTheaterActive: boolean;
   modeTransitionTimers: number[];
@@ -212,6 +213,7 @@ const state: {
   storageObserverBound: false,
   pointerHandlersBound: false,
   miniplayerInterceptionBound: false,
+  nativeMiniplayerAttemptInFlight: false,
   lastPointerY: Number.POSITIVE_INFINITY,
   lastEnhancedTheaterActive: false,
   modeTransitionTimers: [],
@@ -1921,6 +1923,50 @@ function updateNativeMiniplayerState(): void {
   );
 }
 
+function runPageContext<T = unknown>(fnSource: string, args: unknown[] = []): Promise<T | null> {
+  return new Promise((resolve) => {
+    const eventName = `simple-yt-tweaks-page-result-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    const script = document.createElement('script');
+
+    const cleanup = () => {
+      script.remove();
+      window.removeEventListener(eventName, onResult as EventListener);
+    };
+
+    const timeout = window.setTimeout(() => {
+      cleanup();
+      resolve(null);
+    }, 500);
+
+    const onResult = (event: Event) => {
+      const customEvent = event as CustomEvent<T>;
+      window.clearTimeout(timeout);
+      cleanup();
+      resolve(customEvent.detail ?? null);
+    };
+
+    window.addEventListener(eventName, onResult as EventListener, { once: true });
+
+    const encodedArgs = JSON.stringify(args).replace(/</g, '\\u003c');
+    script.textContent = `
+      (() => {
+        const __eventName = ${JSON.stringify(eventName)};
+        const __args = ${encodedArgs};
+        let __result = null;
+        try {
+          const __fn = (${fnSource});
+          __result = __fn(...__args);
+        } catch (error) {
+          __result = { ok: false, error: String(error) };
+        }
+        window.dispatchEvent(new CustomEvent(__eventName, { detail: __result }));
+      })();
+    `;
+
+    (document.documentElement || document.head || document.body).append(script);
+  });
+}
+
 function isNativeMiniplayerActive(): boolean {
   const player = getPlayer();
   if (player?.classList.contains('ytp-player-minimized')) return true;
@@ -1941,7 +1987,150 @@ function getNativeMiniplayerTrigger(): HTMLElement | null {
   );
 }
 
-function updateNativeMiniplayerOnScroll(): void {
+async function invokeNativeMiniplayer(): Promise<boolean> {
+  const result = await runPageContext<{ ok?: boolean }>(
+    `() => {
+      const isVisible = (element) => {
+        if (!element) return false;
+        const styles = window.getComputedStyle(element);
+        return styles.display !== 'none' && styles.visibility !== 'hidden' && (element.offsetWidth > 0 || element.offsetHeight > 0);
+      };
+
+      const isActive = () => {
+        const player = document.querySelector('#movie_player');
+        if (player instanceof HTMLElement && player.classList.contains('ytp-player-minimized')) return true;
+        const miniplayer = document.querySelector('ytd-miniplayer, .ytp-miniplayer-ui');
+        return miniplayer instanceof HTMLElement && isVisible(miniplayer);
+      };
+
+      const collectMethodNames = (host) => {
+        const keys = [];
+        const seen = new Set();
+        let current = host;
+
+        while (current && current !== Object.prototype) {
+          for (const key of Reflect.ownKeys(current)) {
+            if (typeof key !== 'string' || seen.has(key)) continue;
+            seen.add(key);
+            if (/(mini(player)?|minimi[sz]e)/i.test(key)) {
+              keys.push(key);
+            }
+          }
+          current = Object.getPrototypeOf(current);
+        }
+
+        return keys;
+      };
+
+      const tryMethods = (host) => {
+        if (!host) return false;
+
+        const knownMethods = [
+          'minimize',
+          'minimizeVideo',
+          'openMiniplayer',
+          'showMiniplayer',
+          'toggleMiniplayer',
+          'toggleMinimized',
+          'enterMiniplayer',
+          'setMinimized',
+          'updateMiniplayerState',
+          'onMiniplayerButtonClick',
+        ];
+
+        const candidates = [...knownMethods, ...collectMethodNames(host)];
+        const attempted = new Set();
+
+        for (const methodName of candidates) {
+          if (attempted.has(methodName)) continue;
+          attempted.add(methodName);
+
+          const candidate = host[methodName];
+          if (typeof candidate !== 'function') continue;
+
+          for (const args of [[], [true], [{ open: true }]]) {
+            try {
+              candidate.apply(host, args);
+              if (isActive()) return true;
+            } catch {}
+          }
+        }
+
+        return false;
+      };
+
+      const player = document.querySelector('#movie_player');
+      const api = player && typeof player.getApi === 'function' ? player.getApi() : null;
+
+      if (tryMethods(player) || tryMethods(api)) {
+        return { ok: true };
+      }
+
+      return { ok: false };
+    }`,
+  );
+
+  return Boolean(result?.ok);
+}
+
+function resetFullscreenGridPeekState(): void {
+  const player = getPlayer();
+  if (!player) return;
+
+  const shouldClamp =
+    isWatchPage() &&
+    isNativeFullscreenActive() &&
+    state.settings.fullscreenHideRecommendationOverlays;
+
+  if (shouldClamp) {
+    player.classList.remove('ytp-fullscreen-grid-peeking');
+    player.style.setProperty('--ytp-grid-peek-height', '0px');
+    player.style.setProperty('--ytp-grid-scroll-percentage', '0');
+
+    for (const element of queryAll<HTMLElement>(
+      [
+        SELECTORS.chromeBottom,
+        SELECTORS.chromeControls,
+        '.ytp-progress-bar-container',
+        '.ytp-left-controls',
+        '.ytp-right-controls',
+        '.ytp-fullscreen-grid-main-content',
+        '.ytp-fullscreen-grid-stills-container',
+      ].join(','),
+      player,
+    )) {
+      element.style.bottom = '0';
+      element.style.marginBottom = '0';
+      element.style.paddingBottom = '0';
+      element.style.transform = 'none';
+    }
+
+    return;
+  }
+
+  player.style.removeProperty('--ytp-grid-peek-height');
+  player.style.removeProperty('--ytp-grid-scroll-percentage');
+
+  for (const element of queryAll<HTMLElement>(
+    [
+      SELECTORS.chromeBottom,
+      SELECTORS.chromeControls,
+      '.ytp-progress-bar-container',
+      '.ytp-left-controls',
+      '.ytp-right-controls',
+      '.ytp-fullscreen-grid-main-content',
+      '.ytp-fullscreen-grid-stills-container',
+    ].join(','),
+    player,
+  )) {
+    element.style.removeProperty('bottom');
+    element.style.removeProperty('margin-bottom');
+    element.style.removeProperty('padding-bottom');
+    element.style.removeProperty('transform');
+  }
+}
+
+async function updateNativeMiniplayerOnScroll(): Promise<void> {
   if (!isDefaultWatchView() || isEnhancedTheaterActive() || isNativeFullscreenActive()) return;
   if (!isWatchPage() || document.pictureInPictureElement) return;
 
@@ -1957,13 +2146,24 @@ function updateNativeMiniplayerOnScroll(): void {
     return;
   }
 
-  if (state.miniPlayerDismissed || isNativeMiniplayerActive()) return;
+  if (state.miniPlayerDismissed || isNativeMiniplayerActive() || state.nativeMiniplayerAttemptInFlight) return;
 
   const playerPastViewport = rect.bottom <= Math.max(120, window.innerHeight * 0.2);
   if (!playerPastViewport) return;
 
-  const trigger = getNativeMiniplayerTrigger();
-  trigger?.click();
+  state.nativeMiniplayerAttemptInFlight = true;
+
+  try {
+    const invoked = await invokeNativeMiniplayer();
+    if (!invoked) {
+      const trigger = getNativeMiniplayerTrigger();
+      trigger?.click();
+    }
+  } finally {
+    window.setTimeout(() => {
+      state.nativeMiniplayerAttemptInFlight = false;
+    }, 250);
+  }
 }
 
 function bindMiniplayerLifecycle(): void {
@@ -2390,6 +2590,7 @@ function applyFeatureState(): void {
   resetNavigationState();
   updateViewportHeightVar();
   updateTheaterClass();
+  resetFullscreenGridPeekState();
   updateMastheadTargets();
   clearStaleGuideFocus();
   updateLiveChatTargets();
@@ -2505,19 +2706,21 @@ function observeDom(): void {
 function observeNavigation(): void {
   const rerun = debounce(() => applyFeatureState(), 120);
   const updateScrollUi = debounce(() => {
-    updateNativeMiniplayerOnScroll();
+    void updateNativeMiniplayerOnScroll();
+    resetFullscreenGridPeekState();
     updateDockedPlayer();
     updateScrollbarState();
   }, 40);
   const updateViewportUi = debounce(() => {
     updateViewportHeightVar();
     updateTheaterClass();
+    resetFullscreenGridPeekState();
     updateMastheadTargets();
     clearStaleGuideFocus();
     updateLiveChatTargets();
     updateScrollbarState();
     updateFullscreenActionDock();
-    updateNativeMiniplayerOnScroll();
+    void updateNativeMiniplayerOnScroll();
     updateDockedPlayer();
   }, 80);
 
