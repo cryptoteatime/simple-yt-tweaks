@@ -115,7 +115,23 @@ export function buildSidebarCss(settings: Settings): string {
     body.simple-yt-tweaks-active .${SIDEBAR_HOME_NEUTRAL_CLASS} tp-yt-paper-item,
     body.simple-yt-tweaks-active .${SIDEBAR_HOME_NEUTRAL_CLASS} a,
     body.simple-yt-tweaks-active .${SIDEBAR_HOME_NEUTRAL_CLASS} #contentContainer {
+      --paper-item-focused-before-background: transparent !important;
       background: transparent !important;
+      background-color: transparent !important;
+      box-shadow: none !important;
+    }
+
+    body.simple-yt-tweaks-active .${SIDEBAR_HOME_NEUTRAL_CLASS}:hover,
+    body.simple-yt-tweaks-active .${SIDEBAR_HOME_NEUTRAL_CLASS}:hover #endpoint,
+    body.simple-yt-tweaks-active .${SIDEBAR_HOME_NEUTRAL_CLASS}:hover tp-yt-paper-item,
+    body.simple-yt-tweaks-active .${SIDEBAR_HOME_NEUTRAL_CLASS}:hover a,
+    body.simple-yt-tweaks-active .${SIDEBAR_HOME_NEUTRAL_CLASS}:hover #contentContainer,
+    body.simple-yt-tweaks-active .${SIDEBAR_HOME_NEUTRAL_CLASS} #endpoint:hover,
+    body.simple-yt-tweaks-active .${SIDEBAR_HOME_NEUTRAL_CLASS} tp-yt-paper-item:hover,
+    body.simple-yt-tweaks-active .${SIDEBAR_HOME_NEUTRAL_CLASS} a:hover {
+      --paper-item-focused-before-background: transparent !important;
+      background: transparent !important;
+      background-color: transparent !important;
       box-shadow: none !important;
     }
     ` : ''}
@@ -530,16 +546,23 @@ export function isPointerInsideVisibleSidebar(): boolean {
   }
 
   const sidebarCandidates = queryAll<HTMLElement>(
-    '#guide, #guide-content, ytd-guide-renderer, ytd-mini-guide-renderer',
+    [
+      'ytd-guide-renderer',
+      'ytd-mini-guide-renderer',
+      '#guide',
+      '#guide-content',
+    ].join(','),
   );
 
   return sidebarCandidates.some((element) => {
     const rect = element.getBoundingClientRect();
     const style = window.getComputedStyle(element);
+    const looksLikeLeftGuideSurface = rect.left <= 32 && rect.right <= 420;
 
     if (
       rect.width <= 0 ||
       rect.height <= 0 ||
+      !looksLikeLeftGuideSurface ||
       style.display === 'none' ||
       style.visibility === 'hidden'
     ) {
@@ -571,7 +594,11 @@ export function updateSidebarHomeSelectionState(): void {
   const entries = queryAll<HTMLElement>(
     [
       '#guide ytd-guide-entry-renderer',
+      '#guide ytd-guide-collapsible-entry-renderer',
+      '#guide tp-yt-paper-item',
       'ytd-guide-renderer ytd-guide-entry-renderer',
+      'ytd-guide-renderer ytd-guide-collapsible-entry-renderer',
+      'ytd-guide-renderer tp-yt-paper-item',
       'ytd-mini-guide-renderer ytd-mini-guide-entry-renderer',
     ].join(','),
   );

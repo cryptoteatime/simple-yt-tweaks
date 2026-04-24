@@ -1,4 +1,4 @@
-import { buildFullscreenCss, buildSharedPlayerUiCss, resetFullscreenGridPeekState, resetFullscreenNavigationState, updateFullscreenActionDock, updatePlayerUiFocusState, updatePlayerUiHoverState } from './fullscreen';
+import { buildFullscreenCss, buildSharedPlayerUiCss, resetFullscreenGridPeekState, resetFullscreenNavigationState, shouldSuppressFullscreenGridPeekInteraction, updateFullscreenActionDock, updatePlayerUiFocusState, updatePlayerUiHoverState } from './fullscreen';
 import { bindPointerHandlers, bindRuntimeMessages, bindStorageObserver, bindVideoEvents, observeDom, observeNavigation, scheduleModeStabilization, syncWatchObserver, updateViewportHeightVar } from './lifecycle';
 import { buildPipCss, ensureMiniPlayerPipButton, syncPipButtons } from './pip';
 import { GENERAL_HIDDEN_CLASS, SELECTORS, STYLE_ID } from './selectors';
@@ -126,6 +126,21 @@ function refreshInteractionUiState(): void {
   updateFullscreenActionDock();
 }
 
+function bindFullscreenGridPeekSuppressor(): void {
+  const suppressGridPeek = (event: WheelEvent | TouchEvent) => {
+    if (!shouldSuppressFullscreenGridPeekInteraction()) return;
+
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    refreshInteractionUiState();
+    window.requestAnimationFrame(refreshInteractionUiState);
+    window.setTimeout(refreshInteractionUiState, 80);
+  };
+
+  document.addEventListener('wheel', suppressGridPeek, { capture: true, passive: false });
+  document.addEventListener('touchmove', suppressGridPeek, { capture: true, passive: false });
+}
+
 function applyFeatureState(): void {
   if (!document.body) return;
 
@@ -206,6 +221,7 @@ async function init(): Promise<void> {
     },
     onViewportUi: stabilizeUi,
   });
+  bindFullscreenGridPeekSuppressor();
   bindRuntimeMessages();
   bindVideoEvents({
     onPipChange: () => {

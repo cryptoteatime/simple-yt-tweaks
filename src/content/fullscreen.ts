@@ -381,6 +381,14 @@ export function resetFullscreenGridPeekState(): void {
   }
 }
 
+export function shouldSuppressFullscreenGridPeekInteraction(): boolean {
+  return (
+    isWatchPage() &&
+    isNativeFullscreenActive() &&
+    state.settings.fullscreenHideRecommendationOverlays
+  );
+}
+
 function ensureFullscreenActionDockShell(): HTMLElement | null {
   const chromeControls = query<HTMLElement>(SELECTORS.chromeControls);
   const rightControls = query<HTMLElement>(SELECTORS.controlsRight);
