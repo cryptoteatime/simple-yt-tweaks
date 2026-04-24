@@ -147,6 +147,7 @@ const LIVE_CHAT_CLASS = 'simple-yt-tweaks-live-chat';
 const GENERAL_HIDDEN_CLASS = 'simple-yt-tweaks-hidden';
 const SIDEBAR_SUBSCRIPTIONS_CLASS = 'simple-yt-tweaks-sidebar-subscriptions';
 const SIDEBAR_SUBSCRIPTIONS_ICON_CLASS = 'simple-yt-tweaks-sidebar-subscriptions-icon';
+const SIDEBAR_HOME_NEUTRAL_CLASS = 'simple-yt-tweaks-sidebar-home-neutral';
 const THEATER_PRIMARY_METADATA_CLASS = 'simple-yt-tweaks-theater-primary-metadata';
 const FULLSCREEN_ACTION_TARGET_CLASS = 'simple-yt-tweaks-fullscreen-action-target';
 
@@ -527,6 +528,14 @@ function buildCss(): string {
 
     body.simple-yt-tweaks-active .${SIDEBAR_SUBSCRIPTIONS_CLASS} #header-entry .arrow-icon {
       display: none !important;
+    }
+
+    body.simple-yt-tweaks-active ytd-browse[page-subtype="home"] .${SIDEBAR_HOME_NEUTRAL_CLASS}:not(:hover):not(:focus-within) #endpoint,
+    body.simple-yt-tweaks-active ytd-browse[page-subtype="home"] .${SIDEBAR_HOME_NEUTRAL_CLASS}:not(:hover):not(:focus-within) tp-yt-paper-item,
+    body.simple-yt-tweaks-active ytd-browse[page-subtype="home"] .${SIDEBAR_HOME_NEUTRAL_CLASS}:not(:hover):not(:focus-within) a,
+    body.simple-yt-tweaks-active ytd-browse[page-subtype="home"] .${SIDEBAR_HOME_NEUTRAL_CLASS}:not(:hover):not(:focus-within) #contentContainer {
+      background: transparent !important;
+      box-shadow: none !important;
     }
     ` : ''}
 
@@ -1215,6 +1224,7 @@ function scheduleModeStabilization(): void {
       updateMastheadTargets();
       clearStaleGuideFocus();
       clearStaleSidebarItemFocus();
+      updateSidebarHomeSelectionState();
       updateLiveChatTargets();
       updateScrollbarState();
       updateFullscreenActionDock();
@@ -1279,6 +1289,10 @@ function clearGeneralHiddenTargets(): void {
 
   for (const target of queryAll<HTMLElement>(`.${SIDEBAR_SUBSCRIPTIONS_ICON_CLASS}`)) {
     target.remove();
+  }
+
+  for (const target of queryAll<HTMLElement>(`.${SIDEBAR_HOME_NEUTRAL_CLASS}`)) {
+    target.classList.remove(SIDEBAR_HOME_NEUTRAL_CLASS);
   }
 }
 
@@ -1627,6 +1641,7 @@ function bindPointerHandlers(): void {
       updateTopHoverState(event.clientY);
       updatePlayerUiHoverState(event.clientX, event.clientY);
       clearStaleSidebarItemFocus();
+      updateSidebarHomeSelectionState();
     },
     { passive: true },
   );
@@ -1637,6 +1652,7 @@ function bindPointerHandlers(): void {
       state.lastPointerY = Number.POSITIVE_INFINITY;
       document.body.classList.remove('simple-yt-tweaks-top-hover');
       document.body.classList.remove('simple-yt-tweaks-player-ui-hover');
+      updateSidebarHomeSelectionState();
     },
     { passive: true },
   );
@@ -1744,6 +1760,26 @@ function clearStaleSidebarItemFocus(): void {
   if (isPointerInsideVisibleSidebar()) return;
 
   activeElement.blur();
+}
+
+function updateSidebarHomeSelectionState(): void {
+  if (!state.settings.generalSidebarCleanup || location.pathname !== '/') return;
+
+  const shouldNeutralize = !isPointerInsideVisibleSidebar();
+  const entries = queryAll<HTMLElement>(
+    [
+      '#guide ytd-guide-entry-renderer',
+      'ytd-guide-renderer ytd-guide-entry-renderer',
+      'ytd-mini-guide-renderer ytd-mini-guide-entry-renderer',
+    ].join(','),
+  );
+
+  for (const entry of entries) {
+    const homeLink = query<HTMLAnchorElement>('a[href="/"], a[href="https://www.youtube.com/"]', entry);
+    if (homeLink) continue;
+
+    entry.classList.toggle(SIDEBAR_HOME_NEUTRAL_CLASS, shouldNeutralize);
+  }
 }
 
 function getPlayerUiFocusHost(target: Element | null): HTMLElement | null {
@@ -1961,7 +1997,7 @@ function ensureMiniPlayerPipButton(): void {
 }
 
 function shouldHideNativeMiniplayer(): boolean {
-  return isWatchPage() && Boolean(document.pictureInPictureElement);
+  return false;
 }
 
 function updateNativeMiniplayerState(): void {
@@ -1971,361 +2007,6 @@ function updateNativeMiniplayerState(): void {
     'simple-yt-tweaks-hide-native-miniplayer',
     shouldHideNativeMiniplayer(),
   );
-}
-
-function runPageContext<T = unknown>(
-  fnSource: string,
-  args: unknown[] = [],
-  timeoutMs = 500,
-): Promise<T | null> {
-  return new Promise((resolve) => {
-    const eventName = `simple-yt-tweaks-page-result-${Date.now()}-${Math.random().toString(36).slice(2)}`;
-    const script = document.createElement('script');
-
-    const cleanup = () => {
-      script.remove();
-      window.removeEventListener(eventName, onResult as EventListener);
-    };
-
-    const timeout = window.setTimeout(() => {
-      cleanup();
-      resolve(null);
-    }, timeoutMs);
-
-    const onResult = (event: Event) => {
-      const customEvent = event as CustomEvent<T>;
-      window.clearTimeout(timeout);
-      cleanup();
-      resolve(customEvent.detail ?? null);
-    };
-
-    window.addEventListener(eventName, onResult as EventListener, { once: true });
-
-    const encodedArgs = JSON.stringify(args).replace(/</g, '\\u003c');
-    script.textContent = `
-      (async () => {
-        const __eventName = ${JSON.stringify(eventName)};
-        const __args = ${encodedArgs};
-        let __result = null;
-        try {
-          const __fn = (${fnSource});
-          __result = __fn(...__args);
-          if (__result && typeof __result.then === 'function') {
-            __result = await __result;
-          }
-        } catch (error) {
-          __result = { ok: false, error: String(error) };
-        }
-        window.dispatchEvent(new CustomEvent(__eventName, { detail: __result }));
-      })();
-    `;
-
-    (document.documentElement || document.head || document.body).append(script);
-  });
-}
-
-function isNativeMiniplayerActive(): boolean {
-  const player = getPlayer();
-  if (player?.classList.contains('ytp-player-minimized')) return true;
-
-  const miniplayer = query<HTMLElement>('ytd-miniplayer, .ytp-miniplayer-ui');
-  return Boolean(miniplayer && isVisibleNode(miniplayer));
-}
-
-function getNativeMiniplayerTrigger(): HTMLElement | null {
-  return query<HTMLElement>(
-    [
-      '.ytp-miniplayer-button',
-      '.ytp-button[data-title-no-tooltip="Miniplayer"]',
-      '.ytp-button[title*="Miniplayer"]',
-      '.ytp-button[aria-label*="Miniplayer"]',
-      '.ytp-menuitem[aria-label*="Miniplayer"]',
-    ].join(','),
-  );
-}
-
-async function invokeNativeMiniplayer(): Promise<boolean> {
-  const result = await runPageContext<{ ok?: boolean }>(
-    `async () => {
-      const wait = (ms) => new Promise((resolve) => window.setTimeout(resolve, ms));
-      const makeShortcutEvent = (target) => ({
-        key: 'i',
-        code: 'KeyI',
-        keyCode: 73,
-        which: 73,
-        altKey: false,
-        ctrlKey: false,
-        metaKey: false,
-        shiftKey: false,
-        repeat: false,
-        defaultPrevented: false,
-        target,
-        currentTarget: target,
-        preventDefault() {
-          this.defaultPrevented = true;
-        },
-        stopPropagation() {},
-        stopImmediatePropagation() {},
-      });
-
-      const isVisible = (element) => {
-        if (!element) return false;
-        const styles = window.getComputedStyle(element);
-        return styles.display !== 'none' && styles.visibility !== 'hidden' && (element.offsetWidth > 0 || element.offsetHeight > 0);
-      };
-
-      const isActive = () => {
-        const player = document.querySelector('#movie_player');
-        if (player instanceof HTMLElement && player.classList.contains('ytp-player-minimized')) return true;
-        const miniplayer = document.querySelector('ytd-miniplayer, .ytp-miniplayer-ui');
-        return miniplayer instanceof HTMLElement && isVisible(miniplayer);
-      };
-
-      const addHost = (set, host) => {
-        if (!host || set.has(host)) return;
-        set.add(host);
-      };
-
-      const collectMethodNames = (host) => {
-        const keys = [];
-        const seen = new Set();
-        let current = host;
-
-        while (current && current !== Object.prototype) {
-          for (const key of Reflect.ownKeys(current)) {
-            if (typeof key !== 'string' || seen.has(key)) continue;
-            seen.add(key);
-            if (/(mini(player)?|minimi[sz]e)/i.test(key)) {
-              keys.push(key);
-            }
-          }
-          current = Object.getPrototypeOf(current);
-        }
-
-        return keys;
-      };
-
-      const tryMethods = async (host) => {
-        if (!host) return false;
-
-        const knownMethods = [
-          'minimize',
-          'minimizeVideo',
-          'openMiniplayer',
-          'showMiniplayer',
-          'toggleMiniplayer',
-          'toggleMinimized',
-          'enterMiniplayer',
-          'setMinimized',
-          'updateMiniplayerState',
-          'onMiniplayerButtonClick',
-        ];
-
-        const candidates = [...knownMethods, ...collectMethodNames(host)];
-        const attempted = new Set();
-
-        for (const methodName of candidates) {
-          if (attempted.has(methodName)) continue;
-          attempted.add(methodName);
-
-          const candidate = host[methodName];
-          if (typeof candidate !== 'function') continue;
-
-          for (const args of [[], [true], [{ open: true }]]) {
-            try {
-              candidate.apply(host, args);
-              if (isActive()) return true;
-              await wait(60);
-              if (isActive()) return true;
-              await wait(120);
-              if (isActive()) return true;
-            } catch {}
-          }
-        }
-
-        return false;
-      };
-
-      const tryShortcutMethods = async (host, target) => {
-        if (!host) return false;
-
-        const shortcutMethods = [
-          'handleGlobalKeyDown',
-          'handleGlobalKeyDown_',
-          'onGlobalKeyDown',
-          'onGlobalKeyDown_',
-          'handleKeyDown',
-          'handleKeyDown_',
-          'onKeyDown',
-          'onKeyDown_',
-          'handleKeyPress',
-          'handleKeyPress_',
-          'onKeyPress',
-          'onKeyPress_',
-          'handleShortcut',
-          'handleShortcut_',
-          'onShortcut',
-          'onShortcut_',
-          'handleKeyboardShortcut',
-          'handleKeyboardShortcut_',
-          'executeKeyboardShortcut',
-          'executeKeyboardShortcut_',
-        ];
-
-        const event = makeShortcutEvent(target);
-
-        for (const methodName of shortcutMethods) {
-          const candidate = host[methodName];
-          if (typeof candidate !== 'function') continue;
-
-          try {
-            candidate.call(host, event);
-            if (isActive()) return true;
-            await wait(60);
-            if (isActive()) return true;
-            await wait(120);
-            if (isActive()) return true;
-          } catch {}
-        }
-
-        return false;
-      };
-
-      const player = document.querySelector('#movie_player');
-      const api = player && typeof player.getApi === 'function' ? player.getApi() : null;
-      const watchFlexy = document.querySelector('ytd-watch-flexy');
-      const app = document.querySelector('ytd-app');
-      const miniplayer = document.querySelector('ytd-miniplayer');
-      const triggerCandidates = Array.from(document.querySelectorAll(
-        [
-          '.ytp-miniplayer-button',
-          '.ytp-button[data-title-no-tooltip="Miniplayer"]',
-          '.ytp-button[title*="Miniplayer"]',
-          '.ytp-button[aria-label*="Miniplayer"]',
-          '.ytp-menuitem[aria-label*="Miniplayer"]',
-          '.ytp-menuitem .ytp-menuitem-label',
-        ].join(',')
-      ));
-
-      const hostSet = new Set();
-      for (const host of [player, api, watchFlexy, app, miniplayer]) {
-        addHost(hostSet, host);
-        addHost(hostSet, host?.polymerController);
-        addHost(hostSet, host?.inst);
-        addHost(hostSet, host?.controller);
-        addHost(hostSet, host?.__dataHost);
-      }
-
-      for (const trigger of triggerCandidates) {
-        const element = trigger instanceof HTMLElement
-          ? trigger
-          : trigger.closest?.('.ytp-menuitem') instanceof HTMLElement
-            ? trigger.closest('.ytp-menuitem')
-            : null;
-        if (!element) continue;
-
-        addHost(hostSet, element);
-        addHost(hostSet, element.polymerController);
-        addHost(hostSet, element.inst);
-        addHost(hostSet, element.controller);
-        addHost(hostSet, element.__dataHost);
-      }
-
-      for (const host of Array.from(hostSet)) {
-        for (const [key, value] of Object.entries(host || {})) {
-          if (!value || typeof value !== 'object') continue;
-          if (/(mini(player)?|minimi[sz]e|watchNext|videoManager|shortcut|keyboard|key)/i.test(key)) {
-            addHost(hostSet, value);
-            addHost(hostSet, value.polymerController);
-            addHost(hostSet, value.inst);
-            addHost(hostSet, value.controller);
-          }
-        }
-      }
-
-      for (const host of hostSet) {
-        if (await tryMethods(host)) {
-          return { ok: true };
-        }
-      }
-
-      for (const host of hostSet) {
-        if (await tryShortcutMethods(host, player || document.body || document.documentElement)) {
-          return { ok: true };
-        }
-      }
-
-      for (const trigger of triggerCandidates) {
-        const element = trigger instanceof HTMLElement
-          ? trigger
-          : trigger.closest?.('.ytp-menuitem') instanceof HTMLElement
-            ? trigger.closest('.ytp-menuitem')
-            : null;
-        if (!element) continue;
-
-        const label = (element.getAttribute('aria-label') || element.getAttribute('title') || element.textContent || '').toLowerCase();
-        if (!label.includes('miniplayer')) continue;
-
-        try {
-          element.click();
-          if (isActive()) return { ok: true };
-          await wait(60);
-          if (isActive()) return { ok: true };
-        } catch {}
-
-        try {
-          for (const eventName of ['pointerdown', 'mousedown', 'pointerup', 'mouseup', 'click']) {
-            element.dispatchEvent(new MouseEvent(eventName, {
-              bubbles: true,
-              cancelable: true,
-              composed: true,
-              view: window,
-            }));
-          }
-          if (isActive()) return { ok: true };
-          await wait(60);
-          if (isActive()) return { ok: true };
-          await wait(120);
-          if (isActive()) return { ok: true };
-        } catch {}
-
-        try {
-          element.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, composed: true, view: window }));
-          if (isActive()) return { ok: true };
-          await wait(60);
-          if (isActive()) return { ok: true };
-        } catch {}
-      }
-
-      const keyboardTargets = [player, document.activeElement, document.body, document.documentElement];
-      for (const target of keyboardTargets) {
-        if (!(target instanceof EventTarget)) continue;
-
-        try {
-          for (const eventName of ['keydown', 'keyup']) {
-            target.dispatchEvent(new KeyboardEvent(eventName, {
-              key: 'i',
-              code: 'KeyI',
-              keyCode: 73,
-              which: 73,
-              bubbles: true,
-              cancelable: true,
-              composed: true,
-            }));
-          }
-          if (isActive()) return { ok: true };
-          await wait(80);
-          if (isActive()) return { ok: true };
-        } catch {}
-      }
-
-      return { ok: false };
-    }`,
-    [],
-    3000,
-  );
-
-  return Boolean(result?.ok);
 }
 
 function resetFullscreenGridPeekState(): void {
@@ -2395,39 +2076,7 @@ function resetFullscreenGridPeekState(): void {
 }
 
 async function updateNativeMiniplayerOnScroll(): Promise<void> {
-  if (!isDefaultWatchView() || isEnhancedTheaterActive() || isNativeFullscreenActive()) return;
-  if (!isWatchPage() || document.pictureInPictureElement) return;
-
-  const player = getPlayer();
-  if (!player) return;
-
-  const rect = player.getBoundingClientRect();
-  const playerVisibleThreshold = Math.min(window.innerHeight * 0.45, 340);
-  const playerMostlyVisible = rect.bottom > playerVisibleThreshold && rect.top < window.innerHeight * 0.55;
-
-  if (playerMostlyVisible) {
-    state.miniPlayerDismissed = false;
-    return;
-  }
-
-  if (state.miniPlayerDismissed || isNativeMiniplayerActive() || state.nativeMiniplayerAttemptInFlight) return;
-
-  const playerPastViewport = rect.bottom <= Math.max(120, window.innerHeight * 0.2);
-  if (!playerPastViewport) return;
-
-  state.nativeMiniplayerAttemptInFlight = true;
-
-  try {
-    const invoked = await invokeNativeMiniplayer();
-    if (!invoked) {
-      const trigger = getNativeMiniplayerTrigger();
-      trigger?.click();
-    }
-  } finally {
-    window.setTimeout(() => {
-      state.nativeMiniplayerAttemptInFlight = false;
-    }, 250);
-  }
+  state.nativeMiniplayerAttemptInFlight = false;
 }
 
 function bindMiniplayerLifecycle(): void {
@@ -2858,6 +2507,7 @@ function applyFeatureState(): void {
   updateMastheadTargets();
   clearStaleGuideFocus();
   clearStaleSidebarItemFocus();
+  updateSidebarHomeSelectionState();
   updateLiveChatTargets();
   updateGeneralVisibility();
   updateScrollbarState();
