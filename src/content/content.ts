@@ -993,6 +993,17 @@ function buildCss(): string {
       --ytp-grid-scroll-percentage: 0 !important;
       transform: none !important;
     }
+
+    body.simple-yt-tweaks-fullscreen-view #movie_player.ytp-fullscreen-grid-peeking .ytp-chrome-bottom,
+    body.simple-yt-tweaks-fullscreen-view #movie_player.ytp-fullscreen-grid-peeking .ytp-chrome-controls,
+    body.simple-yt-tweaks-fullscreen-view #movie_player.ytp-fullscreen-grid-peeking .ytp-progress-bar-container,
+    body.simple-yt-tweaks-fullscreen-view #movie_player.ytp-fullscreen-grid-peeking .ytp-left-controls,
+    body.simple-yt-tweaks-fullscreen-view #movie_player.ytp-fullscreen-grid-peeking .ytp-right-controls {
+      bottom: 0 !important;
+      margin-bottom: 0 !important;
+      padding-bottom: 0 !important;
+      transform: none !important;
+    }
     ` : ''}
 
     ${fullscreenHideActionOverlay ? `
@@ -1910,6 +1921,90 @@ function updateNativeMiniplayerState(): void {
   );
 }
 
+function isNativeMiniplayerActive(): boolean {
+  const player = getPlayer();
+  if (player?.classList.contains('ytp-player-minimized')) return true;
+
+  const miniplayer = query<HTMLElement>('ytd-miniplayer, .ytp-miniplayer-ui');
+  return Boolean(miniplayer && isVisibleNode(miniplayer));
+}
+
+function getNativeMiniplayerTrigger(): HTMLElement | null {
+  return query<HTMLElement>(
+    [
+      '.ytp-miniplayer-button',
+      '.ytp-button[data-title-no-tooltip="Miniplayer"]',
+      '.ytp-button[title*="Miniplayer"]',
+      '.ytp-button[aria-label*="Miniplayer"]',
+      '.ytp-menuitem[aria-label*="Miniplayer"]',
+    ].join(','),
+  );
+}
+
+function updateNativeMiniplayerOnScroll(): void {
+  if (!isDefaultWatchView() || isEnhancedTheaterActive() || isNativeFullscreenActive()) return;
+  if (!isWatchPage() || document.pictureInPictureElement) return;
+
+  const player = getPlayer();
+  if (!player) return;
+
+  const rect = player.getBoundingClientRect();
+  const playerVisibleThreshold = Math.min(window.innerHeight * 0.45, 340);
+  const playerMostlyVisible = rect.bottom > playerVisibleThreshold && rect.top < window.innerHeight * 0.55;
+
+  if (playerMostlyVisible) {
+    state.miniPlayerDismissed = false;
+    return;
+  }
+
+  if (state.miniPlayerDismissed || isNativeMiniplayerActive()) return;
+
+  const playerPastViewport = rect.bottom <= Math.max(120, window.innerHeight * 0.2);
+  if (!playerPastViewport) return;
+
+  const trigger = getNativeMiniplayerTrigger();
+  trigger?.click();
+}
+
+function bindMiniplayerLifecycle(): void {
+  if (state.miniplayerInterceptionBound) return;
+  state.miniplayerInterceptionBound = true;
+
+  document.addEventListener(
+    'click',
+    (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+
+      const closeTrigger = target.closest(
+        [
+          '.ytp-miniplayer-close-button',
+          '.ytp-gated-actions-overlay-miniplayer-close-button',
+          'ytd-miniplayer button[aria-label="Close"]',
+        ].join(','),
+      );
+
+      if (closeTrigger) {
+        state.miniPlayerDismissed = true;
+        return;
+      }
+
+      const restoreTrigger = target.closest(
+        [
+          '.ytp-miniplayer-expand-watch-page-button',
+          'ytd-miniplayer a[href*="watch"]',
+          'ytd-miniplayer button[aria-label*="Expand"]',
+        ].join(','),
+      );
+
+      if (restoreTrigger) {
+        state.miniPlayerDismissed = false;
+      }
+    },
+    true,
+  );
+}
+
 function ensureFullscreenActionDockShell(): HTMLElement | null {
   const chromeControls = query<HTMLElement>(SELECTORS.chromeControls);
   const rightControls = query<HTMLElement>(SELECTORS.controlsRight);
@@ -2320,6 +2415,7 @@ function applyFeatureState(): void {
   ) {
     bindPointerHandlers();
   }
+  bindMiniplayerLifecycle();
   updateNativeMiniplayerState();
 
   if (
@@ -2409,6 +2505,7 @@ function observeDom(): void {
 function observeNavigation(): void {
   const rerun = debounce(() => applyFeatureState(), 120);
   const updateScrollUi = debounce(() => {
+    updateNativeMiniplayerOnScroll();
     updateDockedPlayer();
     updateScrollbarState();
   }, 40);
@@ -2420,6 +2517,7 @@ function observeNavigation(): void {
     updateLiveChatTargets();
     updateScrollbarState();
     updateFullscreenActionDock();
+    updateNativeMiniplayerOnScroll();
     updateDockedPlayer();
   }, 80);
 
