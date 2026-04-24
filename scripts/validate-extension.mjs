@@ -167,7 +167,7 @@ assertExists(resolve(root, 'README.md'), 'README');
 assertExists(resolve(root, 'CHANGELOG.md'), 'CHANGELOG');
 assertExists(resolve(root, 'PRIVACY.md'), 'PRIVACY');
 assertExists(resolve(root, 'LICENSE'), 'LICENSE');
-assertExists(resolve(root, 'WEBSTORE.md'), 'WEBSTORE');
+assertExists(resolve(root, 'DEVELOPMENT.md'), 'DEVELOPMENT');
 assertSettingsParity();
 assertPngSize(promoTilePath, 440, 280, 'Small promo tile');
 assertScreenshotDirectory();
