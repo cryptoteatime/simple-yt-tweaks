@@ -51,7 +51,7 @@ Tested during development on:
 
 - Brave Browser 146.1.88.136 on macOS
 
-Chrome and Brave are the intended targets. Chrome stable should get one final smoke pass before the first public listing is submitted.
+Chrome and Brave are the intended targets.
 
 ## Support
 

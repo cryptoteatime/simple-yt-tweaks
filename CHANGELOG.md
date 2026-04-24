@@ -16,7 +16,7 @@
 - Tightened sidebar cleanup so it uses a clean Subscriptions icon row, keeps You expanded by default, and explains that behavior more clearly in the UI.
 - Updated public docs and Web Store copy to match the shipped UI and feature layout.
 - Refactored the content script into focused modules so fullscreen, theater, sidebar, PiP, and lifecycle behavior are easier to debug and maintain.
-- Bumped the first public release candidate to `0.2.0`.
+- Bumped the first public release to `0.2.0`.
 
 ### Fixed
 
@@ -29,6 +29,6 @@
 
 ### Notes
 
-- This is the first public release candidate intended for GitHub publication and Chrome Web Store submission.
+- This is the first public release submitted for Chrome Web Store review.
 - The packaged upload is generated locally in `release/simple-yt-tweaks-v0.2.0.zip`.
 - Current known limitations are tracked in `KNOWN_ISSUES.md`.
