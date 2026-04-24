@@ -23,11 +23,11 @@ This project is not affiliated with, endorsed by, sponsored by, or otherwise ass
 - `Sidebar`: sidebar cleanup and section-level sidebar visibility controls
 - `Modes`: separate `Theater`, `Default`, and `Fullscreen` behavior
 
-## Screenshots
+## Feature Gallery
 
-![General settings](store-assets/screenshots/general-settings-640x400.png)
-![Sidebar cleanup](store-assets/screenshots/sidebar-cleanup-1280x800.png)
-![Fullscreen settings](store-assets/screenshots/fullscreen-settings-640x400.png)
+![General controls](store-assets/repo/feature-general-1280x640.png)
+![Sidebar cleanup](store-assets/repo/feature-sidebar-1280x640.png)
+![Modes by context](store-assets/repo/feature-modes-1280x640.png)
 
 ## Known Limitations
 

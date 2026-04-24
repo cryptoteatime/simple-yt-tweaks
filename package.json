@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "vite build --watch",
     "icons": "node scripts/generate-icons.mjs",
+    "assets:marketing": "node scripts/generate-marketing-assets.mjs",
     "version:sync": "node scripts/sync-version.mjs",
     "version:set": "node scripts/sync-version.mjs",
     "typecheck": "tsc --noEmit",
