@@ -194,6 +194,7 @@ const state: {
   pointerHandlersBound: boolean;
   miniplayerInterceptionBound: boolean;
   nativeMiniplayerAttemptInFlight: boolean;
+  lastPointerX: number;
   lastPointerY: number;
   lastEnhancedTheaterActive: boolean;
   modeTransitionTimers: number[];
@@ -214,6 +215,7 @@ const state: {
   pointerHandlersBound: false,
   miniplayerInterceptionBound: false,
   nativeMiniplayerAttemptInFlight: false,
+  lastPointerX: Number.POSITIVE_INFINITY,
   lastPointerY: Number.POSITIVE_INFINITY,
   lastEnhancedTheaterActive: false,
   modeTransitionTimers: [],
@@ -1619,15 +1621,18 @@ function bindPointerHandlers(): void {
   document.addEventListener(
     'mousemove',
     (event) => {
+      state.lastPointerX = event.clientX;
       state.lastPointerY = event.clientY;
       updateTopHoverState(event.clientY);
       updatePlayerUiHoverState(event.clientX, event.clientY);
+      clearStaleSidebarItemFocus();
     },
     { passive: true },
   );
   document.addEventListener(
     'mouseleave',
     () => {
+      state.lastPointerX = Number.POSITIVE_INFINITY;
       state.lastPointerY = Number.POSITIVE_INFINITY;
       document.body.classList.remove('simple-yt-tweaks-top-hover');
       document.body.classList.remove('simple-yt-tweaks-player-ui-hover');
@@ -1698,6 +1703,46 @@ function clearStaleGuideFocus(): void {
 
   activeElement.blur();
   document.body.classList.remove('simple-yt-tweaks-top-hover');
+}
+
+function isPointerInsideVisibleSidebar(): boolean {
+  if (!Number.isFinite(state.lastPointerX) || !Number.isFinite(state.lastPointerY)) {
+    return false;
+  }
+
+  const sidebarCandidates = queryAll<HTMLElement>(
+    '#guide, #guide-content, ytd-guide-renderer, ytd-mini-guide-renderer',
+  );
+
+  return sidebarCandidates.some((element) => {
+    const rect = element.getBoundingClientRect();
+    const style = window.getComputedStyle(element);
+
+    if (
+      rect.width <= 0 ||
+      rect.height <= 0 ||
+      style.display === 'none' ||
+      style.visibility === 'hidden'
+    ) {
+      return false;
+    }
+
+    return (
+      state.lastPointerX >= rect.left &&
+      state.lastPointerX <= rect.right &&
+      state.lastPointerY >= rect.top &&
+      state.lastPointerY <= rect.bottom
+    );
+  });
+}
+
+function clearStaleSidebarItemFocus(): void {
+  const activeElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+  if (!activeElement) return;
+  if (!activeElement.closest('#guide, #guide-content, ytd-guide-renderer, ytd-mini-guide-renderer')) return;
+  if (isPointerInsideVisibleSidebar()) return;
+
+  activeElement.blur();
 }
 
 function getPlayerUiFocusHost(target: Element | null): HTMLElement | null {
@@ -1927,7 +1972,11 @@ function updateNativeMiniplayerState(): void {
   );
 }
 
-function runPageContext<T = unknown>(fnSource: string, args: unknown[] = []): Promise<T | null> {
+function runPageContext<T = unknown>(
+  fnSource: string,
+  args: unknown[] = [],
+  timeoutMs = 500,
+): Promise<T | null> {
   return new Promise((resolve) => {
     const eventName = `simple-yt-tweaks-page-result-${Date.now()}-${Math.random().toString(36).slice(2)}`;
     const script = document.createElement('script');
@@ -1940,7 +1989,7 @@ function runPageContext<T = unknown>(fnSource: string, args: unknown[] = []): Pr
     const timeout = window.setTimeout(() => {
       cleanup();
       resolve(null);
-    }, 500);
+    }, timeoutMs);
 
     const onResult = (event: Event) => {
       const customEvent = event as CustomEvent<T>;
@@ -1953,13 +2002,16 @@ function runPageContext<T = unknown>(fnSource: string, args: unknown[] = []): Pr
 
     const encodedArgs = JSON.stringify(args).replace(/</g, '\\u003c');
     script.textContent = `
-      (() => {
+      (async () => {
         const __eventName = ${JSON.stringify(eventName)};
         const __args = ${encodedArgs};
         let __result = null;
         try {
           const __fn = (${fnSource});
           __result = __fn(...__args);
+          if (__result && typeof __result.then === 'function') {
+            __result = await __result;
+          }
         } catch (error) {
           __result = { ok: false, error: String(error) };
         }
@@ -1993,7 +2045,9 @@ function getNativeMiniplayerTrigger(): HTMLElement | null {
 
 async function invokeNativeMiniplayer(): Promise<boolean> {
   const result = await runPageContext<{ ok?: boolean }>(
-    `() => {
+    `async () => {
+      const wait = (ms) => new Promise((resolve) => window.setTimeout(resolve, ms));
+
       const isVisible = (element) => {
         if (!element) return false;
         const styles = window.getComputedStyle(element);
@@ -2031,7 +2085,7 @@ async function invokeNativeMiniplayer(): Promise<boolean> {
         return keys;
       };
 
-      const tryMethods = (host) => {
+      const tryMethods = async (host) => {
         if (!host) return false;
 
         const knownMethods = [
@@ -2061,6 +2115,10 @@ async function invokeNativeMiniplayer(): Promise<boolean> {
             try {
               candidate.apply(host, args);
               if (isActive()) return true;
+              await wait(60);
+              if (isActive()) return true;
+              await wait(120);
+              if (isActive()) return true;
             } catch {}
           }
         }
@@ -2073,6 +2131,16 @@ async function invokeNativeMiniplayer(): Promise<boolean> {
       const watchFlexy = document.querySelector('ytd-watch-flexy');
       const app = document.querySelector('ytd-app');
       const miniplayer = document.querySelector('ytd-miniplayer');
+      const triggerCandidates = Array.from(document.querySelectorAll(
+        [
+          '.ytp-miniplayer-button',
+          '.ytp-button[data-title-no-tooltip="Miniplayer"]',
+          '.ytp-button[title*="Miniplayer"]',
+          '.ytp-button[aria-label*="Miniplayer"]',
+          '.ytp-menuitem[aria-label*="Miniplayer"]',
+          '.ytp-menuitem .ytp-menuitem-label',
+        ].join(',')
+      ));
 
       const hostSet = new Set();
       for (const host of [player, api, watchFlexy, app, miniplayer]) {
@@ -2081,6 +2149,21 @@ async function invokeNativeMiniplayer(): Promise<boolean> {
         addHost(hostSet, host?.inst);
         addHost(hostSet, host?.controller);
         addHost(hostSet, host?.__dataHost);
+      }
+
+      for (const trigger of triggerCandidates) {
+        const element = trigger instanceof HTMLElement
+          ? trigger
+          : trigger.closest?.('.ytp-menuitem') instanceof HTMLElement
+            ? trigger.closest('.ytp-menuitem')
+            : null;
+        if (!element) continue;
+
+        addHost(hostSet, element);
+        addHost(hostSet, element.polymerController);
+        addHost(hostSet, element.inst);
+        addHost(hostSet, element.controller);
+        addHost(hostSet, element.__dataHost);
       }
 
       for (const host of Array.from(hostSet)) {
@@ -2096,23 +2179,12 @@ async function invokeNativeMiniplayer(): Promise<boolean> {
       }
 
       for (const host of hostSet) {
-        if (tryMethods(host)) {
+        if (await tryMethods(host)) {
           return { ok: true };
         }
       }
 
-      const triggers = Array.from(document.querySelectorAll(
-        [
-          '.ytp-miniplayer-button',
-          '.ytp-button[data-title-no-tooltip="Miniplayer"]',
-          '.ytp-button[title*="Miniplayer"]',
-          '.ytp-button[aria-label*="Miniplayer"]',
-          '.ytp-menuitem[aria-label*="Miniplayer"]',
-          '.ytp-menuitem .ytp-menuitem-label',
-        ].join(',')
-      ));
-
-      for (const trigger of triggers) {
+      for (const trigger of triggerCandidates) {
         const element = trigger instanceof HTMLElement
           ? trigger
           : trigger.closest?.('.ytp-menuitem') instanceof HTMLElement
@@ -2126,16 +2198,60 @@ async function invokeNativeMiniplayer(): Promise<boolean> {
         try {
           element.click();
           if (isActive()) return { ok: true };
+          await wait(60);
+          if (isActive()) return { ok: true };
+        } catch {}
+
+        try {
+          for (const eventName of ['pointerdown', 'mousedown', 'pointerup', 'mouseup', 'click']) {
+            element.dispatchEvent(new MouseEvent(eventName, {
+              bubbles: true,
+              cancelable: true,
+              composed: true,
+              view: window,
+            }));
+          }
+          if (isActive()) return { ok: true };
+          await wait(60);
+          if (isActive()) return { ok: true };
+          await wait(120);
+          if (isActive()) return { ok: true };
         } catch {}
 
         try {
           element.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, composed: true, view: window }));
+          if (isActive()) return { ok: true };
+          await wait(60);
+          if (isActive()) return { ok: true };
+        } catch {}
+      }
+
+      const keyboardTargets = [player, document.activeElement, document.body, document.documentElement];
+      for (const target of keyboardTargets) {
+        if (!(target instanceof EventTarget)) continue;
+
+        try {
+          for (const eventName of ['keydown', 'keyup']) {
+            target.dispatchEvent(new KeyboardEvent(eventName, {
+              key: 'i',
+              code: 'KeyI',
+              keyCode: 73,
+              which: 73,
+              bubbles: true,
+              cancelable: true,
+              composed: true,
+            }));
+          }
+          if (isActive()) return { ok: true };
+          await wait(80);
           if (isActive()) return { ok: true };
         } catch {}
       }
 
       return { ok: false };
     }`,
+    [],
+    3000,
   );
 
   return Boolean(result?.ok);
@@ -2145,6 +2261,22 @@ function resetFullscreenGridPeekState(): void {
   const player = getPlayer();
   if (!player) return;
 
+  const controlsSelector = [
+    SELECTORS.chromeBottom,
+    SELECTORS.chromeControls,
+    '.ytp-progress-bar-container',
+    '.ytp-left-controls',
+    '.ytp-right-controls',
+  ].join(',');
+  const gridShellSelector = [
+    '.ytp-fullscreen-grid',
+    '.ytp-fullscreen-grid-hover-overlay',
+    '.ytp-fullscreen-grid-buttons-container',
+    '.ytp-fullscreen-grid-expand-button',
+    '.ytp-fullscreen-grid-main-content',
+    '.ytp-fullscreen-grid-stills-container',
+  ].join(',');
+
   const shouldClamp =
     isWatchPage() &&
     isNativeFullscreenActive() &&
@@ -2152,29 +2284,18 @@ function resetFullscreenGridPeekState(): void {
 
   if (shouldClamp) {
     player.classList.remove('ytp-fullscreen-grid-peeking');
+    player.classList.remove('ytp-grid-scrollable');
     player.style.setProperty('--ytp-grid-peek-height', '0px');
     player.style.setProperty('--ytp-grid-scroll-percentage', '0');
 
-    for (const element of queryAll<HTMLElement>(
-      [
-        SELECTORS.chromeBottom,
-        SELECTORS.chromeControls,
-        '.ytp-progress-bar-container',
-        '.ytp-left-controls',
-        '.ytp-right-controls',
-        '.ytp-fullscreen-grid',
-        '.ytp-fullscreen-grid-hover-overlay',
-        '.ytp-fullscreen-grid-buttons-container',
-        '.ytp-fullscreen-grid-expand-button',
-        '.ytp-fullscreen-grid-main-content',
-        '.ytp-fullscreen-grid-stills-container',
-      ].join(','),
-      player,
-    )) {
+    for (const element of queryAll<HTMLElement>(gridShellSelector, player)) {
       element.style.display = 'none';
       element.style.opacity = '0';
       element.style.visibility = 'hidden';
       element.style.pointerEvents = 'none';
+    }
+
+    for (const element of queryAll<HTMLElement>(controlsSelector, player)) {
       element.style.bottom = '0';
       element.style.marginBottom = '0';
       element.style.paddingBottom = '0';
@@ -2187,26 +2308,14 @@ function resetFullscreenGridPeekState(): void {
   player.style.removeProperty('--ytp-grid-peek-height');
   player.style.removeProperty('--ytp-grid-scroll-percentage');
 
-  for (const element of queryAll<HTMLElement>(
-    [
-      SELECTORS.chromeBottom,
-      SELECTORS.chromeControls,
-      '.ytp-progress-bar-container',
-      '.ytp-left-controls',
-      '.ytp-right-controls',
-      '.ytp-fullscreen-grid',
-      '.ytp-fullscreen-grid-hover-overlay',
-      '.ytp-fullscreen-grid-buttons-container',
-      '.ytp-fullscreen-grid-expand-button',
-      '.ytp-fullscreen-grid-main-content',
-      '.ytp-fullscreen-grid-stills-container',
-    ].join(','),
-    player,
-  )) {
+  for (const element of queryAll<HTMLElement>(gridShellSelector, player)) {
     element.style.removeProperty('display');
     element.style.removeProperty('opacity');
     element.style.removeProperty('visibility');
     element.style.removeProperty('pointer-events');
+  }
+
+  for (const element of queryAll<HTMLElement>(controlsSelector, player)) {
     element.style.removeProperty('bottom');
     element.style.removeProperty('margin-bottom');
     element.style.removeProperty('padding-bottom');
