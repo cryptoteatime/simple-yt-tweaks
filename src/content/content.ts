@@ -978,6 +978,10 @@ function buildCss(): string {
     body.simple-yt-tweaks-fullscreen-view .ytp-cards-button,
     body.simple-yt-tweaks-fullscreen-view .ytp-cards-teaser,
     body.simple-yt-tweaks-fullscreen-view .ytp-cards-teaser-box,
+    body.simple-yt-tweaks-fullscreen-view .ytp-fullscreen-grid,
+    body.simple-yt-tweaks-fullscreen-view .ytp-fullscreen-grid-hover-overlay,
+    body.simple-yt-tweaks-fullscreen-view .ytp-fullscreen-grid-buttons-container,
+    body.simple-yt-tweaks-fullscreen-view .ytp-fullscreen-grid-expand-button,
     body.simple-yt-tweaks-fullscreen-view .ytp-fullscreen-grid-main-content,
     body.simple-yt-tweaks-fullscreen-view .ytp-fullscreen-grid-stills-container,
     body.simple-yt-tweaks-fullscreen-view .ytp-modern-videowall,
@@ -2003,6 +2007,11 @@ async function invokeNativeMiniplayer(): Promise<boolean> {
         return miniplayer instanceof HTMLElement && isVisible(miniplayer);
       };
 
+      const addHost = (set, host) => {
+        if (!host || set.has(host)) return;
+        set.add(host);
+      };
+
       const collectMethodNames = (host) => {
         const keys = [];
         const seen = new Set();
@@ -2061,9 +2070,68 @@ async function invokeNativeMiniplayer(): Promise<boolean> {
 
       const player = document.querySelector('#movie_player');
       const api = player && typeof player.getApi === 'function' ? player.getApi() : null;
+      const watchFlexy = document.querySelector('ytd-watch-flexy');
+      const app = document.querySelector('ytd-app');
+      const miniplayer = document.querySelector('ytd-miniplayer');
 
-      if (tryMethods(player) || tryMethods(api)) {
-        return { ok: true };
+      const hostSet = new Set();
+      for (const host of [player, api, watchFlexy, app, miniplayer]) {
+        addHost(hostSet, host);
+        addHost(hostSet, host?.polymerController);
+        addHost(hostSet, host?.inst);
+        addHost(hostSet, host?.controller);
+        addHost(hostSet, host?.__dataHost);
+      }
+
+      for (const host of Array.from(hostSet)) {
+        for (const [key, value] of Object.entries(host || {})) {
+          if (!value || typeof value !== 'object') continue;
+          if (/(mini(player)?|minimi[sz]e|watchNext|videoManager)/i.test(key)) {
+            addHost(hostSet, value);
+            addHost(hostSet, value.polymerController);
+            addHost(hostSet, value.inst);
+            addHost(hostSet, value.controller);
+          }
+        }
+      }
+
+      for (const host of hostSet) {
+        if (tryMethods(host)) {
+          return { ok: true };
+        }
+      }
+
+      const triggers = Array.from(document.querySelectorAll(
+        [
+          '.ytp-miniplayer-button',
+          '.ytp-button[data-title-no-tooltip="Miniplayer"]',
+          '.ytp-button[title*="Miniplayer"]',
+          '.ytp-button[aria-label*="Miniplayer"]',
+          '.ytp-menuitem[aria-label*="Miniplayer"]',
+          '.ytp-menuitem .ytp-menuitem-label',
+        ].join(',')
+      ));
+
+      for (const trigger of triggers) {
+        const element = trigger instanceof HTMLElement
+          ? trigger
+          : trigger.closest?.('.ytp-menuitem') instanceof HTMLElement
+            ? trigger.closest('.ytp-menuitem')
+            : null;
+        if (!element) continue;
+
+        const label = (element.getAttribute('aria-label') || element.getAttribute('title') || element.textContent || '').toLowerCase();
+        if (!label.includes('miniplayer')) continue;
+
+        try {
+          element.click();
+          if (isActive()) return { ok: true };
+        } catch {}
+
+        try {
+          element.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, composed: true, view: window }));
+          if (isActive()) return { ok: true };
+        } catch {}
       }
 
       return { ok: false };
@@ -2094,11 +2162,19 @@ function resetFullscreenGridPeekState(): void {
         '.ytp-progress-bar-container',
         '.ytp-left-controls',
         '.ytp-right-controls',
+        '.ytp-fullscreen-grid',
+        '.ytp-fullscreen-grid-hover-overlay',
+        '.ytp-fullscreen-grid-buttons-container',
+        '.ytp-fullscreen-grid-expand-button',
         '.ytp-fullscreen-grid-main-content',
         '.ytp-fullscreen-grid-stills-container',
       ].join(','),
       player,
     )) {
+      element.style.display = 'none';
+      element.style.opacity = '0';
+      element.style.visibility = 'hidden';
+      element.style.pointerEvents = 'none';
       element.style.bottom = '0';
       element.style.marginBottom = '0';
       element.style.paddingBottom = '0';
@@ -2118,11 +2194,19 @@ function resetFullscreenGridPeekState(): void {
       '.ytp-progress-bar-container',
       '.ytp-left-controls',
       '.ytp-right-controls',
+      '.ytp-fullscreen-grid',
+      '.ytp-fullscreen-grid-hover-overlay',
+      '.ytp-fullscreen-grid-buttons-container',
+      '.ytp-fullscreen-grid-expand-button',
       '.ytp-fullscreen-grid-main-content',
       '.ytp-fullscreen-grid-stills-container',
     ].join(','),
     player,
   )) {
+    element.style.removeProperty('display');
+    element.style.removeProperty('opacity');
+    element.style.removeProperty('visibility');
+    element.style.removeProperty('pointer-events');
     element.style.removeProperty('bottom');
     element.style.removeProperty('margin-bottom');
     element.style.removeProperty('padding-bottom');
