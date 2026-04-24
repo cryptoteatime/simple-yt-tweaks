@@ -4,8 +4,8 @@ These are the current known limitations and polish items for `0.2.0`.
 
 ## Current UI quirks
 
-- On some watch-page flows, opening and closing the left sidebar can leave a non-current entry visually highlighted until another pointer or navigation state update occurs.
-- In some fullscreen scroll/reveal flows, YouTube's own overlay state can temporarily desync from the extension's reveal logic until another interaction updates the player state.
+- On some watch-page flows, opening and closing the left sidebar can leave a non-current entry visually highlighted until another pointer or navigation state update occurs. Tracked in [#1](https://github.com/cryptoteatime/simple-yt-tweaks/issues/1).
+- In some fullscreen scroll/reveal flows, YouTube's own overlay state can temporarily desync from the extension's reveal logic until another interaction updates the player state. Tracked in [#2](https://github.com/cryptoteatime/simple-yt-tweaks/issues/2).
 
 ## Platform-owned behavior
 
