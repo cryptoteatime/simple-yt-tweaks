@@ -54,9 +54,9 @@ const DEFAULT_SETTINGS: Settings = {
   generalHideSidebarShorts: true,
   generalHideSidebarSubscriptions: false,
   generalHideSidebarYou: false,
-  generalHideSidebarExplore: false,
+  generalHideSidebarExplore: true,
   generalHideSidebarMoreFromYouTube: true,
-  generalHideSidebarReportHistory: true,
+  generalHideSidebarReportHistory: false,
   generalHideSidebarFooter: true,
   enhancedTheaterMode: true,
   theaterHideHeader: true,
@@ -65,13 +65,13 @@ const DEFAULT_SETTINGS: Settings = {
   theaterHideScrollbarOnScroll: true,
   theaterHideRecommendations: true,
   theaterHideComments: false,
-  theaterHideMetadata: false,
+  theaterHideMetadata: true,
   theaterShowPrimaryMetadata: true,
-  theaterHideLiveChat: false,
+  theaterHideLiveChat: true,
   theaterShowLiveChatOverlay: false,
   defaultHideRecommendations: false,
   defaultHideComments: false,
-  defaultHideMetadata: false,
+  defaultHideMetadata: true,
   defaultShowPrimaryMetadata: true,
   defaultHideLiveChat: false,
   fullscreenHideTitleOverlay: true,
@@ -102,6 +102,7 @@ function normalizeSettings(items: Partial<Record<SettingKey, unknown>>): Setting
     settings[key] = typeof items[key] === 'boolean' ? items[key] : DEFAULT_SETTINGS[key];
   }
 
+  settings.floatingMiniPlayer = settings.pipButton;
   return settings;
 }
 
@@ -227,7 +228,7 @@ function loadSettings(): Promise<Settings> {
 
 function isFeatureEnabled(key: BooleanSettingKey): boolean {
   if (key === 'floatingMiniPlayer') {
-    return state.settings.pipButton && state.settings.floatingMiniPlayer;
+    return state.settings.pipButton;
   }
 
   return state.settings[key];
@@ -412,7 +413,7 @@ function buildCss(): string {
       position: fixed;
       right: 16px;
       bottom: 16px;
-      width: min(420px, calc(100vw - 32px));
+      width: min(460px, calc(100vw - 32px));
       aspect-ratio: 16 / 9;
       z-index: 2147483645;
       display: none;
@@ -2087,20 +2088,10 @@ function shouldShowDockedPlayer(): boolean {
 
   const playerRect = getOriginalPlayerRect();
   if (!playerRect) return false;
-
-  const belowTargets = [
-    query<HTMLElement>('#below'),
-    query<HTMLElement>(SELECTORS.comments),
-    query<HTMLElement>('#secondary'),
-    query<HTMLElement>('ytd-watch-metadata'),
-  ].filter((element): element is HTMLElement => Boolean(element) && isVisibleNode(element as HTMLElement));
-
-  if (belowTargets.length === 0) return false;
-
   const playerMostlyOffscreen = playerRect.bottom < 120;
-  const belowContentEnteredViewport = belowTargets.some((target) => target.getBoundingClientRect().top < window.innerHeight);
+  const pageHasScrolled = window.scrollY > 120;
 
-  return playerMostlyOffscreen && belowContentEnteredViewport;
+  return playerMostlyOffscreen && pageHasScrolled;
 }
 
 function dockPlayer(): void {
@@ -2215,7 +2206,7 @@ function applyFeatureState(): void {
   }
   document.body.classList.toggle(
     'simple-yt-tweaks-hide-native-miniplayer',
-    isDefaultWatchView() && isFeatureEnabled('floatingMiniPlayer'),
+    isWatchPage() && isFeatureEnabled('floatingMiniPlayer'),
   );
 
   if (

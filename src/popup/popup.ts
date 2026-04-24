@@ -11,6 +11,7 @@ import {
   type TopLevelTab,
   type ViewMode,
   loadSettings,
+  normalizeSettings,
   saveSettings,
 } from '../shared/settings';
 import packageJson from '../../package.json';
@@ -197,9 +198,10 @@ async function updatePageStatus(): Promise<void> {
 }
 
 async function persistSettings(nextSettings: Settings): Promise<void> {
-  await saveSettings(nextSettings);
-  currentSettings = nextSettings;
-  renderSettings(nextSettings);
+  const normalizedSettings = normalizeSettings(nextSettings);
+  await saveSettings(normalizedSettings);
+  currentSettings = normalizedSettings;
+  renderSettings(normalizedSettings);
 }
 
 function renderSettings(settings: Settings): void {

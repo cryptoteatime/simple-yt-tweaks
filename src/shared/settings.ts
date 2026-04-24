@@ -72,9 +72,9 @@ export const DEFAULT_SETTINGS: Settings = {
   generalHideSidebarShorts: true,
   generalHideSidebarSubscriptions: false,
   generalHideSidebarYou: false,
-  generalHideSidebarExplore: false,
+  generalHideSidebarExplore: true,
   generalHideSidebarMoreFromYouTube: true,
-  generalHideSidebarReportHistory: true,
+  generalHideSidebarReportHistory: false,
   generalHideSidebarFooter: true,
   enhancedTheaterMode: true,
   theaterHideHeader: true,
@@ -83,13 +83,13 @@ export const DEFAULT_SETTINGS: Settings = {
   theaterHideScrollbarOnScroll: true,
   theaterHideRecommendations: true,
   theaterHideComments: false,
-  theaterHideMetadata: false,
+  theaterHideMetadata: true,
   theaterShowPrimaryMetadata: true,
-  theaterHideLiveChat: false,
+  theaterHideLiveChat: true,
   theaterShowLiveChatOverlay: false,
   defaultHideRecommendations: false,
   defaultHideComments: false,
-  defaultHideMetadata: false,
+  defaultHideMetadata: true,
   defaultShowPrimaryMetadata: true,
   defaultHideLiveChat: false,
   fullscreenHideTitleOverlay: true,
@@ -146,15 +146,8 @@ export const SETTING_DEFINITIONS: SettingDefinition[] = [
   {
     key: 'pipButton',
     label: 'Restore PiP Button',
-    description: 'Adds a Picture-in-Picture button to the YouTube player controls across supported watch modes.',
+    description: 'Adds a Picture-in-Picture button to the YouTube player controls and keeps the docked mini-player behavior active while you scroll.',
     topTab: 'general',
-  },
-  {
-    key: 'floatingMiniPlayer',
-    label: 'Floating Mini-Player',
-    description: 'Docks the actual YouTube player in the corner when you scroll below it.',
-    topTab: 'general',
-    parentKey: 'pipButton',
   },
   {
     key: 'generalSidebarCleanup',
@@ -385,7 +378,7 @@ function isFeedColumnCount(value: unknown): value is FeedColumnCount {
 }
 
 export function normalizeSettings(items: Partial<Record<SettingKey, unknown>>): Settings {
-  return SETTING_KEYS.reduce<Settings>(
+  const settings = SETTING_KEYS.reduce<Settings>(
     (settings, key) => {
       if (key === 'generalFeedColumns') {
         settings.generalFeedColumns = isFeedColumnCount(items.generalFeedColumns)
@@ -399,6 +392,9 @@ export function normalizeSettings(items: Partial<Record<SettingKey, unknown>>): 
     },
     { ...DEFAULT_SETTINGS },
   );
+
+  settings.floatingMiniPlayer = settings.pipButton;
+  return settings;
 }
 
 export function loadSettings(): Promise<Settings> {
