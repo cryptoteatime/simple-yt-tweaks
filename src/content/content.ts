@@ -188,8 +188,10 @@ const state: {
   dock: DockState | null;
   fullscreenActionDock: FullscreenActionDockState | null;
   miniPlayerDismissed: boolean;
+  manualDockRequested: boolean;
   storageObserverBound: boolean;
   pointerHandlersBound: boolean;
+  miniplayerInterceptionBound: boolean;
   lastPointerY: number;
   lastEnhancedTheaterActive: boolean;
   modeTransitionTimers: number[];
@@ -205,8 +207,10 @@ const state: {
   dock: null,
   fullscreenActionDock: null,
   miniPlayerDismissed: false,
+  manualDockRequested: false,
   storageObserverBound: false,
   pointerHandlersBound: false,
+  miniplayerInterceptionBound: false,
   lastPointerY: Number.POSITIVE_INFINITY,
   lastEnhancedTheaterActive: false,
   modeTransitionTimers: [],
@@ -1746,8 +1750,7 @@ function createPipButton(): void {
   if (!isFeatureEnabled('pipButton') || !isWatchPage()) return;
 
   const rightControls = query<HTMLElement>(SELECTORS.controlsRight);
-  const video = getVideo();
-  if (!rightControls || !video || document.getElementById(PIP_BUTTON_ID)) return;
+  if (!rightControls || document.getElementById(PIP_BUTTON_ID)) return;
 
   const button = document.createElement('button');
   button.id = PIP_BUTTON_ID;
@@ -1765,18 +1768,16 @@ function createPipButton(): void {
     event.preventDefault();
     event.stopPropagation();
 
-    try {
-      if (document.pictureInPictureElement) {
-        await document.exitPictureInPicture();
-        return;
-      }
-
-      if (document.pictureInPictureEnabled && !video.disablePictureInPicture) {
-        await video.requestPictureInPicture();
-      }
-    } catch (error) {
-      console.warn('Simple YT Tweaks PiP failed:', error);
+    if (state.dock) {
+      state.manualDockRequested = false;
+      state.miniPlayerDismissed = false;
+      restoreDockedPlayer();
+      return;
     }
+
+    state.manualDockRequested = true;
+    state.miniPlayerDismissed = false;
+    dockPlayer();
   });
 
   rightControls.prepend(button);
@@ -1784,6 +1785,46 @@ function createPipButton(): void {
 
 function removePipButton(): void {
   document.getElementById(PIP_BUTTON_ID)?.remove();
+}
+
+function bindMiniplayerInterception(): void {
+  if (state.miniplayerInterceptionBound) return;
+  state.miniplayerInterceptionBound = true;
+
+  document.addEventListener(
+    'click',
+    (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      if (!isFeatureEnabled('floatingMiniPlayer') || !isWatchPage() || isNativeFullscreenActive()) return;
+
+      const trigger = target.closest<HTMLElement>(
+        [
+          '.ytp-miniplayer-button',
+          '.ytp-button[data-title-no-tooltip="Miniplayer"]',
+          '.ytp-button[title*="Miniplayer"]',
+          '.ytp-button[aria-label*="Miniplayer"]',
+          '.ytp-menuitem[aria-label*="Miniplayer"]',
+        ].join(','),
+      );
+
+      if (!trigger) return;
+
+      const triggerLabel = getElementLabel(trigger);
+      if (!triggerLabel.includes('miniplayer')) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+      if ('stopImmediatePropagation' in event) {
+        event.stopImmediatePropagation();
+      }
+
+      state.manualDockRequested = true;
+      state.miniPlayerDismissed = false;
+      dockPlayer();
+    },
+    true,
+  );
 }
 
 function ensureFullscreenActionDockShell(): HTMLElement | null {
@@ -2050,6 +2091,12 @@ function ensureDockShell(): HTMLElement {
     const action = button.dataset.action;
     if (action === 'close') {
       state.miniPlayerDismissed = true;
+      state.manualDockRequested = false;
+    }
+
+    if (action === 'restore') {
+      state.manualDockRequested = false;
+      state.miniPlayerDismissed = false;
     }
 
     restoreDockedPlayer();
@@ -2084,6 +2131,10 @@ function getOriginalPlayerRect(): DOMRect | null {
 function shouldShowDockedPlayer(): boolean {
   if (!isFeatureEnabled('floatingMiniPlayer') || !isWatchPage() || state.miniPlayerDismissed || isNativeFullscreenActive()) {
     return false;
+  }
+
+  if (state.manualDockRequested) {
+    return true;
   }
 
   const playerRect = getOriginalPlayerRect();
@@ -2163,6 +2214,7 @@ function resetNavigationState(): void {
 
   state.currentUrl = location.href;
   state.miniPlayerDismissed = false;
+  state.manualDockRequested = false;
   document.body.classList.remove('simple-yt-tweaks-player-ui-hover');
   document.body.classList.remove('simple-yt-tweaks-player-ui-focus');
   disconnectFullscreenActionObserver();
@@ -2204,6 +2256,7 @@ function applyFeatureState(): void {
   ) {
     bindPointerHandlers();
   }
+  bindMiniplayerInterception();
   document.body.classList.toggle(
     'simple-yt-tweaks-hide-native-miniplayer',
     isWatchPage() && isFeatureEnabled('floatingMiniPlayer'),
