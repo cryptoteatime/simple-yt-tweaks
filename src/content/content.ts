@@ -5,6 +5,7 @@ import { GENERAL_HIDDEN_CLASS, SELECTORS, STYLE_ID } from './selectors';
 import { loadSettings } from './settings';
 import { buildGeneralCss, buildSidebarCss, clearStaleSidebarItemFocus, updateGeneralVisibility, updateSidebarHomeSelectionState } from './sidebar';
 import { state } from './state';
+import { buildStickyPlayerCss, resetStickyPlayerState, updateStickyPlayerState } from './sticky-player';
 import { buildTheaterCss, clearStaleGuideFocus, updateLiveChatTargets, updateMastheadTargets, updateScrollbarState, updateTopHoverState, updateViewClasses } from './theater';
 
 function buildUtilityCss(): string {
@@ -79,6 +80,7 @@ function buildCss(): string {
     buildSharedPlayerUiCss(state.settings),
     buildFullscreenCss(state.settings),
     buildDefaultCss(),
+    buildStickyPlayerCss(state.settings),
   ].join('\n');
 }
 
@@ -101,7 +103,14 @@ function resetNavigationState(): void {
   document.body.classList.remove('simple-yt-tweaks-player-ui-hover');
   document.body.classList.remove('simple-yt-tweaks-player-ui-focus');
   document.body.classList.remove('simple-yt-tweaks-top-hover');
+  resetStickyPlayerState();
   resetFullscreenNavigationState();
+}
+
+function refreshPlayerLayout(): void {
+  window.dispatchEvent(new Event('resize'));
+  window.requestAnimationFrame(() => window.dispatchEvent(new Event('resize')));
+  window.setTimeout(() => window.dispatchEvent(new Event('resize')), 120);
 }
 
 function stabilizeUi(): void {
@@ -117,6 +126,8 @@ function stabilizeUi(): void {
   updateScrollbarState();
   ensureMiniPlayerPipButton();
   updateFullscreenActionDock();
+  updateStickyPlayerState();
+  refreshPlayerLayout();
 }
 
 function refreshInteractionUiState(): void {
@@ -124,6 +135,7 @@ function refreshInteractionUiState(): void {
   updatePlayerUiFocusState();
   resetFullscreenGridPeekState();
   updateFullscreenActionDock();
+  updateStickyPlayerState();
 }
 
 function bindFullscreenGridPeekSuppressor(): void {
@@ -162,6 +174,7 @@ function applyFeatureState(): void {
   updateScrollbarState();
   syncPipButtons();
   updateFullscreenActionDock();
+  updateStickyPlayerState();
 
   if (
     state.settings.theaterHidePlayerUI ||
@@ -195,6 +208,7 @@ function applyFeatureState(): void {
   }
 
   if (modeChanged) {
+    refreshPlayerLayout();
     scheduleModeStabilization(stabilizeUi);
   }
 }
@@ -218,6 +232,7 @@ async function init(): Promise<void> {
       refreshInteractionUiState();
       updateFullscreenActionDock();
       ensureMiniPlayerPipButton();
+      updateStickyPlayerState();
     },
     onViewportUi: stabilizeUi,
   });
@@ -226,6 +241,7 @@ async function init(): Promise<void> {
   bindVideoEvents({
     onPipChange: () => {
       ensureMiniPlayerPipButton();
+      updateStickyPlayerState();
     },
     onPlaybackStateChange: () => {
       refreshInteractionUiState();

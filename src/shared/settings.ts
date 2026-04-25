@@ -6,6 +6,7 @@ export type BooleanSettingKey =
   | 'generalHideSponsoredPosts'
   | 'generalHideEndScreenCards'
   | 'generalHideShorts'
+  | 'generalStickyPlayer'
   | 'generalSidebarCleanup'
   | 'generalHideSidebar'
   | 'generalHideSidebarHome'
@@ -66,6 +67,7 @@ export const DEFAULT_SETTINGS: Settings = {
   generalHideEndScreenCards: true,
   generalFeedColumns: 3,
   generalHideShorts: true,
+  generalStickyPlayer: false,
   generalSidebarCleanup: true,
   generalHideSidebar: false,
   generalHideSidebarHome: false,
@@ -147,6 +149,12 @@ export const SETTING_DEFINITIONS: SettingDefinition[] = [
     key: 'pipButton',
     label: 'Restore PiP Button',
     description: 'Adds a real browser Picture-in-Picture button to the YouTube player controls.',
+    topTab: 'general',
+  },
+  {
+    key: 'generalStickyPlayer',
+    label: 'Sticky Player',
+    description: 'Keeps the video visible in the corner when you scroll away from the main player in Default or Theater mode.',
     topTab: 'general',
   },
   {

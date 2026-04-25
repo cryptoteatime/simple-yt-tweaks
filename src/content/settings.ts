@@ -4,6 +4,7 @@ export type BooleanSettingKey =
   | 'generalHideSponsoredPosts'
   | 'generalHideEndScreenCards'
   | 'generalHideShorts'
+  | 'generalStickyPlayer'
   | 'generalSidebarCleanup'
   | 'generalHideSidebar'
   | 'generalHideSidebarHome'
@@ -48,6 +49,7 @@ export const DEFAULT_SETTINGS: Settings = {
   generalHideEndScreenCards: true,
   generalFeedColumns: 3,
   generalHideShorts: true,
+  generalStickyPlayer: false,
   generalSidebarCleanup: true,
   generalHideSidebar: false,
   generalHideSidebarHome: false,

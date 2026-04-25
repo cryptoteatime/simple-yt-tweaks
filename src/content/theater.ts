@@ -115,6 +115,20 @@ export function buildTheaterCss(settings: Settings): string {
       object-fit: contain !important;
     }
 
+    body.simple-yt-tweaks-theater #movie_player .ytp-chrome-bottom {
+      left: 0 !important;
+      right: 0 !important;
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    body.simple-yt-tweaks-theater #movie_player .ytp-chrome-controls {
+      left: 12px !important;
+      right: 12px !important;
+      width: auto !important;
+      max-width: calc(100% - 24px) !important;
+    }
+
     @media (display-mode: standalone), (display-mode: minimal-ui) {
       body.simple-yt-tweaks-theater #player-container-outer,
       body.simple-yt-tweaks-theater #full-bleed-container,
