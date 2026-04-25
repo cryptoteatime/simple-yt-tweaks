@@ -9,7 +9,8 @@ These are the current known limitations and polish items after `0.2.1`.
 ## Platform-owned behavior
 
 - The extension adds a real browser Picture-in-Picture button, but it does not force YouTube's native miniplayer to open or close.
-- Native YouTube miniplayer behavior can vary by current YouTube build and browser behavior. The extension intentionally stays hands-off there. Tracked in [#3](https://github.com/cryptoteatime/simple-yt-tweaks/issues/3).
+- Native YouTube miniplayer behavior can vary by current YouTube build and browser behavior. The extension intentionally stays hands-off there.
+- YouTube's current desktop help documents starting the native Miniplayer manually from the player menu. It does not document automatic desktop miniplayer activation while scrolling a watch page.
 
 ## Scope
 
