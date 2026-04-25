@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Simple YT Tweaks",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Unofficial player usability tweaks for YouTube.",
   "permissions": [
     "storage"

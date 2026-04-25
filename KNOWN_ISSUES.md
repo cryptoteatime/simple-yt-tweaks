@@ -1,16 +1,15 @@
 # Known Issues
 
-These are the current known limitations and polish items for `0.2.0`.
+These are the current known limitations and polish items after `0.2.1`.
 
 ## Current UI quirks
 
-- On some watch-page flows, opening and closing the left sidebar can leave a non-current entry visually highlighted until another pointer or navigation state update occurs. Tracked in [#1](https://github.com/cryptoteatime/simple-yt-tweaks/issues/1).
-- In some fullscreen scroll/reveal flows, YouTube's own overlay state can temporarily desync from the extension's reveal logic until another interaction updates the player state. Tracked in [#2](https://github.com/cryptoteatime/simple-yt-tweaks/issues/2).
+- On some watch-page flows, a non-current sidebar entry may briefly flash as highlighted during YouTube's own drawer transition. The extension now neutralizes this state after the sidebar settles.
 
 ## Platform-owned behavior
 
 - The extension adds a real browser Picture-in-Picture button, but it does not force YouTube's native miniplayer to open or close.
-- Native YouTube miniplayer behavior can vary by current YouTube build and browser behavior. The extension intentionally stays hands-off there.
+- Native YouTube miniplayer behavior can vary by current YouTube build and browser behavior. The extension intentionally stays hands-off there. Tracked in [#3](https://github.com/cryptoteatime/simple-yt-tweaks/issues/3).
 
 ## Scope
 

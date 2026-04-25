@@ -57,46 +57,39 @@ function frame(x, y, width, height, radius, imageHref, rotate = 0) {
 const promoSvg = `
 <svg xmlns="http://www.w3.org/2000/svg" width="440" height="280" viewBox="0 0 440 280" fill="none">
   <defs>
-    <linearGradient id="promoBg" x1="26" y1="24" x2="404" y2="260" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#131821"/>
-      <stop offset="1" stop-color="#090D13"/>
+    <linearGradient id="promoBg" x1="18" y1="20" x2="422" y2="260" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#101722"/>
+      <stop offset="0.58" stop-color="#0B1119"/>
+      <stop offset="1" stop-color="#070B11"/>
     </linearGradient>
     <filter id="promoShadow" x="-20" y="-20" width="480" height="320" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-      <feDropShadow dx="0" dy="14" stdDeviation="18" flood-color="#000000" flood-opacity="0.28"/>
+      <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#000000" flood-opacity="0.34"/>
     </filter>
   </defs>
 
-  <rect width="440" height="280" rx="28" fill="url(#promoBg)"/>
-  <rect x="1" y="1" width="438" height="278" rx="27" stroke="#202734"/>
+  <rect width="440" height="280" fill="url(#promoBg)"/>
+  <rect x="1" y="1" width="438" height="278" stroke="#202734"/>
 
-  <g transform="translate(30 30)">
-    <rect width="138" height="30" rx="15" fill="#121823" stroke="#273040"/>
-    <circle cx="21" cy="15" r="7" fill="#42DCC0"/>
-    <text x="37" y="20" fill="#F4F7FB" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="800">Simple YT Tweaks</text>
+  <g transform="translate(28 28)">
+    <rect width="176" height="30" rx="15" fill="#111821" stroke="#263141"/>
+    <circle cx="22" cy="15" r="7" fill="#42DCC0"/>
+    <text x="39" y="20" fill="#F4F7FB" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="800">Simple YT Tweaks</text>
 
-    <text x="0" y="72" fill="#F4F7FB" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="800">Cleaner YouTube</text>
-    <text x="0" y="104" fill="#F4F7FB" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="800">controls.</text>
+    <text x="0" y="78" fill="#F4F7FB" font-family="Inter, Arial, sans-serif" font-size="31" font-weight="800">Cleaner</text>
+    <text x="0" y="112" fill="#F4F7FB" font-family="Inter, Arial, sans-serif" font-size="31" font-weight="800">YouTube UI</text>
 
-    <text x="0" y="140" fill="#AAB5C4" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="500">Modes, sidebar cleanup, Shorts hiding,</text>
-    <text x="0" y="159" fill="#AAB5C4" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="500">sponsored cleanup, and browser PiP.</text>
-
-    <g transform="translate(0 188)">
-      <rect width="74" height="24" rx="12" fill="#141B24" stroke="#2B3441"/>
-      <text x="18" y="16" fill="#F4F7FB" font-family="Inter, Arial, sans-serif" font-size="10.5" font-weight="700">General</text>
-      <rect x="82" width="72" height="24" rx="12" fill="#141B24" stroke="#2B3441"/>
-      <text x="102" y="16" fill="#F4F7FB" font-family="Inter, Arial, sans-serif" font-size="10.5" font-weight="700">Sidebar</text>
-      <rect x="162" width="62" height="24" rx="12" fill="#141B24" stroke="#2B3441"/>
-      <text x="184" y="16" fill="#F4F7FB" font-family="Inter, Arial, sans-serif" font-size="10.5" font-weight="700">Modes</text>
+    <g transform="translate(0 146)">
+      <circle cx="5" cy="5" r="4" fill="#42DCC0"/>
+      <text x="18" y="10" fill="#C7D0DC" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="650">Sidebar cleanup</text>
+      <circle cx="5" cy="33" r="4" fill="#42DCC0"/>
+      <text x="18" y="38" fill="#C7D0DC" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="650">Theater and fullscreen modes</text>
+      <circle cx="5" cy="61" r="4" fill="#42DCC0"/>
+      <text x="18" y="66" fill="#C7D0DC" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="650">Browser Picture-in-Picture</text>
     </g>
   </g>
 
   <g filter="url(#promoShadow)">
-    ${frame(246, 34, 166, 154, 18, generalUri)}
-  </g>
-
-  <g transform="translate(262 197)">
-    <rect width="134" height="28" rx="14" fill="#121823" stroke="#273040"/>
-    <text x="29" y="18.5" fill="#F4F7FB" font-family="Inter, Arial, sans-serif" font-size="11.5" font-weight="700">Actual popup UI</text>
+    ${frame(252, 30, 160, 218, 18, generalUri)}
   </g>
 </svg>
 `;

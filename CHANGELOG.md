@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.2.1
+
+### Changed
+
+- Refreshed the Chrome Web Store small promo tile with a cleaner layout based on the current popup UI.
+
+### Fixed
+
+- Reduced stale sidebar highlight states on YouTube guide/sidebar flows by tightening pointer detection and neutral sidebar item styling.
+- Prevented fullscreen scroll interactions from entering YouTube's hidden grid-peek state when `Hide More Videos Overlay` is enabled.
+- Improved fullscreen reveal stability after pause/play and scroll interactions.
+
+### Notes
+
+- Native YouTube miniplayer scroll behavior remains platform-owned and is tracked separately for investigation.
+
 ## 0.2.0
 
 ### Added
