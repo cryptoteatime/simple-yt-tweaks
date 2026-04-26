@@ -4,3 +4,5 @@ release/
 .DS_Store
 *.log
 .private/
+playwright-report/
+test-results/

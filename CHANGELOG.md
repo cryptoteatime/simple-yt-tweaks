@@ -1,5 +1,29 @@
 # Changelog
 
+## 0.3.0
+
+### Added
+
+- Added Sticky Player behavior for keeping the current video visible while scrolling away from the main player.
+- Added Default and Theater `Recommended Hover Grow` settings for sidebar/recommended videos.
+- Added search-result grid cleanup with compact video/channel cards and a `General > Feed Columns > Apply to Search` setting.
+
+### Changed
+
+- Kept home and search hover playback native to YouTube after enhanced grid hover proved too fragile for the current release.
+- Defaulted Sticky Player and Recommended Hover Grow behavior on for fresh settings.
+
+### Fixed
+
+- Removed blank home-feed gaps left behind by hidden sponsored cards.
+- Fixed modern search Shorts shelves and non-video result containers continuing to appear in cleaned search grids.
+- Fixed Sticky Player PiP handoff so browser PiP opens on the live playing video instead of a stale paused frame.
+- Restored native video click play/pause behavior in Default, Theater, and Fullscreen modes.
+
+### Notes
+
+- Enhanced home/search grid hover preview is deferred to GitHub issue #8.
+
 ## 0.2.1
 
 ### Changed

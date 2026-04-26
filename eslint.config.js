@@ -20,11 +20,15 @@ export default tseslint.config(
     },
   },
   {
-    files: ['scripts/**/*.mjs', 'vite.config.ts', 'eslint.config.js'],
+    files: ['scripts/**/*.mjs', 'tests/**/*.ts', 'vite.config.ts', 'playwright.config.ts', 'eslint.config.js'],
     languageOptions: {
       ecmaVersion: 2022,
       sourceType: 'module',
-      globals: globals.node,
+      globals: {
+        ...globals.node,
+        ...globals.browser,
+        chrome: 'readonly',
+      },
     },
   },
 );

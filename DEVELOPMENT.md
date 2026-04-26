@@ -26,6 +26,36 @@ The packaged upload is written to:
 
 `release/simple-yt-tweaks-v<version>.zip`
 
+## Browser Validation
+
+The project includes an isolated Playwright harness for extension smoke tests. It uses Playwright's bundled Chromium with a temporary profile and loads the unpacked `dist/` extension with `--load-extension`; it does not use your normal Brave or Chrome profile.
+
+```bash
+npm run test:e2e
+```
+
+The fixture suite routes `https://www.youtube.com/` requests to deterministic local YouTube-like pages. It verifies home-feed cleanup, search-grid cleanup, watch-page mode behavior, popup settings, storage persistence, and the player click fallback without depending on the live YouTube site.
+
+If Chromium is missing, install the Playwright browser once:
+
+```bash
+npx playwright install chromium
+```
+
+Optional live smoke checks run against real YouTube in the same isolated Chromium profile:
+
+```bash
+npm run test:e2e:live
+```
+
+Live smoke is intentionally not the release gate. YouTube consent screens, bot checks, network failures, ads, or experiments can make it inconclusive. Treat fixture E2E plus package validation as the stable automated baseline, then use manual testing for final YouTube-specific acceptance.
+
+For a full local validation pass:
+
+```bash
+npm run validate:all
+```
+
 ## Manual Smoke Checklist
 
 - Homepage: verify home feed columns, sponsored hiding, Shorts hiding, and sidebar cleanup

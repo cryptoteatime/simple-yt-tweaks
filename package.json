@@ -16,7 +16,10 @@
     "build": "vite build",
     "validate": "node scripts/validate-extension.mjs",
     "validate:packaged": "node scripts/validate-extension.mjs --packaged",
-    "package": "npm run build && npm run validate && node scripts/package-extension.mjs && npm run validate:packaged"
+    "package": "npm run build && npm run validate && node scripts/package-extension.mjs && npm run validate:packaged",
+    "test:e2e": "npm run build && playwright test --project=fixtures",
+    "test:e2e:live": "npm run build && SIMPLE_YT_TWEAKS_LIVE=1 playwright test --project=live",
+    "validate:all": "npm run typecheck && npm run lint && git diff --check && npm run package && playwright test --project=fixtures"
   },
   "keywords": [
     "chrome-extension",
@@ -27,6 +30,7 @@
   "license": "MIT",
   "devDependencies": {
     "@eslint/js": "^9.39.1",
+    "@playwright/test": "^1.59.1",
     "@types/chrome": "^0.1.33",
     "@types/node": "^25.0.0",
     "eslint": "^9.39.1",
