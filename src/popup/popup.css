@@ -193,6 +193,14 @@ body {
   background-clip: padding-box;
 }
 
+.settings.settings--scrollable .setting-row {
+  padding-right: 6px;
+}
+
+.settings.settings--scrollable .setting-row--child {
+  padding-right: 4px;
+}
+
 .settings-subtabs:not([hidden]) + .settings {
   margin-top: -1px;
   border-top-left-radius: 0;

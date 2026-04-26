@@ -1,4 +1,5 @@
 import { buildFullscreenCss, buildSharedPlayerUiCss, resetFullscreenGridPeekState, resetFullscreenNavigationState, shouldSuppressFullscreenGridPeekInteraction, updateFullscreenActionDock, updatePlayerUiFocusState, updatePlayerUiHoverState } from './fullscreen';
+import { bindGridHoverHandlers, buildGridHoverCss, syncGridHoverState } from './grid-hover';
 import { bindPointerHandlers, bindRuntimeMessages, bindStorageObserver, bindVideoEvents, observeDom, observeNavigation, scheduleModeStabilization, syncWatchObserver, updateViewportHeightVar } from './lifecycle';
 import { buildPipCss, ensureMiniPlayerPipButton, syncPipButtons } from './pip';
 import { GENERAL_HIDDEN_CLASS, SELECTORS, STYLE_ID } from './selectors';
@@ -28,6 +29,19 @@ function buildDefaultCss(): string {
     ${state.settings.defaultHideComments ? `
     body.simple-yt-tweaks-default-view #comments {
       display: none !important;
+    }
+    ` : ''}
+
+    ${!state.settings.defaultHideComments ? `
+    body.simple-yt-tweaks-default-view #below,
+    body.simple-yt-tweaks-default-view #comments {
+      max-height: none !important;
+      overflow: visible !important;
+      visibility: visible !important;
+    }
+
+    body.simple-yt-tweaks-default-view #comments {
+      display: block !important;
     }
     ` : ''}
 
@@ -81,6 +95,7 @@ function buildCss(): string {
     buildFullscreenCss(state.settings),
     buildDefaultCss(),
     buildStickyPlayerCss(state.settings),
+    buildGridHoverCss(state.settings),
   ].join('\n');
 }
 
@@ -127,6 +142,7 @@ function stabilizeUi(): void {
   ensureMiniPlayerPipButton();
   updateFullscreenActionDock();
   updateStickyPlayerState();
+  syncGridHoverState(state.settings);
   refreshPlayerLayout();
 }
 
@@ -175,6 +191,7 @@ function applyFeatureState(): void {
   syncPipButtons();
   updateFullscreenActionDock();
   updateStickyPlayerState();
+  syncGridHoverState(state.settings);
 
   if (
     state.settings.theaterHidePlayerUI ||
@@ -237,6 +254,7 @@ async function init(): Promise<void> {
     onViewportUi: stabilizeUi,
   });
   bindFullscreenGridPeekSuppressor();
+  bindGridHoverHandlers(() => state.settings);
   bindRuntimeMessages();
   bindVideoEvents({
     onPipChange: () => {

@@ -33,6 +33,7 @@ const STICKY_VIEWPORT_MARGIN = 8;
 
 let stickyDock: StickyPlayerDockState | null = null;
 let stickyDismissedUntilPlayerVisible = false;
+let stickyPipRestoreTimer: number | null = null;
 
 function getViewportHeight(): number {
   return Math.round(window.visualViewport?.height ?? window.innerHeight);
@@ -375,6 +376,31 @@ function dispatchPlayerResize(): void {
   window.dispatchEvent(new Event('resize'));
 }
 
+function waitForNextFrame(): Promise<void> {
+  return new Promise((resolve) => {
+    window.requestAnimationFrame(() => resolve());
+  });
+}
+
+function clearStickyPipRestoreTimer(): void {
+  if (stickyPipRestoreTimer === null) return;
+  window.clearTimeout(stickyPipRestoreTimer);
+  stickyPipRestoreTimer = null;
+}
+
+function scheduleStickyPlayerRestoreForPip(): void {
+  if (!stickyDock) {
+    restoreStickyPlayerDock();
+    return;
+  }
+
+  if (stickyPipRestoreTimer !== null) return;
+  stickyPipRestoreTimer = window.setTimeout(() => {
+    stickyPipRestoreTimer = null;
+    restoreStickyPlayerDock();
+  }, 160);
+}
+
 function createStickyButton(label: string, svgPath: string): HTMLButtonElement {
   const button = document.createElement('button');
   button.className = 'simple-yt-tweaks-sticky-player-btn';
@@ -614,6 +640,8 @@ function dockStickyPlayer(playerTarget: HTMLElement): void {
 }
 
 function restoreStickyPlayerDock(): void {
+  clearStickyPipRestoreTimer();
+
   const dock = stickyDock;
 
   if (!dock) {
@@ -641,8 +669,26 @@ function restoreStickyPlayerDock(): void {
   window.requestAnimationFrame(dispatchPlayerResize);
 }
 
+export async function prepareStickyPlayerForPictureInPicture(): Promise<void> {
+  if (!stickyDock) return;
+
+  restoreStickyPlayerDock();
+  await waitForNextFrame();
+  await waitForNextFrame();
+  dispatchPlayerResize();
+}
+
 export function updateStickyPlayerState(): void {
   if (!document.body) return;
+
+  if (isBrowserPipActive()) {
+    if (stickyDock) {
+      scheduleStickyPlayerRestoreForPip();
+    } else {
+      restoreStickyPlayerDock();
+    }
+    return;
+  }
 
   const playerTarget = getPlayerTarget();
   const anchor = getPlayerAnchor(playerTarget);

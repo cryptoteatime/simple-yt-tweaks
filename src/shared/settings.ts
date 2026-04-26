@@ -6,6 +6,7 @@ export type BooleanSettingKey =
   | 'generalHideSponsoredPosts'
   | 'generalHideEndScreenCards'
   | 'generalHideShorts'
+  | 'generalApplyFeedColumnsToSearch'
   | 'generalStickyPlayer'
   | 'generalSidebarCleanup'
   | 'generalHideSidebar'
@@ -23,12 +24,14 @@ export type BooleanSettingKey =
   | 'theaterHidePlayerUI'
   | 'theaterHideScrollbarOnScroll'
   | 'theaterHideRecommendations'
+  | 'theaterRecommendedHoverGrow'
   | 'theaterHideComments'
   | 'theaterHideMetadata'
   | 'theaterShowPrimaryMetadata'
   | 'theaterHideLiveChat'
   | 'theaterShowLiveChatOverlay'
   | 'defaultHideRecommendations'
+  | 'defaultRecommendedHoverGrow'
   | 'defaultHideComments'
   | 'defaultHideMetadata'
   | 'defaultShowPrimaryMetadata'
@@ -57,7 +60,7 @@ export type SettingDefinition = {
   description: string;
   topTab: TopLevelTab;
   viewMode?: ViewMode;
-  parentKey?: BooleanSettingKey;
+  parentKey?: SettingKey;
   kind?: 'toggle' | 'select';
   options?: SettingOption[];
 };
@@ -67,7 +70,8 @@ export const DEFAULT_SETTINGS: Settings = {
   generalHideEndScreenCards: true,
   generalFeedColumns: 3,
   generalHideShorts: true,
-  generalStickyPlayer: false,
+  generalApplyFeedColumnsToSearch: true,
+  generalStickyPlayer: true,
   generalSidebarCleanup: true,
   generalHideSidebar: false,
   generalHideSidebarHome: false,
@@ -84,12 +88,14 @@ export const DEFAULT_SETTINGS: Settings = {
   theaterHidePlayerUI: true,
   theaterHideScrollbarOnScroll: true,
   theaterHideRecommendations: true,
+  theaterRecommendedHoverGrow: true,
   theaterHideComments: false,
   theaterHideMetadata: true,
   theaterShowPrimaryMetadata: true,
   theaterHideLiveChat: true,
   theaterShowLiveChatOverlay: false,
   defaultHideRecommendations: false,
+  defaultRecommendedHoverGrow: true,
   defaultHideComments: false,
   defaultHideMetadata: true,
   defaultShowPrimaryMetadata: true,
@@ -117,7 +123,7 @@ export const VIEW_MODES: Array<{ id: ViewMode; label: string }> = [
 export const SETTING_DEFINITIONS: SettingDefinition[] = [
   {
     key: 'generalFeedColumns',
-    label: 'Home Feed Columns',
+    label: 'Feed Columns',
     description: 'Controls the number of columns shown on the YouTube home feed.',
     topTab: 'general',
     kind: 'select',
@@ -126,6 +132,13 @@ export const SETTING_DEFINITIONS: SettingDefinition[] = [
       { value: 3, label: '3 columns' },
       { value: 4, label: '4 columns' },
     ],
+  },
+  {
+    key: 'generalApplyFeedColumnsToSearch',
+    label: 'Apply to Search',
+    description: 'Applies the feed column grid and compact result styling to YouTube search results.',
+    topTab: 'general',
+    parentKey: 'generalFeedColumns',
   },
   {
     key: 'generalHideSponsoredPosts',
@@ -274,6 +287,14 @@ export const SETTING_DEFINITIONS: SettingDefinition[] = [
     parentKey: 'enhancedTheaterMode',
   },
   {
+    key: 'theaterRecommendedHoverGrow',
+    label: 'Recommended Hover Grow',
+    description: 'Lets recommended videos grow slightly after an intentional hover in theater mode.',
+    topTab: 'modes',
+    viewMode: 'theater',
+    parentKey: 'theaterHideRecommendations',
+  },
+  {
     key: 'theaterHideComments',
     label: 'Hide Comments',
     description: 'Hides only the comments section while enhanced theater mode is active.',
@@ -319,6 +340,14 @@ export const SETTING_DEFINITIONS: SettingDefinition[] = [
     description: 'Hides recommendations in the normal watch-page view.',
     topTab: 'modes',
     viewMode: 'default',
+  },
+  {
+    key: 'defaultRecommendedHoverGrow',
+    label: 'Recommended Hover Grow',
+    description: 'Lets recommended videos grow slightly after an intentional hover in the normal watch-page view.',
+    topTab: 'modes',
+    viewMode: 'default',
+    parentKey: 'defaultHideRecommendations',
   },
   {
     key: 'defaultHideComments',

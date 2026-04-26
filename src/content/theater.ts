@@ -169,6 +169,19 @@ export function buildTheaterCss(settings: Settings): string {
     }
     ` : ''}
 
+    ${enhancedTheater && !theaterHideComments ? `
+    body.simple-yt-tweaks-theater #below,
+    body.simple-yt-tweaks-theater #comments {
+      max-height: none !important;
+      overflow: visible !important;
+      visibility: visible !important;
+    }
+
+    body.simple-yt-tweaks-theater #comments {
+      display: block !important;
+    }
+    ` : ''}
+
     ${enhancedTheater && theaterHideMetadata && !theaterShowPrimaryMetadata ? `
     body.simple-yt-tweaks-theater ytd-watch-metadata,
     body.simple-yt-tweaks-theater #info-contents ytd-video-primary-info-renderer,
@@ -271,10 +284,8 @@ export function buildTheaterCss(settings: Settings): string {
     ` : ''}
 
     ${isTheaterMinimalLayoutActive(settings) ? `
-    body.simple-yt-tweaks-theater.simple-yt-tweaks-theater-minimal #below,
     body.simple-yt-tweaks-theater.simple-yt-tweaks-theater-minimal #secondary,
     body.simple-yt-tweaks-theater.simple-yt-tweaks-theater-minimal #related,
-    body.simple-yt-tweaks-theater.simple-yt-tweaks-theater-minimal #comments,
     body.simple-yt-tweaks-theater.simple-yt-tweaks-theater-minimal ytd-watch-metadata {
       display: none !important;
       margin: 0 !important;

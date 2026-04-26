@@ -27,6 +27,7 @@ let tooltipEl: HTMLDivElement | null = null;
 let activeTopTab: TopLevelTab = 'general';
 let activeViewMode: ViewMode = 'theater';
 let currentSettings: Settings = { ...DEFAULT_SETTINGS };
+const paneScrollPositions = new Map<string, number>();
 
 function requireElement<T extends HTMLElement>(element: T | null, name: string): T {
   if (!element) {
@@ -40,6 +41,17 @@ function getDefinition(key: SettingKey): SettingDefinition | undefined {
   return SETTING_DEFINITIONS.find((item) => item.key === key);
 }
 
+function doesParentSwitchDisableChild(key: SettingKey, parentKey: SettingKey): boolean {
+  if (
+    (key === 'defaultRecommendedHoverGrow' && parentKey === 'defaultHideRecommendations') ||
+    (key === 'theaterRecommendedHoverGrow' && parentKey === 'theaterHideRecommendations')
+  ) {
+    return false;
+  }
+
+  return true;
+}
+
 function isSettingDisabled(key: SettingKey, settings: Settings): boolean {
   if (key === 'generalHideSidebarShorts' && settings.generalHideShorts) {
     return false;
@@ -47,6 +59,10 @@ function isSettingDisabled(key: SettingKey, settings: Settings): boolean {
 
   const definition = getDefinition(key);
   if (!definition?.parentKey) return false;
+
+  if (!doesParentSwitchDisableChild(key, definition.parentKey)) {
+    return isSettingDisabled(definition.parentKey, settings);
+  }
 
   return !settings[definition.parentKey] || isSettingDisabled(definition.parentKey, settings);
 }
@@ -63,6 +79,19 @@ function matchesActivePane(definition: SettingDefinition): boolean {
   if (activeTopTab !== 'modes') return true;
 
   return definition.viewMode === activeViewMode;
+}
+
+function getActivePaneKey(): string {
+  return activeTopTab === 'modes' ? `${activeTopTab}:${activeViewMode}` : activeTopTab;
+}
+
+function saveActivePaneScroll(): void {
+  if (!settingsEl) return;
+  paneScrollPositions.set(getActivePaneKey(), settingsEl.scrollTop);
+}
+
+function updateSettingsScrollState(container: HTMLElement): void {
+  container.classList.toggle('settings--scrollable', container.scrollHeight > container.clientHeight + 1);
 }
 
 function getVisiblePaneDefaults(): Partial<Settings> {
@@ -90,6 +119,7 @@ function renderTopTabs(): void {
     button.textContent = tab.label;
     button.setAttribute('aria-selected', String(tab.id === activeTopTab));
     button.addEventListener('click', () => {
+      saveActivePaneScroll();
       activeTopTab = tab.id;
       renderTopTabs();
       renderViewModes();
@@ -113,6 +143,7 @@ function renderViewModes(): void {
     button.textContent = mode.label;
     button.setAttribute('aria-selected', String(mode.id === activeViewMode));
     button.addEventListener('click', () => {
+      saveActivePaneScroll();
       activeViewMode = mode.id;
       renderViewModes();
       renderSettings(currentSettings);
@@ -198,6 +229,7 @@ async function updatePageStatus(): Promise<void> {
 }
 
 async function persistSettings(nextSettings: Settings): Promise<void> {
+  saveActivePaneScroll();
   const normalizedSettings = normalizeSettings(nextSettings);
   await saveSettings(normalizedSettings);
   currentSettings = normalizedSettings;
@@ -206,9 +238,12 @@ async function persistSettings(nextSettings: Settings): Promise<void> {
 
 function renderSettings(settings: Settings): void {
   const container = requireElement(settingsEl, 'settings');
+  const paneKey = getActivePaneKey();
+  const nextScrollTop = paneScrollPositions.get(paneKey) ?? 0;
   container.textContent = '';
   container.dataset.topTab = activeTopTab;
   container.dataset.viewMode = activeTopTab === 'modes' ? activeViewMode : '';
+  container.classList.remove('settings--scrollable');
   hideTooltip();
 
   for (const definition of SETTING_DEFINITIONS) {
@@ -313,6 +348,11 @@ function renderSettings(settings: Settings): void {
     row.append(copy, control);
     container.append(row);
   }
+
+  window.requestAnimationFrame(() => {
+    container.scrollTop = nextScrollTop;
+    updateSettingsScrollState(container);
+  });
 }
 
 async function init(): Promise<void> {
@@ -324,6 +364,7 @@ async function init(): Promise<void> {
   renderTopTabs();
   renderViewModes();
   renderSettings(currentSettings);
+  requireElement(settingsEl, 'settings').addEventListener('scroll', saveActivePaneScroll, { passive: true });
 
   requireElement(resetBtn, 'resetBtn').addEventListener('click', async () => {
     try {

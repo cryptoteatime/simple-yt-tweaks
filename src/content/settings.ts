@@ -4,6 +4,7 @@ export type BooleanSettingKey =
   | 'generalHideSponsoredPosts'
   | 'generalHideEndScreenCards'
   | 'generalHideShorts'
+  | 'generalApplyFeedColumnsToSearch'
   | 'generalStickyPlayer'
   | 'generalSidebarCleanup'
   | 'generalHideSidebar'
@@ -21,12 +22,14 @@ export type BooleanSettingKey =
   | 'theaterHidePlayerUI'
   | 'theaterHideScrollbarOnScroll'
   | 'theaterHideRecommendations'
+  | 'theaterRecommendedHoverGrow'
   | 'theaterHideComments'
   | 'theaterHideMetadata'
   | 'theaterShowPrimaryMetadata'
   | 'theaterHideLiveChat'
   | 'theaterShowLiveChatOverlay'
   | 'defaultHideRecommendations'
+  | 'defaultRecommendedHoverGrow'
   | 'defaultHideComments'
   | 'defaultHideMetadata'
   | 'defaultShowPrimaryMetadata'
@@ -49,7 +52,8 @@ export const DEFAULT_SETTINGS: Settings = {
   generalHideEndScreenCards: true,
   generalFeedColumns: 3,
   generalHideShorts: true,
-  generalStickyPlayer: false,
+  generalApplyFeedColumnsToSearch: true,
+  generalStickyPlayer: true,
   generalSidebarCleanup: true,
   generalHideSidebar: false,
   generalHideSidebarHome: false,
@@ -66,12 +70,14 @@ export const DEFAULT_SETTINGS: Settings = {
   theaterHidePlayerUI: true,
   theaterHideScrollbarOnScroll: true,
   theaterHideRecommendations: true,
+  theaterRecommendedHoverGrow: true,
   theaterHideComments: false,
   theaterHideMetadata: true,
   theaterShowPrimaryMetadata: true,
   theaterHideLiveChat: true,
   theaterShowLiveChatOverlay: false,
   defaultHideRecommendations: false,
+  defaultRecommendedHoverGrow: true,
   defaultHideComments: false,
   defaultHideMetadata: true,
   defaultShowPrimaryMetadata: true,

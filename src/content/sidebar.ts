@@ -11,10 +11,33 @@ import {
 import type { Settings } from './settings';
 import { state } from './state';
 
+const HOME_SPONSORED_ITEM_SELECTORS = [
+  ...SPONSORED_CARD_SELECTORS,
+  'ad-badge-view-model',
+  'ad-button-group-view-model',
+  'ad-button-view-model',
+  'ad-details-line-view-model',
+  'feed-ad-metadata-view-model',
+  'video-display-button-group-layout-view-model',
+  'video-display-compact-button-group-layout-view-model',
+  '.ytBadgeShapeAd',
+  'a[href*="googleadservices.com"]',
+  'a[href*="doubleclick.net"]',
+].join(',');
+
+const HOME_SPONSORED_CONTAINER_CSS_SELECTOR = [
+  'ytd-rich-item-renderer',
+  'ytd-rich-section-renderer',
+  'ytd-feed-nudge-renderer',
+].map((selector) =>
+  `body.simple-yt-tweaks-active ytd-browse[page-subtype="home"] ytd-rich-grid-renderer ${selector}:has(${HOME_SPONSORED_ITEM_SELECTORS})`,
+).join(',\n    ');
+
 export function buildGeneralCss(settings: Settings): string {
   const generalHideEndScreenCards = settings.generalHideEndScreenCards;
   const generalFeedColumns = settings.generalFeedColumns;
   const generalHideShorts = settings.generalHideShorts && !isDedicatedShortsPage();
+  const generalHideSponsoredPosts = settings.generalHideSponsoredPosts;
 
   return `
     body.simple-yt-tweaks-active ytd-browse[page-subtype="home"] ytd-rich-grid-renderer,
@@ -28,6 +51,7 @@ export function buildGeneralCss(settings: Settings): string {
     body.simple-yt-tweaks-active ytd-browse[page-subtype="home"] ytd-rich-grid-renderer #contents {
       display: grid !important;
       grid-template-columns: repeat(${generalFeedColumns}, minmax(0, 1fr)) !important;
+      grid-auto-flow: row dense !important;
       align-items: start !important;
       column-gap: 16px !important;
       row-gap: 24px !important;
@@ -43,6 +67,21 @@ export function buildGeneralCss(settings: Settings): string {
       min-width: 0 !important;
       max-width: none !important;
     }
+
+    body.simple-yt-tweaks-active ytd-browse[page-subtype="home"] ytd-rich-grid-renderer ytd-rich-item-renderer.${GENERAL_HIDDEN_CLASS},
+    body.simple-yt-tweaks-active ytd-browse[page-subtype="home"] ytd-rich-grid-renderer ytd-rich-item-renderer:has(.${GENERAL_HIDDEN_CLASS}),
+    body.simple-yt-tweaks-active ytd-browse[page-subtype="home"] ytd-rich-grid-renderer ytd-rich-section-renderer.${GENERAL_HIDDEN_CLASS},
+    body.simple-yt-tweaks-active ytd-browse[page-subtype="home"] ytd-rich-grid-renderer ytd-rich-section-renderer:has(.${GENERAL_HIDDEN_CLASS}),
+    body.simple-yt-tweaks-active ytd-browse[page-subtype="home"] ytd-rich-grid-renderer ytd-feed-nudge-renderer.${GENERAL_HIDDEN_CLASS},
+    body.simple-yt-tweaks-active ytd-browse[page-subtype="home"] ytd-rich-grid-renderer ytd-feed-nudge-renderer:has(.${GENERAL_HIDDEN_CLASS}) {
+      display: none !important;
+    }
+
+    ${generalHideSponsoredPosts ? `
+    ${HOME_SPONSORED_CONTAINER_CSS_SELECTOR} {
+      display: none !important;
+    }
+    ` : ''}
 
     ${generalHideEndScreenCards ? `
     body.simple-yt-tweaks-active .ytp-ce-element,
@@ -61,12 +100,17 @@ export function buildGeneralCss(settings: Settings): string {
     body.simple-yt-tweaks-active ytd-rich-shelf-renderer[is-shorts],
     body.simple-yt-tweaks-active ytd-reel-shelf-renderer,
     body.simple-yt-tweaks-active ytd-reel-video-renderer,
+    body.simple-yt-tweaks-active ytd-reel-item-renderer,
+    body.simple-yt-tweaks-active grid-shelf-view-model:has(a[href*="/shorts/"]),
+    body.simple-yt-tweaks-active ytm-shorts-lockup-view-model-v2,
+    body.simple-yt-tweaks-active ytm-shorts-lockup-view-model,
     body.simple-yt-tweaks-active ytd-shorts,
-    body.simple-yt-tweaks-active ytd-video-renderer:has(a[href^="/shorts/"]),
-    body.simple-yt-tweaks-active ytd-grid-video-renderer:has(a[href^="/shorts/"]),
-    body.simple-yt-tweaks-active ytd-rich-item-renderer:has(a[href^="/shorts/"]),
-    body.simple-yt-tweaks-active ytd-compact-video-renderer:has(a[href^="/shorts/"]),
-    body.simple-yt-tweaks-active ytd-shelf-renderer:has(a[href^="/shorts/"]),
+    body.simple-yt-tweaks-active ytd-video-renderer:has(a[href*="/shorts/"]),
+    body.simple-yt-tweaks-active ytd-grid-video-renderer:has(a[href*="/shorts/"]),
+    body.simple-yt-tweaks-active ytd-rich-item-renderer:has(a[href*="/shorts/"]),
+    body.simple-yt-tweaks-active ytd-compact-video-renderer:has(a[href*="/shorts/"]),
+    body.simple-yt-tweaks-active ytd-shelf-renderer:has(a[href*="/shorts/"]),
+    body.simple-yt-tweaks-active yt-lockup-view-model:has(a[href*="/shorts/"]),
     body.simple-yt-tweaks-active ytd-item-section-renderer:has(ytd-reel-shelf-renderer) {
       display: none !important;
     }
@@ -195,20 +239,57 @@ function hideElement(element: Element | null): void {
   }
 }
 
+function removeElement(element: Element | null): void {
+  if (element instanceof HTMLElement) {
+    element.remove();
+  }
+}
+
 function hideClosest(element: Element, selector: string): void {
   hideElement(element.closest(selector));
 }
 
-function hideClosestTag(element: Element, tagNames: readonly string[]): void {
+function removeClosestTag(element: Element, tagNames: readonly string[]): void {
   let current: Element | null = element;
 
   while (current && current !== document.documentElement) {
     if (tagNames.includes(current.tagName.toLowerCase())) {
-      hideElement(current);
+      removeElement(current);
       return;
     }
 
     current = current.parentElement;
+  }
+}
+
+function isSponsoredBadge(element: HTMLElement): boolean {
+  const label = getElementLabel(element);
+  return label === 'sponsored' || label.startsWith('sponsored ');
+}
+
+function isSponsoredHomeFeedItem(item: HTMLElement): boolean {
+  if (query<HTMLElement>(HOME_SPONSORED_ITEM_SELECTORS, item)) return true;
+  if (query<HTMLElement>(`.${GENERAL_HIDDEN_CLASS}`, item)) return true;
+
+  return queryAll<HTMLElement>(
+    [
+      'ad-badge-view-model',
+      'badge-shape.ytBadgeShapeAd',
+      '.ytBadgeShapeAd',
+    ].join(','),
+    item,
+  ).some(isSponsoredBadge);
+}
+
+function removeSponsoredHomeFeedItems(): void {
+  if (!state.settings.generalHideSponsoredPosts) return;
+
+  for (const item of queryAll<HTMLElement>(
+    'ytd-browse[page-subtype="home"] ytd-rich-grid-renderer #contents ytd-rich-item-renderer',
+  )) {
+    if (isSponsoredHomeFeedItem(item)) {
+      item.remove();
+    }
   }
 }
 
@@ -375,7 +456,7 @@ export function updateSponsoredVisibility(): void {
     const onHomeFeed = Boolean(target.closest('ytd-browse[page-subtype="home"]'));
 
     if (onHomeFeed) {
-      hideClosestTag(target, [
+      removeClosestTag(target, [
         'ytd-rich-item-renderer',
         'ytd-rich-section-renderer',
         'ytd-feed-nudge-renderer',
@@ -396,6 +477,8 @@ export function updateSponsoredVisibility(): void {
       ].join(','),
     );
   }
+
+  removeSponsoredHomeFeedItems();
 }
 
 export function updateSidebarFooterVisibility(): void {
@@ -473,12 +556,20 @@ export function updateShortsVisibility(): void {
   if (!state.settings.generalHideShorts || isDedicatedShortsPage()) return;
 
   for (const target of queryAll<HTMLElement>(
-    'ytd-rich-shelf-renderer[is-shorts], ytd-reel-shelf-renderer, ytd-reel-video-renderer',
+    [
+      'ytd-rich-shelf-renderer[is-shorts]',
+      'ytd-reel-shelf-renderer',
+      'ytd-reel-video-renderer',
+      'ytd-reel-item-renderer',
+      'grid-shelf-view-model:has(a[href*="/shorts/"])',
+      'ytm-shorts-lockup-view-model-v2',
+      'ytm-shorts-lockup-view-model',
+    ].join(','),
   )) {
     hideElement(target);
   }
 
-  for (const link of queryAll<HTMLAnchorElement>('a[href^="/shorts/"], a[href="/shorts"]')) {
+  for (const link of queryAll<HTMLAnchorElement>('a[href*="/shorts/"], a[href="/shorts"]')) {
     hideClosest(
       link,
       [
@@ -487,7 +578,12 @@ export function updateShortsVisibility(): void {
         'ytd-grid-video-renderer',
         'ytd-compact-video-renderer',
         'ytd-reel-video-renderer',
+        'ytd-reel-item-renderer',
         'ytd-shelf-renderer',
+        'yt-lockup-view-model',
+        'grid-shelf-view-model',
+        'ytm-shorts-lockup-view-model-v2',
+        'ytm-shorts-lockup-view-model',
       ].join(','),
     );
   }
@@ -495,7 +591,7 @@ export function updateShortsVisibility(): void {
   for (const item of queryAll<HTMLElement>('ytd-rich-section-renderer, ytd-item-section-renderer, ytd-shelf-renderer')) {
     if (
       elementMatchesAnyLabel(item, SIDEBAR_ITEM_LABELS.shorts) &&
-      query<HTMLAnchorElement>('a[href^="/shorts/"], a[href="/shorts"]', item)
+      query<HTMLAnchorElement>('a[href*="/shorts/"], a[href="/shorts"]', item)
     ) {
       hideElement(item);
     }
@@ -506,20 +602,37 @@ export function normalizeHomeFeedLayout(): void {
   const homeFeed = query<HTMLElement>('ytd-browse[page-subtype="home"] ytd-rich-grid-renderer #contents');
   if (!homeFeed) return;
 
+  for (const container of queryAll<HTMLElement>('ytd-rich-section-renderer, ytd-feed-nudge-renderer', homeFeed)) {
+    if (
+      container.classList.contains(GENERAL_HIDDEN_CLASS) ||
+      (state.settings.generalHideSponsoredPosts && isSponsoredHomeFeedItem(container))
+    ) {
+      container.remove();
+    }
+  }
+
   for (const item of queryAll<HTMLElement>('ytd-rich-item-renderer', homeFeed)) {
+    if (
+      item.classList.contains(GENERAL_HIDDEN_CLASS) ||
+      (state.settings.generalHideSponsoredPosts && isSponsoredHomeFeedItem(item))
+    ) {
+      item.remove();
+      continue;
+    }
+
     const hasVisibleChild = Array.from(item.children).some(
       (child) => child instanceof HTMLElement && isVisibleNode(child),
     );
 
     if (!hasVisibleChild) {
-      hideElement(item);
+      item.remove();
     }
   }
 
   for (const row of queryAll<HTMLElement>('ytd-rich-grid-row', homeFeed)) {
     const visibleItems = queryAll<HTMLElement>('ytd-rich-item-renderer', row).filter(isVisibleNode);
     if (visibleItems.length === 0) {
-      hideElement(row);
+      row.remove();
     }
   }
 }

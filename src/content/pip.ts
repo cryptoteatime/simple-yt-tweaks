@@ -2,6 +2,7 @@ import { getVideo, isNativeFullscreenActive, isVisibleNode, isWatchPage, query }
 import { MINIPLAYER_PIP_BUTTON_ID, PIP_BUTTON_ID, SELECTORS } from './selectors';
 import { isFeatureEnabled } from './settings';
 import { state } from './state';
+import { prepareStickyPlayerForPictureInPicture } from './sticky-player';
 
 export function buildPipCss(): string {
   return `
@@ -36,8 +37,8 @@ export function buildPipCss(): string {
 }
 
 export async function toggleBrowserPictureInPicture(): Promise<void> {
-  const video = getVideo();
-  if (!video) return;
+  const initialVideo = getVideo();
+  if (!initialVideo) return;
 
   try {
     if (document.pictureInPictureElement) {
@@ -45,8 +46,19 @@ export async function toggleBrowserPictureInPicture(): Promise<void> {
       return;
     }
 
-    if (document.pictureInPictureEnabled && !video.disablePictureInPicture) {
+    if (document.pictureInPictureEnabled && !initialVideo.disablePictureInPicture) {
+      const wasPlaying = !initialVideo.paused && !initialVideo.ended;
+      await prepareStickyPlayerForPictureInPicture();
+
+      const video = getVideo() ?? initialVideo;
+      if (video.disablePictureInPicture) return;
       await video.requestPictureInPicture();
+
+      if (wasPlaying && video.paused) {
+        void video.play().catch((error) => {
+          console.warn('Simple YT Tweaks PiP resume failed:', error);
+        });
+      }
     }
   } catch (error) {
     console.warn('Simple YT Tweaks PiP failed:', error);
