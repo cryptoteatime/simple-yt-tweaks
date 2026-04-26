@@ -1,6 +1,6 @@
 {
   "name": "simple-yt-tweaks",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Unofficial player usability tweaks for YouTube.",
   "type": "module",
   "private": true,
