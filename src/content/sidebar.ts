@@ -48,26 +48,6 @@ export function buildGeneralCss(settings: Settings): string {
       --ytd-rich-grid-game-cards-per-row: ${generalFeedColumns} !important;
     }
 
-    body.simple-yt-tweaks-active ytd-browse[page-subtype="home"] ytd-rich-grid-renderer #contents {
-      display: grid !important;
-      grid-template-columns: repeat(${generalFeedColumns}, minmax(0, 1fr)) !important;
-      grid-auto-flow: row dense !important;
-      align-items: start !important;
-      column-gap: 16px !important;
-      row-gap: 24px !important;
-    }
-
-    body.simple-yt-tweaks-active ytd-browse[page-subtype="home"] ytd-rich-grid-row {
-      display: contents !important;
-    }
-
-    body.simple-yt-tweaks-active ytd-browse[page-subtype="home"] ytd-rich-item-renderer {
-      width: auto !important;
-      margin: 0 !important;
-      min-width: 0 !important;
-      max-width: none !important;
-    }
-
     body.simple-yt-tweaks-active ytd-browse[page-subtype="home"] ytd-rich-grid-renderer ytd-rich-item-renderer.${GENERAL_HIDDEN_CLASS},
     body.simple-yt-tweaks-active ytd-browse[page-subtype="home"] ytd-rich-grid-renderer ytd-rich-item-renderer:has(.${GENERAL_HIDDEN_CLASS}),
     body.simple-yt-tweaks-active ytd-browse[page-subtype="home"] ytd-rich-grid-renderer ytd-rich-section-renderer.${GENERAL_HIDDEN_CLASS},

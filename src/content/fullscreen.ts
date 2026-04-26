@@ -8,6 +8,15 @@ import {
 import type { Settings } from './settings';
 import { state } from './state';
 
+const PLAYER_CLICK_SURFACE_CSS = `
+    body.simple-yt-tweaks-active #movie_player,
+    body.simple-yt-tweaks-active .html5-video-player,
+    body.simple-yt-tweaks-active .html5-video-container,
+    body.simple-yt-tweaks-active video.html5-main-video {
+      pointer-events: auto !important;
+    }
+`;
+
 export function buildFullscreenCss(settings: Settings): string {
   const fullscreenHideTitleOverlay = settings.fullscreenHideTitleOverlay;
   const fullscreenHideRecommendationOverlays = settings.fullscreenHideRecommendationOverlays;
@@ -179,6 +188,8 @@ export function buildFullscreenCss(settings: Settings): string {
 export function buildSharedPlayerUiCss(settings: Settings): string {
   if (!settings.theaterHidePlayerUI && !settings.fullscreenHidePlayerUI) {
     return `
+      ${PLAYER_CLICK_SURFACE_CSS}
+
       body.simple-yt-tweaks-active .ytp-chrome-top,
       body.simple-yt-tweaks-active .ytp-chrome-bottom,
       body.simple-yt-tweaks-active .ytp-gradient-top,
@@ -191,6 +202,8 @@ export function buildSharedPlayerUiCss(settings: Settings): string {
   }
 
   return `
+    ${PLAYER_CLICK_SURFACE_CSS}
+
     body.simple-yt-tweaks-player-ui-hidden .ytp-chrome-top,
     body.simple-yt-tweaks-player-ui-hidden .ytp-chrome-bottom,
     body.simple-yt-tweaks-player-ui-hidden .ytp-gradient-top,

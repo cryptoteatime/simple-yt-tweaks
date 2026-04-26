@@ -609,7 +609,7 @@ function isRecommendedHoverGrowEnabled(settings: Settings): boolean {
 }
 
 export function syncGridHoverState(settings: Settings): void {
-  // CSS grid controls the visible home layout; avoid writing YouTube's own column metadata during preview startup.
+  // Home/search feed previews stay native; avoid writing YouTube's own column metadata during preview startup.
 
   if (settings.generalApplyFeedColumnsToSearch) {
     moveSearchBadgesToChannelRow();

@@ -1,8 +1,38 @@
-import { debounce, getVideo } from './dom';
+import { debounce, getPlayer, getVideo, isWatchPage } from './dom';
 import { SETTING_KEYS, normalizeSettings, type BooleanSettingKey, type SettingKey } from './settings';
 import { state } from './state';
 
 let videoBindIntervalId: number | null = null;
+let playerSurfaceClickFallbackBound = false;
+
+const PLAYER_CLICK_CONTROL_SELECTOR = [
+  'a',
+  'button',
+  'input',
+  'select',
+  'textarea',
+  '[role="button"]',
+  '[role="menuitem"]',
+  '.ytp-button',
+  '.ytp-chrome-top',
+  '.ytp-chrome-bottom',
+  '.ytp-progress-bar',
+  '.ytp-progress-bar-container',
+  '.ytp-popup',
+  '.ytp-settings-menu',
+  '.ytp-panel',
+  '.ytp-menuitem',
+  '.ytp-contextmenu',
+  '.ytp-tooltip',
+  '.ytp-ce-element',
+  '.ytp-cards-button',
+  '.ytp-caption-window-container',
+  '.simple-yt-tweaks-pip-btn',
+  '.simple-yt-tweaks-miniplayer-pip-btn',
+  '.simple-yt-tweaks-sticky-player-btn',
+  '.simple-yt-tweaks-sticky-player-drag',
+  '.simple-yt-tweaks-sticky-player-resize',
+].join(',');
 
 export function updateViewportHeightVar(): void {
   const height = Math.round(window.visualViewport?.height ?? window.innerHeight);
@@ -169,6 +199,79 @@ export function bindRuntimeMessages(): void {
     sendResponse({ ok: true });
     return false;
   });
+}
+
+function isManagedWatchMode(): boolean {
+  return (
+    isWatchPage() &&
+    (document.body.classList.contains('simple-yt-tweaks-default-view') ||
+      document.body.classList.contains('simple-yt-tweaks-theater') ||
+      document.body.classList.contains('simple-yt-tweaks-fullscreen-view'))
+  );
+}
+
+function eventPathHasPlayerControl(event: MouseEvent): boolean {
+  return event.composedPath().some(
+    (target) => target instanceof Element && target.matches(PLAYER_CLICK_CONTROL_SELECTOR),
+  );
+}
+
+function isPlayerSurfaceClick(event: MouseEvent): boolean {
+  if (!event.isTrusted || event.button !== 0 || event.metaKey || event.ctrlKey || event.altKey || event.shiftKey) {
+    return false;
+  }
+
+  if (!isManagedWatchMode() || eventPathHasPlayerControl(event)) {
+    return false;
+  }
+
+  const player = getPlayer();
+  if (!player || !(event.target instanceof Element) || !player.contains(event.target)) {
+    return false;
+  }
+
+  const rect = player.getBoundingClientRect();
+  if (
+    event.clientX < rect.left ||
+    event.clientX > rect.right ||
+    event.clientY < rect.top ||
+    event.clientY > rect.bottom
+  ) {
+    return false;
+  }
+
+  return event.clientY < rect.bottom - 92;
+}
+
+export function bindPlayerSurfaceClickFallback(): void {
+  if (playerSurfaceClickFallbackBound) return;
+  playerSurfaceClickFallbackBound = true;
+
+  document.addEventListener(
+    'click',
+    (event) => {
+      if (!isPlayerSurfaceClick(event)) return;
+
+      const video = getVideo();
+      if (!video) return;
+
+      const wasPaused = video.paused;
+      window.setTimeout(() => {
+        const currentVideo = getVideo();
+        if (!currentVideo || !document.body.contains(currentVideo) || currentVideo.paused !== wasPaused) return;
+
+        if (wasPaused) {
+          void currentVideo.play().catch((error) => {
+            console.warn('Simple YT Tweaks player click fallback failed:', error);
+          });
+          return;
+        }
+
+        currentVideo.pause();
+      }, 180);
+    },
+    { capture: true, passive: true },
+  );
 }
 
 export function bindVideoEvents(handlers: {
