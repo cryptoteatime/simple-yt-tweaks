@@ -80,7 +80,7 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 - Execution strategy: paced controller with direct subagents only after lane readiness.
 - Batch dispatch policy: disabled by default via max 1 active subagent; require disjoint parallel-safe labels if capacity is raised.
 - Shared docs lock: controller owns task-board, current-state, controller-directives, and agent-registry during parallel work unless assigned.
-- Active subagents: none; next safe route is `SYT-010C` Reviewer for PR #16.
+- Active subagents: Boole (`019ddabc-9d77-7692-81b6-80ff60498621`) reviewing `SYT-010C` / PR #16.
 - Agent registry: `docs/swarm/agent-registry.md`.
 - Bootstrap log: `docs/swarm/bootstrap-log.md`.
 - GitHub workflow: `docs/swarm/github.md`.

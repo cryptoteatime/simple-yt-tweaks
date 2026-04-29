@@ -57,7 +57,7 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 
 ## Controller Notes
 
-- Active controller-spawned subagents: none; next safe route is `SYT-010C` Reviewer for PR #16.
+- Active controller-spawned subagents: Boole (`019ddabc-9d77-7692-81b6-80ff60498621`) reviewing `SYT-010C` / PR #16.
 - Active cron bursts: none; cron is a failsafe, not the normal execution path.
 - Parallel worktree root: none yet.
 - Batch dispatch policy: disabled by default because max active subagents is 1.

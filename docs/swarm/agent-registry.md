@@ -21,7 +21,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Agent / Thread | Task ID | Role | Status | Branch | Worktree | PR | Started | Last Seen | Expected Next Step | Heartbeat |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| none | none | none | none | none | none | none | none | none | none | none |
+| `019ddabc-9d77-7692-81b6-80ff60498621` / Boole | `SYT-010C` | Reviewer | Reviewing PR #16 | `swarm/syt-010c-rc-process` | repo checkout | #16 | 2026-04-29 15:31 EDT | 2026-04-29 15:31 EDT | Report Ready to Integrate / Needs Fixes / Blocked | `simple-yt-tweaks-controller-heartbeat` |
 
 ## Paused / Stale Agents
 
@@ -33,7 +33,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Path / Area | Task ID | Owner | Branch / Worktree | Reason | Release Condition |
 | --- | --- | --- | --- | --- | --- |
-| `DEVELOPMENT.md`, `docs/swarm/**` | `SYT-010C` | Reviewer pending | `swarm/syt-010c-rc-process` / repo checkout | Release-candidate process review | Release after PR #16 is merged or abandoned |
+| `DEVELOPMENT.md`, `docs/swarm/**` | `SYT-010C` | Reviewer Boole | `swarm/syt-010c-rc-process` / repo checkout | Release-candidate process review | Release after PR #16 is merged or abandoned |
 
 ## Recently Completed
 
@@ -53,7 +53,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Task ID | Role | Branch / Worktree | Launch Condition | Prompt Location |
 | --- | --- | --- | --- | --- |
-| `SYT-010C` | Reviewer | `swarm/syt-010c-rc-process` / repo checkout | PR #16 remains open and mergeable after controller review-state update is pushed | `docs/swarm/handoffs/SYT-010C.md` |
+| none | none | none | none | none |
 
 ## Side Chats
 
