@@ -14,11 +14,11 @@ This file is the repo-local dynamic control plane for the controller chat and an
 
 - Default branch: `main`
 - Current branch: `swarm/syt-010b-settings-hardening`
-- Expected Git state: clean task branch with pending `SYT-010B` runner launch
-- Open PR expectation: none for `SYT-010A`
-- Active agents expectation: Linnaeus running `SYT-010B`
+- Expected Git state: clean task branch with PR #14 open and mergeable
+- Open PR expectation: PR #14 open for `SYT-010B`
+- Active agents expectation: none after Linnaeus completed `SYT-010B`
 - Controller lease expectation: none between bounded heartbeat passes
-- Current priority lane: `SYT-010B` runner launch
+- Current priority lane: `SYT-010B` review
 
 ## Controller Lease And Pacing
 
@@ -96,7 +96,7 @@ Heartbeat overlap rule:
 
 | Priority | Task ID | Action | Owner | Branch / Worktree | Stop Condition |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `SYT-010B` | Settings source-of-truth/parity hardening | Senior Runner | `swarm/syt-010b-settings-hardening` | Focused checks pass and no behavior drift |
+| 1 | `SYT-010B` | Review settings source-of-truth/parity hardening PR #14 | Reviewer | `swarm/syt-010b-settings-hardening` | Review result is Ready to Integrate / Needs Fixes / Blocked |
 | 2 | `SYT-010C` | Release-candidate process smoothing | Planner/Runner | `swarm/syt-010c-rc-process` | RC gate documented and automatable |
 | 3 | `SYT-008A` | Research gate for future enhanced home/search hover | Planner | `swarm/syt-008a-hover-research` | Decision to defer, prototype, or require human QA |
 
@@ -108,3 +108,4 @@ Heartbeat overlap rule:
 - Issue #8 is intentionally paused until #10 coverage and hardening reduce regression risk.
 - PR #11 merged; PR #12 squash-merged into `main` at `59ec975`.
 - `SYT-010A` remote and local task branches were cleaned after merge.
+- PR #14 is open for `SYT-010B`; runner validation passed and no human QA was requested.

@@ -21,7 +21,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Agent / Thread | Task ID | Role | Status | Branch | Worktree | PR | Started | Last Seen | Expected Next Step | Heartbeat |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `019dd952-fc1f-7692-878b-cc0cbaa13d42` / Linnaeus | `SYT-010B` | Senior Runner | Settings hardening in progress | `swarm/syt-010b-settings-hardening` | repo checkout | none yet | 2026-04-29 08:57 EDT | 2026-04-29 08:57 EDT | Implement narrow parity/source-of-truth hardening, run checks, open draft PR | `simple-yt-tweaks-controller-heartbeat` |
+| none | none | none | none | none | none | none | none | none | none | none |
 
 ## Paused / Stale Agents
 
@@ -33,7 +33,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Path / Area | Task ID | Owner | Branch / Worktree | Reason | Release Condition |
 | --- | --- | --- | --- | --- | --- |
-| `src/shared/settings.ts`, `src/content/settings.ts`, `scripts/validate-extension.mjs`, `tests/e2e/**`, `docs/swarm/handoffs/SYT-010B.md` | `SYT-010B` | Senior Runner Linnaeus | `swarm/syt-010b-settings-hardening` / repo checkout | Settings parity/source-of-truth hardening | Release after PR is merged or abandoned |
+| `src/shared/settings.ts`, `src/content/settings.ts`, `scripts/validate-extension.mjs`, `tests/e2e/**`, `docs/swarm/handoffs/SYT-010B.md` | `SYT-010B` | Reviewer pending | `swarm/syt-010b-settings-hardening` / repo checkout | Settings parity/source-of-truth review | Release after PR #14 is merged or abandoned |
 
 ## Recently Completed
 
@@ -44,12 +44,13 @@ Use this file to track who is working, where they are working, and whether the c
 | `019dd841-965d-7cf2-be3b-d79b0f2e0595` / Beauvoir | `SYT-010A` | Runner | Opened draft PR #12 | 2026-04-29 05:37 EDT | `npm run test:e2e`, `npm run validate:all`, and `git diff --check` passed. |
 | `019dd89b-89b0-79f3-bf62-b64b3cb0ae6f` / Mendel | `SYT-010A` | Reviewer | Ready to Integrate, no findings | 2026-04-29 07:12 EDT | Targeted PR #12 review passed; `npm run test:e2e` and `git diff --check origin/main...HEAD` passed. |
 | `019dd8f8-d696-7f82-a403-c1f7b70e2716` / McClintock | `SYT-010A` | Integrator | Merged PR #12 | 2026-04-29 07:25 EDT | PR #12 squash-merged into `main` at `59ec975`; local task branch deleted and remote branch already removed. |
+| `019dd952-fc1f-7692-878b-cc0cbaa13d42` / Linnaeus | `SYT-010B` | Senior Runner | Opened draft PR #14 | 2026-04-29 10:38 EDT | Conservative validation hardening; `npm run validate:all`, `npm run test:e2e`, `npm run lint`, and `npm run typecheck` passed. |
 
 ## Pending Launch
 
 | Task ID | Role | Branch / Worktree | Launch Condition | Prompt Location |
 | --- | --- | --- | --- | --- |
-| none | none | none | none | none |
+| `SYT-010B` | Reviewer | `swarm/syt-010b-settings-hardening` / repo checkout | PR #14 remains open and mergeable after controller review-state update is pushed | `docs/swarm/handoffs/SYT-010B.md` |
 
 ## Side Chats
 
