@@ -17,8 +17,7 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 
 | Task ID | Title | Role | Status | Branch | Scope | Parallel | Depends On | Conflict Risk | Handoff | PR |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `SYT-CTL-001` | Bootstrap repo-local swarm packet | Integrator | Ready to Integrate | `swarm/syt-bootstrap-controller-packet` | `SWARM.md`, `docs/swarm/**` | serial-required | none | low, docs only | `docs/swarm/handoffs/SYT-CTL-001.md` | #11 |
-| `SYT-010A` | Audit and harden fixture coverage for #10/#8 risk | Planner/Runner | Ready | `swarm/syt-010a-test-harness-audit` | `tests/e2e/**`, docs as needed | parallel-safe after bootstrap | `SYT-CTL-001` | medium, fixture contracts | `docs/swarm/handoffs/SYT-010A.md` | none |
+| `SYT-010A` | Audit and harden fixture coverage for #10/#8 risk | Reviewer | Needs Review | `swarm/syt-010a-test-harness-audit` | `tests/e2e/**`, docs as needed | parallel-safe after bootstrap | `SYT-CTL-001` | medium, fixture contracts | `docs/swarm/handoffs/SYT-010A.md` | #12 |
 | `SYT-010B` | Settings parity and source-of-truth hardening | Senior Runner | Proposed | `swarm/syt-010b-settings-hardening` | `src/shared/settings.ts`, `src/content/settings.ts`, validation/tests | serial-required | `SYT-010A` | high, settings contracts | `docs/swarm/handoffs/SYT-010B.md` | none |
 | `SYT-010C` | Release-candidate process smoothing | Planner/Runner | Proposed | `swarm/syt-010c-rc-process` | `DEVELOPMENT.md`, `docs/swarm/**`, scripts if needed | parallel-safe with source-free work | `SYT-010A` preferred | low/medium, release docs | `docs/swarm/handoffs/SYT-010C.md` | none |
 | `SYT-008A` | Enhanced home/search hover research gate | Planner | Paused | `swarm/syt-008a-hover-research` | #8 research, fixtures/prototype only | serial-required | `SYT-010A`, user/product gate | high, live YouTube preview lifecycle | `docs/swarm/handoffs/SYT-008A.md` | none |
@@ -41,13 +40,13 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 
 | Task ID | Branch | Reviewer Focus | Verification Tier | Handoff |
 | --- | --- | --- | --- | --- |
-| none | none | none | none | none |
+| `SYT-010A` | `swarm/syt-010a-test-harness-audit` | Fixture determinism, #10 risk coverage, #8 remains gated, no runtime changes | targeted e2e review | `docs/swarm/handoffs/SYT-010A.md` |
 
 ## Ready To Integrate
 
 | Task ID | Branch | Checks | Cleanup Plan | Handoff |
 | --- | --- | --- | --- | --- |
-| `SYT-CTL-001` | `swarm/syt-bootstrap-controller-packet` | Reviewer passed; `git diff --check`; `npm run validate:all` | Merge PR #11, delete branch if safe, sync `main` | `docs/swarm/handoffs/SYT-CTL-001.md` |
+| none | none | none | none | none |
 
 ## Human QA
 

@@ -21,7 +21,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Agent / Thread | Task ID | Role | Status | Branch | Worktree | PR | Started | Last Seen | Expected Next Step | Heartbeat |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| none | none | none | none | none | none | none | none | none | none | none |
+| `019dd89b-89b0-79f3-bf62-b64b3cb0ae6f` / Mendel | `SYT-010A` | Reviewer | Reviewing PR #12 | `swarm/syt-010a-test-harness-audit` | repo checkout | #12 | 2026-04-29 05:39 EDT | 2026-04-29 05:39 EDT | Report Ready to Integrate / Needs Fixes / Blocked | `simple-yt-tweaks-controller-heartbeat` |
 
 ## Paused / Stale Agents
 
@@ -33,19 +33,21 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Path / Area | Task ID | Owner | Branch / Worktree | Reason | Release Condition |
 | --- | --- | --- | --- | --- | --- |
-| `SWARM.md`, `docs/swarm/**` | `SYT-CTL-001` | Controller/Integrator | `swarm/syt-bootstrap-controller-packet` | Bootstrap packet integration | Release after PR is merged or abandoned |
+| `tests/e2e/**`, `docs/swarm/handoffs/SYT-010A.md` | `SYT-010A` | Runner/Reviewer | `swarm/syt-010a-test-harness-audit` | Fixture coverage review | Release after PR #12 is merged or abandoned |
 
 ## Recently Completed
 
 | Agent / Thread | Task ID | Role | Result | Completed | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `019dd83b-c95c-7ab3-a871-ed8aa6fb941c` / Gauss | `SYT-CTL-001` | Reviewer | Ready to Integrate, no findings | 2026-04-29 03:54 EDT | Read-only PR #11 review passed. |
+| `019dd83e-75af-73d2-81c1-a30a12305198` / Meitner | `SYT-CTL-001` | Integrator | Merged PR #11 | 2026-04-29 03:58 EDT | PR #11 squash-merged into `main` at `676efc8`; branch cleaned. |
+| `019dd841-965d-7cf2-be3b-d79b0f2e0595` / Beauvoir | `SYT-010A` | Runner | Opened draft PR #12 | 2026-04-29 05:37 EDT | `npm run test:e2e`, `npm run validate:all`, and `git diff --check` passed. |
 
 ## Pending Launch
 
 | Task ID | Role | Branch / Worktree | Launch Condition | Prompt Location |
 | --- | --- | --- | --- | --- |
-| `SYT-010A` | Planner/Runner | `swarm/syt-010a-test-harness-audit` | Launch after `SYT-CTL-001` is merged and worktree is clean | `docs/swarm/handoffs/SYT-010A.md` |
+| none | none | none | none | none |
 
 ## Side Chats
 

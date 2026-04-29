@@ -63,6 +63,7 @@ Audit the existing Playwright extension harness and add missing deterministic fi
 
 - 2026-04-29: Lane seeded during bootstrap.
 - 2026-04-29: Runner audited fixture harness, added deterministic hardening coverage, and opened draft PR #12 from `swarm/syt-010a-test-harness-audit`.
+- 2026-04-29: Controller heartbeat routed Reviewer Mendel (`019dd89b-89b0-79f3-bf62-b64b3cb0ae6f`) for PR #12.
 
 ## Coverage Matrix
 
