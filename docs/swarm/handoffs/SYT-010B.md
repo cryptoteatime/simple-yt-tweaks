@@ -82,7 +82,7 @@ Reduce settings-maintenance risk after fixture coverage is ready.
 ## Human Acceptance Checklist
 
 - Required before merge: No, unless user-facing settings behavior changes.
-- URL(s): PR TBD
+- URL(s): https://github.com/cryptoteatime/simple-yt-tweaks/pull/14
 - Who should test: Reviewer/Integrator
 - Expected result: no behavior drift, settings defaults/storage parity preserved.
 
