@@ -45,7 +45,7 @@ Use this file to record the repo's GitHub status and autonomous PR policy.
 
 | Task ID | Branch | PR | Status | Owner | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `SYT-010B` | `swarm/syt-010b-settings-hardening` | https://github.com/cryptoteatime/simple-yt-tweaks/pull/14 | Draft, Needs Review | Reviewer pending | Conservative settings parity validation hardening; human QA requested no. |
+| `SYT-010B` | `swarm/syt-010b-settings-hardening` | https://github.com/cryptoteatime/simple-yt-tweaks/pull/14 | Draft, Ready to Integrate | Integrator pending | Conservative settings parity validation hardening; human QA requested no. |
 
 ## Setup Log
 
