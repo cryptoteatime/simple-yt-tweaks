@@ -3,11 +3,11 @@
 ## State
 
 - Status: Needs Review
-- Role: Planner/Runner
+- Role: Reviewer
 - Repo: Simple YT Tweaks
 - Branch: `swarm/syt-010c-rc-process`
 - PR: https://github.com/cryptoteatime/simple-yt-tweaks/pull/16
-- Owner: Ampere (`019dda63-8fdc-7531-b649-2a91669070c4`)
+- Owner: Codex Controller
 - Created: 2026-04-29
 - Updated: 2026-04-29
 
@@ -89,6 +89,7 @@ Human QA failed for SYT-RC-001: <steps and observed problem>
 - 2026-04-29: Controller routed Planner/Runner Ampere (`019dda63-8fdc-7531-b649-2a91669070c4`) for implementation.
 - 2026-04-29: Added docs-only RC gate to `DEVELOPMENT.md`; kept scripts unchanged because the repo already has repeatable validation/package/live-smoke commands.
 - 2026-04-29: Opened draft PR #16 for review.
+- 2026-04-29: Controller reconciled Ampere completion and queued Reviewer for PR #16.
 
 ## Human Acceptance Checklist
 
