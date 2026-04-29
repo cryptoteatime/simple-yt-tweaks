@@ -6,6 +6,7 @@
 - Role: Planner/Runner
 - Repo: Simple YT Tweaks
 - Branch: `swarm/syt-010c-rc-process`
+- PR: https://github.com/cryptoteatime/simple-yt-tweaks/pull/16
 - Owner: Ampere (`019dda63-8fdc-7531-b649-2a91669070c4`)
 - Created: 2026-04-29
 - Updated: 2026-04-29
@@ -80,12 +81,14 @@ Human QA failed for SYT-RC-001: <steps and observed problem>
 | --- | --- | --- |
 | `git diff --check` | Passed | Docs-only whitespace check passed. |
 | `npm run validate:all` | Not run | Not required because no scripts/package/source files changed. |
+| Draft PR | Opened | https://github.com/cryptoteatime/simple-yt-tweaks/pull/16 |
 
 ## Work Log
 
 - 2026-04-29: Controller opened task branch `swarm/syt-010c-rc-process` for release-candidate process smoothing after `SYT-010B` integration.
 - 2026-04-29: Controller routed Planner/Runner Ampere (`019dda63-8fdc-7531-b649-2a91669070c4`) for implementation.
 - 2026-04-29: Added docs-only RC gate to `DEVELOPMENT.md`; kept scripts unchanged because the repo already has repeatable validation/package/live-smoke commands.
+- 2026-04-29: Opened draft PR #16 for review.
 
 ## Human Acceptance Checklist
 
