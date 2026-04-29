@@ -2,8 +2,8 @@
 
 ## State
 
-- Status: In Progress
-- Role: Integrator
+- Status: Integrated
+- Role: Complete
 - Repo: Simple YT Tweaks
 - Branch: `swarm/syt-010a-test-harness-audit`
 - Owner: Codex Controller
@@ -66,6 +66,7 @@ Audit the existing Playwright extension harness and add missing deterministic fi
 - 2026-04-29: Controller heartbeat routed Reviewer Mendel (`019dd89b-89b0-79f3-bf62-b64b3cb0ae6f`) for PR #12.
 - 2026-04-29: Reviewer Mendel reported no findings and marked PR #12 Ready to Integrate.
 - 2026-04-29: Controller heartbeat routed Integrator McClintock (`019dd8f8-d696-7f82-a403-c1f7b70e2716`) for PR #12.
+- 2026-04-29: Integrator ran `npm run validate:all`, marked PR #12 ready for review, squash-merged it into `main` at `59ec975`, synced local `main`, and cleaned the task branch.
 
 ## Coverage Matrix
 
@@ -108,6 +109,7 @@ Audit the existing Playwright extension harness and add missing deterministic fi
 | --- | --- | --- |
 | `npm run test:e2e` | Passed | 8 fixture tests passed after adding coverage. |
 | `npm run validate:all` | Passed | Includes typecheck, lint, `git diff --check`, package validation, and fixture Playwright tests. |
+| `npm run validate:all` | Passed | Integrator full gate before merge; 8 fixture tests passed. |
 | `git diff --check origin/main...HEAD` | Passed | Reviewer targeted whitespace check. |
 | `npm run test:e2e:live` | Optional | Use only if the lane explicitly needs live smoke context. |
 
@@ -142,9 +144,10 @@ Audit the existing Playwright extension harness and add missing deterministic fi
 
 ## Next Handoff
 
-- Next role: Integrator
-- Next action: Confirm PR #12 is still mergeable, run `npm run validate:all`, mark the draft PR ready if needed, merge through the GitHub PR path, sync `main`, and clean branches when safe.
-- Branch/worktree cleanup needed after merge: yes.
+- Next role: Controller
+- Next action: Route `SYT-010B` only when ready; do not launch product/runtime work from this integration pass.
+- Branch/worktree cleanup needed after merge: complete.
+- Merge: https://github.com/cryptoteatime/simple-yt-tweaks/pull/12, squash merge commit `59ec975d5671efe425e39f317948a6c426714ccf`
 - Copy-ready prompt:
 
 ```text

@@ -11,7 +11,7 @@
 
 - Brief: `docs/swarm/project-brief.md`
 - Question gate: deferred, not blocking
-- Dispatch readiness: swarm packet integrated; `SYT-010A` fixture hardening PR #12 is ready for integration
+- Dispatch readiness: swarm packet integrated; `SYT-010A` fixture hardening PR #12 is merged
 
 ## Goal
 
@@ -19,9 +19,9 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 
 ## Current Focus
 
-1. Integrate `SYT-010A` fixture coverage hardening through PR #12.
-2. Route #10 hardening into small PRs with `validate:all` as the final gate.
-3. Keep #8 as a future high-risk research lane until tests and product direction justify it.
+1. Route #10 hardening into small PRs with `validate:all` as the final gate.
+2. Keep #8 as a future high-risk research lane until tests and product direction justify it.
+3. Keep release-candidate work separate from routine fixture/source hardening.
 
 ## Success Criteria
 
@@ -51,7 +51,7 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 
 ## Recommended First Milestone
 
-`SYT-010A`: audit and harden Playwright fixture coverage so future #10 code changes can be validated without using the user's normal browser profile. PR #12 is reviewed and ready for integration.
+`SYT-010A` is integrated. The next safe milestone is `SYT-010B`: settings parity and source-of-truth hardening, using the expanded fixture harness and `npm run validate:all`.
 
 ## Verification Defaults
 
@@ -80,7 +80,7 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 - Execution strategy: paced controller with direct subagents only after lane readiness.
 - Batch dispatch policy: disabled by default via max 1 active subagent; require disjoint parallel-safe labels if capacity is raised.
 - Shared docs lock: controller owns task-board, current-state, controller-directives, and agent-registry during parallel work unless assigned.
-- Active subagents: McClintock (`019dd8f8-d696-7f82-a403-c1f7b70e2716`) integrating `SYT-010A` / PR #12.
+- Active subagents: none.
 - Agent registry: `docs/swarm/agent-registry.md`.
 - Bootstrap log: `docs/swarm/bootstrap-log.md`.
 - GitHub workflow: `docs/swarm/github.md`.
@@ -88,4 +88,4 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 ## Last Updated
 
 - Date: 2026-04-29
-- By: Controller
+- By: Integrator
