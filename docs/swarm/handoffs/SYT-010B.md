@@ -6,7 +6,7 @@
 - Role: Senior Runner
 - Repo: Simple YT Tweaks
 - Branch: `swarm/syt-010b-settings-hardening`
-- Owner: Codex Controller pending Senior Runner launch
+- Owner: Linnaeus (`019dd952-fc1f-7692-878b-cc0cbaa13d42`)
 - Created: 2026-04-29
 - Updated: 2026-04-29
 
@@ -61,6 +61,7 @@ Reduce settings-maintenance risk after fixture coverage is ready.
 
 - 2026-04-29: Lane seeded during bootstrap.
 - 2026-04-29: Controller opened task branch `swarm/syt-010b-settings-hardening` for runner launch after `SYT-010A` integration.
+- 2026-04-29: Controller routed Senior Runner Linnaeus (`019dd952-fc1f-7692-878b-cc0cbaa13d42`) for implementation.
 
 ## Verification
 

@@ -57,7 +57,7 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 
 ## Controller Notes
 
-- Active controller-spawned subagents: pending `SYT-010B` launch.
+- Active controller-spawned subagents: Linnaeus (`019dd952-fc1f-7692-878b-cc0cbaa13d42`) running `SYT-010B`.
 - Active cron bursts: none; cron is a failsafe, not the normal execution path.
 - Parallel worktree root: none yet.
 - Batch dispatch policy: disabled by default because max active subagents is 1.

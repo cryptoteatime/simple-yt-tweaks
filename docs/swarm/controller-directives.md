@@ -16,7 +16,7 @@ This file is the repo-local dynamic control plane for the controller chat and an
 - Current branch: `swarm/syt-010b-settings-hardening`
 - Expected Git state: clean task branch with pending `SYT-010B` runner launch
 - Open PR expectation: none for `SYT-010A`
-- Active agents expectation: pending `SYT-010B` Senior Runner launch
+- Active agents expectation: Linnaeus running `SYT-010B`
 - Controller lease expectation: none between bounded heartbeat passes
 - Current priority lane: `SYT-010B` runner launch
 

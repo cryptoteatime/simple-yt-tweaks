@@ -21,7 +21,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Agent / Thread | Task ID | Role | Status | Branch | Worktree | PR | Started | Last Seen | Expected Next Step | Heartbeat |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| none | none | none | none | none | none | none | none | none | none | none |
+| `019dd952-fc1f-7692-878b-cc0cbaa13d42` / Linnaeus | `SYT-010B` | Senior Runner | Settings hardening in progress | `swarm/syt-010b-settings-hardening` | repo checkout | none yet | 2026-04-29 08:57 EDT | 2026-04-29 08:57 EDT | Implement narrow parity/source-of-truth hardening, run checks, open draft PR | `simple-yt-tweaks-controller-heartbeat` |
 
 ## Paused / Stale Agents
 
@@ -33,7 +33,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Path / Area | Task ID | Owner | Branch / Worktree | Reason | Release Condition |
 | --- | --- | --- | --- | --- | --- |
-| none | none | none | none | none | none |
+| `src/shared/settings.ts`, `src/content/settings.ts`, `scripts/validate-extension.mjs`, `tests/e2e/**`, `docs/swarm/handoffs/SYT-010B.md` | `SYT-010B` | Senior Runner Linnaeus | `swarm/syt-010b-settings-hardening` / repo checkout | Settings parity/source-of-truth hardening | Release after PR is merged or abandoned |
 
 ## Recently Completed
 
@@ -49,7 +49,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Task ID | Role | Branch / Worktree | Launch Condition | Prompt Location |
 | --- | --- | --- | --- | --- |
-| `SYT-010B` | Senior Runner | `swarm/syt-010b-settings-hardening` / repo checkout | Controller routes one runner on this branch, then records the agent id in Active Agents | `docs/swarm/handoffs/SYT-010B.md` |
+| none | none | none | none | none |
 
 ## Side Chats
 
