@@ -111,4 +111,4 @@ No blocking material questions for the current setup. Defaults are safe:
 
 ## Next Controller Decision
 
-Finish and publish `SYT-CTL-001` as a docs-only draft PR. After that, run `SYT-010A` before implementation hardening so the test harness becomes the safety net for #10.
+`SYT-010A` is integrated. The next safe controller action is to route `SYT-010B` for settings parity and source-of-truth hardening when capacity is available.
