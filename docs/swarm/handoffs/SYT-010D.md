@@ -5,7 +5,7 @@
 - Task id: `SYT-010D`
 - Title: Pure helper tests
 - Assigned role: Planner/Runner - Dirac (`019ddb72-af51-7372-8146-43d5ead7148a`)
-- Current state: In Progress
+- Current state: Needs Review
 - Repo: `/Users/d4ngl/Git Repos/Codex/simple-yt-tweaks`
 - Branch: `swarm/syt-010d-helper-tests`
 
@@ -77,28 +77,43 @@ Add fast helper-level coverage where it provides real regression value for post-
   - `docs/swarm/agent-registry.md`
   - `docs/swarm/current-state.md`
   - `docs/swarm/controller-directives.md`
-- Runner implementation: pending.
+- Runner implementation:
+  - `package.json`
+  - `playwright.config.ts`
+  - `tests/unit/dom.unit.spec.ts`
+  - `tests/unit/settings.unit.spec.ts`
 
 ## Commands Run
 
 - Controller prep:
   - `git diff --check`: PASS
   - `git push -u origin swarm/syt-010d-helper-tests`: PASS
-- Runner implementation: pending.
+- Runner implementation:
+  - `npm run test:unit`: PASS, 8 unit tests passed.
+  - `npm run typecheck`: PASS.
+  - `npm run lint`: PASS.
+  - `npm run validate:all`: PASS, including package validation, 8 unit tests, and 8 fixture tests.
 
 ## Decisions Made
 
 - Keep this lane separate from #8 enhanced hover research and `SYT-010E` module splitting.
 - Do not add dependencies unless the existing Playwright/TypeScript stack cannot cover the helper behavior cleanly.
+- Added a small Playwright `unit` project instead of introducing a new unit-test dependency.
+- Added `npm run test:unit` and included the unit project in `npm run validate:all` so helper coverage runs in the full repo gate.
+- Kept runtime/source behavior unchanged; no helper exports or source refactors were needed.
 
 ## Blockers Or Risks
 
-- If helpers are not safely importable without extension/browser globals, prefer a narrow testability refactor only when it keeps runtime behavior unchanged.
-- If helper-level tests require too much config churn, document the deferral and recommend a smaller future lane.
+- No blockers.
+- Residual risk: unit tests use fake roots/elements for selector-safe DOM helpers rather than a real DOM. This is intentional to keep the lane fast and dependency-free; browser fixture coverage remains responsible for integrated DOM behavior.
+
+## Pull Request
+
+- Draft PR: https://github.com/cryptoteatime/simple-yt-tweaks/pull/18
 
 ## Next Recommended Role
 
-- Dirac should implement or defer the helper-test lane, update this handoff, push the branch, and open a draft PR if there is a reviewable change.
+- Reviewer should inspect the helper-test coverage, Playwright project config, and `validate:all` script change. If satisfied, mark `SYT-010D` Ready to Integrate. Human review requested: no.
 
 ## Copy-Ready Runner Prompt
 

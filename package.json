@@ -17,9 +17,10 @@
     "validate": "node scripts/validate-extension.mjs",
     "validate:packaged": "node scripts/validate-extension.mjs --packaged",
     "package": "npm run build && npm run validate && node scripts/package-extension.mjs && npm run validate:packaged",
+    "test:unit": "playwright test --project=unit",
     "test:e2e": "npm run build && playwright test --project=fixtures",
     "test:e2e:live": "npm run build && SIMPLE_YT_TWEAKS_LIVE=1 playwright test --project=live",
-    "validate:all": "npm run typecheck && npm run lint && git diff --check && npm run package && playwright test --project=fixtures"
+    "validate:all": "npm run typecheck && npm run lint && git diff --check && npm run package && playwright test --project=unit && playwright test --project=fixtures"
   },
   "keywords": [
     "chrome-extension",
