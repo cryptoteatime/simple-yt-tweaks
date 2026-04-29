@@ -4,8 +4,8 @@
 
 - Task id: `SYT-010D`
 - Title: Pure helper tests
-- Assigned role: Planner/Runner
-- Current state: In Progress - pending Runner launch
+- Assigned role: Planner/Runner - Dirac (`019ddb72-af51-7372-8146-43d5ead7148a`)
+- Current state: In Progress
 - Repo: `/Users/d4ngl/Git Repos/Codex/simple-yt-tweaks`
 - Branch: `swarm/syt-010d-helper-tests`
 
@@ -71,11 +71,20 @@ Add fast helper-level coverage where it provides real regression value for post-
 
 ## Files Or Areas Touched
 
-- Pending.
+- Controller prep:
+  - `docs/swarm/handoffs/SYT-010D.md`
+  - `docs/swarm/task-board.md`
+  - `docs/swarm/agent-registry.md`
+  - `docs/swarm/current-state.md`
+  - `docs/swarm/controller-directives.md`
+- Runner implementation: pending.
 
 ## Commands Run
 
-- Pending.
+- Controller prep:
+  - `git diff --check`: PASS
+  - `git push -u origin swarm/syt-010d-helper-tests`: PASS
+- Runner implementation: pending.
 
 ## Decisions Made
 
@@ -89,7 +98,7 @@ Add fast helper-level coverage where it provides real regression value for post-
 
 ## Next Recommended Role
 
-- Planner/Runner should implement or defer the helper-test lane, update this handoff, push the branch, and open a draft PR if there is a reviewable change.
+- Dirac should implement or defer the helper-test lane, update this handoff, push the branch, and open a draft PR if there is a reviewable change.
 
 ## Copy-Ready Runner Prompt
 

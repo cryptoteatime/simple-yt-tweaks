@@ -8,24 +8,24 @@ This file is the repo-local dynamic control plane for the controller chat and an
 - Heartbeat mode: `active-pulse`
 - Heartbeat automation id: `simple-yt-tweaks-controller-heartbeat`
 - Main controller chat: Simple YT Tweaks controller in Codex workspace
-- Last reviewed by controller: 2026-04-29 18:51 EDT
+- Last reviewed by controller: 2026-04-29 18:54 EDT
 
 ## Current Source Of Truth
 
 - Default branch: `main`
 - Current branch: `swarm/syt-010d-helper-tests`
-- Expected Git state: task branch with controller-owned docs prep for `SYT-010D`; clean after prep commit/push
+- Expected Git state: clean `swarm/syt-010d-helper-tests` with `SYT-010D` active in a forked workspace
 - Open PR expectation: none for `SYT-010B`
-- Active agents expectation: none until `SYT-010D` Planner/Runner is launched
-- Controller lease expectation: active only for this bounded heartbeat pass, then clear after launch or blocker
-- Current priority lane: `SYT-010D` Planner/Runner launch
+- Active agents expectation: Dirac (`019ddb72-af51-7372-8146-43d5ead7148a`) is working `SYT-010D`
+- Controller lease expectation: none between bounded heartbeat passes
+- Current priority lane: await `SYT-010D` result
 
 ## Controller Lease And Pacing
 
-- Controller lease owner: heartbeat `simple-yt-tweaks-controller-heartbeat`
-- Lease started: 2026-04-29 18:51 EDT
-- Lease expected action: prepare and launch `SYT-010D`
-- Lease stop condition: `SYT-010D` Planner/Runner launched or blocker recorded
+- Controller lease owner: none
+- Lease started: none
+- Lease expected action: none
+- Lease stop condition: none
 - Lease stale after: 90 minutes
 - Controller pass budget: max 3 safe orchestration actions or 35 minutes, hard stop at 45 minutes
 - Heartbeat pass budget: max 2 safe recovery/routing actions, then stop
@@ -96,7 +96,7 @@ Heartbeat overlap rule:
 
 | Priority | Task ID | Action | Owner | Branch / Worktree | Stop Condition |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `SYT-010D` | Launch pure helper tests lane | Planner/Runner | `swarm/syt-010d-helper-tests` | One Planner/Runner is launched or the lane is deferred |
+| 1 | `SYT-010D` | Await pure helper tests result | Dirac (`019ddb72-af51-7372-8146-43d5ead7148a`) | `swarm/syt-010d-helper-tests` | Agent reports Needs Review, Blocked, or Deferred |
 | 2 | `SYT-008A` | Research gate for future enhanced home/search hover | Planner | `swarm/syt-008a-hover-research` | Decision to defer, prototype, or require human QA |
 
 ## Dynamic Notes

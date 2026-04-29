@@ -57,7 +57,7 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 
 ## Controller Notes
 
-- Active controller-spawned subagents: none yet; `SYT-010D` pending launch on this branch.
+- Active controller-spawned subagents: Dirac (`019ddb72-af51-7372-8146-43d5ead7148a`) on `SYT-010D`.
 - Active cron bursts: none; cron is a failsafe, not the normal execution path.
 - Parallel worktree root: none yet.
 - Batch dispatch policy: disabled by default because max active subagents is 1.

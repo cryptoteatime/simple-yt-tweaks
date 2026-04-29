@@ -15,13 +15,13 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Owner | Started | Expected Action | Stop Condition | Stale After | Notes |
 | --- | --- | --- | --- | --- | --- |
-| heartbeat `simple-yt-tweaks-controller-heartbeat` | 2026-04-29 18:51 EDT | Prepare and launch `SYT-010D` | Stop after one Planner/Runner is launched or a blocker is recorded | 90 minutes | Bounded active-pulse pass. |
+| none | none | none | none | 90 minutes | Controller heartbeat launched `SYT-010D` and stopped with capacity full. |
 
 ## Active Agents
 
 | Agent / Thread | Task ID | Role | Status | Branch | Worktree | PR | Started | Last Seen | Expected Next Step | Heartbeat |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| none | none | none | none | none | none | none | none | none | none | none |
+| `019ddb72-af51-7372-8146-43d5ead7148a` / Dirac | `SYT-010D` | Planner/Runner | In Progress | `swarm/syt-010d-helper-tests` | forked workspace | none | 2026-04-29 18:54 EDT | 2026-04-29 18:54 EDT | Add or defer helper-test lane, update handoff, push branch, open draft PR if reviewable | none |
 
 ## Paused / Stale Agents
 
@@ -33,7 +33,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Path / Area | Task ID | Owner | Branch / Worktree | Reason | Release Condition |
 | --- | --- | --- | --- | --- | --- |
-| `tests/unit/**`, `playwright.config.ts`, `package.json`, helper modules if needed | `SYT-010D` | Pending Planner/Runner launch | `swarm/syt-010d-helper-tests` | Helper-test lane prep | Release when task PR is reviewed/integrated or lane is deferred. |
+| `tests/unit/**`, `playwright.config.ts`, `package.json`, helper modules if needed | `SYT-010D` | Dirac (`019ddb72-af51-7372-8146-43d5ead7148a`) | `swarm/syt-010d-helper-tests` | Helper-test lane implementation | Release when task PR is reviewed/integrated or lane is deferred. |
 
 ## Recently Completed
 
@@ -55,7 +55,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Task ID | Role | Branch / Worktree | Launch Condition | Prompt Location |
 | --- | --- | --- | --- | --- |
-| `SYT-010D` | Planner/Runner | `swarm/syt-010d-helper-tests` | Controller docs branch prepared and capacity available | `docs/swarm/handoffs/SYT-010D.md` |
+| none | none | none | none | none |
 
 ## Side Chats
 
