@@ -16,7 +16,7 @@ This file is the repo-local dynamic control plane for the controller chat and an
 - Current branch: `swarm/syt-010c-rc-process`
 - Expected Git state: clean task branch with PR #16 open for review
 - Open PR expectation: none for `SYT-010B`
-- Active agents expectation: none after Boole completed PR #16 review
+- Active agents expectation: Carson integrating PR #16
 - Controller lease expectation: none between bounded heartbeat passes
 - Current priority lane: `SYT-010C` integration
 

@@ -21,7 +21,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Agent / Thread | Task ID | Role | Status | Branch | Worktree | PR | Started | Last Seen | Expected Next Step | Heartbeat |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| none | none | none | none | none | none | none | none | none | none | none |
+| `019ddb16-4dcd-7c83-9fce-e664dfdf53a1` / Carson | `SYT-010C` | Integrator | Integrating PR #16 | `swarm/syt-010c-rc-process` | repo checkout | #16 | 2026-04-29 17:07 EDT | 2026-04-29 17:07 EDT | Run final docs checks, merge PR #16 if clean, sync `main`, report cleanup | `simple-yt-tweaks-controller-heartbeat` |
 
 ## Paused / Stale Agents
 
@@ -33,7 +33,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Path / Area | Task ID | Owner | Branch / Worktree | Reason | Release Condition |
 | --- | --- | --- | --- | --- | --- |
-| `DEVELOPMENT.md`, `docs/swarm/**` | `SYT-010C` | Integrator pending | `swarm/syt-010c-rc-process` / repo checkout | Release-candidate process integration | Release after PR #16 is merged or abandoned |
+| `DEVELOPMENT.md`, `docs/swarm/**` | `SYT-010C` | Integrator Carson | `swarm/syt-010c-rc-process` / repo checkout | Release-candidate process integration | Release after PR #16 is merged or abandoned |
 
 ## Recently Completed
 
@@ -54,7 +54,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Task ID | Role | Branch / Worktree | Launch Condition | Prompt Location |
 | --- | --- | --- | --- | --- |
-| `SYT-010C` | Integrator | `swarm/syt-010c-rc-process` / repo checkout | PR #16 remains mergeable after controller ready-state update is pushed | `docs/swarm/handoffs/SYT-010C.md` |
+| none | none | none | none | none |
 
 ## Side Chats
 
