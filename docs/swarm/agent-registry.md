@@ -21,7 +21,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Agent / Thread | Task ID | Role | Status | Branch | Worktree | PR | Started | Last Seen | Expected Next Step | Heartbeat |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| none | none | none | none | none | none | none | none | none | none | none |
+| `019dda63-8fdc-7531-b649-2a91669070c4` / Ampere | `SYT-010C` | Planner/Runner | RC process smoothing in progress | `swarm/syt-010c-rc-process` | repo checkout | none yet | 2026-04-29 13:55 EDT | 2026-04-29 13:55 EDT | Document RC gate, run checks, open draft PR | `simple-yt-tweaks-controller-heartbeat` |
 
 ## Paused / Stale Agents
 
@@ -33,7 +33,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Path / Area | Task ID | Owner | Branch / Worktree | Reason | Release Condition |
 | --- | --- | --- | --- | --- | --- |
-| none | none | none | none | none | none |
+| `DEVELOPMENT.md`, `docs/swarm/**`, package scripts if needed | `SYT-010C` | Planner/Runner Ampere | `swarm/syt-010c-rc-process` / repo checkout | Release-candidate process smoothing | Release after PR is merged or abandoned |
 
 ## Recently Completed
 
@@ -52,7 +52,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Task ID | Role | Branch / Worktree | Launch Condition | Prompt Location |
 | --- | --- | --- | --- | --- |
-| `SYT-010C` | Planner/Runner | `swarm/syt-010c-rc-process` / repo checkout | Controller routes one docs/process runner on this branch, then records the agent id in Active Agents | `docs/swarm/handoffs/SYT-010C.md` |
+| none | none | none | none | none |
 
 ## Side Chats
 

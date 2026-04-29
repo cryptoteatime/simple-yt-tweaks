@@ -6,7 +6,7 @@
 - Role: Planner/Runner
 - Repo: Simple YT Tweaks
 - Branch: `swarm/syt-010c-rc-process`
-- Owner: Codex Controller pending Planner/Runner launch
+- Owner: Ampere (`019dda63-8fdc-7531-b649-2a91669070c4`)
 - Created: 2026-04-29
 - Updated: 2026-04-29
 
@@ -48,6 +48,7 @@ Make the next release-candidate process smoother and less dependent on ad hoc ch
 ## Work Log
 
 - 2026-04-29: Controller opened task branch `swarm/syt-010c-rc-process` for release-candidate process smoothing after `SYT-010B` integration.
+- 2026-04-29: Controller routed Planner/Runner Ampere (`019dda63-8fdc-7531-b649-2a91669070c4`) for implementation.
 
 ## Human Acceptance Checklist
 

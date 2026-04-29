@@ -57,7 +57,7 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 
 ## Controller Notes
 
-- Active controller-spawned subagents: pending `SYT-010C` launch.
+- Active controller-spawned subagents: Ampere (`019dda63-8fdc-7531-b649-2a91669070c4`) running `SYT-010C`.
 - Active cron bursts: none; cron is a failsafe, not the normal execution path.
 - Parallel worktree root: none yet.
 - Batch dispatch policy: disabled by default because max active subagents is 1.
