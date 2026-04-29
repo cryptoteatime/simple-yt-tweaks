@@ -21,7 +21,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Agent / Thread | Task ID | Role | Status | Branch | Worktree | PR | Started | Last Seen | Expected Next Step | Heartbeat |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| none | none | none | none | none | none | none | none | none | none | none |
+| `019dd8f8-d696-7f82-a403-c1f7b70e2716` / McClintock | `SYT-010A` | Integrator | Integrating PR #12 | `swarm/syt-010a-test-harness-audit` | repo checkout | #12 | 2026-04-29 07:13 EDT | 2026-04-29 07:13 EDT | Run `npm run validate:all`, merge PR #12 if clean, sync `main`, report cleanup | `simple-yt-tweaks-controller-heartbeat` |
 
 ## Paused / Stale Agents
 
@@ -33,7 +33,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Path / Area | Task ID | Owner | Branch / Worktree | Reason | Release Condition |
 | --- | --- | --- | --- | --- | --- |
-| `tests/e2e/**`, `docs/swarm/handoffs/SYT-010A.md` | `SYT-010A` | Runner/Reviewer | `swarm/syt-010a-test-harness-audit` | Fixture coverage review | Release after PR #12 is merged or abandoned |
+| `tests/e2e/**`, `docs/swarm/handoffs/SYT-010A.md` | `SYT-010A` | Integrator | `swarm/syt-010a-test-harness-audit` | Fixture coverage integration | Release after PR #12 is merged or abandoned |
 
 ## Recently Completed
 
@@ -48,7 +48,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Task ID | Role | Branch / Worktree | Launch Condition | Prompt Location |
 | --- | --- | --- | --- | --- |
-| `SYT-010A` | Integrator | `swarm/syt-010a-test-harness-audit` / repo checkout | PR #12 remains mergeable after controller state update is pushed | `docs/swarm/handoffs/SYT-010A.md` |
+| none | none | none | none | none |
 
 ## Side Chats
 

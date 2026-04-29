@@ -16,7 +16,7 @@ This file is the repo-local dynamic control plane for the controller chat and an
 - Current branch: `swarm/syt-010a-test-harness-audit`
 - Expected Git state: clean task branch with PR #12 open and mergeable
 - Open PR expectation: PR #12 open for `SYT-010A`
-- Active agents expectation: none
+- Active agents expectation: McClintock integrating PR #12
 - Controller lease expectation: none between bounded heartbeat passes
 - Current priority lane: `SYT-010A` integration
 
