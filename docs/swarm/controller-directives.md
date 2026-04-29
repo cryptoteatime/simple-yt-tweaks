@@ -16,7 +16,7 @@ This file is the repo-local dynamic control plane for the controller chat and an
 - Current branch: `swarm/syt-010b-settings-hardening`
 - Expected Git state: clean task branch with PR #14 open and mergeable
 - Open PR expectation: PR #14 open for `SYT-010B`
-- Active agents expectation: none after Hypatia completed PR #14 review
+- Active agents expectation: Helmholtz integrating PR #14
 - Controller lease expectation: none between bounded heartbeat passes
 - Current priority lane: `SYT-010B` integration
 
