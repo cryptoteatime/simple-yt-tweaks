@@ -8,17 +8,17 @@ This file is the repo-local dynamic control plane for the controller chat and an
 - Heartbeat mode: `active-pulse`
 - Heartbeat automation id: `simple-yt-tweaks-controller-heartbeat`
 - Main controller chat: Simple YT Tweaks controller in Codex workspace
-- Last reviewed by controller: 2026-04-29 07:25 EDT
+- Last reviewed by controller: 2026-04-29 12:25 EDT
 
 ## Current Source Of Truth
 
 - Default branch: `main`
-- Current branch: `swarm/syt-010b-settings-hardening`
-- Expected Git state: clean task branch with PR #14 open and mergeable
-- Open PR expectation: PR #14 open for `SYT-010B`
-- Active agents expectation: Helmholtz integrating PR #14
+- Current branch: `main`
+- Expected Git state: clean `main` after `SYT-010B` integration record lands
+- Open PR expectation: none for `SYT-010B`
+- Active agents expectation: none after Helmholtz completed PR #14 integration
 - Controller lease expectation: none between bounded heartbeat passes
-- Current priority lane: `SYT-010B` integration
+- Current priority lane: `SYT-010C` release-candidate process smoothing
 
 ## Controller Lease And Pacing
 
@@ -96,8 +96,8 @@ Heartbeat overlap rule:
 
 | Priority | Task ID | Action | Owner | Branch / Worktree | Stop Condition |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `SYT-010B` | Integrate reviewed settings parity hardening PR #14 | Integrator | `swarm/syt-010b-settings-hardening` | PR merged, `main` synced, branch cleanup recorded |
-| 2 | `SYT-010C` | Release-candidate process smoothing | Planner/Runner | `swarm/syt-010c-rc-process` | RC gate documented and automatable |
+| 1 | `SYT-010C` | Release-candidate process smoothing | Planner/Runner | `swarm/syt-010c-rc-process` | RC gate documented and automatable |
+| 2 | `SYT-010D` | Pure helper tests | Planner/Runner | `swarm/syt-010d-helper-tests` | Scoped helper coverage lane is planned or deferred |
 | 3 | `SYT-008A` | Research gate for future enhanced home/search hover | Planner | `swarm/syt-008a-hover-research` | Decision to defer, prototype, or require human QA |
 
 ## Dynamic Notes
@@ -108,4 +108,4 @@ Heartbeat overlap rule:
 - Issue #8 is intentionally paused until #10 coverage and hardening reduce regression risk.
 - PR #11 merged; PR #12 squash-merged into `main` at `59ec975`.
 - `SYT-010A` remote and local task branches were cleaned after merge.
-- PR #14 is open for `SYT-010B`; runner and reviewer validation passed and no human QA was requested.
+- PR #14 squash-merged into `main` at `5675059`; remote and local task branch cleanup completed.

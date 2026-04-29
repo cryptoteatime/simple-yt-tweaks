@@ -21,7 +21,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Agent / Thread | Task ID | Role | Status | Branch | Worktree | PR | Started | Last Seen | Expected Next Step | Heartbeat |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `019dda09-c04a-7040-ab08-a641d093f545` / Helmholtz | `SYT-010B` | Integrator | Integrating PR #14 | `swarm/syt-010b-settings-hardening` | repo checkout | #14 | 2026-04-29 12:16 EDT | 2026-04-29 12:16 EDT | Run `npm run validate:all`, merge PR #14 if clean, sync `main`, report cleanup | `simple-yt-tweaks-controller-heartbeat` |
+| none | none | none | none | none | none | none | none | none | none | none |
 
 ## Paused / Stale Agents
 
@@ -33,7 +33,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Path / Area | Task ID | Owner | Branch / Worktree | Reason | Release Condition |
 | --- | --- | --- | --- | --- | --- |
-| `src/shared/settings.ts`, `src/content/settings.ts`, `scripts/validate-extension.mjs`, `tests/e2e/**`, `docs/swarm/handoffs/SYT-010B.md` | `SYT-010B` | Integrator Helmholtz | `swarm/syt-010b-settings-hardening` / repo checkout | Settings parity/source-of-truth integration | Release after PR #14 is merged or abandoned |
+| none | none | none | none | none | none |
 
 ## Recently Completed
 
@@ -46,6 +46,7 @@ Use this file to track who is working, where they are working, and whether the c
 | `019dd8f8-d696-7f82-a403-c1f7b70e2716` / McClintock | `SYT-010A` | Integrator | Merged PR #12 | 2026-04-29 07:25 EDT | PR #12 squash-merged into `main` at `59ec975`; local task branch deleted and remote branch already removed. |
 | `019dd952-fc1f-7692-878b-cc0cbaa13d42` / Linnaeus | `SYT-010B` | Senior Runner | Opened draft PR #14 | 2026-04-29 10:38 EDT | Conservative validation hardening; `npm run validate:all`, `npm run test:e2e`, `npm run lint`, and `npm run typecheck` passed. |
 | `019dd9b0-7e98-7983-88de-9463e804000e` / Hypatia | `SYT-010B` | Reviewer | Ready to Integrate, no findings | 2026-04-29 12:15 EDT | Targeted PR #14 review passed; `npm run validate`, `npm run build`, `npm run test:e2e`, and content-script module checks passed. |
+| `019dda09-c04a-7040-ab08-a641d093f545` / Helmholtz | `SYT-010B` | Integrator | Merged PR #14 | 2026-04-29 12:25 EDT | PR #14 squash-merged into `main` at `5675059`; local `main` synced; remote and local task branch cleanup completed. |
 
 ## Pending Launch
 

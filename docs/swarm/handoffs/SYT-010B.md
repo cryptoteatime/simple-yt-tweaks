@@ -2,7 +2,7 @@
 
 ## State
 
-- Status: In Progress
+- Status: Integrated
 - Role: Integrator
 - Repo: Simple YT Tweaks
 - Branch: `swarm/syt-010b-settings-hardening`
@@ -70,6 +70,7 @@ Reduce settings-maintenance risk after fixture coverage is ready.
 - 2026-04-29: Controller routed Reviewer Hypatia (`019dd9b0-7e98-7983-88de-9463e804000e`) for PR #14 review.
 - 2026-04-29: Reviewer Hypatia reported no findings and marked PR #14 Ready to Integrate.
 - 2026-04-29: Controller routed Integrator Helmholtz (`019dda09-c04a-7040-ab08-a641d093f545`) for PR #14 integration.
+- 2026-04-29: Integrator Helmholtz merged PR #14 into `main` at `5675059e50669626063799ed14df3888dc5df9e2` and completed branch cleanup.
 
 ## Verification
 
@@ -84,6 +85,7 @@ Reduce settings-maintenance risk after fixture coverage is ready.
 | `npm run validate` | Passed | Reviewer targeted check. |
 | `npm run build` | Passed | Reviewer verified content build emitted only `dist/content/content.js` for the content script. |
 | `rg "^\\s*(import\|export)\\s\|shared/settings" dist/content/content.js` | Passed | Reviewer found no runtime module import/export or shared settings reference. |
+| `npm run validate:all` | Passed | Integrator full gate before merge; 8 fixture tests passed. |
 
 ## Human Acceptance Checklist
 
@@ -112,9 +114,9 @@ Reduce settings-maintenance risk after fixture coverage is ready.
 
 ## Next Handoff
 
-- Next role: Integrator.
-- Next action: confirm PR #14 is still mergeable, run `npm run validate:all`, mark the draft PR ready if needed, merge through the GitHub PR path, sync `main`, and clean branches when safe.
-- Branch/worktree cleanup needed after merge: yes.
+- Next role: Controller.
+- Next action: route `SYT-010C` planning/runner work when capacity is available.
+- Branch/worktree cleanup needed after merge: no; remote and local task branches were cleaned.
 - Copy-ready prompt:
 
 ```text
