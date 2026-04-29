@@ -99,6 +99,14 @@ function homeFixture(): string {
                 </a>
                 <h3>Fixture home video 3</h3>
               </ytd-rich-item-renderer>
+              <ytd-rich-item-renderer data-testid="video-with-preview" items-per-row="3" is-mouse-over-for-preview>
+                <a class="ytLockupViewModelContentImage" href="/watch?v=home-preview">
+                  <yt-thumbnail-view-model>
+                    <ytd-video-preview></ytd-video-preview>
+                  </yt-thumbnail-view-model>
+                </a>
+                <h3>Native preview fixture</h3>
+              </ytd-rich-item-renderer>
             </div>
           </ytd-rich-grid-renderer>
         </ytd-browse>
@@ -170,6 +178,14 @@ function searchFixture(): string {
                       <ytd-playlist-renderer data-testid="playlist-result">
                         <a href="/playlist?list=PLfixture">Playlist</a>
                       </ytd-playlist-renderer>
+                      ${videoRenderer('search-shorts-video', 'Search Shorts video', '<a href="/shorts/search-video">Shorts</a>')}
+                      ${videoRenderer('search-radio-video', 'Search radio video', '<a href="/watch?v=radio&list=RDfixture">Radio mix</a>')}
+                      <ytd-radio-renderer data-testid="radio-result">
+                        <a href="/watch?v=radio&start_radio=1">Radio result</a>
+                      </ytd-radio-renderer>
+                      <ytd-shelf-renderer data-testid="generic-shelf">
+                        <a href="/watch?v=shelf">Generic shelf</a>
+                      </ytd-shelf-renderer>
                       ${videoRenderer('search-2', 'Second fixture search video')}
                     </div>
                     <div id="continuations">
@@ -207,6 +223,7 @@ function watchFixture(): string {
                         <div class="ytp-gradient-bottom"></div>
                         <div class="ytp-chrome-bottom" style="position: absolute; left: 0; right: 0; bottom: 0; height: 64px;">
                           <div class="ytp-chrome-controls">
+                            <button class="ytp-button" data-testid="player-control" type="button">Control</button>
                             <div class="ytp-right-controls"></div>
                           </div>
                         </div>
