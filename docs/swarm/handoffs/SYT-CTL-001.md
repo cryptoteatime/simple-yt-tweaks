@@ -2,8 +2,8 @@
 
 ## State
 
-- Status: Needs Review
-- Role: Controller
+- Status: Ready to Integrate
+- Role: Integrator
 - Repo: Simple YT Tweaks
 - Branch: `swarm/syt-bootstrap-controller-packet`
 - Owner: Controller
@@ -89,8 +89,8 @@ Create the repo-owned swarm packet and seed paced controller lanes for post-v0.3
 
 ## Next Handoff
 
-- Next role: Reviewer
-- Next action: Review docs-only bootstrap PR #11.
+- Next role: Integrator
+- Next action: Mark draft PR #11 ready if needed, merge it through GitHub, sync `main`, and clean the task branch if safe.
 - Branch/worktree cleanup needed after merge: yes, delete branch after merge.
 - Copy-ready prompt:
 

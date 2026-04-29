@@ -21,7 +21,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Agent / Thread | Task ID | Role | Status | Branch | Worktree | PR | Started | Last Seen | Expected Next Step | Heartbeat |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `019dd83b-c95c-7ab3-a871-ed8aa6fb941c` / Gauss | `SYT-CTL-001` | Reviewer | Reviewing PR #11 | `swarm/syt-bootstrap-controller-packet` | repo checkout | #11 | 2026-04-29 03:54 EDT | 2026-04-29 03:54 EDT | Report Ready to Integrate / Needs Fixes / Blocked | none |
+| none | none | none | none | none | none | none | none | none | none | none |
 
 ## Paused / Stale Agents
 
@@ -33,13 +33,13 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Path / Area | Task ID | Owner | Branch / Worktree | Reason | Release Condition |
 | --- | --- | --- | --- | --- | --- |
-| `SWARM.md`, `docs/swarm/**` | `SYT-CTL-001` | Controller/Reviewer | `swarm/syt-bootstrap-controller-packet` | Bootstrap packet review | Release after PR is merged or abandoned |
+| `SWARM.md`, `docs/swarm/**` | `SYT-CTL-001` | Controller/Integrator | `swarm/syt-bootstrap-controller-packet` | Bootstrap packet integration | Release after PR is merged or abandoned |
 
 ## Recently Completed
 
 | Agent / Thread | Task ID | Role | Result | Completed | Notes |
 | --- | --- | --- | --- | --- | --- |
-| none | none | none | none | none | none |
+| `019dd83b-c95c-7ab3-a871-ed8aa6fb941c` / Gauss | `SYT-CTL-001` | Reviewer | Ready to Integrate, no findings | 2026-04-29 03:54 EDT | Read-only PR #11 review passed. |
 
 ## Pending Launch
 
