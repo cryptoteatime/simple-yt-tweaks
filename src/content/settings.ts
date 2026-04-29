@@ -1,51 +1,11 @@
-export type FeedColumnCount = 2 | 3 | 4;
+export {
+  type BooleanSettingKey,
+  type FeedColumnCount,
+  type SettingKey,
+  type Settings,
+} from '../shared/settings';
 
-export type BooleanSettingKey =
-  | 'generalHideSponsoredPosts'
-  | 'generalHideEndScreenCards'
-  | 'generalHideShorts'
-  | 'generalApplyFeedColumnsToSearch'
-  | 'generalStickyPlayer'
-  | 'generalSidebarCleanup'
-  | 'generalHideSidebar'
-  | 'generalHideSidebarHome'
-  | 'generalHideSidebarShorts'
-  | 'generalHideSidebarSubscriptions'
-  | 'generalHideSidebarYou'
-  | 'generalHideSidebarExplore'
-  | 'generalHideSidebarMoreFromYouTube'
-  | 'generalHideSidebarReportHistory'
-  | 'generalHideSidebarFooter'
-  | 'enhancedTheaterMode'
-  | 'theaterHideHeader'
-  | 'theaterShowHeaderOnHover'
-  | 'theaterHidePlayerUI'
-  | 'theaterHideScrollbarOnScroll'
-  | 'theaterHideRecommendations'
-  | 'theaterRecommendedHoverGrow'
-  | 'theaterHideComments'
-  | 'theaterHideMetadata'
-  | 'theaterShowPrimaryMetadata'
-  | 'theaterHideLiveChat'
-  | 'theaterShowLiveChatOverlay'
-  | 'defaultHideRecommendations'
-  | 'defaultRecommendedHoverGrow'
-  | 'defaultHideComments'
-  | 'defaultHideMetadata'
-  | 'defaultShowPrimaryMetadata'
-  | 'defaultHideLiveChat'
-  | 'fullscreenHideTitleOverlay'
-  | 'fullscreenHidePlayerUI'
-  | 'fullscreenHideRecommendationOverlays'
-  | 'fullscreenHideActionOverlay'
-  | 'pipButton'
-  | 'floatingMiniPlayer';
-
-export type SettingKey = BooleanSettingKey | 'generalFeedColumns';
-
-export type Settings = Record<BooleanSettingKey, boolean> & {
-  generalFeedColumns: FeedColumnCount;
-};
+import type { BooleanSettingKey, FeedColumnCount, SettingKey, Settings } from '../shared/settings';
 
 export const DEFAULT_SETTINGS: Settings = {
   generalHideSponsoredPosts: true,
@@ -92,7 +52,7 @@ export const DEFAULT_SETTINGS: Settings = {
 
 export const SETTING_KEYS = Object.keys(DEFAULT_SETTINGS) as SettingKey[];
 
-export function isFeedColumnCount(value: unknown): value is FeedColumnCount {
+function isFeedColumnCount(value: unknown): value is FeedColumnCount {
   return value === 2 || value === 3 || value === 4;
 }
 

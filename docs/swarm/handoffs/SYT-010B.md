@@ -2,7 +2,7 @@
 
 ## State
 
-- Status: In Progress
+- Status: Needs Review
 - Role: Senior Runner
 - Repo: Simple YT Tweaks
 - Branch: `swarm/syt-010b-settings-hardening`
@@ -55,13 +55,18 @@ Reduce settings-maintenance risk after fixture coverage is ready.
 
 ## Decisions
 
-- Conservative default: strengthen parity checks before attempting a source-of-truth refactor.
+- Chose conservative validation hardening with type-level consolidation only.
+- Tried full runtime consolidation of content settings onto `src/shared/settings.ts`; fixture E2E exposed the expected bundling risk because Vite emitted a shared `dist/assets/settings.js` chunk and the content script stopped behaving as a self-contained extension script. Reverted that approach before finalizing.
+- Kept content runtime defaults, `SETTING_KEYS`, `loadSettings`, and `normalizeSettings` local to preserve self-contained content-script output.
+- Removed duplicated content type unions by re-exporting/importing shared setting types only; TypeScript erases these imports from the content bundle.
+- Strengthened `scripts/validate-extension.mjs` so validation now checks shared setting definitions against defaults, verifies parent keys/options, enforces the `floatingMiniPlayer` alias behavior, requires content type re-exports from shared, and keeps content runtime defaults/keys in parity with shared settings.
 
 ## Work Log
 
 - 2026-04-29: Lane seeded during bootstrap.
 - 2026-04-29: Controller opened task branch `swarm/syt-010b-settings-hardening` for runner launch after `SYT-010A` integration.
 - 2026-04-29: Controller routed Senior Runner Linnaeus (`019dd952-fc1f-7692-878b-cc0cbaa13d42`) for implementation.
+- 2026-04-29: Implemented type-level settings source-of-truth hardening and stronger validation checks; no settings defaults, storage keys, labels, or user-facing behavior changed.
 
 ## Verification
 
@@ -69,10 +74,10 @@ Reduce settings-maintenance risk after fixture coverage is ready.
 
 | Check | Result | Notes |
 | --- | --- | --- |
-| `npm run typecheck` | Not run for this lane yet | Required. |
-| `npm run lint` | Not run for this lane yet | Required. |
-| `npm run test:e2e` | Not run for this lane yet | Required if settings or popup behavior changes. |
-| `npm run validate:all` | Not run for this lane yet | Required before PR. |
+| `npm run typecheck` | Passed | Focused check after settings/validation edits. |
+| `npm run lint` | Passed | Focused check after settings/validation edits. |
+| `npm run test:e2e` | Passed | 8 fixture tests passed after conservative type-only sharing adjustment. A prior full runtime consolidation attempt failed fixture E2E and was abandoned. |
+| `npm run validate:all` | Passed | Includes typecheck, lint, `git diff --check`, package validation, packaged validation, and 8 fixture tests. |
 
 ## Human Acceptance Checklist
 
@@ -83,12 +88,13 @@ Reduce settings-maintenance risk after fixture coverage is ready.
 
 ## Blockers / Risks
 
-- Consolidating settings may affect content-script bundling. Stop and report if that becomes unclear.
+- Full runtime consolidation is not safe with the current Vite chunking setup unless build config changes also guarantee a self-contained content script.
+- Remaining duplication is intentional runtime duplication for content-script bundling safety; validation now guards parity.
 
 ## Next Handoff
 
-- Next role: Senior Runner.
-- Next action: inspect settings duplication and choose conservative parity hardening or safe consolidation.
+- Next role: Reviewer.
+- Next action: review the validation hardening and type-only content settings consolidation, then mark `Ready to Integrate` or route fixes.
 - Branch/worktree cleanup needed after merge: yes.
 - Copy-ready prompt:
 
