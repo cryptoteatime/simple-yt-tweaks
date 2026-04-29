@@ -1,0 +1,111 @@
+# SYT-010D Handoff: Pure Helper Tests
+
+## Task
+
+- Task id: `SYT-010D`
+- Title: Pure helper tests
+- Assigned role: Planner/Runner
+- Current state: In Progress - pending Runner launch
+- Repo: `/Users/d4ngl/Git Repos/Codex/simple-yt-tweaks`
+- Branch: `swarm/syt-010d-helper-tests`
+
+## Goal
+
+Add fast helper-level coverage where it provides real regression value for post-v0.3.0 hardening, especially settings normalization and selector-safe DOM helpers. If a helper-level test lane would add more maintenance cost than value, document a narrow deferral instead of forcing a brittle test layer.
+
+## Scope
+
+- Audit browser-independent or low-browser-coupling helpers such as:
+  - `src/content/settings.ts`: `normalizeSettings`, `isFeatureEnabled`, settings fallback behavior.
+  - `src/content/dom.ts`: `normalizeLabel`, `labelMatchesEntry`, `elementMatchesAnyLabel`, `query`, and `queryAll`.
+  - `src/shared/settings.ts` only if needed to assert default/parity behavior.
+- Prefer existing tooling. Playwright is already available and can run TypeScript tests; avoid new dependencies unless clearly justified.
+- If adding a unit/helper project, keep it small and obvious, such as `tests/unit/**`, `playwright.config.ts`, and `package.json` scripts.
+- Keep product/runtime behavior unchanged unless a tiny export or testability adjustment is necessary and low risk.
+
+## Non-Scope
+
+- No version bump, tag, release, or Web Store asset change.
+- No enhanced home/search hover implementation; #8 remains a future research lane.
+- No broad module splitting or architecture refactor.
+- No live YouTube dependency for this lane.
+- No popup/user-facing behavior changes.
+
+## Dependencies
+
+- Depends on: `SYT-010A`, `SYT-010B`, `SYT-010C`
+- Blocks: none directly; improves confidence before future `SYT-010E` module review or `SYT-008A` research.
+
+## Parallelization
+
+- parallel-safe: yes, if limited to tests/config/helper exports and no other active source tasks exist.
+- serial-required: no, under current max capacity 1.
+- depends-on: integrated `SYT-010A`, `SYT-010B`, and `SYT-010C`.
+- conflict-risk: low/medium. Low for tests-only; medium if helper exports or shared settings contracts are touched.
+
+## Suggested Implementation Plan
+
+1. Inspect existing Playwright config, scripts, and helper exports.
+2. Decide whether a `tests/unit` Playwright project is worthwhile.
+3. Add narrow tests for settings normalization and DOM helper behavior, or document why the lane should be deferred.
+4. Keep `npm run validate:all` as the final gate if config/source/package files change.
+5. Push the branch and open a draft PR with a `How to test / what to tell the controller` section.
+
+## Verification Tier
+
+- Verification tier: focused runner checks, full if config/source/package changes.
+- Minimum checks if tests/config/source/package change:
+  - `npm run typecheck`
+  - `npm run lint`
+  - focused new helper test command or targeted Playwright project
+  - `npm run validate:all`
+- Minimum checks if docs-only deferral:
+  - `git diff --check`
+
+## GitHub Actions Allowed
+
+- Push branch: yes.
+- Open draft PR: yes, if implementation or documented deferral is useful to review.
+- Merge: no.
+- Human QA: no, unless runtime behavior changes unexpectedly.
+
+## Files Or Areas Touched
+
+- Pending.
+
+## Commands Run
+
+- Pending.
+
+## Decisions Made
+
+- Keep this lane separate from #8 enhanced hover research and `SYT-010E` module splitting.
+- Do not add dependencies unless the existing Playwright/TypeScript stack cannot cover the helper behavior cleanly.
+
+## Blockers Or Risks
+
+- If helpers are not safely importable without extension/browser globals, prefer a narrow testability refactor only when it keeps runtime behavior unchanged.
+- If helper-level tests require too much config churn, document the deferral and recommend a smaller future lane.
+
+## Next Recommended Role
+
+- Planner/Runner should implement or defer the helper-test lane, update this handoff, push the branch, and open a draft PR if there is a reviewable change.
+
+## Copy-Ready Runner Prompt
+
+```text
+You are the Planner/Runner for Simple YT Tweaks task SYT-010D.
+
+Repo: /Users/d4ngl/Git Repos/Codex/simple-yt-tweaks
+Branch: swarm/syt-010d-helper-tests
+
+Read ../AGENTS.md, SWARM.md, docs/swarm/controller-directives.md, docs/swarm/task-board.md, docs/swarm/agent-registry.md, docs/swarm/github.md, and docs/swarm/handoffs/SYT-010D.md before editing.
+
+Scope: add fast helper-level coverage for settings normalization and selector-safe DOM helpers, or document a narrow deferral if the test layer would be more costly than useful. Prefer existing Playwright/TypeScript tooling. Avoid new dependencies unless clearly justified. Do not change product/runtime behavior except for tiny low-risk testability exports if needed. Do not work on #8 enhanced hover, releases, version bumps, tags, live YouTube behavior, or broad module splitting.
+
+Allowed GitHub actions: push the task branch and open a draft PR with a visible "How to test / what to tell the controller" section. Do not merge.
+
+Verification: if tests/config/source/package files change, run npm run typecheck, npm run lint, a focused helper test command or targeted Playwright project, and npm run validate:all. If the lane is docs-only deferral, run git diff --check.
+
+Update docs/swarm/handoffs/SYT-010D.md with files touched, commands/results, decisions, blockers, and next role. Report Needs Review when complete.
+```

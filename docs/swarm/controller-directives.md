@@ -8,24 +8,24 @@ This file is the repo-local dynamic control plane for the controller chat and an
 - Heartbeat mode: `active-pulse`
 - Heartbeat automation id: `simple-yt-tweaks-controller-heartbeat`
 - Main controller chat: Simple YT Tweaks controller in Codex workspace
-- Last reviewed by controller: 2026-04-29 17:14 EDT
+- Last reviewed by controller: 2026-04-29 18:51 EDT
 
 ## Current Source Of Truth
 
 - Default branch: `main`
-- Current branch: `main`
-- Expected Git state: clean `main` synced to `origin/main`; SYT-010C integration-record branch may exist only while this docs update is being landed
+- Current branch: `swarm/syt-010d-helper-tests`
+- Expected Git state: task branch with controller-owned docs prep for `SYT-010D`; clean after prep commit/push
 - Open PR expectation: none for `SYT-010B`
-- Active agents expectation: none after Carson merged PR #16
-- Controller lease expectation: none between bounded heartbeat passes
-- Current priority lane: `SYT-010D` planning/runner decision
+- Active agents expectation: none until `SYT-010D` Planner/Runner is launched
+- Controller lease expectation: active only for this bounded heartbeat pass, then clear after launch or blocker
+- Current priority lane: `SYT-010D` Planner/Runner launch
 
 ## Controller Lease And Pacing
 
-- Controller lease owner: none
-- Lease started: none
-- Lease expected action: none
-- Lease stop condition: none
+- Controller lease owner: heartbeat `simple-yt-tweaks-controller-heartbeat`
+- Lease started: 2026-04-29 18:51 EDT
+- Lease expected action: prepare and launch `SYT-010D`
+- Lease stop condition: `SYT-010D` Planner/Runner launched or blocker recorded
 - Lease stale after: 90 minutes
 - Controller pass budget: max 3 safe orchestration actions or 35 minutes, hard stop at 45 minutes
 - Heartbeat pass budget: max 2 safe recovery/routing actions, then stop
@@ -96,7 +96,7 @@ Heartbeat overlap rule:
 
 | Priority | Task ID | Action | Owner | Branch / Worktree | Stop Condition |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `SYT-010D` | Pure helper tests | Planner/Runner | `swarm/syt-010d-helper-tests` | Scoped helper coverage lane is planned or deferred |
+| 1 | `SYT-010D` | Launch pure helper tests lane | Planner/Runner | `swarm/syt-010d-helper-tests` | One Planner/Runner is launched or the lane is deferred |
 | 2 | `SYT-008A` | Research gate for future enhanced home/search hover | Planner | `swarm/syt-008a-hover-research` | Decision to defer, prototype, or require human QA |
 
 ## Dynamic Notes
