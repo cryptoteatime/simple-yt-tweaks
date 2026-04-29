@@ -11,7 +11,7 @@
 
 - Brief: `docs/swarm/project-brief.md`
 - Question gate: deferred, not blocking
-- Dispatch readiness: docs-only bootstrap in progress; implementation dispatch waits for `SYT-010A`
+- Dispatch readiness: swarm packet integrated; `SYT-010A` fixture hardening PR #12 is ready for integration
 
 ## Goal
 
@@ -19,18 +19,17 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 
 ## Current Focus
 
-1. Land the repo-local swarm packet.
-2. Audit Playwright fixture coverage against #8 and #10 risks.
-3. Route #10 hardening into small PRs with `validate:all` as the final gate.
-4. Keep #8 as a future high-risk research lane until tests and product direction justify it.
+1. Integrate `SYT-010A` fixture coverage hardening through PR #12.
+2. Route #10 hardening into small PRs with `validate:all` as the final gate.
+3. Keep #8 as a future high-risk research lane until tests and product direction justify it.
 
 ## Success Criteria
 
 - `SWARM.md` and `docs/swarm/**` exist and are repo-local.
 - Task board maps #8 and #10 into scoped lanes with dependencies, verification commands, PR strategy, and human QA gates.
 - Repo-owned Playwright fixture tests remain the primary verification path.
-- Controller heartbeat is proposed at about 90 minutes after state is clean.
-- No product code is changed during bootstrap.
+- Controller heartbeat is active at about 90 minutes while work remains active.
+- No product code is changed during fixture-hardening setup unless a scoped task explicitly owns it.
 
 ## Constraints
 
@@ -52,7 +51,7 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 
 ## Recommended First Milestone
 
-`SYT-010A`: audit and harden Playwright fixture coverage so future #10 code changes can be validated without using the user's normal browser profile.
+`SYT-010A`: audit and harden Playwright fixture coverage so future #10 code changes can be validated without using the user's normal browser profile. PR #12 is reviewed and ready for integration.
 
 ## Verification Defaults
 
@@ -75,12 +74,13 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 
 ## Automation Notes
 
-- Controller heartbeat: proposed, not created yet.
-- Heartbeat cadence: about 90 minutes while active after docs PR integration and clean state.
+- Controller heartbeat: active.
+- Heartbeat automation id: `simple-yt-tweaks-controller-heartbeat`.
+- Heartbeat cadence: about 90 minutes while active.
 - Execution strategy: paced controller with direct subagents only after lane readiness.
 - Batch dispatch policy: disabled by default via max 1 active subagent; require disjoint parallel-safe labels if capacity is raised.
 - Shared docs lock: controller owns task-board, current-state, controller-directives, and agent-registry during parallel work unless assigned.
-- Active subagents: none.
+- Active subagents: none; next safe route is `SYT-010A` Integrator.
 - Agent registry: `docs/swarm/agent-registry.md`.
 - Bootstrap log: `docs/swarm/bootstrap-log.md`.
 - GitHub workflow: `docs/swarm/github.md`.

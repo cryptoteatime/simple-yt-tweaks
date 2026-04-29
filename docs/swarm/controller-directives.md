@@ -5,20 +5,20 @@ This file is the repo-local dynamic control plane for the controller chat and an
 ## Mode
 
 - Controller mode: `AUTOPILOT_WITH_HEARTBEAT`
-- Heartbeat mode: `active-pulse proposed`
-- Heartbeat automation id: `none`
+- Heartbeat mode: `active-pulse`
+- Heartbeat automation id: `simple-yt-tweaks-controller-heartbeat`
 - Main controller chat: Simple YT Tweaks controller in Codex workspace
-- Last reviewed by controller: 2026-04-29 03:32 EDT
+- Last reviewed by controller: 2026-04-29 07:12 EDT
 
 ## Current Source Of Truth
 
 - Default branch: `main`
-- Current branch: `swarm/syt-bootstrap-controller-packet`
-- Expected Git state: clean on `main`; this branch may contain controller-owned docs-only bootstrap changes
-- Open PR expectation: none at bootstrap start
+- Current branch: `swarm/syt-010a-test-harness-audit`
+- Expected Git state: clean task branch with PR #12 open and mergeable
+- Open PR expectation: PR #12 open for `SYT-010A`
 - Active agents expectation: none
-- Controller lease expectation: none after this bootstrap pass finishes
-- Current priority lane: `SYT-010A`
+- Controller lease expectation: none between bounded heartbeat passes
+- Current priority lane: `SYT-010A` integration
 
 ## Controller Lease And Pacing
 
@@ -96,11 +96,10 @@ Heartbeat overlap rule:
 
 | Priority | Task ID | Action | Owner | Branch / Worktree | Stop Condition |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `SYT-CTL-001` | Finish swarm packet branch and open docs PR | Controller | `swarm/syt-bootstrap-controller-packet` | PR opened with validation and controller instructions |
-| 2 | `SYT-010A` | Audit and harden fixture coverage for #10/#8 prerequisites | Planner/Runner | `swarm/syt-010a-test-harness-audit` | Fixture gaps documented or covered by tests |
-| 3 | `SYT-010B` | Settings source-of-truth/parity hardening | Senior Runner | `swarm/syt-010b-settings-hardening` | Focused checks pass and no behavior drift |
-| 4 | `SYT-010C` | Release-candidate process smoothing | Planner/Runner | `swarm/syt-010c-rc-process` | RC gate documented and automatable |
-| 5 | `SYT-008A` | Research gate for future enhanced home/search hover | Planner | `swarm/syt-008a-hover-research` | Decision to defer, prototype, or require human QA |
+| 1 | `SYT-010A` | Integrate reviewed fixture coverage PR #12 | Integrator | `swarm/syt-010a-test-harness-audit` | PR merged, `main` synced, branch cleanup recorded |
+| 2 | `SYT-010B` | Settings source-of-truth/parity hardening | Senior Runner | `swarm/syt-010b-settings-hardening` | Focused checks pass and no behavior drift |
+| 3 | `SYT-010C` | Release-candidate process smoothing | Planner/Runner | `swarm/syt-010c-rc-process` | RC gate documented and automatable |
+| 4 | `SYT-008A` | Research gate for future enhanced home/search hover | Planner | `swarm/syt-008a-hover-research` | Decision to defer, prototype, or require human QA |
 
 ## Dynamic Notes
 
@@ -108,3 +107,4 @@ Heartbeat overlap rule:
 - Chrome-for-Testing-backed `agent-browser` wrapper opened and closed `about:blank` successfully.
 - The live YouTube test exists but should not be the normal gate.
 - Issue #8 is intentionally paused until #10 coverage and hardening reduce regression risk.
+- PR #11 merged; PR #12 has passed runner full verification and reviewer targeted verification.
