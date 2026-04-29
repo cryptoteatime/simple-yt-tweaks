@@ -52,7 +52,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Task ID | Role | Branch / Worktree | Launch Condition | Prompt Location |
 | --- | --- | --- | --- | --- |
-| none | none | none | none | none |
+| `SYT-010C` | Planner/Runner | `swarm/syt-010c-rc-process` / repo checkout | Controller routes one docs/process runner on this branch, then records the agent id in Active Agents | `docs/swarm/handoffs/SYT-010C.md` |
 
 ## Side Chats
 

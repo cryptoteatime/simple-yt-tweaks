@@ -13,12 +13,12 @@ This file is the repo-local dynamic control plane for the controller chat and an
 ## Current Source Of Truth
 
 - Default branch: `main`
-- Current branch: `main`
-- Expected Git state: clean `main` after `SYT-010B` integration record lands
+- Current branch: `swarm/syt-010c-rc-process`
+- Expected Git state: clean task branch with pending `SYT-010C` runner launch
 - Open PR expectation: none for `SYT-010B`
-- Active agents expectation: none after Helmholtz completed PR #14 integration
+- Active agents expectation: pending `SYT-010C` Planner/Runner launch
 - Controller lease expectation: none between bounded heartbeat passes
-- Current priority lane: `SYT-010C` release-candidate process smoothing
+- Current priority lane: `SYT-010C` runner launch
 
 ## Controller Lease And Pacing
 
