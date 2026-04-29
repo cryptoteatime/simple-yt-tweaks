@@ -62,7 +62,7 @@ Audit the existing Playwright extension harness and add missing deterministic fi
 ## Work Log
 
 - 2026-04-29: Lane seeded during bootstrap.
-- 2026-04-29: Runner audited fixture harness, added deterministic hardening coverage, and prepared draft PR from `swarm/syt-010a-test-harness-audit`.
+- 2026-04-29: Runner audited fixture harness, added deterministic hardening coverage, and opened draft PR #12 from `swarm/syt-010a-test-harness-audit`.
 
 ## Coverage Matrix
 
@@ -110,7 +110,7 @@ Audit the existing Playwright extension harness and add missing deterministic fi
 ## Human Acceptance Checklist
 
 - Required before merge: No
-- URL(s): PR TBD
+- URL(s): https://github.com/cryptoteatime/simple-yt-tweaks/pull/12
 - Who should test: Reviewer/Integrator
 - Steps:
   1. Review coverage matrix.
