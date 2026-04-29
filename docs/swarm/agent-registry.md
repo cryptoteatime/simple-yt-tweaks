@@ -21,7 +21,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Agent / Thread | Task ID | Role | Status | Branch | Worktree | PR | Started | Last Seen | Expected Next Step | Heartbeat |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| none | none | none | none | none | none | none | none | none | none | none |
+| `019dd9b0-7e98-7983-88de-9463e804000e` / Hypatia | `SYT-010B` | Reviewer | Reviewing PR #14 | `swarm/syt-010b-settings-hardening` | repo checkout | #14 | 2026-04-29 10:38 EDT | 2026-04-29 10:38 EDT | Report Ready to Integrate / Needs Fixes / Blocked | `simple-yt-tweaks-controller-heartbeat` |
 
 ## Paused / Stale Agents
 
@@ -33,7 +33,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Path / Area | Task ID | Owner | Branch / Worktree | Reason | Release Condition |
 | --- | --- | --- | --- | --- | --- |
-| `src/shared/settings.ts`, `src/content/settings.ts`, `scripts/validate-extension.mjs`, `tests/e2e/**`, `docs/swarm/handoffs/SYT-010B.md` | `SYT-010B` | Reviewer pending | `swarm/syt-010b-settings-hardening` / repo checkout | Settings parity/source-of-truth review | Release after PR #14 is merged or abandoned |
+| `src/shared/settings.ts`, `src/content/settings.ts`, `scripts/validate-extension.mjs`, `tests/e2e/**`, `docs/swarm/handoffs/SYT-010B.md` | `SYT-010B` | Reviewer Hypatia | `swarm/syt-010b-settings-hardening` / repo checkout | Settings parity/source-of-truth review | Release after PR #14 is merged or abandoned |
 
 ## Recently Completed
 
@@ -50,7 +50,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Task ID | Role | Branch / Worktree | Launch Condition | Prompt Location |
 | --- | --- | --- | --- | --- |
-| `SYT-010B` | Reviewer | `swarm/syt-010b-settings-hardening` / repo checkout | PR #14 remains open and mergeable after controller review-state update is pushed | `docs/swarm/handoffs/SYT-010B.md` |
+| none | none | none | none | none |
 
 ## Side Chats
 

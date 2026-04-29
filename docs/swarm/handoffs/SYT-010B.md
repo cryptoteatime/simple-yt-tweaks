@@ -67,6 +67,7 @@ Reduce settings-maintenance risk after fixture coverage is ready.
 - 2026-04-29: Controller opened task branch `swarm/syt-010b-settings-hardening` for runner launch after `SYT-010A` integration.
 - 2026-04-29: Controller routed Senior Runner Linnaeus (`019dd952-fc1f-7692-878b-cc0cbaa13d42`) for implementation.
 - 2026-04-29: Implemented type-level settings source-of-truth hardening and stronger validation checks; no settings defaults, storage keys, labels, or user-facing behavior changed.
+- 2026-04-29: Controller routed Reviewer Hypatia (`019dd9b0-7e98-7983-88de-9463e804000e`) for PR #14 review.
 
 ## Verification
 

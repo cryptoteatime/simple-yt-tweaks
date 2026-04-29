@@ -57,7 +57,7 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 
 ## Controller Notes
 
-- Active controller-spawned subagents: none; next safe route is `SYT-010B` Reviewer for PR #14.
+- Active controller-spawned subagents: Hypatia (`019dd9b0-7e98-7983-88de-9463e804000e`) reviewing `SYT-010B` / PR #14.
 - Active cron bursts: none; cron is a failsafe, not the normal execution path.
 - Parallel worktree root: none yet.
 - Batch dispatch policy: disabled by default because max active subagents is 1.
