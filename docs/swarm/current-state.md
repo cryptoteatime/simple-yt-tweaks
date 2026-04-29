@@ -11,7 +11,7 @@
 
 - Brief: `docs/swarm/project-brief.md`
 - Question gate: deferred, not blocking
-- Dispatch readiness: swarm packet integrated; `SYT-010A` fixture hardening PR #12 is merged
+- Dispatch readiness: swarm packet integrated; `SYT-010B` settings hardening PR #14 is merged
 
 ## Goal
 
@@ -51,7 +51,7 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 
 ## Recommended First Milestone
 
-`SYT-010A` is integrated. The next safe milestone is `SYT-010B`: settings parity and source-of-truth hardening, using the expanded fixture harness and `npm run validate:all`.
+`SYT-010B` is integrated. The next safe milestone is `SYT-010C`: release-candidate process smoothing, keeping product/runtime work out of scope unless that lane explicitly expands it.
 
 ## Verification Defaults
 
@@ -80,7 +80,7 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 - Execution strategy: paced controller with direct subagents only after lane readiness.
 - Batch dispatch policy: disabled by default via max 1 active subagent; require disjoint parallel-safe labels if capacity is raised.
 - Shared docs lock: controller owns task-board, current-state, controller-directives, and agent-registry during parallel work unless assigned.
-- Active subagents: Helmholtz (`019dda09-c04a-7040-ab08-a641d093f545`) integrating `SYT-010B` / PR #14.
+- Active subagents: none.
 - Agent registry: `docs/swarm/agent-registry.md`.
 - Bootstrap log: `docs/swarm/bootstrap-log.md`.
 - GitHub workflow: `docs/swarm/github.md`.

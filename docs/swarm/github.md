@@ -45,7 +45,7 @@ Use this file to record the repo's GitHub status and autonomous PR policy.
 
 | Task ID | Branch | PR | Status | Owner | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `SYT-010B` | `swarm/syt-010b-settings-hardening` | https://github.com/cryptoteatime/simple-yt-tweaks/pull/14 | Draft, Ready to Integrate | Integrator pending | Conservative settings parity validation hardening; human QA requested no. |
+| none | none | none | none | none | none |
 
 ## Setup Log
 
@@ -54,3 +54,4 @@ Use this file to record the repo's GitHub status and autonomous PR policy.
 - 2026-04-29: PR #11 squash-merged for `SYT-CTL-001`.
 - 2026-04-29: PR #12 squash-merged for `SYT-010A`; branch cleanup completed.
 - 2026-04-29: Opened draft PR #14 for `SYT-010B`.
+- 2026-04-29: PR #14 squash-merged for `SYT-010B`; branch cleanup completed.

@@ -12,6 +12,30 @@ Use this file for merge decisions, conflict history, final checks, and release n
 
 ## Entries
 
+### 2026-04-29: SYT-010B Settings Parity Integration
+
+- Integrator: Helmholtz (`019dda09-c04a-7040-ab08-a641d093f545`)
+- Target branch: `main`
+- Candidate branch(es): `swarm/syt-010b-settings-hardening`
+- PR(s): https://github.com/cryptoteatime/simple-yt-tweaks/pull/14
+- Decision: Integrated
+- Merge: squash merge commit `5675059e50669626063799ed14df3888dc5df9e2`
+- Reason: Reviewer reported no findings; PR scope was limited to conservative settings parity validation hardening and swarm docs; full integration gate passed.
+- Conflicts: none; PR merge state was clean before merge.
+- Checks:
+  - `gh pr view 14 --json ...`: PASS, open draft PR was mergeable and clean before merge.
+  - `git diff --check origin/main...HEAD`: PASS.
+  - `npm run validate:all`: PASS, including typecheck, lint, `git diff --check`, package validation, packaged validation, and 8 fixture Playwright tests.
+- Human acceptance: NOT_REQUIRED
+- Human acceptance evidence: routine settings validation hardening; no user-facing labels, defaults, storage keys, or popup behavior changed; reviewer requested no human QA.
+- Branch cleanup: GitHub deleted the remote task branch during merge; local task branch was deleted by the GitHub CLI merge workflow.
+- Worktree cleanup: local `main` synced to `origin/main`; integration record is being landed through a docs-only follow-up PR per repo policy.
+- Notes:
+  - Runtime content settings remain local intentionally so `dist/content/content.js` stays self-contained.
+  - Type-level settings definitions now flow from shared types, and validation guards runtime parity.
+- Follow-ups:
+  - Controller may route `SYT-010C` release-candidate process smoothing when capacity is available.
+
 ### 2026-04-29: SYT-010A Fixture Coverage Integration
 
 - Integrator: McClintock (`019dd8f8-d696-7f82-a403-c1f7b70e2716`)
