@@ -101,11 +101,38 @@ function extractFeedColumns(source) {
     .sort((a, b) => a - b);
 }
 
-function extractDefaultSettings(source) {
-  const match = source.match(/DEFAULT_SETTINGS:\s*Settings\s*=\s*{([\s\S]*?)};/);
-  if (!match) return null;
+function extractExportedConstBlock(source, constName, opener, closer) {
+  const marker = `export const ${constName}`;
+  const markerIndex = source.indexOf(marker);
+  if (markerIndex === -1) return null;
 
-  const entries = match[1]
+  const assignmentIndex = source.indexOf('=', markerIndex);
+  if (assignmentIndex === -1) return null;
+
+  const startIndex = source.indexOf(opener, assignmentIndex);
+  if (startIndex === -1) return null;
+
+  let depth = 0;
+  for (let index = startIndex; index < source.length; index += 1) {
+    const character = source[index];
+    if (character === opener) {
+      depth += 1;
+    } else if (character === closer) {
+      depth -= 1;
+      if (depth === 0) {
+        return source.slice(startIndex + 1, index);
+      }
+    }
+  }
+
+  return null;
+}
+
+function extractDefaultSettings(source) {
+  const block = extractExportedConstBlock(source, 'DEFAULT_SETTINGS', '{', '}');
+  if (!block) return null;
+
+  const entries = block
     .split('\n')
     .map((line) => line.trim())
     .filter(Boolean)
@@ -131,6 +158,72 @@ function extractDefaultSettings(source) {
   return settings;
 }
 
+function assertUniqueValues(values, label) {
+  const duplicates = values.filter((value, index) => values.indexOf(value) !== index);
+  if (duplicates.length > 0) {
+    fail(`${label} contains duplicate values: ${[...new Set(duplicates)].join(', ')}`);
+  }
+}
+
+function assertSameValues(actual, expected, label) {
+  const sortedActual = [...actual].sort();
+  const sortedExpected = [...expected].sort();
+  if (JSON.stringify(sortedActual) !== JSON.stringify(sortedExpected)) {
+    fail(`${label} must be ${sortedExpected.join(', ')}`);
+  }
+}
+
+function extractSharedSettingsReexports(source) {
+  const reexportMatch = source.match(/export\s*{([\s\S]*?)}\s*from\s*['"]\.\.\/shared\/settings['"]/);
+  if (!reexportMatch) return [];
+
+  return reexportMatch[1]
+    .split(',')
+    .map((entry) => entry.trim().replace(/^type\s+/, ''))
+    .filter(Boolean);
+}
+
+function assertSharedSettingsDefinitions(sharedSource, sharedBooleanKeys, sharedFeedColumns, sharedDefaults) {
+  const definitionsBlock = extractExportedConstBlock(sharedSource, 'SETTING_DEFINITIONS', '[', ']');
+  if (!definitionsBlock) {
+    fail('Shared SETTING_DEFINITIONS must be an exported array');
+    return;
+  }
+
+  const definitionKeys = [...definitionsBlock.matchAll(/key:\s*'([^']+)'/g)].map((match) => match[1]);
+  const parentKeys = [...definitionsBlock.matchAll(/parentKey:\s*'([^']+)'/g)].map((match) => match[1]);
+  const optionValues = [...definitionsBlock.matchAll(/value:\s*(\d+)/g)]
+    .map((match) => Number.parseInt(match[1], 10))
+    .sort((a, b) => a - b);
+  const defaultKeys = Object.keys(sharedDefaults);
+  const userFacingKeys = defaultKeys.filter((key) => key !== 'floatingMiniPlayer');
+
+  assertUniqueValues(definitionKeys, 'Shared SETTING_DEFINITIONS keys');
+  assertSameValues(definitionKeys, userFacingKeys, 'Shared SETTING_DEFINITIONS keys');
+
+  for (const parentKey of parentKeys) {
+    if (!defaultKeys.includes(parentKey)) {
+      fail(`Shared SETTING_DEFINITIONS parentKey is not a setting key: ${parentKey}`);
+    }
+  }
+
+  if (JSON.stringify(optionValues) !== JSON.stringify(sharedFeedColumns)) {
+    fail('Shared generalFeedColumns options must match FeedColumnCount values');
+  }
+
+  if (!sharedBooleanKeys.includes('floatingMiniPlayer') || sharedDefaults.floatingMiniPlayer !== true) {
+    fail('Shared settings must keep floatingMiniPlayer as a boolean legacy alias defaulting to true');
+  }
+
+  if (!/settings\.floatingMiniPlayer\s*=\s*settings\.pipButton/.test(sharedSource)) {
+    fail('Shared normalizeSettings must keep floatingMiniPlayer synchronized to pipButton');
+  }
+
+  if (!/export\s+const\s+SETTING_KEYS\s*=\s*Object\.keys\(DEFAULT_SETTINGS\)\s+as\s+SettingKey\[\];/.test(sharedSource)) {
+    fail('Shared SETTING_KEYS must be derived from DEFAULT_SETTINGS');
+  }
+}
+
 function assertSettingsParity() {
   assertExists(sharedSettingsPath, 'Shared settings module');
   assertExists(contentSettingsPath, 'Content settings module');
@@ -140,26 +233,63 @@ function assertSettingsParity() {
   const contentSource = readFileSync(contentSettingsPath, 'utf8');
 
   const sharedBooleanKeys = extractQuotedLiterals(extractTypeBlock(sharedSource, 'BooleanSettingKey') ?? '');
-  const contentBooleanKeys = extractQuotedLiterals(extractTypeBlock(contentSource, 'BooleanSettingKey') ?? '');
+  const sharedFeedColumns = extractFeedColumns(sharedSource);
+  const sharedDefaults = extractDefaultSettings(sharedSource);
+  if (!sharedFeedColumns || !sharedDefaults) {
+    fail('Could not parse FeedColumnCount or DEFAULT_SETTINGS from shared settings module');
+    return;
+  }
+
+  assertSharedSettingsDefinitions(sharedSource, sharedBooleanKeys, sharedFeedColumns, sharedDefaults);
+
+  const requiredContentTypeReexports = [
+    'BooleanSettingKey',
+    'FeedColumnCount',
+    'SettingKey',
+    'Settings',
+  ];
+  const contentReexports = extractSharedSettingsReexports(contentSource);
+
+  if (contentReexports.length > 0) {
+    for (const requiredExport of requiredContentTypeReexports) {
+      if (!contentReexports.includes(requiredExport)) {
+        fail(`Content settings must re-export ${requiredExport} from shared settings`);
+      }
+    }
+
+    for (const localDefinition of ['BooleanSettingKey', 'FeedColumnCount', 'SettingKey', 'Settings']) {
+      if (new RegExp(`export\\s+type\\s+${localDefinition}\\b`).test(contentSource)) {
+        fail(`Content settings must not duplicate shared ${localDefinition}`);
+      }
+    }
+  }
+
+  const contentBooleanKeys = contentReexports.includes('BooleanSettingKey')
+    ? sharedBooleanKeys
+    : extractQuotedLiterals(extractTypeBlock(contentSource, 'BooleanSettingKey') ?? '');
   if (JSON.stringify(sharedBooleanKeys) !== JSON.stringify(contentBooleanKeys)) {
     fail('Content and shared BooleanSettingKey definitions must match');
   }
 
-  const sharedFeedColumns = extractFeedColumns(sharedSource);
-  const contentFeedColumns = extractFeedColumns(contentSource);
+  const contentFeedColumns = contentReexports.includes('FeedColumnCount')
+    ? sharedFeedColumns
+    : extractFeedColumns(contentSource);
   if (JSON.stringify(sharedFeedColumns) !== JSON.stringify(contentFeedColumns)) {
     fail('Content and shared FeedColumnCount values must match');
   }
 
-  const sharedDefaults = extractDefaultSettings(sharedSource);
   const contentDefaults = extractDefaultSettings(contentSource);
-  if (!sharedDefaults || !contentDefaults) {
-    fail('Could not parse DEFAULT_SETTINGS from shared or content settings module');
+  if (!contentDefaults) {
+    fail('Could not parse DEFAULT_SETTINGS from content settings module');
     return;
   }
 
   if (JSON.stringify(sharedDefaults) !== JSON.stringify(contentDefaults)) {
     fail('Content and shared DEFAULT_SETTINGS must match');
+  }
+
+  if (!/export\s+const\s+SETTING_KEYS\s*=\s*Object\.keys\(DEFAULT_SETTINGS\)\s+as\s+SettingKey\[\];/.test(contentSource)) {
+    fail('Content SETTING_KEYS must be derived from DEFAULT_SETTINGS');
   }
 }
 
