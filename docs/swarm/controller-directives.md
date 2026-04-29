@@ -8,17 +8,17 @@ This file is the repo-local dynamic control plane for the controller chat and an
 - Heartbeat mode: `active-pulse`
 - Heartbeat automation id: `simple-yt-tweaks-controller-heartbeat`
 - Main controller chat: Simple YT Tweaks controller in Codex workspace
-- Last reviewed by controller: 2026-04-29 12:25 EDT
+- Last reviewed by controller: 2026-04-29 17:14 EDT
 
 ## Current Source Of Truth
 
 - Default branch: `main`
-- Current branch: `swarm/syt-010c-rc-process`
-- Expected Git state: clean task branch with PR #16 open for review
+- Current branch: `main`
+- Expected Git state: clean `main` synced to `origin/main`; SYT-010C integration-record branch may exist only while this docs update is being landed
 - Open PR expectation: none for `SYT-010B`
-- Active agents expectation: Carson integrating PR #16
+- Active agents expectation: none after Carson merged PR #16
 - Controller lease expectation: none between bounded heartbeat passes
-- Current priority lane: `SYT-010C` integration
+- Current priority lane: `SYT-010D` planning/runner decision
 
 ## Controller Lease And Pacing
 
@@ -96,9 +96,8 @@ Heartbeat overlap rule:
 
 | Priority | Task ID | Action | Owner | Branch / Worktree | Stop Condition |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `SYT-010C` | Integrate reviewed release-candidate process PR #16 | Integrator | `swarm/syt-010c-rc-process` | PR merged, `main` synced, branch cleanup recorded |
-| 2 | `SYT-010D` | Pure helper tests | Planner/Runner | `swarm/syt-010d-helper-tests` | Scoped helper coverage lane is planned or deferred |
-| 3 | `SYT-008A` | Research gate for future enhanced home/search hover | Planner | `swarm/syt-008a-hover-research` | Decision to defer, prototype, or require human QA |
+| 1 | `SYT-010D` | Pure helper tests | Planner/Runner | `swarm/syt-010d-helper-tests` | Scoped helper coverage lane is planned or deferred |
+| 2 | `SYT-008A` | Research gate for future enhanced home/search hover | Planner | `swarm/syt-008a-hover-research` | Decision to defer, prototype, or require human QA |
 
 ## Dynamic Notes
 
@@ -109,3 +108,4 @@ Heartbeat overlap rule:
 - PR #11 merged; PR #12 squash-merged into `main` at `59ec975`.
 - `SYT-010A` remote and local task branches were cleaned after merge.
 - PR #14 squash-merged into `main` at `5675059`; remote and local task branch cleanup completed.
+- PR #16 squash-merged into `main` at `0fca6c3`; remote and local task branch cleanup completed.

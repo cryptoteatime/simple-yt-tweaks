@@ -21,7 +21,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Agent / Thread | Task ID | Role | Status | Branch | Worktree | PR | Started | Last Seen | Expected Next Step | Heartbeat |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `019ddb16-4dcd-7c83-9fce-e664dfdf53a1` / Carson | `SYT-010C` | Integrator | Integrating PR #16 | `swarm/syt-010c-rc-process` | repo checkout | #16 | 2026-04-29 17:07 EDT | 2026-04-29 17:07 EDT | Run final docs checks, merge PR #16 if clean, sync `main`, report cleanup | `simple-yt-tweaks-controller-heartbeat` |
+| none | none | none | none | none | none | none | none | none | none | none |
 
 ## Paused / Stale Agents
 
@@ -33,7 +33,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Path / Area | Task ID | Owner | Branch / Worktree | Reason | Release Condition |
 | --- | --- | --- | --- | --- | --- |
-| `DEVELOPMENT.md`, `docs/swarm/**` | `SYT-010C` | Integrator Carson | `swarm/syt-010c-rc-process` / repo checkout | Release-candidate process integration | Release after PR #16 is merged or abandoned |
+| none | none | none | none | none | none |
 
 ## Recently Completed
 
@@ -49,6 +49,7 @@ Use this file to track who is working, where they are working, and whether the c
 | `019dda09-c04a-7040-ab08-a641d093f545` / Helmholtz | `SYT-010B` | Integrator | Merged PR #14 | 2026-04-29 12:25 EDT | PR #14 squash-merged into `main` at `5675059`; local `main` synced; remote and local task branch cleanup completed. |
 | `019dda63-8fdc-7531-b649-2a91669070c4` / Ampere | `SYT-010C` | Planner/Runner | Opened draft PR #16 | 2026-04-29 15:30 EDT | Docs-only RC gate; `git diff --check` passed; human QA requested no. |
 | `019ddabc-9d77-7692-81b6-80ff60498621` / Boole | `SYT-010C` | Reviewer | Ready to Integrate, no findings | 2026-04-29 17:06 EDT | Docs/process review passed; `git diff --check origin/main...HEAD` passed; human QA requested no. |
+| `019ddb16-4dcd-7c83-9fce-e664dfdf53a1` / Carson | `SYT-010C` | Integrator | Merged PR #16 | 2026-04-29 17:14 EDT | PR #16 squash-merged into `main` at `0fca6c3`; remote and local task branch cleanup completed; integration-record docs landed through follow-up PR policy. |
 
 ## Pending Launch
 

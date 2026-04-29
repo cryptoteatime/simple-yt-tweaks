@@ -12,6 +12,31 @@ Use this file for merge decisions, conflict history, final checks, and release n
 
 ## Entries
 
+### 2026-04-29: SYT-010C Release-Candidate Process Integration
+
+- Integrator: Carson (`019ddb16-4dcd-7c83-9fce-e664dfdf53a1`)
+- Target branch: `main`
+- Candidate branch(es): `swarm/syt-010c-rc-process`
+- PR(s): https://github.com/cryptoteatime/simple-yt-tweaks/pull/16
+- Decision: Integrated
+- Merge: squash merge commit `0fca6c312675400f38c8f0cd09da2c82081d0f52`
+- Reason: Reviewer reported no findings; PR scope was limited to docs/process updates for the release-candidate gate; final docs-only integration check passed.
+- Conflicts: none; PR merge state was clean before merge.
+- Checks:
+  - `gh pr view 16 --json ...`: PASS, open draft PR was mergeable before merge.
+  - `git fetch origin main swarm/syt-010c-rc-process --prune`: PASS.
+  - `git diff --name-status origin/main...HEAD`: PASS, only `DEVELOPMENT.md` and swarm docs changed.
+  - `git diff --check origin/main...HEAD`: PASS.
+- Human acceptance: NOT_REQUIRED
+- Human acceptance evidence: docs-only process PR; human QA remains required for a future actual release candidate or Web Store upload candidate.
+- Branch cleanup: GitHub deleted the remote task branch during merge; local task branch was deleted by the GitHub CLI merge workflow.
+- Worktree cleanup: local `main` synced to `origin/main`; integration record is being landed through a docs-only follow-up PR per repo policy.
+- Notes:
+  - No version bump, tag, release, product/runtime change, or Web Store asset change was performed.
+  - `DEVELOPMENT.md` now documents fixture-first validation, optional live smoke, package validation, human QA, and explicit release approval gates.
+- Follow-ups:
+  - Controller may route or defer `SYT-010D` pure helper tests when capacity is available.
+
 ### 2026-04-29: SYT-010B Settings Parity Integration
 
 - Integrator: Helmholtz (`019dda09-c04a-7040-ab08-a641d093f545`)

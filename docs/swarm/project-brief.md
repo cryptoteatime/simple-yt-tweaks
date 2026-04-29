@@ -111,4 +111,4 @@ No blocking material questions for the current setup. Defaults are safe:
 
 ## Next Controller Decision
 
-`SYT-010A` is integrated. The next safe controller action is to route `SYT-010B` for settings parity and source-of-truth hardening when capacity is available.
+`SYT-010C` is integrated. The next safe controller action is to route or defer `SYT-010D` pure helper tests when capacity is available.
