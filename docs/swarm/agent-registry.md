@@ -49,7 +49,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Task ID | Role | Branch / Worktree | Launch Condition | Prompt Location |
 | --- | --- | --- | --- | --- |
-| none | none | none | none | none |
+| `SYT-010B` | Senior Runner | `swarm/syt-010b-settings-hardening` / repo checkout | Controller routes one runner on this branch, then records the agent id in Active Agents | `docs/swarm/handoffs/SYT-010B.md` |
 
 ## Side Chats
 
