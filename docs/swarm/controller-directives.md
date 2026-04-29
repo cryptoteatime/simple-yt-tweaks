@@ -16,9 +16,9 @@ This file is the repo-local dynamic control plane for the controller chat and an
 - Current branch: `swarm/syt-010c-rc-process`
 - Expected Git state: clean task branch with PR #16 open for review
 - Open PR expectation: none for `SYT-010B`
-- Active agents expectation: Boole reviewing PR #16
+- Active agents expectation: none after Boole completed PR #16 review
 - Controller lease expectation: none between bounded heartbeat passes
-- Current priority lane: `SYT-010C` review
+- Current priority lane: `SYT-010C` integration
 
 ## Controller Lease And Pacing
 
@@ -96,7 +96,7 @@ Heartbeat overlap rule:
 
 | Priority | Task ID | Action | Owner | Branch / Worktree | Stop Condition |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `SYT-010C` | Review release-candidate process PR #16 | Reviewer | `swarm/syt-010c-rc-process` | Review result is Ready to Integrate / Needs Fixes / Blocked |
+| 1 | `SYT-010C` | Integrate reviewed release-candidate process PR #16 | Integrator | `swarm/syt-010c-rc-process` | PR merged, `main` synced, branch cleanup recorded |
 | 2 | `SYT-010D` | Pure helper tests | Planner/Runner | `swarm/syt-010d-helper-tests` | Scoped helper coverage lane is planned or deferred |
 | 3 | `SYT-008A` | Research gate for future enhanced home/search hover | Planner | `swarm/syt-008a-hover-research` | Decision to defer, prototype, or require human QA |
 

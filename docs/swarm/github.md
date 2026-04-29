@@ -45,7 +45,7 @@ Use this file to record the repo's GitHub status and autonomous PR policy.
 
 | Task ID | Branch | PR | Status | Owner | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `SYT-010C` | `swarm/syt-010c-rc-process` | https://github.com/cryptoteatime/simple-yt-tweaks/pull/16 | Draft, Needs Review | Reviewer pending | Docs-only RC gate; human QA requested no for this PR. |
+| `SYT-010C` | `swarm/syt-010c-rc-process` | https://github.com/cryptoteatime/simple-yt-tweaks/pull/16 | Draft, Ready to Integrate | Integrator pending | Docs-only RC gate; human QA requested no for this PR. |
 
 ## Setup Log
 
