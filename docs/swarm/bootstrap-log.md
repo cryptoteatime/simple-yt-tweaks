@@ -46,11 +46,11 @@ Use this file to make repo bootstrap resumable across controller passes and hear
 
 ## Next Controller Action
 
-- Run docs checks, commit this docs-only bootstrap packet, push `swarm/syt-bootstrap-controller-packet`, and open a draft PR with `How to test / what to tell the controller`.
+- Review draft PR #11, then integrate if clean. After integration, launch `SYT-010A`.
 
 ## GitHub Bootstrap
 
 - Owner: cryptoteatime
 - Visibility: public existing repo
 - Status: LINKED
-- Next GitHub action: open docs-only bootstrap PR.
+- Next GitHub action: review and integrate docs-only bootstrap PR #11.

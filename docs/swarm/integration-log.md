@@ -17,8 +17,8 @@ Use this file for merge decisions, conflict history, final checks, and release n
 - Integrator: none yet
 - Target branch: `main`
 - Candidate branch(es): `swarm/syt-bootstrap-controller-packet`
-- PR(s): none yet
-- Decision: Pending
+- PR(s): https://github.com/cryptoteatime/simple-yt-tweaks/pull/11
+- Decision: Pending review
 - Reason: Repo-local swarm packet is being created.
 - Conflicts: none known
 - Checks:

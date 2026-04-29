@@ -45,8 +45,9 @@ Use this file to record the repo's GitHub status and autonomous PR policy.
 
 | Task ID | Branch | PR | Status | Owner | Notes |
 | --- | --- | --- | --- | --- | --- |
-| none | none | none | none | none | none |
+| `SYT-CTL-001` | `swarm/syt-bootstrap-controller-packet` | https://github.com/cryptoteatime/simple-yt-tweaks/pull/11 | Draft, needs review | Controller | Docs-only swarm packet. |
 
 ## Setup Log
 
 - 2026-04-29: Existing remote and GitHub auth verified. Open issues #8 and #10 confirmed. Repo visibility discovered as public.
+- 2026-04-29: Opened draft PR #11 for `SYT-CTL-001`.

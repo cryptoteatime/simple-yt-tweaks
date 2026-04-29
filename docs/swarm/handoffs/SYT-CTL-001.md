@@ -2,7 +2,7 @@
 
 ## State
 
-- Status: In Progress
+- Status: Needs Review
 - Role: Controller
 - Repo: Simple YT Tweaks
 - Branch: `swarm/syt-bootstrap-controller-packet`
@@ -73,7 +73,7 @@ Create the repo-owned swarm packet and seed paced controller lanes for post-v0.3
 ## Human Acceptance Checklist
 
 - Required before merge: No
-- URL(s): PR TBD
+- URL(s): https://github.com/cryptoteatime/simple-yt-tweaks/pull/11
 - Who should test: Reviewer/Integrator
 - Steps:
   1. Review docs for accurate repo policy and lanes.
@@ -90,7 +90,7 @@ Create the repo-owned swarm packet and seed paced controller lanes for post-v0.3
 ## Next Handoff
 
 - Next role: Reviewer
-- Next action: Review docs-only bootstrap PR.
+- Next action: Review docs-only bootstrap PR #11.
 - Branch/worktree cleanup needed after merge: yes, delete branch after merge.
 - Copy-ready prompt:
 
