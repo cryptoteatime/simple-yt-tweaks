@@ -11,7 +11,7 @@
 
 - Brief: `docs/swarm/project-brief.md`
 - Question gate: deferred, not blocking
-- Dispatch readiness: swarm packet integrated; `SYT-010B` settings hardening PR #14 is merged
+- Dispatch readiness: swarm packet integrated; `SYT-010C` release-candidate process PR #16 is merged
 
 ## Goal
 
@@ -51,7 +51,7 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 
 ## Recommended First Milestone
 
-`SYT-010B` is integrated. The next safe milestone is `SYT-010C`: release-candidate process smoothing, keeping product/runtime work out of scope unless that lane explicitly expands it.
+`SYT-010C` is integrated. The next safe milestone is `SYT-010D`: pure helper tests, keeping product/runtime behavior unchanged unless that lane explicitly expands it.
 
 ## Verification Defaults
 
@@ -80,7 +80,7 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 - Execution strategy: paced controller with direct subagents only after lane readiness.
 - Batch dispatch policy: disabled by default via max 1 active subagent; require disjoint parallel-safe labels if capacity is raised.
 - Shared docs lock: controller owns task-board, current-state, controller-directives, and agent-registry during parallel work unless assigned.
-- Active subagents: Carson (`019ddb16-4dcd-7c83-9fce-e664dfdf53a1`) integrating `SYT-010C` / PR #16.
+- Active subagents: none.
 - Agent registry: `docs/swarm/agent-registry.md`.
 - Bootstrap log: `docs/swarm/bootstrap-log.md`.
 - GitHub workflow: `docs/swarm/github.md`.
