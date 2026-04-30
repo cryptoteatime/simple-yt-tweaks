@@ -4,8 +4,8 @@
 
 - Task id: `SYT-010D`
 - Title: Pure helper tests
-- Assigned role: Planner/Runner - Dirac (`019ddb72-af51-7372-8146-43d5ead7148a`)
-- Current state: Ready to Integrate
+- Assigned role: Planner/Runner - Dirac (`019ddb72-af51-7372-8146-43d5ead7148a`); Reviewer - Ptolemy (`019ddbcb-2d65-76c1-982c-54abedb730cc`); Integrator - Planck (`019ddc21-c7bb-75a2-94f6-e8d84b8f4489`)
+- Current state: Integrated
 - Repo: `/Users/d4ngl/Git Repos/Codex/simple-yt-tweaks`
 - Branch: `swarm/syt-010d-helper-tests`
 
@@ -97,6 +97,16 @@ Add fast helper-level coverage where it provides real regression value for post-
   - `npm run test:unit`: PASS, 8 unit tests passed.
   - `git diff --check origin/main...HEAD`: PASS.
   - `npm run validate:all`: PASS, including package validation, 8 unit tests, and 8 fixture tests.
+- Integrator:
+  - `gh pr view 18 --json number,title,state,isDraft,mergeable,mergeStateStatus,headRefName,baseRefName,headRepositoryOwner,reviewDecision,statusCheckRollup,url,body,reviews`: PASS, PR #18 was open, draft, mergeable, and clean; PR body had required test instructions; handoff review evidence marked Ready to Integrate.
+  - `git fetch origin main swarm/syt-010d-helper-tests --prune`: PASS.
+  - `git diff --name-status origin/main...HEAD`: PASS, scope limited to swarm docs, package/config wiring, and helper unit tests.
+  - `git diff --check origin/main...HEAD`: PASS.
+  - `npm run test:unit`: PASS, 8 unit tests passed.
+  - `npm run validate:all`: PASS, including typecheck, lint, `git diff --check`, package validation, 8 unit tests, and 8 fixture tests.
+  - `gh pr ready 18`: PASS.
+  - `gh pr merge 18 --squash --delete-branch --subject "Add helper unit tests" --body "Adds Playwright unit-project coverage for settings and DOM helpers."`: PASS, squash merge commit `88f0a913dd4550239391bde236d6ef905ca7099b`.
+  - `git fetch origin --prune`: PASS, stale remote-tracking ref for `origin/swarm/syt-010d-helper-tests` pruned.
 
 ## Decisions Made
 
@@ -119,11 +129,12 @@ Add fast helper-level coverage where it provides real regression value for post-
 
 ## Pull Request
 
-- Draft PR: https://github.com/cryptoteatime/simple-yt-tweaks/pull/18
+- PR: https://github.com/cryptoteatime/simple-yt-tweaks/pull/18
+- Merge: squash merge commit `88f0a913dd4550239391bde236d6ef905ca7099b`
 
 ## Next Recommended Role
 
-- Integrator should merge PR #18 if required checks remain green and the branch is still clean. Human review requested: no.
+- None for this lane. `SYT-010D` is integrated; controller should choose any future lane in a separate pass.
 
 ## Copy-Ready Runner Prompt
 

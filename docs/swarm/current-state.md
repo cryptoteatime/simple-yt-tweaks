@@ -11,7 +11,7 @@
 
 - Brief: `docs/swarm/project-brief.md`
 - Question gate: deferred, not blocking
-- Dispatch readiness: swarm packet integrated; `SYT-010D` helper-test lane is ready to integrate
+- Dispatch readiness: swarm packet integrated; `SYT-010D` helper-test lane is integrated
 
 ## Goal
 
@@ -51,7 +51,7 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 
 ## Recommended First Milestone
 
-`SYT-010D` is ready to integrate: pure helper tests and Playwright unit-project wiring passed review.
+`SYT-010D` is integrated: pure helper tests and Playwright unit-project wiring were squash-merged through PR #18.
 
 ## Verification Defaults
 
@@ -80,7 +80,7 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 - Execution strategy: paced controller with direct subagents only after lane readiness.
 - Batch dispatch policy: disabled by default via max 1 active subagent; require disjoint parallel-safe labels if capacity is raised.
 - Shared docs lock: controller owns task-board, current-state, controller-directives, and agent-registry during parallel work unless assigned.
-- Active subagents: Planck (`019ddc21-c7bb-75a2-94f6-e8d84b8f4489`) integrating `SYT-010D`.
+- Active subagents: none after `SYT-010D` integration.
 - Agent registry: `docs/swarm/agent-registry.md`.
 - Bootstrap log: `docs/swarm/bootstrap-log.md`.
 - GitHub workflow: `docs/swarm/github.md`.
@@ -88,4 +88,4 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 ## Last Updated
 
 - Date: 2026-04-29
-- By: Controller heartbeat
+- By: Planck, `SYT-010D` Integrator

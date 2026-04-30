@@ -21,7 +21,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Agent / Thread | Task ID | Role | Status | Branch | Worktree | PR | Started | Last Seen | Expected Next Step | Heartbeat |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `019ddc21-c7bb-75a2-94f6-e8d84b8f4489` / Planck | `SYT-010D` | Integrator | In Progress | `swarm/syt-010d-helper-tests` | forked workspace | #18 | 2026-04-29 22:05 EDT | 2026-04-29 22:05 EDT | Recheck PR #18, run final verification, merge if safe, record integration | none |
+| none | none | none | none | none | none | none | none | none | none | none |
 
 ## Paused / Stale Agents
 
@@ -33,7 +33,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Path / Area | Task ID | Owner | Branch / Worktree | Reason | Release Condition |
 | --- | --- | --- | --- | --- | --- |
-| `tests/unit/**`, `playwright.config.ts`, `package.json`, helper modules if needed | `SYT-010D` | Planck (`019ddc21-c7bb-75a2-94f6-e8d84b8f4489`) | `swarm/syt-010d-helper-tests` | Helper-test lane integration | Release when task PR is integrated or blocked. |
+| none | none | none | none | none | none |
 
 ## Recently Completed
 
@@ -52,6 +52,7 @@ Use this file to track who is working, where they are working, and whether the c
 | `019ddb16-4dcd-7c83-9fce-e664dfdf53a1` / Carson | `SYT-010C` | Integrator | Merged PR #16 | 2026-04-29 17:14 EDT | PR #16 squash-merged into `main` at `0fca6c3`; remote and local task branch cleanup completed; integration-record docs landed through follow-up PR policy. |
 | `019ddb72-af51-7372-8146-43d5ead7148a` / Dirac | `SYT-010D` | Planner/Runner | Opened draft PR #18 | 2026-04-29 20:28 EDT | Added Playwright unit project and helper tests; `npm run test:unit`, `typecheck`, `lint`, and `validate:all` passed. |
 | `019ddbcb-2d65-76c1-982c-54abedb730cc` / Ptolemy | `SYT-010D` | Reviewer | Ready to Integrate, no findings | 2026-04-29 22:03 EDT | PR #18 review passed; `npm run test:unit`, `git diff --check origin/main...HEAD`, `npm run validate:all`, and `git diff --check` passed. |
+| `019ddc21-c7bb-75a2-94f6-e8d84b8f4489` / Planck | `SYT-010D` | Integrator | Merged PR #18 | 2026-04-29 22:07 EDT | PR #18 squash-merged into `main` at `88f0a91`; local branch cleanup completed and stale remote-tracking ref pruned. |
 
 ## Pending Launch
 
