@@ -8,17 +8,17 @@ This file is the repo-local dynamic control plane for the controller chat and an
 - Heartbeat mode: `active-pulse`
 - Heartbeat automation id: `simple-yt-tweaks-controller-heartbeat`
 - Main controller chat: Simple YT Tweaks controller in Codex workspace
-- Last reviewed by controller: 2026-04-29 17:14 EDT
+- Last reviewed by controller: 2026-04-29 22:05 EDT
 
 ## Current Source Of Truth
 
 - Default branch: `main`
-- Current branch: `main`
-- Expected Git state: clean `main` synced to `origin/main`; SYT-010C integration-record branch may exist only while this docs update is being landed
+- Current branch: `swarm/syt-010d-helper-tests`
+- Expected Git state: clean `swarm/syt-010d-helper-tests` with `SYT-010D` integration active in a forked workspace
 - Open PR expectation: none for `SYT-010B`
-- Active agents expectation: none after Carson merged PR #16
+- Active agents expectation: Planck (`019ddc21-c7bb-75a2-94f6-e8d84b8f4489`) is integrating `SYT-010D`
 - Controller lease expectation: none between bounded heartbeat passes
-- Current priority lane: `SYT-010D` planning/runner decision
+- Current priority lane: await `SYT-010D` integration result
 
 ## Controller Lease And Pacing
 
@@ -96,7 +96,7 @@ Heartbeat overlap rule:
 
 | Priority | Task ID | Action | Owner | Branch / Worktree | Stop Condition |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `SYT-010D` | Pure helper tests | Planner/Runner | `swarm/syt-010d-helper-tests` | Scoped helper coverage lane is planned or deferred |
+| 1 | `SYT-010D` | Await PR #18 helper unit test integration | Planck (`019ddc21-c7bb-75a2-94f6-e8d84b8f4489`) | `swarm/syt-010d-helper-tests` | PR #18 merged or blocker recorded |
 | 2 | `SYT-008A` | Research gate for future enhanced home/search hover | Planner | `swarm/syt-008a-hover-research` | Decision to defer, prototype, or require human QA |
 
 ## Dynamic Notes
