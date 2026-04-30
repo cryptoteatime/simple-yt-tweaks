@@ -11,7 +11,7 @@
 
 - Brief: `docs/swarm/project-brief.md`
 - Question gate: deferred, not blocking
-- Dispatch readiness: swarm packet integrated; `SYT-010D` helper-test lane is being launched
+- Dispatch readiness: swarm packet integrated; `SYT-010D` helper-test lane is ready for review
 
 ## Goal
 
@@ -51,7 +51,7 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 
 ## Recommended First Milestone
 
-`SYT-010D` is the next safe milestone: pure helper tests, keeping product/runtime behavior unchanged unless that lane explicitly expands it.
+`SYT-010D` is ready for review: pure helper tests and Playwright unit-project wiring.
 
 ## Verification Defaults
 
@@ -80,7 +80,7 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 - Execution strategy: paced controller with direct subagents only after lane readiness.
 - Batch dispatch policy: disabled by default via max 1 active subagent; require disjoint parallel-safe labels if capacity is raised.
 - Shared docs lock: controller owns task-board, current-state, controller-directives, and agent-registry during parallel work unless assigned.
-- Active subagents: Dirac (`019ddb72-af51-7372-8146-43d5ead7148a`) on `SYT-010D`.
+- Active subagents: none; `SYT-010D` Reviewer pending launch.
 - Agent registry: `docs/swarm/agent-registry.md`.
 - Bootstrap log: `docs/swarm/bootstrap-log.md`.
 - GitHub workflow: `docs/swarm/github.md`.
