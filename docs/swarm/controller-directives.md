@@ -8,17 +8,17 @@ This file is the repo-local dynamic control plane for the controller chat and an
 - Heartbeat mode: `active-pulse`
 - Heartbeat automation id: `simple-yt-tweaks-controller-heartbeat`
 - Main controller chat: Simple YT Tweaks controller in Codex workspace
-- Last reviewed by controller: 2026-04-29 22:05 EDT
+- Last reviewed by controller: 2026-04-29 22:07 EDT
 
 ## Current Source Of Truth
 
 - Default branch: `main`
-- Current branch: `swarm/syt-010d-helper-tests`
-- Expected Git state: clean `swarm/syt-010d-helper-tests` with `SYT-010D` integration active in a forked workspace
-- Open PR expectation: none for `SYT-010B`
-- Active agents expectation: Planck (`019ddc21-c7bb-75a2-94f6-e8d84b8f4489`) is integrating `SYT-010D`
+- Current branch: `main`
+- Expected Git state: clean `main...origin/main` after `SYT-010D` integration record lands
+- Open PR expectation: none
+- Active agents expectation: none
 - Controller lease expectation: none between bounded heartbeat passes
-- Current priority lane: await `SYT-010D` integration result
+- Current priority lane: none started by the Integrator; controller may choose the next lane in a later pass
 
 ## Controller Lease And Pacing
 
@@ -96,7 +96,7 @@ Heartbeat overlap rule:
 
 | Priority | Task ID | Action | Owner | Branch / Worktree | Stop Condition |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `SYT-010D` | Await PR #18 helper unit test integration | Planck (`019ddc21-c7bb-75a2-94f6-e8d84b8f4489`) | `swarm/syt-010d-helper-tests` | PR #18 merged or blocker recorded |
+| 1 | `SYT-010D` | Integrated PR #18 helper unit tests | Integrator complete | `main` | Integration record landed |
 | 2 | `SYT-008A` | Research gate for future enhanced home/search hover | Planner | `swarm/syt-008a-hover-research` | Decision to defer, prototype, or require human QA |
 
 ## Dynamic Notes
@@ -109,3 +109,4 @@ Heartbeat overlap rule:
 - `SYT-010A` remote and local task branches were cleaned after merge.
 - PR #14 squash-merged into `main` at `5675059`; remote and local task branch cleanup completed.
 - PR #16 squash-merged into `main` at `0fca6c3`; remote and local task branch cleanup completed.
+- PR #18 squash-merged into `main` at `88f0a91`; local branch cleanup completed and stale remote-tracking ref pruned.
