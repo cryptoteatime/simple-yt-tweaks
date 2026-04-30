@@ -15,7 +15,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Owner | Started | Expected Action | Stop Condition | Stale After | Notes |
 | --- | --- | --- | --- | --- | --- |
-| none | none | none | none | 90 minutes | Controller heartbeat launched `SYT-010D` integration and stopped with capacity full. |
+| none | none | none | none | 90 minutes | `SYT-008A` review is complete; controller is stopped at product-direction gate. |
 
 ## Active Agents
 
@@ -53,6 +53,9 @@ Use this file to track who is working, where they are working, and whether the c
 | `019ddb72-af51-7372-8146-43d5ead7148a` / Dirac | `SYT-010D` | Planner/Runner | Opened draft PR #18 | 2026-04-29 20:28 EDT | Added Playwright unit project and helper tests; `npm run test:unit`, `typecheck`, `lint`, and `validate:all` passed. |
 | `019ddbcb-2d65-76c1-982c-54abedb730cc` / Ptolemy | `SYT-010D` | Reviewer | Ready to Integrate, no findings | 2026-04-29 22:03 EDT | PR #18 review passed; `npm run test:unit`, `git diff --check origin/main...HEAD`, `npm run validate:all`, and `git diff --check` passed. |
 | `019ddc21-c7bb-75a2-94f6-e8d84b8f4489` / Planck | `SYT-010D` | Integrator | Merged PR #18 | 2026-04-29 22:07 EDT | PR #18 squash-merged into `main` at `88f0a91`; local branch cleanup completed and stale remote-tracking ref pruned. |
+| `019ddc7d-3114-7603-9c3e-a3daaf9f055a` / Lovelace | `SYT-008A` | Planner | Opened draft PR #20 | 2026-04-30 01:21 EDT | Research decision requires human/product direction before prototype; `git diff --check` passed; no runtime/source/tests touched. |
+| `019ddcd6-f8f8-7bc1-ac2d-dc83b953b2dd` / Arendt | `SYT-008A` | Reviewer | Ready for Human QA/Product Direction | 2026-04-30 02:56 EDT | PR #20 review passed; docs-only, no runtime changes; product direction required before prototype. |
+| `019ddc7d-3114-7603-9c3e-a3daaf9f055a` / Lovelace | `SYT-008A` | Planner | Opened draft PR #20 | 2026-04-30 01:21 EDT | Research decision requires human/product direction before prototype; `git diff --check` passed; no runtime/source/tests touched. |
 
 ## Pending Launch
 

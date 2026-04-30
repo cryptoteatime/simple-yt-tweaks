@@ -111,4 +111,4 @@ No blocking material questions for the current setup. Defaults are safe:
 
 ## Next Controller Decision
 
-`SYT-010C` is integrated. The next safe controller action is to route or defer `SYT-010D` pure helper tests when capacity is available.
+`SYT-010D` is integrated. The next safe controller action is to route `SYT-008A` as a research-only gate for #8, with no runtime hover implementation until the plan and human/product gate are explicit.

@@ -8,17 +8,17 @@ This file is the repo-local dynamic control plane for the controller chat and an
 - Heartbeat mode: `active-pulse`
 - Heartbeat automation id: `simple-yt-tweaks-controller-heartbeat`
 - Main controller chat: Simple YT Tweaks controller in Codex workspace
-- Last reviewed by controller: 2026-04-29 22:07 EDT
+- Last reviewed by controller: 2026-04-30 02:56 EDT
 
 ## Current Source Of Truth
 
 - Default branch: `main`
-- Current branch: `main`
-- Expected Git state: clean `main...origin/main` after `SYT-010D` integration record lands
-- Open PR expectation: none
+- Current branch: `swarm/syt-008a-hover-research`
+- Expected Git state: clean `swarm/syt-008a-hover-research` with PR #20 waiting for product direction
+- Open PR expectation: #20 for `SYT-008A`
 - Active agents expectation: none
 - Controller lease expectation: none between bounded heartbeat passes
-- Current priority lane: none started by the Integrator; controller may choose the next lane in a later pass
+- Current priority lane: wait for user product direction on `SYT-008A`
 
 ## Controller Lease And Pacing
 
@@ -96,8 +96,8 @@ Heartbeat overlap rule:
 
 | Priority | Task ID | Action | Owner | Branch / Worktree | Stop Condition |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `SYT-010D` | Integrated PR #18 helper unit tests | Integrator complete | `main` | Integration record landed |
-| 2 | `SYT-008A` | Research gate for future enhanced home/search hover | Planner | `swarm/syt-008a-hover-research` | Decision to defer, prototype, or require human QA |
+| 1 | `SYT-008A` | Wait for product direction: defer, prototype off-by-default, or non-transform polish | User/Controller | `swarm/syt-008a-hover-research` | User gives `Product direction for SYT-008A: ...` |
+| 2 | `SYT-010E` | Large module split review | Planner | `swarm/syt-010e-module-split-review` | Only route after `SYT-008A` direction or explicit controller decision to continue unrelated work |
 
 ## Dynamic Notes
 
