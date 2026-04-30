@@ -15,13 +15,13 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Owner | Started | Expected Action | Stop Condition | Stale After | Notes |
 | --- | --- | --- | --- | --- | --- |
-| heartbeat `simple-yt-tweaks-controller-heartbeat` | 2026-04-29 22:03 EDT | Reconcile `SYT-010D` review and route integration | Stop after one Integrator is launched or a blocker is recorded | 90 minutes | Bounded active-pulse pass. |
+| none | none | none | none | 90 minutes | Controller heartbeat launched `SYT-010D` integration and stopped with capacity full. |
 
 ## Active Agents
 
 | Agent / Thread | Task ID | Role | Status | Branch | Worktree | PR | Started | Last Seen | Expected Next Step | Heartbeat |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| none | none | none | none | none | none | none | none | none | none | none |
+| `019ddc21-c7bb-75a2-94f6-e8d84b8f4489` / Planck | `SYT-010D` | Integrator | In Progress | `swarm/syt-010d-helper-tests` | forked workspace | #18 | 2026-04-29 22:05 EDT | 2026-04-29 22:05 EDT | Recheck PR #18, run final verification, merge if safe, record integration | none |
 
 ## Paused / Stale Agents
 
@@ -33,7 +33,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Path / Area | Task ID | Owner | Branch / Worktree | Reason | Release Condition |
 | --- | --- | --- | --- | --- | --- |
-| `tests/unit/**`, `playwright.config.ts`, `package.json`, helper modules if needed | `SYT-010D` | Pending Integrator launch | `swarm/syt-010d-helper-tests` | Helper-test lane integration | Release when task PR is integrated or blocked. |
+| `tests/unit/**`, `playwright.config.ts`, `package.json`, helper modules if needed | `SYT-010D` | Planck (`019ddc21-c7bb-75a2-94f6-e8d84b8f4489`) | `swarm/syt-010d-helper-tests` | Helper-test lane integration | Release when task PR is integrated or blocked. |
 
 ## Recently Completed
 
@@ -57,7 +57,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Task ID | Role | Branch / Worktree | Launch Condition | Prompt Location |
 | --- | --- | --- | --- | --- |
-| `SYT-010D` | Integrator | `swarm/syt-010d-helper-tests` | Reviewer marked PR #18 Ready to Integrate and branch is clean | `docs/swarm/handoffs/SYT-010D.md` |
+| none | none | none | none | none |
 
 ## Side Chats
 

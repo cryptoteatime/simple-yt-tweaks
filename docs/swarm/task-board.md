@@ -57,7 +57,7 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 
 ## Controller Notes
 
-- Active controller-spawned subagents: none; `SYT-010D` Integrator pending launch.
+- Active controller-spawned subagents: Planck (`019ddc21-c7bb-75a2-94f6-e8d84b8f4489`) integrating `SYT-010D`.
 - Active cron bursts: none; cron is a failsafe, not the normal execution path.
 - Parallel worktree root: none yet.
 - Batch dispatch policy: disabled by default because max active subagents is 1.
