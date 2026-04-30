@@ -6,7 +6,7 @@
 - Role: Planner
 - Repo: Simple YT Tweaks
 - Branch: `swarm/syt-008a-hover-research`
-- Owner: Pending Planner launch
+- Owner: Lovelace (`019ddc7d-3114-7603-9c3e-a3daaf9f055a`)
 - Created: 2026-04-29
 - Updated: 2026-04-29
 

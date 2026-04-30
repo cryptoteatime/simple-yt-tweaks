@@ -57,7 +57,7 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 
 ## Controller Notes
 
-- Active controller-spawned subagents: none yet; `SYT-008A` Planner pending launch.
+- Active controller-spawned subagents: Lovelace (`019ddc7d-3114-7603-9c3e-a3daaf9f055a`) researching `SYT-008A`.
 - Active cron bursts: none; cron is a failsafe, not the normal execution path.
 - Parallel worktree root: none yet.
 - Batch dispatch policy: disabled by default because max active subagents is 1.

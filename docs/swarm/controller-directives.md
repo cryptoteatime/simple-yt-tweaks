@@ -8,24 +8,24 @@ This file is the repo-local dynamic control plane for the controller chat and an
 - Heartbeat mode: `active-pulse`
 - Heartbeat automation id: `simple-yt-tweaks-controller-heartbeat`
 - Main controller chat: Simple YT Tweaks controller in Codex workspace
-- Last reviewed by controller: 2026-04-29 23:43 EDT
+- Last reviewed by controller: 2026-04-29 23:44 EDT
 
 ## Current Source Of Truth
 
 - Default branch: `main`
 - Current branch: `swarm/syt-008a-hover-research`
-- Expected Git state: clean task branch after `SYT-008A` research-gate launch prep is committed/pushed
+- Expected Git state: clean `swarm/syt-008a-hover-research` with `SYT-008A` research active in a forked workspace
 - Open PR expectation: none
-- Active agents expectation: none until `SYT-008A` Planner is launched
-- Controller lease expectation: active only for this bounded heartbeat pass, then clear after launch or blocker
-- Current priority lane: route `SYT-008A` research gate
+- Active agents expectation: Lovelace (`019ddc7d-3114-7603-9c3e-a3daaf9f055a`) is researching `SYT-008A`
+- Controller lease expectation: none between bounded heartbeat passes
+- Current priority lane: await `SYT-008A` research result
 
 ## Controller Lease And Pacing
 
-- Controller lease owner: heartbeat `simple-yt-tweaks-controller-heartbeat`
-- Lease started: 2026-04-29 23:43 EDT
-- Lease expected action: prepare and launch `SYT-008A`
-- Lease stop condition: `SYT-008A` Planner launched or blocker recorded
+- Controller lease owner: none
+- Lease started: none
+- Lease expected action: none
+- Lease stop condition: none
 - Lease stale after: 90 minutes
 - Controller pass budget: max 3 safe orchestration actions or 35 minutes, hard stop at 45 minutes
 - Heartbeat pass budget: max 2 safe recovery/routing actions, then stop
@@ -96,7 +96,7 @@ Heartbeat overlap rule:
 
 | Priority | Task ID | Action | Owner | Branch / Worktree | Stop Condition |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `SYT-008A` | Research gate for future enhanced home/search hover | Planner | `swarm/syt-008a-hover-research` | Decision to defer, prototype, or require human QA |
+| 1 | `SYT-008A` | Await research gate for future enhanced home/search hover | Lovelace (`019ddc7d-3114-7603-9c3e-a3daaf9f055a`) | `swarm/syt-008a-hover-research` | Research reports Needs Review, Deferred, or Blocked |
 | 2 | `SYT-010E` | Large module split review | Planner | `swarm/syt-010e-module-split-review` | Decide if any split reduces real risk |
 
 ## Dynamic Notes

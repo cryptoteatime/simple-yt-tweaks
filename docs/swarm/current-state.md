@@ -80,7 +80,7 @@ The next safe milestone is `SYT-008A`: a research-only gate for #8 enhanced home
 - Execution strategy: paced controller with direct subagents only after lane readiness.
 - Batch dispatch policy: disabled by default via max 1 active subagent; require disjoint parallel-safe labels if capacity is raised.
 - Shared docs lock: controller owns task-board, current-state, controller-directives, and agent-registry during parallel work unless assigned.
-- Active subagents: none yet; `SYT-008A` Planner pending launch.
+- Active subagents: Lovelace (`019ddc7d-3114-7603-9c3e-a3daaf9f055a`) researching `SYT-008A`.
 - Agent registry: `docs/swarm/agent-registry.md`.
 - Bootstrap log: `docs/swarm/bootstrap-log.md`.
 - GitHub workflow: `docs/swarm/github.md`.
