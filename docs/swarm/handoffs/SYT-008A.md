@@ -61,6 +61,7 @@ Research whether #8 can be safely revived in a future release without breaking n
 | `gh api repos/cryptoteatime/simple-yt-tweaks/issues/8/comments --jq '.[] | {user:.user.login, created_at, body}'` | Passed | Read issue comments. |
 | `rg -n "hover|preview|autoplay|flicker|edge|clip|#8|SYT-008|grid-hover|home/search|home search" . -g '!node_modules/**' -g '!dist/**' -g '!release/**'` | Passed | Found current guardrails and prior notes; output included generated asset noise, so source/docs were read directly afterward. |
 | `git diff --check` | Passed | Required docs-only verification. |
+| `gh pr create --draft --base main --head swarm/syt-008a-hover-research` | Passed | Opened draft PR #20 for review/product-direction routing. |
 
 ## Blockers / Risks
 
@@ -151,7 +152,7 @@ Live/manual gate:
 - Next role: Reviewer for docs/research review, then controller/product direction.
 - Next action: Review this handoff, then ask the user whether #8 should stay deferred, move to an off-by-default prototype, or be narrowed to non-transform polish.
 - Branch/worktree cleanup needed after merge: yes.
-- PR: TBD.
+- PR: https://github.com/cryptoteatime/simple-yt-tweaks/pull/20
 - Copy-ready prompt:
 
 ```text
