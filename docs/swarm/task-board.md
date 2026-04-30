@@ -11,7 +11,7 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 - Project brief: Ready
 - Material questions: Deferred, not blocking
 - First milestone plan: Ready
-- Implementation dispatch: Active; `SYT-010D` is ready for review
+- Implementation dispatch: Active; `SYT-010D` is ready to integrate
 
 ## Active Tasks
 
@@ -20,7 +20,7 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 | `SYT-010A` | Audit and harden fixture coverage for #10/#8 risk | Integrator | Integrated | `swarm/syt-010a-test-harness-audit` | `tests/e2e/**`, docs as needed | parallel-safe after bootstrap | `SYT-CTL-001` | medium, fixture contracts | `docs/swarm/handoffs/SYT-010A.md` | #12 merged |
 | `SYT-010B` | Settings parity and source-of-truth hardening | Integrator | Integrated | `swarm/syt-010b-settings-hardening` | `src/shared/settings.ts`, `src/content/settings.ts`, validation/tests | serial-required | `SYT-010A` | high, settings contracts | `docs/swarm/handoffs/SYT-010B.md` | #14 merged |
 | `SYT-010C` | Release-candidate process smoothing | Integrator | Integrated | `swarm/syt-010c-rc-process` | `DEVELOPMENT.md`, `docs/swarm/**`, scripts if needed | parallel-safe with source-free work | `SYT-010A` preferred | low/medium, release docs | `docs/swarm/handoffs/SYT-010C.md` | #16 merged |
-| `SYT-010D` | Pure helper tests | Reviewer | Needs Review | `swarm/syt-010d-helper-tests` | `tests/unit/**`, `playwright.config.ts`, `package.json`, helper modules only if needed | parallel-safe with no other source task | `SYT-010A`, `SYT-010B`, `SYT-010C` | low/medium, test config/helper exports | `docs/swarm/handoffs/SYT-010D.md` | #18 |
+| `SYT-010D` | Pure helper tests | Integrator | Ready to Integrate | `swarm/syt-010d-helper-tests` | `tests/unit/**`, `playwright.config.ts`, `package.json`, helper modules only if needed | parallel-safe with no other source task | `SYT-010A`, `SYT-010B`, `SYT-010C` | low/medium, test config/helper exports | `docs/swarm/handoffs/SYT-010D.md` | #18 |
 | `SYT-008A` | Enhanced home/search hover research gate | Planner | Paused | `swarm/syt-008a-hover-research` | #8 research, fixtures/prototype only | serial-required | `SYT-010A`, user/product gate | high, live YouTube preview lifecycle | `docs/swarm/handoffs/SYT-008A.md` | none |
 
 ## Backlog
@@ -40,13 +40,13 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 
 | Task ID | Branch | Reviewer Focus | Verification Tier | Handoff |
 | --- | --- | --- | --- | --- |
-| `SYT-010D` | `swarm/syt-010d-helper-tests` | Helper-test coverage, Playwright unit project config, `validate:all` script, PR body/handoff accuracy | targeted review plus focused checks | `docs/swarm/handoffs/SYT-010D.md` |
+| none | none | none | none | none |
 
 ## Ready To Integrate
 
 | Task ID | Branch | Checks | Cleanup Plan | Handoff |
 | --- | --- | --- | --- | --- |
-| none | none | none | none | none |
+| `SYT-010D` | `swarm/syt-010d-helper-tests` | Reviewer passed; integrator should recheck merge state and run final verification per policy | Merge PR #18, clean branch/worktree, record integration | `docs/swarm/handoffs/SYT-010D.md` |
 
 ## Human QA
 
@@ -57,7 +57,7 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 
 ## Controller Notes
 
-- Active controller-spawned subagents: Ptolemy (`019ddbcb-2d65-76c1-982c-54abedb730cc`) reviewing `SYT-010D`.
+- Active controller-spawned subagents: none; `SYT-010D` Integrator pending launch.
 - Active cron bursts: none; cron is a failsafe, not the normal execution path.
 - Parallel worktree root: none yet.
 - Batch dispatch policy: disabled by default because max active subagents is 1.
@@ -66,4 +66,4 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 - Agent registry: `docs/swarm/agent-registry.md`.
 - Bootstrap log: `docs/swarm/bootstrap-log.md`.
 - GitHub workflow: `docs/swarm/github.md`.
-- Current controller phase: Phase 4 active; `SYT-010D` is the active review lane.
+- Current controller phase: Phase 4 active; `SYT-010D` is the active integration lane.
