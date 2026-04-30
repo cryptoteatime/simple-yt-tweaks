@@ -8,24 +8,24 @@ This file is the repo-local dynamic control plane for the controller chat and an
 - Heartbeat mode: `active-pulse`
 - Heartbeat automation id: `simple-yt-tweaks-controller-heartbeat`
 - Main controller chat: Simple YT Tweaks controller in Codex workspace
-- Last reviewed by controller: 2026-04-30 01:21 EDT
+- Last reviewed by controller: 2026-04-30 01:22 EDT
 
 ## Current Source Of Truth
 
 - Default branch: `main`
 - Current branch: `swarm/syt-008a-hover-research`
-- Expected Git state: clean `swarm/syt-008a-hover-research` with `SYT-008A` PR #20 ready for review
+- Expected Git state: clean `swarm/syt-008a-hover-research` with `SYT-008A` review active in a forked workspace
 - Open PR expectation: #20 for `SYT-008A`
-- Active agents expectation: none until `SYT-008A` Reviewer is launched
-- Controller lease expectation: active only for this bounded heartbeat pass, then clear after launch or blocker
-- Current priority lane: route `SYT-008A` review
+- Active agents expectation: Arendt (`019ddcd6-f8f8-7bc1-ac2d-dc83b953b2dd`) is reviewing `SYT-008A`
+- Controller lease expectation: none between bounded heartbeat passes
+- Current priority lane: await `SYT-008A` review result
 
 ## Controller Lease And Pacing
 
-- Controller lease owner: heartbeat `simple-yt-tweaks-controller-heartbeat`
-- Lease started: 2026-04-30 01:21 EDT
-- Lease expected action: route `SYT-008A` review
-- Lease stop condition: `SYT-008A` Reviewer launched or blocker recorded
+- Controller lease owner: none
+- Lease started: none
+- Lease expected action: none
+- Lease stop condition: none
 - Lease stale after: 90 minutes
 - Controller pass budget: max 3 safe orchestration actions or 35 minutes, hard stop at 45 minutes
 - Heartbeat pass budget: max 2 safe recovery/routing actions, then stop
@@ -96,7 +96,7 @@ Heartbeat overlap rule:
 
 | Priority | Task ID | Action | Owner | Branch / Worktree | Stop Condition |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `SYT-008A` | Review research gate for future enhanced home/search hover | Reviewer | `swarm/syt-008a-hover-research` | Review reports Ready for Human QA/Product Direction, Needs Fixes, or Blocked |
+| 1 | `SYT-008A` | Await research gate review for future enhanced home/search hover | Arendt (`019ddcd6-f8f8-7bc1-ac2d-dc83b953b2dd`) | `swarm/syt-008a-hover-research` | Review reports Ready for Human QA/Product Direction, Needs Fixes, or Blocked |
 | 2 | `SYT-010E` | Large module split review | Planner | `swarm/syt-010e-module-split-review` | Decide if any split reduces real risk |
 
 ## Dynamic Notes

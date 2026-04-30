@@ -15,13 +15,13 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Owner | Started | Expected Action | Stop Condition | Stale After | Notes |
 | --- | --- | --- | --- | --- | --- |
-| heartbeat `simple-yt-tweaks-controller-heartbeat` | 2026-04-30 01:21 EDT | Reconcile `SYT-008A` research and route review | Stop after one Reviewer is launched or a blocker is recorded | 90 minutes | Bounded active-pulse pass. |
+| none | none | none | none | 90 minutes | Controller heartbeat launched `SYT-008A` review and stopped with capacity full. |
 
 ## Active Agents
 
 | Agent / Thread | Task ID | Role | Status | Branch | Worktree | PR | Started | Last Seen | Expected Next Step | Heartbeat |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| none | none | none | none | none | none | none | none | none | none | none |
+| `019ddcd6-f8f8-7bc1-ac2d-dc83b953b2dd` / Arendt | `SYT-008A` | Reviewer | In Progress | `swarm/syt-008a-hover-research` | forked workspace | #20 | 2026-04-30 01:22 EDT | 2026-04-30 01:22 EDT | Review PR #20 and report Ready for Human QA/Product Direction, Needs Fixes, or Blocked | none |
 
 ## Paused / Stale Agents
 
@@ -33,7 +33,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Path / Area | Task ID | Owner | Branch / Worktree | Reason | Release Condition |
 | --- | --- | --- | --- | --- | --- |
-| `docs/swarm/handoffs/SYT-008A.md`, #8 research notes, fixture/prototype plan only | `SYT-008A` | Pending Reviewer launch | `swarm/syt-008a-hover-research` | Research gate review; no runtime implementation | Release when research PR is reviewed/integrated, deferred, or blocked. |
+| `docs/swarm/handoffs/SYT-008A.md`, #8 research notes, fixture/prototype plan only | `SYT-008A` | Arendt (`019ddcd6-f8f8-7bc1-ac2d-dc83b953b2dd`) | `swarm/syt-008a-hover-research` | Research gate review; no runtime implementation | Release when research PR is reviewed/integrated, deferred, or blocked. |
 
 ## Recently Completed
 
@@ -59,7 +59,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Task ID | Role | Branch / Worktree | Launch Condition | Prompt Location |
 | --- | --- | --- | --- | --- |
-| `SYT-008A` | Reviewer | `swarm/syt-008a-hover-research` | Planner completed with PR #20 clean/draft | `docs/swarm/handoffs/SYT-008A.md` |
+| none | none | none | none | none |
 
 ## Side Chats
 

@@ -57,7 +57,7 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 
 ## Controller Notes
 
-- Active controller-spawned subagents: none; `SYT-008A` Reviewer pending launch.
+- Active controller-spawned subagents: Arendt (`019ddcd6-f8f8-7bc1-ac2d-dc83b953b2dd`) reviewing `SYT-008A`.
 - Active cron bursts: none; cron is a failsafe, not the normal execution path.
 - Parallel worktree root: none yet.
 - Batch dispatch policy: disabled by default because max active subagents is 1.
