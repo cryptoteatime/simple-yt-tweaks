@@ -57,7 +57,7 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 
 ## Controller Notes
 
-- Active controller-spawned subagents: none; `SYT-010D` Reviewer pending launch.
+- Active controller-spawned subagents: Ptolemy (`019ddbcb-2d65-76c1-982c-54abedb730cc`) reviewing `SYT-010D`.
 - Active cron bursts: none; cron is a failsafe, not the normal execution path.
 - Parallel worktree root: none yet.
 - Batch dispatch policy: disabled by default because max active subagents is 1.

@@ -15,13 +15,13 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Owner | Started | Expected Action | Stop Condition | Stale After | Notes |
 | --- | --- | --- | --- | --- | --- |
-| heartbeat `simple-yt-tweaks-controller-heartbeat` | 2026-04-29 20:28 EDT | Reconcile `SYT-010D` Runner and route review | Stop after one Reviewer is launched or a blocker is recorded | 90 minutes | Bounded active-pulse pass. |
+| none | none | none | none | 90 minutes | Controller heartbeat launched `SYT-010D` review and stopped with capacity full. |
 
 ## Active Agents
 
 | Agent / Thread | Task ID | Role | Status | Branch | Worktree | PR | Started | Last Seen | Expected Next Step | Heartbeat |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| none | none | none | none | none | none | none | none | none | none | none |
+| `019ddbcb-2d65-76c1-982c-54abedb730cc` / Ptolemy | `SYT-010D` | Reviewer | In Progress | `swarm/syt-010d-helper-tests` | forked workspace | #18 | 2026-04-29 20:30 EDT | 2026-04-29 20:30 EDT | Review PR #18 and report Ready to Integrate, Needs Fixes, or Blocked | none |
 
 ## Paused / Stale Agents
 
@@ -33,7 +33,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Path / Area | Task ID | Owner | Branch / Worktree | Reason | Release Condition |
 | --- | --- | --- | --- | --- | --- |
-| `tests/unit/**`, `playwright.config.ts`, `package.json`, helper modules if needed | `SYT-010D` | Pending Reviewer launch | `swarm/syt-010d-helper-tests` | Helper-test lane review | Release when task PR is reviewed/integrated or lane is deferred. |
+| `tests/unit/**`, `playwright.config.ts`, `package.json`, helper modules if needed | `SYT-010D` | Ptolemy (`019ddbcb-2d65-76c1-982c-54abedb730cc`) | `swarm/syt-010d-helper-tests` | Helper-test lane review | Release when task PR is reviewed/integrated or lane is deferred. |
 
 ## Recently Completed
 
@@ -56,7 +56,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Task ID | Role | Branch / Worktree | Launch Condition | Prompt Location |
 | --- | --- | --- | --- | --- |
-| `SYT-010D` | Reviewer | `swarm/syt-010d-helper-tests` | Runner completed with PR #18 clean/draft | `docs/swarm/handoffs/SYT-010D.md` |
+| none | none | none | none | none |
 
 ## Side Chats
 

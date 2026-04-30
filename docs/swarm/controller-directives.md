@@ -8,24 +8,24 @@ This file is the repo-local dynamic control plane for the controller chat and an
 - Heartbeat mode: `active-pulse`
 - Heartbeat automation id: `simple-yt-tweaks-controller-heartbeat`
 - Main controller chat: Simple YT Tweaks controller in Codex workspace
-- Last reviewed by controller: 2026-04-29 20:28 EDT
+- Last reviewed by controller: 2026-04-29 20:30 EDT
 
 ## Current Source Of Truth
 
 - Default branch: `main`
 - Current branch: `swarm/syt-010d-helper-tests`
-- Expected Git state: clean `swarm/syt-010d-helper-tests` with `SYT-010D` PR #18 ready for review
+- Expected Git state: clean `swarm/syt-010d-helper-tests` with `SYT-010D` review active in a forked workspace
 - Open PR expectation: none for `SYT-010B`
-- Active agents expectation: none until `SYT-010D` Reviewer is launched
-- Controller lease expectation: active only for this bounded heartbeat pass, then clear after launch or blocker
-- Current priority lane: route `SYT-010D` review
+- Active agents expectation: Ptolemy (`019ddbcb-2d65-76c1-982c-54abedb730cc`) is reviewing `SYT-010D`
+- Controller lease expectation: none between bounded heartbeat passes
+- Current priority lane: await `SYT-010D` review result
 
 ## Controller Lease And Pacing
 
-- Controller lease owner: heartbeat `simple-yt-tweaks-controller-heartbeat`
-- Lease started: 2026-04-29 20:28 EDT
-- Lease expected action: route `SYT-010D` review
-- Lease stop condition: `SYT-010D` Reviewer launched or blocker recorded
+- Controller lease owner: none
+- Lease started: none
+- Lease expected action: none
+- Lease stop condition: none
 - Lease stale after: 90 minutes
 - Controller pass budget: max 3 safe orchestration actions or 35 minutes, hard stop at 45 minutes
 - Heartbeat pass budget: max 2 safe recovery/routing actions, then stop
@@ -96,7 +96,7 @@ Heartbeat overlap rule:
 
 | Priority | Task ID | Action | Owner | Branch / Worktree | Stop Condition |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `SYT-010D` | Review PR #18 helper unit tests | Reviewer | `swarm/syt-010d-helper-tests` | Review reports Ready to Integrate, Needs Fixes, or Blocked |
+| 1 | `SYT-010D` | Await PR #18 helper unit test review | Ptolemy (`019ddbcb-2d65-76c1-982c-54abedb730cc`) | `swarm/syt-010d-helper-tests` | Review reports Ready to Integrate, Needs Fixes, or Blocked |
 | 2 | `SYT-008A` | Research gate for future enhanced home/search hover | Planner | `swarm/syt-008a-hover-research` | Decision to defer, prototype, or require human QA |
 
 ## Dynamic Notes
