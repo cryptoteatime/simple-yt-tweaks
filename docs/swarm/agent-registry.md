@@ -15,7 +15,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Owner | Started | Expected Action | Stop Condition | Stale After | Notes |
 | --- | --- | --- | --- | --- | --- |
-| none | none | none | none | 90 minutes | Controller heartbeat launched `SYT-010D` integration and stopped with capacity full. |
+| heartbeat `simple-yt-tweaks-controller-heartbeat` | 2026-04-29 23:43 EDT | Prepare and launch `SYT-008A` research gate | Stop after one Planner is launched or a blocker is recorded | 90 minutes | Bounded active-pulse pass. |
 
 ## Active Agents
 
@@ -33,7 +33,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Path / Area | Task ID | Owner | Branch / Worktree | Reason | Release Condition |
 | --- | --- | --- | --- | --- | --- |
-| none | none | none | none | none | none |
+| `docs/swarm/handoffs/SYT-008A.md`, #8 research notes, fixture/prototype plan only | `SYT-008A` | Pending Planner launch | `swarm/syt-008a-hover-research` | Research gate prep; no runtime implementation | Release when research PR is reviewed/integrated, deferred, or blocked. |
 
 ## Recently Completed
 
@@ -58,7 +58,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Task ID | Role | Branch / Worktree | Launch Condition | Prompt Location |
 | --- | --- | --- | --- | --- |
-| none | none | none | none | none |
+| `SYT-008A` | Planner | `swarm/syt-008a-hover-research` | `SYT-010D` integrated and capacity available | `docs/swarm/handoffs/SYT-008A.md` |
 
 ## Side Chats
 

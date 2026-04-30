@@ -2,11 +2,11 @@
 
 ## State
 
-- Status: Paused
+- Status: In Progress - pending Planner launch
 - Role: Planner
 - Repo: Simple YT Tweaks
 - Branch: `swarm/syt-008a-hover-research`
-- Owner: Unassigned
+- Owner: Pending Planner launch
 - Created: 2026-04-29
 - Updated: 2026-04-29
 
@@ -29,6 +29,7 @@ Research whether #8 can be safely revived in a future release without breaking n
 ## Dependencies
 
 - `SYT-010A` coverage audit complete.
+- `SYT-010D` helper tests integrated.
 - User/product-direction gate before implementation.
 
 ## Lane Metadata
@@ -58,13 +59,13 @@ Research whether #8 can be safely revived in a future release without breaking n
 
 ## Next Handoff
 
-- Next role: Planner after #10 test hardening.
+- Next role: Planner now that fixture/helper hardening is in place.
 - Next action: Research only; do not implement until controller explicitly unpauses #8.
 - Branch/worktree cleanup needed after merge: yes.
 - Copy-ready prompt:
 
 ```text
-Plan Simple YT Tweaks SYT-008A only after SYT-010A is integrated.
+Plan Simple YT Tweaks SYT-008A after SYT-010D is integrated.
 
 Repo: /Users/d4ngl/Git Repos/Codex/simple-yt-tweaks
 Branch: swarm/syt-008a-hover-research

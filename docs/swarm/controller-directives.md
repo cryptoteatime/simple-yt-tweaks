@@ -8,24 +8,24 @@ This file is the repo-local dynamic control plane for the controller chat and an
 - Heartbeat mode: `active-pulse`
 - Heartbeat automation id: `simple-yt-tweaks-controller-heartbeat`
 - Main controller chat: Simple YT Tweaks controller in Codex workspace
-- Last reviewed by controller: 2026-04-29 22:07 EDT
+- Last reviewed by controller: 2026-04-29 23:43 EDT
 
 ## Current Source Of Truth
 
 - Default branch: `main`
-- Current branch: `main`
-- Expected Git state: clean `main...origin/main` after `SYT-010D` integration record lands
+- Current branch: `swarm/syt-008a-hover-research`
+- Expected Git state: clean task branch after `SYT-008A` research-gate launch prep is committed/pushed
 - Open PR expectation: none
-- Active agents expectation: none
-- Controller lease expectation: none between bounded heartbeat passes
-- Current priority lane: none started by the Integrator; controller may choose the next lane in a later pass
+- Active agents expectation: none until `SYT-008A` Planner is launched
+- Controller lease expectation: active only for this bounded heartbeat pass, then clear after launch or blocker
+- Current priority lane: route `SYT-008A` research gate
 
 ## Controller Lease And Pacing
 
-- Controller lease owner: none
-- Lease started: none
-- Lease expected action: none
-- Lease stop condition: none
+- Controller lease owner: heartbeat `simple-yt-tweaks-controller-heartbeat`
+- Lease started: 2026-04-29 23:43 EDT
+- Lease expected action: prepare and launch `SYT-008A`
+- Lease stop condition: `SYT-008A` Planner launched or blocker recorded
 - Lease stale after: 90 minutes
 - Controller pass budget: max 3 safe orchestration actions or 35 minutes, hard stop at 45 minutes
 - Heartbeat pass budget: max 2 safe recovery/routing actions, then stop
@@ -96,8 +96,8 @@ Heartbeat overlap rule:
 
 | Priority | Task ID | Action | Owner | Branch / Worktree | Stop Condition |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `SYT-010D` | Integrated PR #18 helper unit tests | Integrator complete | `main` | Integration record landed |
-| 2 | `SYT-008A` | Research gate for future enhanced home/search hover | Planner | `swarm/syt-008a-hover-research` | Decision to defer, prototype, or require human QA |
+| 1 | `SYT-008A` | Research gate for future enhanced home/search hover | Planner | `swarm/syt-008a-hover-research` | Decision to defer, prototype, or require human QA |
+| 2 | `SYT-010E` | Large module split review | Planner | `swarm/syt-010e-module-split-review` | Decide if any split reduces real risk |
 
 ## Dynamic Notes
 
