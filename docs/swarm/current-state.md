@@ -11,7 +11,7 @@
 
 - Brief: `docs/swarm/project-brief.md`
 - Question gate: deferred, not blocking
-- Dispatch readiness: swarm packet integrated; `SYT-008A` research gate is ready for review
+- Dispatch readiness: swarm packet integrated; `SYT-008A` research gate is waiting for product direction
 
 ## Goal
 
@@ -51,7 +51,7 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 
 ## Recommended First Milestone
 
-`SYT-008A` research is ready for review. Runtime implementation remains out of scope until the research plan, validation gates, and required human/product decision are explicit.
+`SYT-008A` research passed review and is waiting for product direction. Runtime implementation remains out of scope until the user chooses defer, off-by-default prototype, or non-transform polish.
 
 ## Verification Defaults
 
@@ -80,7 +80,7 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 - Execution strategy: paced controller with direct subagents only after lane readiness.
 - Batch dispatch policy: disabled by default via max 1 active subagent; require disjoint parallel-safe labels if capacity is raised.
 - Shared docs lock: controller owns task-board, current-state, controller-directives, and agent-registry during parallel work unless assigned.
-- Active subagents: Arendt (`019ddcd6-f8f8-7bc1-ac2d-dc83b953b2dd`) reviewing `SYT-008A`.
+- Active subagents: none; stopped at `SYT-008A` product-direction gate.
 - Agent registry: `docs/swarm/agent-registry.md`.
 - Bootstrap log: `docs/swarm/bootstrap-log.md`.
 - GitHub workflow: `docs/swarm/github.md`.

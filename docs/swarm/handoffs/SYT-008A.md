@@ -2,11 +2,11 @@
 
 ## State
 
-- Status: Needs Review - research decision drafted; product direction required before prototype
-- Role: Planner
+- Status: Ready for Human QA/Product Direction
+- Role: Planner/Reviewer
 - Repo: Simple YT Tweaks
 - Branch: `swarm/syt-008a-hover-research`
-- Owner: Lovelace (`019ddc7d-3114-7603-9c3e-a3daaf9f055a`)
+- Owner: Lovelace (`019ddc7d-3114-7603-9c3e-a3daaf9f055a`) / Arendt (`019ddcd6-f8f8-7bc1-ac2d-dc83b953b2dd`)
 - Created: 2026-04-29
 - Updated: 2026-04-30
 
@@ -36,7 +36,7 @@ Research whether #8 can be safely revived in a future release without breaking n
 
 - Parallel-safe: no with #10 source work.
 - Serial-required: yes; live YouTube preview lifecycle is fragile.
-- Depends-on: `SYT-010A`, user/product gate.
+- Depends-on: `SYT-010A`, `SYT-010D`, user/product gate.
 - Conflict-risk: high; home/search feed CSS, YouTube preview overlay lifecycle, `src/content/grid-hover.ts`.
 - Shared coordination docs allowed: this handoff only unless controller assigns more.
 
@@ -45,13 +45,19 @@ Research whether #8 can be safely revived in a future release without breaking n
 | Check | Result | Notes |
 | --- | --- | --- |
 | `git diff --check` | Passed | Docs-only whitespace check. |
+| `git diff --check origin/main...HEAD` | Passed | Reviewer check. |
 | `npm run test:e2e` | Not run for this docs-only lane | Required for any fixture/prototype lane. |
 | `npm run test:e2e:live` | Not run for this lane yet | Optional research smoke, not stable gate. |
 | Human QA | Not run for this lane yet | Required before merging any visual behavior change. |
 
 ## Files Touched
 
+- `docs/swarm/agent-registry.md`
+- `docs/swarm/controller-directives.md`
+- `docs/swarm/current-state.md`
 - `docs/swarm/handoffs/SYT-008A.md`
+- `docs/swarm/project-brief.md`
+- `docs/swarm/task-board.md`
 
 ## Commands Run
 
@@ -62,6 +68,16 @@ Research whether #8 can be safely revived in a future release without breaking n
 | `rg -n "hover|preview|autoplay|flicker|edge|clip|#8|SYT-008|grid-hover|home/search|home search" . -g '!node_modules/**' -g '!dist/**' -g '!release/**'` | Passed | Found current guardrails and prior notes; output included generated asset noise, so source/docs were read directly afterward. |
 | `git diff --check` | Passed | Required docs-only verification. |
 | `gh pr create --draft --base main --head swarm/syt-008a-hover-research` | Passed | Opened draft PR #20 for review/product-direction routing. |
+| `gh pr view 20 --json ...` | Passed | Reviewer confirmed PR is draft/open/clean. |
+| `git diff --stat origin/main...HEAD` | Passed | Reviewer confirmed docs-only diff. |
+| `git diff origin/main...HEAD -- . ':(exclude)docs/swarm/**'` | Passed | Empty; reviewer confirmed no runtime changes. |
+
+## Review Result
+
+- Status: Ready for Human QA/Product Direction.
+- Reviewer: Arendt (`019ddcd6-f8f8-7bc1-ac2d-dc83b953b2dd`).
+- Findings: none blocking.
+- Notes: The research decision coherently blocks runtime hover implementation behind product direction, keeps #8 separate from #10, uses fixture-first gates, and scopes next lanes serially around the fragile hover lifecycle.
 
 ## Blockers / Risks
 
@@ -135,7 +151,7 @@ Live/manual gate:
 | Task ID | Role | Status | Scope | Parallel-safe | Serial-required | Depends-on | Conflict-risk |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `SYT-008B` | Product/Planner | Blocked pending human direction | Decide whether #8 remains deferred, gets an off-by-default prototype, or narrows to non-transform polish. | yes, docs only | no | `SYT-008A` review | low |
-| `SYT-008C` | Runner | Proposed only if `SYT-008B` approves prototype | Add fixture coverage for off/default-on prototype gates before runtime hover behavior. | no with hover source work | yes | `SYT-008B` | medium, fixture contracts |
+| `SYT-008C` | Runner | Proposed only if `SYT-008B` approves prototype | Add fixture coverage for default-off and explicitly enabled prototype gates before runtime hover behavior. | no with hover source work | yes | `SYT-008B` | medium, fixture contracts |
 | `SYT-008D` | Senior Runner | Proposed only after fixture gate | Branch-only off-by-default prototype; no release/version/store assets. | no | yes | `SYT-008C` | high, live YouTube preview lifecycle |
 
 ## Human Acceptance Checklist
@@ -149,8 +165,8 @@ Live/manual gate:
 
 ## Next Handoff
 
-- Next role: Reviewer for docs/research review, then controller/product direction.
-- Next action: Review this handoff, then ask the user whether #8 should stay deferred, move to an off-by-default prototype, or be narrowed to non-transform polish.
+- Next role: Controller/User product direction.
+- Next action: Ask the user whether #8 should stay deferred, move to an off-by-default prototype, or be narrowed to non-transform polish.
 - Branch/worktree cleanup needed after merge: yes.
 - PR: https://github.com/cryptoteatime/simple-yt-tweaks/pull/20
 - Copy-ready prompt:
