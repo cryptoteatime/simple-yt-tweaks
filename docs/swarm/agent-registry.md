@@ -15,13 +15,13 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Owner | Started | Expected Action | Stop Condition | Stale After | Notes |
 | --- | --- | --- | --- | --- | --- |
-| none | none | none | none | 90 minutes | Controller heartbeat launched `SYT-008A` research and stopped with capacity full. |
+| heartbeat `simple-yt-tweaks-controller-heartbeat` | 2026-04-30 01:21 EDT | Reconcile `SYT-008A` research and route review | Stop after one Reviewer is launched or a blocker is recorded | 90 minutes | Bounded active-pulse pass. |
 
 ## Active Agents
 
 | Agent / Thread | Task ID | Role | Status | Branch | Worktree | PR | Started | Last Seen | Expected Next Step | Heartbeat |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `019ddc7d-3114-7603-9c3e-a3daaf9f055a` / Lovelace | `SYT-008A` | Planner | In Progress | `swarm/syt-008a-hover-research` | forked workspace | none | 2026-04-29 23:44 EDT | 2026-04-29 23:44 EDT | Produce #8 research plan, push branch, open draft PR if reviewable | none |
+| none | none | none | none | none | none | none | none | none | none | none |
 
 ## Paused / Stale Agents
 
@@ -33,7 +33,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Path / Area | Task ID | Owner | Branch / Worktree | Reason | Release Condition |
 | --- | --- | --- | --- | --- | --- |
-| `docs/swarm/handoffs/SYT-008A.md`, #8 research notes, fixture/prototype plan only | `SYT-008A` | Lovelace (`019ddc7d-3114-7603-9c3e-a3daaf9f055a`) | `swarm/syt-008a-hover-research` | Research gate; no runtime implementation | Release when research PR is reviewed/integrated, deferred, or blocked. |
+| `docs/swarm/handoffs/SYT-008A.md`, #8 research notes, fixture/prototype plan only | `SYT-008A` | Pending Reviewer launch | `swarm/syt-008a-hover-research` | Research gate review; no runtime implementation | Release when research PR is reviewed/integrated, deferred, or blocked. |
 
 ## Recently Completed
 
@@ -53,12 +53,13 @@ Use this file to track who is working, where they are working, and whether the c
 | `019ddb72-af51-7372-8146-43d5ead7148a` / Dirac | `SYT-010D` | Planner/Runner | Opened draft PR #18 | 2026-04-29 20:28 EDT | Added Playwright unit project and helper tests; `npm run test:unit`, `typecheck`, `lint`, and `validate:all` passed. |
 | `019ddbcb-2d65-76c1-982c-54abedb730cc` / Ptolemy | `SYT-010D` | Reviewer | Ready to Integrate, no findings | 2026-04-29 22:03 EDT | PR #18 review passed; `npm run test:unit`, `git diff --check origin/main...HEAD`, `npm run validate:all`, and `git diff --check` passed. |
 | `019ddc21-c7bb-75a2-94f6-e8d84b8f4489` / Planck | `SYT-010D` | Integrator | Merged PR #18 | 2026-04-29 22:07 EDT | PR #18 squash-merged into `main` at `88f0a91`; local branch cleanup completed and stale remote-tracking ref pruned. |
+| `019ddc7d-3114-7603-9c3e-a3daaf9f055a` / Lovelace | `SYT-008A` | Planner | Opened draft PR #20 | 2026-04-30 01:21 EDT | Research decision requires human/product direction before prototype; `git diff --check` passed; no runtime/source/tests touched. |
 
 ## Pending Launch
 
 | Task ID | Role | Branch / Worktree | Launch Condition | Prompt Location |
 | --- | --- | --- | --- | --- |
-| none | none | none | none | none |
+| `SYT-008A` | Reviewer | `swarm/syt-008a-hover-research` | Planner completed with PR #20 clean/draft | `docs/swarm/handoffs/SYT-008A.md` |
 
 ## Side Chats
 

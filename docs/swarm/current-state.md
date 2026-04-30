@@ -11,7 +11,7 @@
 
 - Brief: `docs/swarm/project-brief.md`
 - Question gate: deferred, not blocking
-- Dispatch readiness: swarm packet integrated; `SYT-008A` research gate is being launched
+- Dispatch readiness: swarm packet integrated; `SYT-008A` research gate is ready for review
 
 ## Goal
 
@@ -51,7 +51,7 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 
 ## Recommended First Milestone
 
-The next safe milestone is `SYT-008A`: a research-only gate for #8 enhanced home/search hover. Runtime implementation remains out of scope until the research plan, validation gates, and any required human/product decision are explicit.
+`SYT-008A` research is ready for review. Runtime implementation remains out of scope until the research plan, validation gates, and required human/product decision are explicit.
 
 ## Verification Defaults
 
@@ -80,7 +80,7 @@ The next safe milestone is `SYT-008A`: a research-only gate for #8 enhanced home
 - Execution strategy: paced controller with direct subagents only after lane readiness.
 - Batch dispatch policy: disabled by default via max 1 active subagent; require disjoint parallel-safe labels if capacity is raised.
 - Shared docs lock: controller owns task-board, current-state, controller-directives, and agent-registry during parallel work unless assigned.
-- Active subagents: Lovelace (`019ddc7d-3114-7603-9c3e-a3daaf9f055a`) researching `SYT-008A`.
+- Active subagents: none; `SYT-008A` Reviewer pending launch.
 - Agent registry: `docs/swarm/agent-registry.md`.
 - Bootstrap log: `docs/swarm/bootstrap-log.md`.
 - GitHub workflow: `docs/swarm/github.md`.
