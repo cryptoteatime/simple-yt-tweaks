@@ -338,8 +338,8 @@ export function buildTheaterCss(settings: Settings): string {
 
     body.simple-yt-tweaks-theater #${LIVE_CHAT_CLOSE_BUTTON_ID} {
       position: fixed !important;
-      top: 88px !important;
-      right: 20px !important;
+      top: 92px !important;
+      right: min(calc(min(380px, calc(100vw - 32px)) + 24px), calc(100vw - 48px)) !important;
       display: none !important;
       align-items: center !important;
       justify-content: center !important;
@@ -347,7 +347,7 @@ export function buildTheaterCss(settings: Settings): string {
       height: 40px !important;
       border-radius: 999px !important;
       font-size: 20px !important;
-      opacity: 0.04 !important;
+      opacity: 0.68 !important;
       transition: opacity 0.14s ease, background 0.14s ease !important;
     }
 
@@ -375,8 +375,8 @@ export function buildTheaterCss(settings: Settings): string {
       writing-mode: vertical-rl !important;
       text-orientation: mixed !important;
       letter-spacing: 0 !important;
-      opacity: 0.28 !important;
-      transform: translate(30px, -50%) !important;
+      opacity: 0.58 !important;
+      transform: translate(14px, -50%) !important;
       transition: opacity 0.14s ease, transform 0.14s ease, background 0.14s ease !important;
     }
 

@@ -518,11 +518,28 @@ test('watch fixture keeps live chat overlay from squeezing the theater player', 
   await expect(page.locator('iframe#chatframe')).toHaveCSS('width', '380px');
   await expect(page.locator('#simple-yt-tweaks-live-chat-close')).toBeVisible();
   await expect(page.locator('#simple-yt-tweaks-live-chat-restore')).toBeHidden();
+  await expect
+    .poll(() =>
+      page.evaluate(() => {
+        const chat = document.querySelector('ytd-live-chat-frame#chat')?.getBoundingClientRect();
+        const close = document.querySelector('#simple-yt-tweaks-live-chat-close')?.getBoundingClientRect();
+        return Boolean(chat && close && close.right <= chat.left - 4);
+      }),
+    )
+    .toBe(true);
 
   await page.locator('#simple-yt-tweaks-live-chat-close').click();
   await expect(page.locator('body')).toHaveClass(/simple-yt-tweaks-live-chat-minimized/);
   await expect(page.locator('ytd-live-chat-frame#chat')).toHaveCSS('opacity', '0');
   await expect(page.locator('#simple-yt-tweaks-live-chat-restore')).toBeVisible();
+  await expect
+    .poll(() =>
+      page.evaluate(() => {
+        const restore = document.querySelector('#simple-yt-tweaks-live-chat-restore')?.getBoundingClientRect();
+        return Boolean(restore && restore.left < window.innerWidth - 20 && restore.right > window.innerWidth);
+      }),
+    )
+    .toBe(true);
 
   await page.locator('ytd-live-chat-frame#chat').evaluate((chat) => {
     chat.setAttribute('collapsed', '');
