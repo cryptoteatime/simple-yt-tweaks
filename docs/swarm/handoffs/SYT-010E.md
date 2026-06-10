@@ -5,7 +5,7 @@
 - State: Needs Review
 - GitHub issue: #10
 - Branch: `swarm/syt-010e-code-hardening`
-- PR: pending publish
+- PR: #24, https://github.com/cryptoteatime/simple-yt-tweaks/pull/24
 - Role: Senior Runner
 - Updated: 2026-06-10 by Senior Runner
 
