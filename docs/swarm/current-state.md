@@ -4,14 +4,14 @@
 
 - Name: Simple YT Tweaks
 - Folder: `/Users/d4ngl/Git Repos/Codex/simple-yt-tweaks`
-- Status: existing repo, post-v0.3.0 hardening; #31 live Home hover regression patch integrated
+- Status: existing repo, post-v0.3.0 hardening; `SYT-010G` fullscreen/player UI geometry hardening is ready for review
 - GitHub: `https://github.com/cryptoteatime/simple-yt-tweaks`
 
 ## Project Brief
 
 - Brief: `docs/swarm/project-brief.md`
 - Question gate: deferred, not blocking
-- Dispatch readiness: swarm packet integrated; no active implementation lane after `SYT-031`
+- Dispatch readiness: swarm packet integrated; `SYT-010G` is the active review lane
 
 ## Goal
 
@@ -19,7 +19,7 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 
 ## Current Focus
 
-1. Decide whether issue #10 needs another bounded hardening lane or should remain open for later.
+1. Review and integrate `SYT-010G`, a bounded #10 hardening lane for fullscreen/player UI geometry.
 2. Keep #10 hardening in small PRs with `validate:all` as the final gate.
 3. Keep #8 as a future high-risk research lane until tests and product direction justify it.
 4. Keep release-candidate work separate from routine fixture/source hardening.
@@ -54,7 +54,7 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 
 ## Recommended First Milestone
 
-`SYT-031` is integrated via PR #32 at `8e881c9`, closing #31. Issue #10 remains open for future bounded hardening lanes.
+`SYT-010G` extracts fullscreen/player UI hover reveal geometry into a pure helper with unit coverage. Issue #10 remains open until the controller decides the hardening pass is complete.
 
 ## Verification Defaults
 
@@ -91,4 +91,4 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 ## Last Updated
 
 - Date: 2026-06-10
-- By: Controller/Runner for `SYT-031`
+- By: Controller/Runner for `SYT-010G`

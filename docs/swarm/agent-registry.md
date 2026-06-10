@@ -65,6 +65,7 @@ Use this file to track who is working, where they are working, and whether the c
 | `019eb145-89d5-7e93-ae8e-46819bfb6ac0` / Harvey | `SYT-010F` | Senior Runner | Needs Review | 2026-06-10 07:47 EDT | Opened draft PR #28; full validation passed; issue #10 commented. |
 | `019eb18b-2df6-74b3-baba-68adfc94427a` / Newton | `SYT-010F` | Reviewer | Ready to Integrate | 2026-06-10 08:56 EDT | Final PR #28 review passed with no findings; unit/e2e/typecheck/lint and diff checks passed. |
 | `019eb1a5-f3e6-7520-86aa-956ea3bd2de6` / Hume | `SYT-010F` | Integrator | Merged PR #28 | 2026-06-10 09:02 EDT | `npm run validate:all` passed; PR #28 squash-merged at `fa07c18`; docs follow-up PR #29 merged at `6580065`; issue #10 remains open. |
+| `019eb293-9f5e-7ca2-ada8-6bad5f84c002` / Russell | `SYT-010G` | Reviewer | Ready to Integrate | 2026-06-10 13:35 EDT | No findings; `git diff --check origin/main...origin/swarm/syt-010g-fullscreen-ui-geometry` and `npm run test:unit` passed; human QA not required. |
 
 ## Pending Launch
 
