@@ -52,4 +52,3 @@ Continue post-v0.3.0 hardening without broad rewrites. Use fixture and unit cove
 - Focused checks for the chosen scope.
 - Always run `npm run validate:all` before integration.
 - Use signed-in Chrome live smoke only when the target touches live-only YouTube behavior.
-

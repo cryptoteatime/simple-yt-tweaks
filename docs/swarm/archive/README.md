@@ -31,4 +31,3 @@ GitHub PR bodies and reviews remain the preferred public history for completed w
 | `SYT-008A` | Paused future research | `docs/swarm/handoffs/SYT-008A.md` |
 | `SYT-010E` | Backlog code hardening | `docs/swarm/task-board.md` |
 | `SYT-RC-001` | Backlog release candidate checklist | `docs/swarm/task-board.md` |
-
