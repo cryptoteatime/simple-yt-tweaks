@@ -2,15 +2,24 @@
 
 ## Status
 
-- State: Ready after PR #22 review/integration state is clear
+- State: Needs Review
 - GitHub issue: #10
-- Branch: TBD, use `swarm/syt-010e-<short-slug>`
-- Role: Planner or Senior Runner
-- Updated: 2026-06-10
+- Branch: `swarm/syt-010e-code-hardening`
+- PR: #24, https://github.com/cryptoteatime/simple-yt-tweaks/pull/24
+- Role: Senior Runner
+- Updated: 2026-06-10 by Senior Runner
 
 ## Goal
 
 Continue post-v0.3.0 hardening without broad rewrites. Use fixture and unit coverage as the gate, and only refactor where it reduces real regression risk.
+
+## Chosen Target
+
+Narrow behavior-preserving selector normalization in `src/content/grid-hover.ts`:
+
+- Centralized the watch recommendation hover-grow card/media/overlay selector variants used by `buildSidebarHoverCss`.
+- Kept the legacy `ytd-compact-video-renderer` and modern `yt-lockup-view-model` selectors emitted for default and theater watch modes.
+- Added unit coverage that asserts enabled-mode scoping and disabled-mode omission for the generated grid hover CSS.
 
 ## Scope
 
@@ -40,15 +49,34 @@ Continue post-v0.3.0 hardening without broad rewrites. Use fixture and unit cove
 
 ## Suggested First Pass
 
-1. Review PR #22 outcome and any reviewer/user QA notes.
-2. Run `npm run validate:all` on the current baseline.
-3. Choose one hardening target with a bounded write scope.
-4. Add/adjust fixture or unit coverage for that target.
-5. Implement the smallest behavior-preserving cleanup.
-6. Open a draft PR with `How to test / what to tell the controller`.
+Completed:
+
+1. Reviewed hot swarm state after PR #22 integration.
+2. Audited the requested high-risk modules by function outline and sampled relevant source/test sections.
+3. Chose one bounded target: grid hover watch recommendation selector normalization.
+4. Added unit coverage before/alongside the cleanup.
+5. Ran focused checks and the full validation gate.
+
+## Files Touched
+
+- `src/content/grid-hover.ts`
+- `tests/unit/grid-hover.unit.spec.ts`
+- `docs/swarm/handoffs/SYT-010E.md`
 
 ## Verification
 
-- Focused checks for the chosen scope.
-- Always run `npm run validate:all` before integration.
-- Use signed-in Chrome live smoke only when the target touches live-only YouTube behavior.
+- Focused: `npm run test:unit` - passed, 10 tests.
+- Focused: `npm run test:e2e` - passed, 10 fixture tests.
+- Full gate: `npm run validate:all` - passed, including typecheck, lint, `git diff --check`, package validation, unit tests, and fixture tests.
+- Live Chrome/YouTube smoke not used; this target is selector/CSS generation cleanup with fixture coverage.
+
+## Risks
+
+- Low/medium residual risk: the selector normalization still touches watch recommendation hover CSS assembly, but the emitted legacy and modern selector families are covered by unit assertions and fixture watch hover tests.
+- No settings defaults changed.
+- #8 enhanced Home/Search hover grow was not reintroduced.
+- No version, release, tag, or Web Store asset changes.
+
+## Next Recommended Role
+
+Reviewer: review `src/content/grid-hover.ts` selector normalization, `tests/unit/grid-hover.unit.spec.ts` coverage, PR body test instructions, and confirm `Needs Review` can move to `Ready to Integrate`.
