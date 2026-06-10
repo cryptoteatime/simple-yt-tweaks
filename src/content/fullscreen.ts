@@ -1,4 +1,5 @@
 import { debounce, getPlayer, isNativeFullscreenActive, isVisibleNode, isWatchPage, query, queryAll } from './dom';
+import { shouldRevealPlayerUiFromPointer } from './fullscreen-geometry';
 import {
   FULLSCREEN_ACTION_DOCK_ID,
   FULLSCREEN_ACTION_TARGET_CLASS,
@@ -272,26 +273,6 @@ export function updatePlayerUiFocusState(): void {
   );
 }
 
-function getPlayerControlZoneTop(playerRect: DOMRect, fullscreenActive: boolean): number {
-  const chromeBottom = query<HTMLElement>(SELECTORS.chromeBottom);
-  const chromeRect = chromeBottom?.getBoundingClientRect();
-
-  if (
-    chromeRect &&
-    chromeRect.height > 0 &&
-    chromeRect.bottom > playerRect.top &&
-    chromeRect.top < playerRect.bottom
-  ) {
-    return Math.max(
-      playerRect.top,
-      Math.min(playerRect.bottom - 44, chromeRect.top - (fullscreenActive ? 18 : 14)),
-    );
-  }
-
-  const fallbackZoneHeight = fullscreenActive ? 94 : 118;
-  return playerRect.bottom - fallbackZoneHeight;
-}
-
 export function updatePlayerUiHoverState(pointerX: number, pointerY: number): void {
   const theaterActive = isWatchPage() && document.body.classList.contains('simple-yt-tweaks-theater') && state.settings.theaterHidePlayerUI;
   const fullscreenActive =
@@ -312,14 +293,14 @@ export function updatePlayerUiHoverState(pointerX: number, pointerY: number): vo
   }
 
   const rect = player.getBoundingClientRect();
-  const isInsidePlayer =
-    pointerX >= rect.left &&
-    pointerX <= rect.right &&
-    pointerY >= rect.top &&
-    pointerY <= rect.bottom;
-  const controlZoneTop = getPlayerControlZoneTop(rect, fullscreenActive);
-  const isInControlZone = pointerY >= controlZoneTop;
-  const shouldRevealPlayerUi = isInsidePlayer && isInControlZone;
+  const chromeBottom = query<HTMLElement>(SELECTORS.chromeBottom);
+  const shouldRevealPlayerUi = shouldRevealPlayerUiFromPointer({
+    chromeBottomRect: chromeBottom?.getBoundingClientRect() ?? null,
+    fullscreenActive,
+    playerRect: rect,
+    pointerX,
+    pointerY,
+  });
 
   document.body.classList.toggle('simple-yt-tweaks-player-ui-hover', shouldRevealPlayerUi);
 
