@@ -21,7 +21,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Agent / Thread | Task ID | Role | Status | Branch | Worktree | PR | Started | Last Seen | Expected Next Step | Heartbeat |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| none | none | none | none | none | none | none | none | none | none | none |
+| `019eb0bd-d604-78a3-a94f-949659401efb` / Godel | `SYT-021` | Reviewer | In Progress | `swarm/syt-008b-native-hover-spa-regression` | main worktree | #22 | 2026-06-10 04:47 EDT | 2026-06-10 04:47 EDT | Review PR #22 and report `Ready to Integrate`, `Needs Fixes`, or `Blocked`. | none |
 
 ## Paused / Stale Agents
 
@@ -58,7 +58,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Task ID | Role | Branch / Worktree | Launch Condition | Prompt Location |
 | --- | --- | --- | --- | --- |
-| `SYT-021` | Reviewer | `swarm/syt-008b-native-hover-spa-regression` / PR #22 | Branch is clean and pushed; launch one reviewer for source/test/docs/PR audit | `docs/swarm/handoffs/SYT-021.md` |
+| none | none | none | none | none |
 
 ## Side Chats
 
