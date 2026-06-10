@@ -12,6 +12,35 @@ Use this file for merge decisions, conflict history, final checks, and release n
 
 ## Entries
 
+### 2026-06-10: SYT-010F Sticky Player Hardening Integration
+
+- Integrator: Codex
+- Target branch: `main`
+- Candidate branch(es): `swarm/syt-010f-sticky-player-hardening`
+- PR(s): https://github.com/cryptoteatime/simple-yt-tweaks/pull/28
+- Issue(s): https://github.com/cryptoteatime/simple-yt-tweaks/issues/10
+- Decision: Integrated
+- Merge: squash merge commit `fa07c1891d8711839fad41aaec34681b09fd69ea`
+- Reason: Reviewer Newton reported no findings and `Ready to Integrate`; PR scope matched `SYT-010F`; full integration gate passed; PR was clean and mergeable.
+- Conflicts: none; PR #28 was mergeable and clean before merge.
+- Checks:
+  - `git fetch origin`: PASS.
+  - `gh pr view 28 --json state,isDraft,mergeStateStatus,files,body`: PASS, PR was open, draft, mergeable, and clean before merge; it was marked ready before squash merge.
+  - `git diff --name-only origin/main...HEAD`: PASS, scope was limited to `docs/swarm/handoffs/SYT-010F.md`, `src/content/sticky-player.ts`, `src/content/sticky-player-geometry.ts`, `tests/unit/sticky-player.unit.spec.ts`, `tests/e2e/extension.fixture.spec.ts`, and `tests/e2e/youtube-fixtures.ts`.
+  - `git diff --check origin/main...HEAD`: PASS.
+  - `npm run validate:all`: PASS, including typecheck, lint, package validation, 18 unit tests, and 11 fixture tests.
+  - `gh issue view 10 --json state,closedAt,url,title`: PASS after merge, issue #10 remains open.
+- Human acceptance: NOT_REQUIRED
+- Human acceptance evidence: routine fixture-backed Sticky Player geometry hardening; no #8 enhanced Home/Search hover work, live YouTube smoke gate, release, tag, version bump, settings default change, popup change, or Web Store asset update was included.
+- Branch cleanup: GitHub deleted the remote task branch during merge; local task branch was removed by the GitHub CLI merge workflow. `git branch --list 'swarm/syt-010f-sticky-player-hardening'` and `git ls-remote --heads origin swarm/syt-010f-sticky-player-hardening` returned no refs.
+- Worktree cleanup: local `main` synced to `origin/main`; integration record is being landed through a docs-only follow-up PR per repo policy.
+- Notes:
+  - Sticky Player visibility thresholds and resize geometry now have unit coverage through `src/content/sticky-player-geometry.ts`.
+  - Fixture coverage now exercises deterministic Sticky Player dock/restore behavior on the watch page.
+- Follow-ups:
+  - Keep issue #10 open unless the controller determines the overall hardening pass is complete.
+  - Keep #8 enhanced Home/Search hover research paused unless the user explicitly reopens that gate.
+
 ### 2026-06-10: SYT-010F Sticky Player Planning Integration
 
 - Integrator: Faraday (`019eb12d-5860-7852-8447-17dfb4db7cc3`)

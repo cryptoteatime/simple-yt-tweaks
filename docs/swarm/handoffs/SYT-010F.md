@@ -2,14 +2,14 @@
 
 ## Status
 
-- State: Needs Review
+- State: Integrated
 - GitHub issue: #10
 - Planning PR: #26 merged at `66d756f`, https://github.com/cryptoteatime/simple-yt-tweaks/pull/26
 - Implementation PR: #28, https://github.com/cryptoteatime/simple-yt-tweaks/pull/28
 - Planning branch: `swarm/syt-010f-planning` cleaned locally/remotely
 - Recommended implementation branch: `swarm/syt-010f-sticky-player-hardening`
-- Role: Senior Runner
-- Updated: 2026-06-10 by Senior Runner
+- Role: Integrator
+- Updated: 2026-06-10 by Integrator
 
 ## Planning Integration
 
@@ -111,6 +111,18 @@ Do not run live YouTube for this lane unless the Runner uncovers behavior that c
 - Helper extraction should preserve the existing thresholds exactly unless a failing test proves an existing threshold is wrong.
 - `src/content/sticky-player.ts` imports `state`, which initializes browser-dependent state. Unit tests should avoid importing that module directly if it makes tests depend on global `location` or `document` setup.
 - Dock/restore moves the real player node; assertions must verify the node is restored to the watch fixture, not recreated or duplicated.
+
+## Integration Result
+
+- Result: Integrated.
+- Implementation PR: #28, https://github.com/cryptoteatime/simple-yt-tweaks/pull/28.
+- Merge: squash-merged into `main` at `fa07c1891d8711839fad41aaec34681b09fd69ea`.
+- Final gate: `npm run validate:all` passed, including typecheck, lint, package validation, 18 unit tests, and 11 fixture tests.
+- Branch cleanup: remote and local `swarm/syt-010f-sticky-player-hardening` refs were removed after merge.
+- Issue #10: remains open for future hardening lanes.
+- Human QA: not required for this fixture-backed hardening lane.
+- Next recommended role: Controller.
+- Exact next action: decide whether #10 needs another bounded hardening lane or can be left open for later; keep #8 enhanced hover research paused unless the user explicitly reopens it.
 
 ## Senior Runner Result
 
