@@ -8,14 +8,14 @@ This file is the repo-local dynamic control plane for the controller chat and an
 - Heartbeat mode: `active-pulse`
 - Heartbeat automation id: `simple-yt-tweaks-controller-heartbeat`
 - Main controller chat: Simple YT Tweaks controller in Codex workspace
-- Last reviewed by controller: 2026-04-29 22:07 EDT
+- Last reviewed by controller: 2026-06-10 04:05 EDT
 
 ## Current Source Of Truth
 
 - Default branch: `main`
-- Current branch: `main`
-- Expected Git state: clean `main...origin/main` after `SYT-010D` integration record lands
-- Open PR expectation: none
+- Current branch: `swarm/syt-008b-native-hover-spa-regression`
+- Expected Git state: `SYT-021` branch dirty until docs/source/test changes are committed and pushed
+- Open PR expectation: draft PR for `SYT-021` after branch push
 - Active agents expectation: none
 - Controller lease expectation: none between bounded heartbeat passes
 - Current priority lane: none started by the Integrator; controller may choose the next lane in a later pass
@@ -27,11 +27,11 @@ This file is the repo-local dynamic control plane for the controller chat and an
 - Lease expected action: none
 - Lease stop condition: none
 - Lease stale after: 90 minutes
-- Controller pass budget: max 3 safe orchestration actions or 35 minutes, hard stop at 45 minutes
+- Controller pass budget: max 6 safe orchestration actions or 60 minutes, hard stop at 75 minutes while `SYT-021` is active
 - Heartbeat pass budget: max 2 safe recovery/routing actions, then stop
 - Active capacity: max 1 active subagent total
-- Heartbeat cadence target: 90 minutes while active
-- Next human QA gate: release-candidate lane or #8 visual/product-direction gate
+- Heartbeat cadence target: 45 minutes while `SYT-021` is in review/fix/integration, then slow back toward 90 minutes
+- Next human QA gate: optional `SYT-021` live YouTube spot-check, release-candidate lane, or #8 visual/product-direction gate
 
 Heartbeat overlap rule:
 
@@ -96,8 +96,8 @@ Heartbeat overlap rule:
 
 | Priority | Task ID | Action | Owner | Branch / Worktree | Stop Condition |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `SYT-010D` | Integrated PR #18 helper unit tests | Integrator complete | `main` | Integration record landed |
-| 2 | `SYT-008A` | Research gate for future enhanced home/search hover | Planner | `swarm/syt-008a-hover-research` | Decision to defer, prototype, or require human QA |
+| 1 | `SYT-021` | Push branch, open draft PR, route review for native hover SPA regression and live recommendation drift | Controller / Reviewer | `swarm/syt-008b-native-hover-spa-regression` | Draft PR opened and reviewer result recorded |
+| 2 | `SYT-008A` | Keep research gate paused until #21 is resolved and user wants enhanced hover research again | Planner | `swarm/syt-008a-hover-research` | Decision to defer, prototype, or require human QA |
 
 ## Dynamic Notes
 
@@ -110,3 +110,4 @@ Heartbeat overlap rule:
 - PR #14 squash-merged into `main` at `5675059`; remote and local task branch cleanup completed.
 - PR #16 squash-merged into `main` at `0fca6c3`; remote and local task branch cleanup completed.
 - PR #18 squash-merged into `main` at `88f0a91`; local branch cleanup completed and stale remote-tracking ref pruned.
+- 2026-06-10: User reported live watch-to-Home native hover autoplay regression and requested overnight automation. Controller opened #21, implemented `SYT-021`, ran `npm run validate:all`, and performed signed-in Chrome live smoke. Branch needs commit/push/draft PR/review next.

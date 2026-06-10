@@ -5,6 +5,7 @@ import { routeYouTubeFixture } from './youtube-fixtures';
 declare global {
   interface Window {
     __simpleYtTweaksPlaybackEvents?: string[];
+    __simpleYtTweaksSimulateTransientClick?: boolean;
   }
 }
 
@@ -42,7 +43,7 @@ async function writeExtensionSettings(
 }
 
 async function setupPlaybackProbe(page: Page): Promise<void> {
-  await page.locator('video.html5-main-video').evaluate(async (video) => {
+  await page.locator('#movie_player video.html5-main-video').evaluate(async (video) => {
     window.__simpleYtTweaksPlaybackEvents = [];
 
     const canvas = document.createElement('canvas');
@@ -82,9 +83,11 @@ test('home fixture uses native feed layout while cleanup stays active', async ({
   const grid = page.locator('ytd-browse[page-subtype="home"] ytd-rich-grid-renderer');
   await expect(grid).toHaveCSS('--ytd-rich-grid-items-per-row', '3');
   await expect(page.locator('[data-testid="sponsored"]')).toHaveCount(0);
+  await expect(page.locator('[data-testid="home-spa-placeholder"]')).toHaveCount(1);
+  await expect(page.locator('[data-testid="home-spa-placeholder"]')).toBeHidden();
   await expect(page.locator('[data-testid="shorts-card"]')).toBeHidden();
   await expect(page.locator('[data-testid="shorts-shelf"]')).toBeHidden();
-  await expect(page.locator('ytd-rich-item-renderer')).toHaveCount(4);
+  await expect(page.locator('ytd-rich-item-renderer')).toHaveCount(5);
 
   const injectedCss = await page.locator('#simple-yt-tweaks-style').textContent();
   expect(injectedCss).not.toContain('ytd-video-preview');
@@ -93,6 +96,29 @@ test('home fixture uses native feed layout while cleanup stays active', async ({
   await expect(page.locator('[data-testid="video-with-preview"]')).not.toHaveClass(
     /simple-yt-tweaks-grid-hover-ready/,
   );
+  expect(extensionErrors(errors)).toEqual([]);
+});
+
+test('home fixture defers destructive cleanup briefly after watch-to-home navigation', async ({ context }) => {
+  const page = await context.newPage();
+  const errors = await openFixture(page, 'home', 'https://www.youtube.com/');
+
+  await page.evaluate(() => {
+    history.pushState({}, '', '/watch?v=fixture');
+    window.dispatchEvent(new PopStateEvent('popstate'));
+  });
+  await page.waitForTimeout(220);
+  await page.evaluate(() => {
+    const sponsored = document.createElement('ytd-rich-item-renderer');
+    sponsored.setAttribute('data-testid', 'deferred-sponsored');
+    sponsored.innerHTML = '<ad-badge-view-model>Sponsored</ad-badge-view-model><a href="https://googleadservices.com/pagead/aclk">Deferred sponsored card</a>';
+    document.querySelector('ytd-browse[page-subtype="home"] ytd-rich-grid-renderer #contents')?.prepend(sponsored);
+    history.pushState({}, '', '/');
+    window.dispatchEvent(new PopStateEvent('popstate'));
+  });
+
+  await expect(page.locator('[data-testid="deferred-sponsored"]')).toHaveCount(1);
+  await expect(page.locator('[data-testid="deferred-sponsored"]')).toHaveCount(0, { timeout: 3_000 });
   expect(extensionErrors(errors)).toEqual([]);
 });
 
@@ -140,7 +166,7 @@ test('watch fixture validates mode classes, visible comments, hover grow, and vi
   const page = await context.newPage();
   const errors = await openFixture(page, 'watch', 'https://www.youtube.com/watch?v=fixture');
 
-  const videoSurface = page.locator('video.html5-main-video');
+  const videoSurface = page.locator('#movie_player video.html5-main-video');
   await setupPlaybackProbe(page);
   await expect(page.locator('body')).toHaveClass(/simple-yt-tweaks-default-view/);
   await expect(page.locator('#comments')).toBeVisible();
@@ -155,6 +181,11 @@ test('watch fixture validates mode classes, visible comments, hover grow, and vi
     timeout: 1_500,
   });
 
+  const modernRecommendedCard = page.locator('[data-testid="modern-recommended-card"]');
+  await modernRecommendedCard.locator('yt-thumbnail-view-model').hover();
+  await expect(modernRecommendedCard).not.toHaveClass(/simple-yt-tweaks-grid-hover-ready/, { timeout: 250 });
+  await expect(modernRecommendedCard).toHaveClass(/simple-yt-tweaks-grid-hover-ready/, { timeout: 1_500 });
+
   await videoSurface.click({ position: { x: 120, y: 120 } });
   await expect.poll(() => page.evaluate(() => window.__simpleYtTweaksPlaybackEvents ?? [])).toContainEqual('play');
   await videoSurface.click({ position: { x: 120, y: 120 } });
@@ -166,7 +197,7 @@ test('watch fixture validates mode classes, visible comments, hover grow, and vi
   await expect(page.locator('body')).toHaveClass(/simple-yt-tweaks-theater/);
   await expect(page.locator('#comments')).toBeVisible();
 
-  const playerPointerEvents = await page.locator('video.html5-main-video').evaluate((video) => getComputedStyle(video).pointerEvents);
+  const playerPointerEvents = await page.locator('#movie_player video.html5-main-video').evaluate((video) => getComputedStyle(video).pointerEvents);
   expect(playerPointerEvents).toBe('auto');
   expect(extensionErrors(errors)).toEqual([]);
 });
@@ -207,9 +238,41 @@ test('player click fallback ignores controls and modified video clicks', async (
   await page.waitForTimeout(260);
   expect(await playbackEvents(page)).toEqual([]);
 
-  await page.locator('video.html5-main-video').click({ modifiers: ['Shift'], position: { x: 120, y: 120 } });
+  await page.locator('#movie_player video.html5-main-video').click({ modifiers: ['Shift'], position: { x: 120, y: 120 } });
   await page.waitForTimeout(260);
   expect(await playbackEvents(page)).toEqual([]);
+  expect(extensionErrors(errors)).toEqual([]);
+});
+
+test('player click fallback corrects transient native no-op clicks', async ({ context }) => {
+  const page = await context.newPage();
+  const errors = await openFixture(page, 'watch', 'https://www.youtube.com/watch?v=fixture');
+
+  const videoSurface = page.locator('#movie_player video.html5-main-video');
+  await setupPlaybackProbe(page);
+  await videoSurface.click({ position: { x: 120, y: 120 } });
+  await expect.poll(() => playbackEvents(page)).toContainEqual('play');
+
+  await videoSurface.evaluate((video) => {
+    window.__simpleYtTweaksPlaybackEvents = [];
+    window.__simpleYtTweaksSimulateTransientClick = true;
+    document.querySelector('#movie_player')?.addEventListener(
+      'click',
+      () => {
+        if (!window.__simpleYtTweaksSimulateTransientClick) return;
+        window.__simpleYtTweaksSimulateTransientClick = false;
+        video.pause();
+        window.setTimeout(() => {
+          void video.play();
+        }, 260);
+      },
+      { capture: true },
+    );
+  });
+
+  await videoSurface.click({ position: { x: 120, y: 120 } });
+  await expect.poll(() => playbackEvents(page), { timeout: 1_500 }).toEqual(['pause', 'play', 'pause']);
+  await expect.poll(() => videoSurface.evaluate((video) => video.paused)).toBe(true);
   expect(extensionErrors(errors)).toEqual([]);
 });
 

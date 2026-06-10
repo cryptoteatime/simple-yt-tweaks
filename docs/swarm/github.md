@@ -45,7 +45,7 @@ Use this file to record the repo's GitHub status and autonomous PR policy.
 
 | Task ID | Branch | PR | Status | Owner | Notes |
 | --- | --- | --- | --- | --- | --- |
-| none | none | none | none | none | none |
+| `SYT-021` | `swarm/syt-008b-native-hover-spa-regression` | TBD | Needs push / draft PR | Controller | Fixes #21; full validation and live Chrome smoke passed locally. |
 
 ## Setup Log
 
@@ -58,3 +58,4 @@ Use this file to record the repo's GitHub status and autonomous PR policy.
 - 2026-04-29: Opened draft PR #16 for `SYT-010C`.
 - 2026-04-29: PR #16 squash-merged for `SYT-010C`; branch cleanup completed.
 - 2026-04-29: PR #18 squash-merged for `SYT-010D`; branch cleanup completed.
+- 2026-06-10: Opened issue #21 for native Home/Search hover preview stall after watch-to-Home SPA navigation and modern `#secondary yt-lockup-view-model` recommendation selector drift. Branch `swarm/syt-008b-native-hover-spa-regression` is expected to open a draft PR.

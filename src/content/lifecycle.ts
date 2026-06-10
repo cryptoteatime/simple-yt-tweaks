@@ -256,18 +256,28 @@ export function bindPlayerSurfaceClickFallback(): void {
       if (!video) return;
 
       const wasPaused = video.paused;
-      window.setTimeout(() => {
+      const applyFallbackIfUnchanged = (): boolean => {
         const currentVideo = getVideo();
-        if (!currentVideo || !document.body.contains(currentVideo) || currentVideo.paused !== wasPaused) return;
+        if (!currentVideo || !document.body.contains(currentVideo)) return true;
+        if (currentVideo.paused !== wasPaused) return false;
 
         if (wasPaused) {
           void currentVideo.play().catch((error) => {
             console.warn('Simple YT Tweaks player click fallback failed:', error);
           });
-          return;
+          return true;
         }
 
         currentVideo.pause();
+        return true;
+      };
+
+      window.setTimeout(() => {
+        if (applyFallbackIfUnchanged()) return;
+
+        window.setTimeout(() => {
+          applyFallbackIfUnchanged();
+        }, 340);
       }, 180);
     },
     { capture: true, passive: true },

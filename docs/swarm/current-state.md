@@ -4,7 +4,7 @@
 
 - Name: Simple YT Tweaks
 - Folder: `/Users/d4ngl/Git Repos/Codex/simple-yt-tweaks`
-- Status: existing repo, post-v0.3.0 hardening setup
+- Status: existing repo, post-v0.3.0 hardening with active live-regression fix lane
 - GitHub: `https://github.com/cryptoteatime/simple-yt-tweaks`
 
 ## Project Brief
@@ -19,9 +19,10 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 
 ## Current Focus
 
-1. Route #10 hardening into small PRs with `validate:all` as the final gate.
-2. Keep #8 as a future high-risk research lane until tests and product direction justify it.
-3. Keep release-candidate work separate from routine fixture/source hardening.
+1. Review and integrate `SYT-021` / GitHub #21 after the native hover SPA regression branch is pushed.
+2. Keep #10 hardening in small PRs with `validate:all` as the final gate.
+3. Keep #8 as a future high-risk research lane until tests and product direction justify it.
+4. Keep release-candidate work separate from routine fixture/source hardening.
 
 ## Success Criteria
 
@@ -48,10 +49,11 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 - Settings are duplicated between `src/shared/settings.ts` and `src/content/settings.ts`; validation checks parity, but refactoring could affect bundling.
 - Fixture tests do not fully simulate live YouTube hover preview overlay behavior, so #8 needs a research gate and likely human/visual QA.
 - Live YouTube smoke can be flaky due to consent, experiments, bot checks, ads, or network issues.
+- Current live YouTube recommendations may render as modern `#secondary yt-lockup-view-model` cards instead of legacy compact renderers.
 
 ## Recommended First Milestone
 
-`SYT-010D` is integrated: pure helper tests and Playwright unit-project wiring were squash-merged through PR #18.
+`SYT-021` is ready for review on branch `swarm/syt-008b-native-hover-spa-regression`: it fixes GitHub #21, expands fixture coverage, and passed full validation plus signed-in Chrome live smoke.
 
 ## Verification Defaults
 
@@ -76,16 +78,16 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 
 - Controller heartbeat: active.
 - Heartbeat automation id: `simple-yt-tweaks-controller-heartbeat`.
-- Heartbeat cadence: about 90 minutes while active.
+- Heartbeat cadence: about 45 minutes while this live-regression lane is active.
 - Execution strategy: paced controller with direct subagents only after lane readiness.
 - Batch dispatch policy: disabled by default via max 1 active subagent; require disjoint parallel-safe labels if capacity is raised.
 - Shared docs lock: controller owns task-board, current-state, controller-directives, and agent-registry during parallel work unless assigned.
-- Active subagents: none after `SYT-010D` integration.
+- Active subagents: none; `SYT-021` is controller-authored and ready for reviewer routing after PR creation.
 - Agent registry: `docs/swarm/agent-registry.md`.
 - Bootstrap log: `docs/swarm/bootstrap-log.md`.
 - GitHub workflow: `docs/swarm/github.md`.
 
 ## Last Updated
 
-- Date: 2026-04-29
-- By: Planck, `SYT-010D` Integrator
+- Date: 2026-06-10
+- By: Codex controller, `SYT-021` Runner
