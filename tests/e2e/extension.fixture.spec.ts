@@ -257,6 +257,66 @@ test('home fixture retries delayed inline preview playback after watch-to-home n
   expect(extensionErrors(errors)).toEqual([]);
 });
 
+test('home fixture still nudges card hover when stale preview is paused under the pointer', async ({ context }) => {
+  const page = await context.newPage();
+  const errors = await openFixture(page, 'home', 'https://www.youtube.com/');
+
+  await page.mouse.move(80, 80);
+  await page.evaluate(() => {
+    history.pushState({}, '', '/watch?v=fixture');
+    window.dispatchEvent(new PopStateEvent('popstate'));
+  });
+  await page.waitForTimeout(220);
+  const hoverPoint = await page.evaluate(() => {
+    const stalePreview = document.createElement('ytd-video-preview');
+    stalePreview.setAttribute('data-testid', 'identityless-paused-preview');
+    stalePreview.setAttribute(
+      'style',
+      'position: fixed; inset: 0; z-index: 10000; pointer-events: auto;',
+    );
+    stalePreview.innerHTML = `
+      <div id="inline-preview-player">
+        <video data-testid="identityless-paused-preview-video" style="display: block; width: 100vw; height: 100vh;"></video>
+      </div>
+    `;
+    document.querySelector('#video-preview')?.append(stalePreview);
+
+    const card = document.createElement('ytd-rich-item-renderer');
+    card.setAttribute('data-testid', 'paused-preview-under-pointer-card');
+    card.setAttribute('data-native-preview-card', 'paused-preview-under-pointer-card');
+    card.setAttribute('items-per-row', '3');
+    card.setAttribute(
+      'style',
+      'display: block; width: 280px; height: 180px; margin: 0; padding: 0; position: fixed; left: 40px; top: 96px; z-index: 1;',
+    );
+    card.innerHTML = `
+      <a class="ytLockupViewModelContentImage" href="/watch?v=paused-preview-under-pointer-card" style="display: block; width: 100%; height: 128px;">
+        <yt-thumbnail-view-model style="display: block; width: 100%; height: 128px;"></yt-thumbnail-view-model>
+      </a>
+      <h3>Paused preview under pointer fixture</h3>
+    `;
+
+    document.querySelector('ytd-browse[page-subtype="home"] ytd-rich-grid-renderer #contents')?.prepend(card);
+    history.pushState({}, '', '/');
+    window.dispatchEvent(new PopStateEvent('popstate'));
+
+    const rect = card.getBoundingClientRect();
+    return {
+      x: rect.left + rect.width / 2,
+      y: rect.top + Math.min(72, rect.height / 2),
+    };
+  });
+
+  await page.mouse.move(hoverPoint.x, hoverPoint.y);
+  await expect
+    .poll(() => page.evaluate(() => window.__simpleYtTweaksNativeHoverLifecycleEvents ?? []), { timeout: 2_500 })
+    .toContainEqual('paused-preview-under-pointer-card:mousemove:synthetic');
+  await expect(page.locator('[data-testid="paused-preview-under-pointer-card"]')).not.toHaveClass(
+    /simple-yt-tweaks-grid-hover-ready/,
+  );
+  expect(extensionErrors(errors)).toEqual([]);
+});
+
 test('home fixture clears stale synthetic native hover before nudging another card', async ({ context }) => {
   const page = await context.newPage();
   const errors = await openFixture(page, 'home', 'https://www.youtube.com/');

@@ -629,6 +629,7 @@ function resetNativeFeedHoverNudgeForNavigation(): void {
   nativeFeedHoverNudgeHref = location.href;
   nativeFeedHoverNudgeKey = '';
   nativeFeedHoverNudgeAt = 0;
+  clearNativePreviewPlayTimer();
   clearNativeFeedHoverLifecycle();
 }
 
@@ -769,6 +770,10 @@ function nativePreviewMatchesCard(video: HTMLVideoElement, card: HTMLElement): b
   return cardVideoId === previewVideoId;
 }
 
+function nativePreviewIsPlaying(video: HTMLVideoElement): boolean {
+  return !video.paused && video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA;
+}
+
 function getNativePreviewPlaybackFallbackKey(card: HTMLElement | null): string {
   if (card) return getNativeFeedHoverNudgeKey(card);
 
@@ -798,7 +803,7 @@ function dispatchNativeFeedHoverNudge(card: HTMLElement): void {
       clearNativeFeedSyntheticHover(target);
     }
     scheduleNativePreviewPlaybackFallback(card);
-    return;
+    if (nativePreviewIsPlaying(previewVideo)) return;
   }
 
   const alreadySyntheticHovered = nativeFeedSyntheticHoverCard === card && nativeFeedSyntheticHoverTarget === target;
@@ -848,7 +853,7 @@ function scheduleNativeFeedHoverLifecycleRecovery(): void {
   const previewVideo = getNativePreviewVideoUnderPointer();
   if (previewVideo && nativePreviewMatchesCard(previewVideo, card)) {
     scheduleNativePreviewPlaybackFallback(card);
-    return;
+    if (nativePreviewIsPlaying(previewVideo)) return;
   }
 
   const now = Date.now();

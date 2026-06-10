@@ -17,6 +17,7 @@ Use this file for durable human steering that should survive across controller t
 - 2026-06-10: #21 was not actually fixed in live use. User reported Home hover autoplay still failing after watch-to-Home navigation and explicitly asked to stop deferring, avoid bypassing blocked browser surfaces, and finish the fix with real validation.
 - 2026-06-10: User provided screenshot showing multiple Home cards with stuck opaque hover backgrounds and missing hover autoplay after refresh -> watch video -> SPA Home navigation. Track as #36 / `SYT-036`; do not treat old #31 closure as proof this is fixed.
 - 2026-06-10: First `SYT-036` human QA failed. User reported autoplay on hover still does not work when going from a video back to Home, while it works on first YouTube load. Treat stricter advancing-preview validation and live signed-in Chrome inspection as required supporting evidence.
+- 2026-06-10: User clarified `SYT-036` is specifically watch video -> click YouTube logo/top-left Home or sidebar Home -> Home hover autoplay fails. Visiting profile and returning Home works. Do not substitute browser Back/profile navigation as proof for this bug.
 
 ## Product Ideas
 

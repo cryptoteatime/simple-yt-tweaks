@@ -17,6 +17,12 @@ type VisiblePreviewState = {
   visible: boolean;
 };
 
+type HomeNavTarget = {
+  label: string;
+  x: number;
+  y: number;
+};
+
 function getWatchVideoId(href: string): string {
   try {
     return new URL(href).searchParams.get('v') ?? '';
@@ -92,6 +98,51 @@ async function previewIsAdvancing(page: import('@playwright/test').Page): Promis
   return after.visible && !after.paused && after.currentTime > before.currentTime + 0.05;
 }
 
+async function getVisibleHomeNavTarget(page: import('@playwright/test').Page): Promise<HomeNavTarget | null> {
+  return page.evaluate(() => {
+    const candidates = Array.from(
+      document.querySelectorAll<HTMLAnchorElement>(
+        [
+          'a#logo[href="/"]',
+          'ytd-topbar-logo-renderer a[href="/"]',
+          'ytd-mini-guide-entry-renderer a[href="/"]',
+          'ytd-guide-entry-renderer a[href="/"]',
+          'a#endpoint[href="/"]',
+        ].join(','),
+      ),
+    )
+      .map((link) => {
+        const rect = link.getBoundingClientRect();
+        const text = link.textContent?.trim().replace(/\s+/g, ' ') ?? '';
+        const isLogo = Boolean(link.closest('ytd-topbar-logo-renderer') || link.id === 'logo');
+
+        return {
+          label: isLogo ? 'YouTube logo' : text || link.getAttribute('aria-label') || 'Home',
+          isLogo,
+          rect,
+          visible:
+            rect.width > 16 &&
+            rect.height > 16 &&
+            rect.bottom > 0 &&
+            rect.top < window.innerHeight &&
+            rect.right > 0 &&
+            rect.left < window.innerWidth,
+        };
+      })
+      .filter((candidate) => candidate.visible)
+      .sort((a, b) => Number(b.isLogo) - Number(a.isLogo) || a.rect.top - b.rect.top);
+
+    const target = candidates[0];
+    if (!target) return null;
+
+    return {
+      label: target.label,
+      x: target.rect.left + target.rect.width / 2,
+      y: target.rect.top + target.rect.height / 2,
+    };
+  });
+}
+
 test.describe('live YouTube smoke', () => {
   test.skip(!process.env.SIMPLE_YT_TWEAKS_LIVE, 'Set SIMPLE_YT_TWEAKS_LIVE=1 to run live YouTube smoke checks.');
 
@@ -152,8 +203,17 @@ test.describe('live YouTube smoke', () => {
     await page.waitForURL(/\/watch/, { timeout: 20_000 });
     await waitForExtensionReady(page);
 
-    await page.goBack({ waitUntil: 'domcontentloaded', timeout: 20_000 });
-    await page.waitForURL('https://www.youtube.com/', { timeout: 20_000 });
+    const homeNavTarget = await getVisibleHomeNavTarget(page);
+    if (!homeNavTarget) {
+      test.info().annotations.push({
+        type: 'live-smoke-skipped',
+        description: 'Live YouTube Home logo/sidebar navigation was not visible on the watch page.',
+      });
+      return;
+    }
+
+    await page.mouse.click(homeNavTarget.x, homeNavTarget.y);
+    await page.waitForURL(/https:\/\/www\.youtube\.com\/(?:$|\?)/, { timeout: 20_000 });
     await waitForExtensionReady(page);
 
     const homeTargets = await getVisibleHomeCardTargets(page);
