@@ -46,7 +46,7 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 
 | Task ID | Branch | Reviewer Focus | Verification Tier | Handoff |
 | --- | --- | --- | --- | --- |
-| `SYT-036` | `swarm/syt-036-home-hover-stuck-lifecycle` | Final failed-QA follow-up: media-target nudges, wrapper-aware preview bounds, stale/mismatched/broken preview cleanup, stricter title/body live smoke, exact Brave PWA path evidence, no #8 grow/highlight | full + live smoke + Brave PWA supplemental check already run by Runner | `docs/swarm/handoffs/SYT-036.md` |
+| `SYT-036` | `swarm/syt-036-home-hover-stuck-lifecycle` | Final failed-QA follow-up: remove Home/Search synthetic hover/playback recovery, preserve YouTube's zero-height preview loader, clean only visible detached overlays, guarded watch-to-Home URL watcher/reload, exact Brave PWA path evidence, no #8 grow/highlight | full + live smoke + Brave PWA supplemental check already run by Runner | `docs/swarm/handoffs/SYT-036.md` |
 
 ## Ready To Integrate
 

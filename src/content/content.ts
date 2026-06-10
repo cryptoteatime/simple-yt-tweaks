@@ -9,6 +9,13 @@ import { state } from './state';
 import { buildStickyPlayerCss, resetStickyPlayerState, updateStickyPlayerState } from './sticky-player';
 import { buildTheaterCss, clearStaleGuideFocus, updateLiveChatTargets, updateMastheadTargets, updateScrollbarState, updateTopHoverState, updateViewClasses } from './theater';
 
+const WATCH_TO_HOME_RELOAD_KEY = 'simpleYtTweaksWatchToHomeReload';
+const WATCH_TO_HOME_RELOAD_GUARD_MS = 8_000;
+const WATCH_TO_HOME_URL_POLL_MS = 250;
+let watchNavigationCaptureBound = false;
+let watchToHomeUrlWatcherId: number | null = null;
+let lastObservedNavigationHref = location.href;
+
 function buildUtilityCss(): string {
   return `
     .${GENERAL_HIDDEN_CLASS} {
@@ -111,9 +118,132 @@ function ensureStyle(): void {
   document.body.classList.add('simple-yt-tweaks-active');
 }
 
+function parseLocation(href: string): URL | null {
+  try {
+    return new URL(href, location.origin);
+  } catch {
+    return null;
+  }
+}
+
+function getWatchVideoId(href: string): string {
+  const url = parseLocation(href);
+  if (!url || url.pathname !== '/watch') return '';
+
+  return url.searchParams.get('v') ?? '';
+}
+
+function recordCurrentWatchNavigation(syncCurrentUrl = false): void {
+  const videoId = getWatchVideoId(location.href);
+  if (!videoId || !document.querySelector('ytd-watch-flexy')) return;
+
+  state.lastWatchNavigationVideoId = videoId;
+  if (syncCurrentUrl) {
+    state.currentUrl = location.href;
+  }
+  try {
+    sessionStorage.removeItem(WATCH_TO_HOME_RELOAD_KEY);
+  } catch {
+    // If storage is unavailable, the URL transition check below still keeps the reload one-shot per page life.
+  }
+}
+
+function isHomeNavigationClick(event: MouseEvent): boolean {
+  if (!(event.target instanceof Element)) return false;
+
+  const link = event.target.closest<HTMLAnchorElement>(
+    [
+      'ytd-topbar-logo-renderer a',
+      'a#logo',
+      'a[title="YouTube Home"]',
+      'a[aria-label="YouTube Home"]',
+      'ytd-guide-entry-renderer a[href="/"]',
+      'a[href="/"]',
+    ].join(','),
+  );
+  if (!link) return false;
+  if (link.getAttribute('href') === '/') return true;
+
+  const label = `${link.getAttribute('title') ?? ''} ${link.getAttribute('aria-label') ?? ''}`.trim();
+  return /\b(?:YouTube|Home)\b/i.test(label);
+}
+
+function bindWatchNavigationCapture(): void {
+  if (watchNavigationCaptureBound) return;
+  watchNavigationCaptureBound = true;
+
+  window.addEventListener('yt-navigate-start', () => recordCurrentWatchNavigation(true), {
+    capture: true,
+    passive: true,
+  });
+  document.addEventListener(
+    'click',
+    (event) => {
+      if (isHomeNavigationClick(event)) recordCurrentWatchNavigation(true);
+    },
+    { capture: true, passive: true },
+  );
+}
+
+function syncWatchToHomeUrlWatcher(): void {
+  recordCurrentWatchNavigation();
+
+  const nextHref = location.href;
+  if (nextHref === lastObservedNavigationHref) return;
+
+  const previousHref = lastObservedNavigationHref;
+  lastObservedNavigationHref = nextHref;
+  maybeReloadHomeAfterWatchNavigation(previousHref, nextHref);
+}
+
+function bindWatchToHomeUrlWatcher(): void {
+  if (watchToHomeUrlWatcherId !== null) return;
+  watchToHomeUrlWatcherId = window.setInterval(syncWatchToHomeUrlWatcher, WATCH_TO_HOME_URL_POLL_MS);
+}
+
+function maybeReloadHomeAfterWatchNavigation(previousHref: string, nextHref: string): boolean {
+  const previousUrl = parseLocation(previousHref);
+  const nextUrl = parseLocation(nextHref);
+  if (!previousUrl || !nextUrl || previousUrl.pathname !== '/watch' || nextUrl.pathname !== '/') return false;
+
+  const videoId = state.lastWatchNavigationVideoId;
+  if (!videoId) return false;
+
+  const now = Date.now();
+  let lastReload = '';
+  try {
+    lastReload = sessionStorage.getItem(WATCH_TO_HOME_RELOAD_KEY) ?? '';
+  } catch {
+    lastReload = '';
+  }
+
+  if (lastReload) {
+    const [lastVideoId, lastAtValue] = lastReload.split(':');
+    const lastAt = Number(lastAtValue);
+    if (lastVideoId === videoId && Number.isFinite(lastAt) && now - lastAt < WATCH_TO_HOME_RELOAD_GUARD_MS) {
+      return false;
+    }
+  }
+
+  try {
+    sessionStorage.setItem(WATCH_TO_HOME_RELOAD_KEY, `${videoId}:${now}`);
+  } catch {
+    // The reload itself is still safe; storage only prevents duplicate navigation events from retriggering.
+  }
+
+  window.setTimeout(() => {
+    if (location.pathname === '/') {
+      location.reload();
+    }
+  }, 80);
+
+  return true;
+}
+
 function resetNavigationState(): void {
   if (location.href === state.currentUrl) return;
 
+  const previousUrl = state.currentUrl;
   state.currentUrl = location.href;
   document.body.classList.remove('simple-yt-tweaks-player-ui-hover');
   document.body.classList.remove('simple-yt-tweaks-player-ui-focus');
@@ -121,6 +251,7 @@ function resetNavigationState(): void {
   resetStickyPlayerState();
   resetFullscreenNavigationState();
   state.homeFeedCleanupDeferredUntil = Date.now() + 1_500;
+  maybeReloadHomeAfterWatchNavigation(previousUrl, location.href);
 }
 
 function refreshPlayerLayout(): void {
@@ -178,6 +309,9 @@ function applyFeatureState(): void {
   }
 
   ensureStyle();
+  bindWatchNavigationCapture();
+  bindWatchToHomeUrlWatcher();
+  recordCurrentWatchNavigation();
   resetNavigationState();
   updateViewportHeightVar();
   const modeChanged = updateViewClasses();
