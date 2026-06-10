@@ -8,6 +8,8 @@ const GRID_EDGE_END_CLASS = 'simple-yt-tweaks-grid-edge-end';
 const SEARCH_BADGE_ROW_CLASS = 'simple-yt-tweaks-search-badges';
 const SIDEBAR_HOVER_DELAY_MS = 560;
 const FALLBACK_HOVER_DELAY_MS = 250;
+const NATIVE_FEED_HOVER_NUDGE_DELAYS_MS = [80, 260, 620];
+const NATIVE_FEED_HOVER_NUDGE_COOLDOWN_MS = 1_400;
 const PREVIEW_CONTAINER_SELECTOR = [
   'ytd-moving-thumbnail-renderer',
   'ytd-thumbnail-overlay-loading-preview-renderer',
@@ -77,12 +79,33 @@ const HOVER_MEDIA_SELECTOR = [
   'ytd-watch-next-secondary-results-renderer yt-lockup-view-model yt-thumbnail-view-model',
   '#secondary yt-lockup-view-model yt-thumbnail-view-model',
 ].join(',');
+const NATIVE_FEED_CARD_SELECTORS = [
+  'ytd-browse[page-subtype="home"] ytd-rich-item-renderer',
+  'ytd-search ytd-video-renderer',
+  'ytd-search ytd-grid-video-renderer',
+  'ytd-search yt-lockup-view-model',
+];
+const NATIVE_FEED_CARD_SELECTOR = NATIVE_FEED_CARD_SELECTORS.join(',');
+const NATIVE_FEED_CARD_HOVER_SELECTOR = NATIVE_FEED_CARD_SELECTORS.map((selector) => `${selector}:hover`).join(',');
+const NATIVE_FEED_HOVER_TARGET_SELECTOR = [
+  'a#thumbnail[href*="/watch"]',
+  '.ytLockupViewModelContentImage[href*="/watch"]',
+  'a[href^="/watch"]',
+  'a[href*="youtube.com/watch"]',
+  'ytd-thumbnail',
+  'yt-thumbnail-view-model',
+].join(',');
 
 let handlersBound = false;
 let activeHoverCard: HTMLElement | null = null;
 let hoverReadyTimer: number | null = null;
 let hoverClearTimer: number | null = null;
 let nativePreviewPlayTimer: number | null = null;
+let nativeFeedHoverNudgeTimers: number[] = [];
+let nativeFeedHoverNudgeHref = typeof location === 'undefined' ? '' : location.href;
+let nativeFeedHoverNudgeKey = '';
+let nativeFeedHoverNudgeAt = 0;
+let dispatchingNativeFeedHoverNudge = false;
 let lastPointerX = Number.POSITIVE_INFINITY;
 let lastPointerY = Number.POSITIVE_INFINITY;
 
@@ -486,6 +509,14 @@ function clearNativePreviewPlayTimer(): void {
   nativePreviewPlayTimer = null;
 }
 
+function clearNativeFeedHoverNudges(): void {
+  for (const timer of nativeFeedHoverNudgeTimers) {
+    window.clearTimeout(timer);
+  }
+
+  nativeFeedHoverNudgeTimers = [];
+}
+
 function clearActiveHoverCard(): void {
   clearHoverReadyTimer();
   clearHoverClearTimer();
@@ -521,6 +552,15 @@ function isNativeFeedPreviewPage(): boolean {
   return location.pathname === '/' || location.pathname === '/results';
 }
 
+function resetNativeFeedHoverNudgeForNavigation(): void {
+  if (nativeFeedHoverNudgeHref === location.href) return;
+
+  nativeFeedHoverNudgeHref = location.href;
+  nativeFeedHoverNudgeKey = '';
+  nativeFeedHoverNudgeAt = 0;
+  clearNativeFeedHoverNudges();
+}
+
 function getNativePreviewVideoUnderPointer(): HTMLVideoElement | null {
   if (!isNativeFeedPreviewPage()) return null;
   if (!Number.isFinite(lastPointerX) || !Number.isFinite(lastPointerY)) return null;
@@ -539,6 +579,197 @@ function getNativePreviewVideoUnderPointer(): HTMLVideoElement | null {
   }
 
   return null;
+}
+
+function getNativeFeedCard(target: Element | null): HTMLElement | null {
+  const card = target?.closest<HTMLElement>(NATIVE_FEED_CARD_SELECTOR) ?? null;
+  if (!card || card.classList.contains(GENERAL_HIDDEN_CLASS) || card.hidden) return null;
+  if (!hasWatchTarget(card)) return null;
+  if (card.querySelector('a[href*="/shorts/"], a[href="/shorts"]')) return null;
+  if (
+    card.querySelector(
+      [
+        'a[href*="list=RD"]',
+        'a[href*="start_radio=1"]',
+        'a[href*="/playlist?list="]',
+        'a[href^="/playlist"]',
+      ].join(','),
+    )
+  ) {
+    return null;
+  }
+
+  return card;
+}
+
+function getWatchHref(element: Element): string {
+  return element.querySelector<HTMLAnchorElement>('a[href*="/watch"]')?.href ?? '';
+}
+
+function getWatchVideoId(href: string): string {
+  if (!href) return '';
+
+  try {
+    const url = new URL(href, location.origin);
+    if (url.pathname !== '/watch') return '';
+    return url.searchParams.get('v') ?? '';
+  } catch {
+    return '';
+  }
+}
+
+function getNativeFeedCardByPointerGeometry(): HTMLElement | null {
+  if (!Number.isFinite(lastPointerX) || !Number.isFinite(lastPointerY)) return null;
+
+  for (const candidate of document.querySelectorAll<HTMLElement>(NATIVE_FEED_CARD_SELECTOR)) {
+    const card = getNativeFeedCard(candidate);
+    if (!card) continue;
+
+    const rect = card.getBoundingClientRect();
+    if (rect.width <= 0 || rect.height <= 0) continue;
+    if (
+      lastPointerX >= rect.left &&
+      lastPointerX <= rect.right &&
+      lastPointerY >= rect.top &&
+      lastPointerY <= rect.bottom
+    ) {
+      return card;
+    }
+  }
+
+  return null;
+}
+
+function getNativeFeedCardUnderPointer(): HTMLElement | null {
+  if (!isNativeFeedPreviewPage()) return null;
+
+  const target = getElementUnderPointer();
+  const cardAtPointer = getNativeFeedCard(target);
+  if (cardAtPointer) return cardAtPointer;
+
+  const cardAtPointerGeometry = getNativeFeedCardByPointerGeometry();
+  if (cardAtPointerGeometry) return cardAtPointerGeometry;
+
+  return getNativeFeedCard(document.querySelector(NATIVE_FEED_CARD_HOVER_SELECTOR));
+}
+
+function getNativeFeedHoverTarget(card: HTMLElement): HTMLElement {
+  const targetAtPointer = getElementUnderPointer();
+  if (targetAtPointer && card.contains(targetAtPointer)) {
+    const mediaTarget = targetAtPointer.closest<HTMLElement>(NATIVE_FEED_HOVER_TARGET_SELECTOR);
+    if (mediaTarget && card.contains(mediaTarget)) return mediaTarget;
+  }
+
+  return card.querySelector<HTMLElement>(NATIVE_FEED_HOVER_TARGET_SELECTOR) ?? card;
+}
+
+function getNativeFeedHoverPoint(card: HTMLElement, target: HTMLElement): { x: number; y: number } {
+  if (Number.isFinite(lastPointerX) && Number.isFinite(lastPointerY)) {
+    const cardRect = card.getBoundingClientRect();
+    if (
+      lastPointerX >= cardRect.left &&
+      lastPointerX <= cardRect.right &&
+      lastPointerY >= cardRect.top &&
+      lastPointerY <= cardRect.bottom
+    ) {
+      return { x: lastPointerX, y: lastPointerY };
+    }
+  }
+
+  const rect = target.getBoundingClientRect();
+  return {
+    x: rect.left + rect.width / 2,
+    y: rect.top + rect.height / 2,
+  };
+}
+
+function getNativeFeedHoverNudgeKey(card: HTMLElement): string {
+  const href = getWatchHref(card) || card.textContent?.trim() || '';
+  const rect = card.getBoundingClientRect();
+  return `${location.href}|${href}|${Math.round(rect.left)}:${Math.round(rect.top)}`;
+}
+
+function nativePreviewMatchesCard(video: HTMLVideoElement, card: HTMLElement): boolean {
+  const cardVideoId = getWatchVideoId(getWatchHref(card));
+  const previewRoot = video.closest('ytd-video-preview');
+  const previewVideoId = previewRoot ? getWatchVideoId(getWatchHref(previewRoot)) : '';
+
+  if (!cardVideoId || !previewVideoId) return true;
+  return cardVideoId === previewVideoId;
+}
+
+function dispatchNativeFeedHoverNudge(card: HTMLElement): void {
+  if (!document.body.contains(card) || !isPointerInsideCard(card)) return;
+  const previewVideo = getNativePreviewVideoUnderPointer();
+  if (previewVideo && nativePreviewMatchesCard(previewVideo, card)) {
+    scheduleNativePreviewPlaybackFallback();
+    return;
+  }
+
+  const target = getNativeFeedHoverTarget(card);
+  const point = getNativeFeedHoverPoint(card, target);
+  const mouseOptions: MouseEventInit = {
+    bubbles: true,
+    cancelable: true,
+    composed: true,
+    clientX: point.x,
+    clientY: point.y,
+    screenX: point.x,
+    screenY: point.y,
+    view: window,
+  };
+  const pointerOptions: PointerEventInit = {
+    ...mouseOptions,
+    pointerId: 1,
+    pointerType: 'mouse',
+    isPrimary: true,
+    buttons: 0,
+    pressure: 0,
+  };
+
+  dispatchingNativeFeedHoverNudge = true;
+  try {
+    target.dispatchEvent(new PointerEvent('pointerover', pointerOptions));
+    target.dispatchEvent(new MouseEvent('mouseover', mouseOptions));
+    target.dispatchEvent(new PointerEvent('pointerenter', { ...pointerOptions, bubbles: false }));
+    target.dispatchEvent(new MouseEvent('mouseenter', { ...mouseOptions, bubbles: false }));
+    target.dispatchEvent(new PointerEvent('pointermove', pointerOptions));
+    target.dispatchEvent(new MouseEvent('mousemove', mouseOptions));
+  } finally {
+    dispatchingNativeFeedHoverNudge = false;
+  }
+
+  window.setTimeout(scheduleNativePreviewPlaybackFallback, 120);
+}
+
+function scheduleNativeFeedHoverLifecycleRecovery(): void {
+  resetNativeFeedHoverNudgeForNavigation();
+
+  if (!isNativeFeedPreviewPage()) {
+    clearNativeFeedHoverNudges();
+    return;
+  }
+
+  const card = getNativeFeedCardUnderPointer();
+  if (!card) return;
+  const previewVideo = getNativePreviewVideoUnderPointer();
+  if (previewVideo && nativePreviewMatchesCard(previewVideo, card)) {
+    scheduleNativePreviewPlaybackFallback();
+    return;
+  }
+
+  const now = Date.now();
+  const key = getNativeFeedHoverNudgeKey(card);
+  if (key === nativeFeedHoverNudgeKey && now - nativeFeedHoverNudgeAt < NATIVE_FEED_HOVER_NUDGE_COOLDOWN_MS) {
+    return;
+  }
+
+  nativeFeedHoverNudgeKey = key;
+  nativeFeedHoverNudgeAt = now;
+  clearNativeFeedHoverNudges();
+  nativeFeedHoverNudgeTimers = NATIVE_FEED_HOVER_NUDGE_DELAYS_MS.map((delay) =>
+    window.setTimeout(() => dispatchNativeFeedHoverNudge(card), delay),
+  );
 }
 
 function scheduleNativePreviewPlaybackFallback(): void {
@@ -682,6 +913,7 @@ function isRecommendedHoverGrowEnabled(settings: Settings): boolean {
 export function syncGridHoverState(settings: Settings): void {
   // Home/search feed previews stay native; avoid writing YouTube's own column metadata during preview startup.
   scheduleNativePreviewPlaybackFallback();
+  scheduleNativeFeedHoverLifecycleRecovery();
 
   if (settings.generalApplyFeedColumnsToSearch) {
     moveSearchBadgesToChannelRow();
@@ -719,6 +951,9 @@ export function bindGridHoverHandlers(getSettings: () => Settings): void {
       lastPointerX = event.clientX;
       lastPointerY = event.clientY;
       scheduleNativePreviewPlaybackFallback();
+      if (!dispatchingNativeFeedHoverNudge) {
+        scheduleNativeFeedHoverLifecycleRecovery();
+      }
       if (!isRecommendedHoverGrowEnabled(getSettings())) return;
 
       const card = getHoverCard(event.target);
@@ -739,6 +974,9 @@ export function bindGridHoverHandlers(getSettings: () => Settings): void {
       lastPointerX = event.clientX;
       lastPointerY = event.clientY;
       scheduleNativePreviewPlaybackFallback();
+      if (!dispatchingNativeFeedHoverNudge) {
+        scheduleNativeFeedHoverLifecycleRecovery();
+      }
       if (!isRecommendedHoverGrowEnabled(getSettings())) return;
 
       const card = activeHoverCard ?? getHoverCard(event.target);
@@ -760,6 +998,7 @@ export function bindGridHoverHandlers(getSettings: () => Settings): void {
       lastPointerX = event.clientX;
       lastPointerY = event.clientY;
       clearNativePreviewPlayTimer();
+      clearNativeFeedHoverNudges();
       const card = activeHoverCard;
       if (!card) return;
       if (event.relatedTarget instanceof Node && card.contains(event.relatedTarget)) {
@@ -801,6 +1040,7 @@ export function bindGridHoverHandlers(getSettings: () => Settings): void {
     () => {
       lastPointerX = Number.POSITIVE_INFINITY;
       lastPointerY = Number.POSITIVE_INFINITY;
+      clearNativeFeedHoverNudges();
       clearActiveHoverCard();
     },
     { passive: true },

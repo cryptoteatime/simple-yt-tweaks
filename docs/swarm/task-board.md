@@ -25,6 +25,7 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 | `SYT-021` | Native hover SPA regression and live recommendation drift | Integrator | Integrated | `swarm/syt-008b-native-hover-spa-regression` | #21 native Home/Search preview repair, watch click fallback hardening, modern recommendation selector drift | serial-required | v0.3.0 baseline | high, live YouTube SPA/player behavior | `docs/swarm/handoffs/SYT-021.md` | #22 merged |
 | `SYT-010E` | Code-hardening lane after #21 | Integrator | Integrated | `swarm/syt-010e-code-hardening` | Grid-hover selector normalization with unit coverage | serial-required | `SYT-021` | medium/high, runtime source hardening | `docs/swarm/handoffs/SYT-010E.md` | #24 merged |
 | `SYT-010F` | Sticky Player hardening | Integrator | Integrated | `swarm/syt-010f-sticky-player-hardening` | Sticky Player visibility/resize helpers and deterministic dock/restore fixture coverage | serial-required | `SYT-010F` planning PR #26 merged | medium/high, player DOM docking | `docs/swarm/handoffs/SYT-010F.md` | #28 merged |
+| `SYT-031` | Home native hover autoplay after watch-to-Home SPA | Controller/Runner | Needs Review | `swarm/syt-031-home-hover-stationary-spa` | #31 stale/missing Home native preview recovery, fixture/live coverage | serial-required | `SYT-021` | high, live YouTube SPA preview lifecycle | `docs/swarm/handoffs/SYT-031.md` | pending |
 
 ## Backlog
 
@@ -69,7 +70,7 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 - Agent registry: `docs/swarm/agent-registry.md`.
 - Bootstrap log: `docs/swarm/bootstrap-log.md`.
 - GitHub workflow: `docs/swarm/github.md`.
-- Current controller phase: Phase 4 active; decide whether to plan `SYT-010G` or leave #10 open for later.
+- Current controller phase: Phase 4 active; review/integrate `SYT-031`, then decide whether to plan `SYT-010G` or leave #10 open for later.
 - 2026-06-10: User reported live watch-to-Home native hover autoplay regression. Controller opened #21 and draft PR #22 for `SYT-021` on `swarm/syt-008b-native-hover-spa-regression`.
 - 2026-06-10: User requested compact context/docs and more frequent automation. Completed historical handoffs were compacted to stubs with `docs/swarm/archive/README.md` reference mapping; `docs/swarm/context-map.md` is now the hot context entrypoint.
 - 2026-06-10: PR #22 squash-merged at `8f90ef1`, closing #21. Remote/local task branch cleanup completed. Route `SYT-010E` next.
@@ -77,3 +78,4 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 - 2026-06-10: `SYT-010F` planning selected Sticky Player hardening: pure visibility/resize helper coverage plus one deterministic dock/restore fixture if feasible. Keep #8 paused.
 - 2026-06-10: PR #26 squash-merged at `66d756f`, leaving #10 open. Next safe action is Senior Runner on `swarm/syt-010f-sticky-player-hardening`.
 - 2026-06-10: PR #28 squash-merged at `fa07c18`, adding Sticky Player geometry/unit/fixture hardening. PR #29 docs follow-up merged at `6580065`. Issue #10 remains open; #8 remains paused.
+- 2026-06-10: User reported #21 still failed after watch-to-Home SPA navigation. Controller opened #31 and implemented `SYT-031` to recover stale/missing native Home previews without reintroducing #8 hover grow.

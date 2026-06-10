@@ -4,14 +4,14 @@
 
 - Name: Simple YT Tweaks
 - Folder: `/Users/d4ngl/Git Repos/Codex/simple-yt-tweaks`
-- Status: existing repo, post-v0.3.0 hardening; #21, `SYT-010E`, and `SYT-010F` integrated
+- Status: existing repo, post-v0.3.0 hardening; #31 live Home hover regression patch is in review
 - GitHub: `https://github.com/cryptoteatime/simple-yt-tweaks`
 
 ## Project Brief
 
 - Brief: `docs/swarm/project-brief.md`
 - Question gate: deferred, not blocking
-- Dispatch readiness: swarm packet integrated; no active implementation lane after `SYT-010F`
+- Dispatch readiness: swarm packet integrated; `SYT-031` is the active review lane
 
 ## Goal
 
@@ -19,7 +19,7 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 
 ## Current Focus
 
-1. Decide whether issue #10 needs another bounded hardening lane or should remain open for later.
+1. Review and integrate `SYT-031` / issue #31 for Home native hover autoplay after watch-to-Home SPA navigation.
 2. Keep #10 hardening in small PRs with `validate:all` as the final gate.
 3. Keep #8 as a future high-risk research lane until tests and product direction justify it.
 4. Keep release-candidate work separate from routine fixture/source hardening.
@@ -54,7 +54,7 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 
 ## Recommended First Milestone
 
-`SYT-010F` is integrated via PR #28 at `fa07c18`, and docs follow-up PR #29 landed at `6580065`. Issue #10 remains open for future bounded hardening lanes. The next useful milestone should be planned as a new lane only if the controller can identify a narrow source/test target.
+`SYT-031` is the active regression lane. It fixes stale/missing Home native hover previews after watch-to-Home SPA navigation without reintroducing #8 enhanced Home/Search hover grow. After #31 integrates, issue #10 remains open for future bounded hardening lanes.
 
 ## Verification Defaults
 
@@ -91,4 +91,4 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 ## Last Updated
 
 - Date: 2026-06-10
-- By: Controller hot-state repair after `SYT-010F`
+- By: Controller/Runner for `SYT-031`

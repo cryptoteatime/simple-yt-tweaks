@@ -68,6 +68,7 @@ function homeFixture(): string {
     'YouTube Fixture Home',
     `
       <ytd-app>
+        <div id="video-preview" data-testid="home-video-preview-host"></div>
         <ytd-browse page-subtype="home">
           <ytd-rich-grid-renderer>
             <div id="contents">
@@ -112,6 +113,22 @@ function homeFixture(): string {
           </ytd-rich-grid-renderer>
         </ytd-browse>
       </ytd-app>
+      <script>
+        window.__simpleYtTweaksNativePreviewEvents = [];
+        document.addEventListener('mousemove', (event) => {
+          if (!(event.target instanceof Element)) return;
+          const card = event.target.closest('[data-testid="stationary-hover-video"]');
+          if (!card) return;
+
+          window.__simpleYtTweaksNativePreviewEvents.push(event.isTrusted ? 'mousemove:trusted' : 'mousemove:synthetic');
+          if (document.querySelector('[data-testid="stationary-preview-started"]')) return;
+
+          const marker = document.createElement('div');
+          marker.setAttribute('data-testid', 'stationary-preview-started');
+          marker.textContent = 'native preview started';
+          document.querySelector('#video-preview')?.append(marker);
+        });
+      </script>
     `,
   );
 }
