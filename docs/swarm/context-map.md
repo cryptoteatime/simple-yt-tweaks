@@ -7,7 +7,7 @@ Use this file as the fast entrypoint after `SWARM.md` and `docs/swarm/controller
 - Active implementation lane: `SYT-031`
 - Last integrated lane: `SYT-010F` implementation
 - GitHub issues: #31 open; #10 open
-- PR: pending for `SYT-031`
+- PR: #32 draft for `SYT-031`
 - Branch: `swarm/syt-031-home-hover-stationary-spa`
 - Current status: `SYT-031` implemented locally and awaiting PR review
 - Next priority lane: review/integrate `SYT-031`; then decide whether to plan `SYT-010G` or leave #10 open for later
