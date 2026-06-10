@@ -19,7 +19,7 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 
 ## Current Focus
 
-1. Push and route review for the `SYT-036` / PR #37 final failed-QA follow-up patch: native Home hover stale-card lifecycle cleanup after watch-to-Home SPA navigation.
+1. Route review for the pushed `SYT-036` / PR #37 final failed-QA follow-up patch: native Home hover stale-card lifecycle cleanup after watch-to-Home SPA navigation.
 2. After review, wait for human QA on PR #37 and integrate only after the gate passes or is explicitly waived with the recorded Brave PWA evidence.
 3. Keep #8 as a future high-risk research lane until tests and product direction justify it.
 4. Keep release-candidate work separate from routine fixture/source hardening.
