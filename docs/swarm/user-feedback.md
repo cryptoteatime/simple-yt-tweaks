@@ -14,6 +14,7 @@ Use this file for durable human steering that should survive across controller t
 - 2026-06-10: Use the signed-in Chrome profile for supplemental live YouTube usability audits when behavior depends on real YouTube SPA/player state. Keep repo-owned tests and `validate:all` as the required gate.
 - 2026-06-10: For #21, fix the watch-to-Home native hover autoplay regression, audit other live features/settings, patch regressions found during audit, and keep automation running while the user sleeps.
 - 2026-06-10: Keep repo docs compact so controller passes do not repeatedly compact; archive completed-lane detail with clear reference maps. Run the heartbeat more frequently, around every 30 minutes, while active work is moving.
+- 2026-06-10: #21 was not actually fixed in live use. User reported Home hover autoplay still failing after watch-to-Home navigation and explicitly asked to stop deferring, avoid bypassing blocked browser surfaces, and finish the fix with real validation.
 
 ## Product Ideas
 

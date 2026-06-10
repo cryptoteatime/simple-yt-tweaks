@@ -4,13 +4,13 @@ Use this file as the fast entrypoint after `SWARM.md` and `docs/swarm/controller
 
 ## Current Hot State
 
-- Active implementation lane: none
+- Active implementation lane: `SYT-031`
 - Last integrated lane: `SYT-010F` implementation
-- GitHub issue: #10 open
-- PR: #28 merged at `fa07c18`; #29 docs follow-up merged at `6580065`
-- Branch: `main` after hot-state repair lands
-- Current status: `SYT-010F` integrated; issue #10 remains open for future bounded hardening
-- Next priority lane: decide whether to plan `SYT-010G` or leave #10 open for later
+- GitHub issues: #31 open; #10 open
+- PR: pending for `SYT-031`
+- Branch: `swarm/syt-031-home-hover-stationary-spa`
+- Current status: `SYT-031` implemented locally and awaiting PR review
+- Next priority lane: review/integrate `SYT-031`; then decide whether to plan `SYT-010G` or leave #10 open for later
 - Do not route next: #8 enhanced Home/Search hover grow research unless the user explicitly reopens that gate
 
 ## Hot Files
@@ -20,7 +20,7 @@ Use this file as the fast entrypoint after `SWARM.md` and `docs/swarm/controller
 - Task queue: `docs/swarm/task-board.md`
 - Agent capacity: `docs/swarm/agent-registry.md`
 - GitHub policy/state: `docs/swarm/github.md`
-- Next handoff: `docs/swarm/handoffs/SYT-010F.md`
+- Next handoff: `docs/swarm/handoffs/SYT-031.md`
 - User steering: `docs/swarm/user-feedback.md`
 
 ## Cold / Archived History
@@ -42,9 +42,10 @@ Full prior handoff text is recoverable through Git history before the 2026-06-10
 
 ## Next Safe Controller Action
 
-Decide whether to plan another #10 hardening lane:
+Review and integrate `SYT-031`:
 
-- `SYT-010F` is integrated; do not respawn it.
-- Start `SYT-010G` only with a narrow source/test target and fresh handoff.
-- Keep issue #10 open until the controller decides the overall hardening pass is complete.
+- Review the #31 branch for native Home/Search preview lifecycle scope and stale preview matching.
+- `npm run validate:all` and `npm run test:e2e:live` passed on the branch.
+- Do not bump version, tag, or release.
+- After `SYT-031` is integrated, start `SYT-010G` only with a narrow source/test target and fresh handoff.
 - Do not restart #8 enhanced hover research.

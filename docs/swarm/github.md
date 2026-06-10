@@ -45,7 +45,7 @@ Use this file to record the repo's GitHub status and autonomous PR policy.
 
 | Task ID | Branch | PR | Status | Owner | Notes |
 | --- | --- | --- | --- | --- | --- |
-| none | none | none | none | none | none |
+| `SYT-031` | `swarm/syt-031-home-hover-stationary-spa` | pending | Needs Review | Controller/Runner | Fixes #31; no release/version bump. |
 
 ## Setup Log
 
@@ -65,3 +65,4 @@ Use this file to record the repo's GitHub status and autonomous PR policy.
 - 2026-06-10: PR #26 marked ready and squash-merged at `66d756f`; issue #10 remains open; remote/local planning branch cleanup completed.
 - 2026-06-10: PR #28 marked ready and squash-merged at `fa07c18` for `SYT-010F`; issue #10 remains open; remote/local task branch cleanup completed.
 - 2026-06-10: PR #29 merged docs-only `SYT-010F` integration record at `6580065`; hot-state repair follows because controller docs still pointed at the completed runner lane.
+- 2026-06-10: Opened issue #31 for the remaining Home native hover regression after watch-to-Home SPA navigation. Implemented `SYT-031` on `swarm/syt-031-home-hover-stationary-spa`; PR pending.

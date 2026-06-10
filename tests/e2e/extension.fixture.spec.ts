@@ -4,6 +4,7 @@ import { routeYouTubeFixture } from './youtube-fixtures';
 
 declare global {
   interface Window {
+    __simpleYtTweaksNativePreviewEvents?: string[];
     __simpleYtTweaksPlaybackEvents?: string[];
     __simpleYtTweaksSimulateTransientClick?: boolean;
   }
@@ -119,6 +120,52 @@ test('home fixture defers destructive cleanup briefly after watch-to-home naviga
 
   await expect(page.locator('[data-testid="deferred-sponsored"]')).toHaveCount(1);
   await expect(page.locator('[data-testid="deferred-sponsored"]')).toHaveCount(0, { timeout: 3_000 });
+  expect(extensionErrors(errors)).toEqual([]);
+});
+
+test('home fixture wakes native preview when SPA navigation leaves pointer over a new card', async ({ context }) => {
+  const page = await context.newPage();
+  const errors = await openFixture(page, 'home', 'https://www.youtube.com/');
+
+  await page.mouse.move(80, 80);
+  await page.evaluate(() => {
+    history.pushState({}, '', '/watch?v=fixture');
+    window.dispatchEvent(new PopStateEvent('popstate'));
+  });
+  await page.waitForTimeout(220);
+  await page.evaluate(() => {
+    const stalePreview = document.createElement('ytd-video-preview');
+    stalePreview.setAttribute('data-testid', 'stale-home-preview');
+    stalePreview.innerHTML = `
+      <a id="media-container-link" href="/watch?v=stale-preview">
+        <div id="inline-preview-player">
+          <video data-testid="stale-home-preview-video" style="position: fixed; left: 0; top: 0; width: 220px; height: 140px;"></video>
+        </div>
+      </a>
+    `;
+    document.querySelector('#video-preview')?.append(stalePreview);
+
+    const stationaryCard = document.createElement('ytd-rich-item-renderer');
+    stationaryCard.setAttribute('data-testid', 'stationary-hover-video');
+    stationaryCard.setAttribute('items-per-row', '3');
+    stationaryCard.innerHTML = `
+      <a class="ytLockupViewModelContentImage" href="/watch?v=stationary-hover">
+        <yt-thumbnail-view-model></yt-thumbnail-view-model>
+      </a>
+      <h3>Stationary hover fixture</h3>
+    `;
+    document.querySelector('ytd-browse[page-subtype="home"] ytd-rich-grid-renderer #contents')?.prepend(stationaryCard);
+    history.pushState({}, '', '/');
+    window.dispatchEvent(new PopStateEvent('popstate'));
+  });
+
+  await expect
+    .poll(() => page.evaluate(() => window.__simpleYtTweaksNativePreviewEvents ?? []), { timeout: 2_500 })
+    .toContainEqual('mousemove:synthetic');
+  await expect(page.locator('[data-testid="stationary-preview-started"]')).toHaveCount(1);
+  await expect(page.locator('[data-testid="stationary-hover-video"]')).not.toHaveClass(
+    /simple-yt-tweaks-grid-hover-ready/,
+  );
   expect(extensionErrors(errors)).toEqual([]);
 });
 
