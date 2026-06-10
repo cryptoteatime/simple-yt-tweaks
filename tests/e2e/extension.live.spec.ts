@@ -9,6 +9,14 @@ type LiveCardTarget = {
   height: number;
 };
 
+type VisiblePreviewState = {
+  currentTime: number;
+  href: string;
+  paused: boolean;
+  title: string;
+  visible: boolean;
+};
+
 function getWatchVideoId(href: string): string {
   try {
     return new URL(href).searchParams.get('v') ?? '';
@@ -38,15 +46,20 @@ async function getVisibleHomeCardTargets(page: import('@playwright/test').Page):
   );
 }
 
-async function getVisiblePreviewState(page: import('@playwright/test').Page): Promise<{
-  currentTime: number;
-  href: string;
-  paused: boolean;
-  title: string;
-  visible: boolean;
-}> {
+async function getVisiblePreviewState(page: import('@playwright/test').Page): Promise<VisiblePreviewState> {
   return page.evaluate(() => {
-    for (const video of document.querySelectorAll<HTMLVideoElement>('ytd-video-preview video, #inline-preview-player video')) {
+    const previewVideoSelector = [
+      'ytd-video-preview video',
+      '#inline-preview-player video',
+      'ytd-moving-thumbnail-renderer video',
+      'ytd-thumbnail-overlay-loading-preview-renderer video',
+      'ytd-thumbnail-overlay-inline-preview-renderer video',
+      'yt-inline-player-view-model video',
+      'inline-player-view-model video',
+      '.ytInlinePlayerViewModelHost video',
+    ].join(',');
+
+    for (const video of document.querySelectorAll<HTMLVideoElement>(previewVideoSelector)) {
       const rect = video.getBoundingClientRect();
       const visible = rect.width > 80 && rect.height > 60 && rect.bottom > 0 && rect.top < window.innerHeight;
       if (!visible) continue;
@@ -68,6 +81,15 @@ async function getVisiblePreviewState(page: import('@playwright/test').Page): Pr
       visible: false,
     };
   });
+}
+
+async function previewIsAdvancing(page: import('@playwright/test').Page): Promise<boolean> {
+  const before = await getVisiblePreviewState(page);
+  if (!before.visible) return false;
+
+  await page.waitForTimeout(350);
+  const after = await getVisiblePreviewState(page);
+  return after.visible && !after.paused && after.currentTime > before.currentTime + 0.05;
 }
 
 test.describe('live YouTube smoke', () => {
@@ -130,16 +152,7 @@ test.describe('live YouTube smoke', () => {
     await page.waitForURL(/\/watch/, { timeout: 20_000 });
     await waitForExtensionReady(page);
 
-    const logo = page.locator('a#logo[href="/"], ytd-topbar-logo-renderer a[href="/"]');
-    if ((await logo.count()) === 0) {
-      test.info().annotations.push({
-        type: 'live-smoke-skipped',
-        description: 'Live YouTube logo link was not available for SPA Home navigation.',
-      });
-      return;
-    }
-
-    await logo.first().click();
+    await page.goBack({ waitUntil: 'domcontentloaded', timeout: 20_000 });
     await page.waitForURL('https://www.youtube.com/', { timeout: 20_000 });
     await waitForExtensionReady(page);
 
@@ -165,7 +178,7 @@ test.describe('live YouTube smoke', () => {
       expect(previewVideoId).toBe(hoverTargetVideoId);
     }
 
-    expect(preview.paused || preview.currentTime > 0).toBeTruthy();
+    await expect.poll(() => previewIsAdvancing(page), { timeout: 8_000 }).toBe(true);
     expect(extensionErrors(errors)).toEqual([]);
   });
 });

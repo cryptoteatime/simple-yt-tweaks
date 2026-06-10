@@ -9,7 +9,7 @@ Use this file as the fast entrypoint after `SWARM.md` and `docs/swarm/controller
 - GitHub issues: #10 open; #36 open; #31 closed
 - PR: #37 draft for `SYT-036`
 - Branch: `swarm/syt-036-home-hover-stuck-lifecycle`
-- Current status: `SYT-036` draft PR #37 open; `validate:all`, live smoke, and review passed; waiting for human QA
+- Current status: `SYT-036` draft PR #37 open; human QA failed, follow-up patch is local, validation/live smoke passed; route review next
 - Next priority lane: finish #36 before planning more #10 hardening
 - Do not route next: #8 enhanced Home/Search hover grow research unless the user explicitly reopens that gate
 
@@ -48,6 +48,7 @@ Full prior handoff text is recoverable through Git history before the 2026-06-10
 Finish `SYT-036`:
 
 - Do not bump version, tag, or release.
-- Wait for `Human QA passed/failed for SYT-036: <notes>`.
-- Integrate PR #37 only after human QA passes or an explicit waiver is recorded.
+- Route review for the failed-QA follow-up patch on PR #37.
+- After review passes, wait for `Human QA passed/failed for SYT-036: <notes>`.
+- Integrate PR #37 only after review and human QA pass or an explicit waiver is recorded.
 - Do not restart #8 enhanced hover research.

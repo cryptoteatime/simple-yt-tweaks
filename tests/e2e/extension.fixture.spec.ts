@@ -4,6 +4,7 @@ import { routeYouTubeFixture } from './youtube-fixtures';
 
 declare global {
   interface Window {
+    __simpleYtTweaksDelayedPreviewEvents?: string[];
     __simpleYtTweaksNativeHoverLifecycleEvents?: string[];
     __simpleYtTweaksNativePreviewEvents?: string[];
     __simpleYtTweaksPlaybackEvents?: string[];
@@ -165,6 +166,92 @@ test('home fixture wakes native preview when SPA navigation leaves pointer over 
     .toContainEqual('mousemove:synthetic');
   await expect(page.locator('[data-testid="stationary-preview-started"]')).toHaveCount(1);
   await expect(page.locator('[data-testid="stationary-hover-video"]')).not.toHaveClass(
+    /simple-yt-tweaks-grid-hover-ready/,
+  );
+  expect(extensionErrors(errors)).toEqual([]);
+});
+
+test('home fixture retries delayed inline preview playback after watch-to-home navigation', async ({ context }) => {
+  const page = await context.newPage();
+  const errors = await openFixture(page, 'home', 'https://www.youtube.com/');
+
+  await page.mouse.move(80, 80);
+  await page.evaluate(() => {
+    history.pushState({}, '', '/watch?v=fixture');
+    window.dispatchEvent(new PopStateEvent('popstate'));
+  });
+  await page.waitForTimeout(220);
+  const hoverPoint = await page.evaluate(() => {
+    window.__simpleYtTweaksDelayedPreviewEvents = [];
+
+    const card = document.createElement('ytd-rich-item-renderer');
+    card.setAttribute('data-testid', 'delayed-inline-preview-card');
+    card.setAttribute('data-native-preview-card', 'delayed-inline-preview-card');
+    card.setAttribute('items-per-row', '3');
+    card.setAttribute(
+      'style',
+      'display: block; width: 280px; height: 180px; margin: 0; padding: 0; position: fixed; left: 40px; top: 96px; z-index: 1;',
+    );
+    card.innerHTML = `
+      <a class="ytLockupViewModelContentImage" href="/watch?v=delayed-inline-preview" style="display: block; width: 100%; height: 128px;">
+        <yt-thumbnail-view-model style="display: block; width: 100%; height: 128px;"></yt-thumbnail-view-model>
+      </a>
+      <h3>Delayed inline preview fixture</h3>
+    `;
+
+    let previewCreated = false;
+    card.addEventListener('mousemove', (event) => {
+      window.__simpleYtTweaksDelayedPreviewEvents?.push(event.isTrusted ? 'mousemove:trusted' : 'mousemove:synthetic');
+      if (previewCreated) return;
+      previewCreated = true;
+
+      window.setTimeout(() => {
+        const rect = card.getBoundingClientRect();
+        const host = document.createElement('yt-inline-player-view-model');
+        host.setAttribute('data-testid', 'delayed-inline-preview-host');
+        host.setAttribute(
+          'style',
+          `position: fixed; left: ${rect.left}px; top: ${rect.top}px; width: ${rect.width}px; height: 128px; z-index: 10000; pointer-events: auto;`,
+        );
+
+        const video = document.createElement('video');
+        video.setAttribute('data-testid', 'delayed-inline-preview-video');
+        video.muted = true;
+        video.playsInline = true;
+        video.setAttribute('style', 'display: block; width: 100%; height: 100%;');
+        video.addEventListener('play', () => {
+          window.__simpleYtTweaksDelayedPreviewEvents?.push('play');
+        });
+
+        const canvas = document.createElement('canvas');
+        canvas.width = 16;
+        canvas.height = 16;
+        const context = canvas.getContext('2d');
+        context!.fillStyle = '#0f0f0f';
+        context!.fillRect(0, 0, 16, 16);
+        video.srcObject = canvas.captureStream(1);
+
+        host.append(video);
+        document.querySelector('#video-preview')?.append(host);
+      }, 480);
+    });
+
+    document.querySelector('ytd-browse[page-subtype="home"] ytd-rich-grid-renderer #contents')?.prepend(card);
+    history.pushState({}, '', '/');
+    window.dispatchEvent(new PopStateEvent('popstate'));
+
+    const rect = card.getBoundingClientRect();
+    return {
+      x: rect.left + rect.width / 2,
+      y: rect.top + Math.min(72, rect.height / 2),
+    };
+  });
+
+  await page.mouse.move(hoverPoint.x, hoverPoint.y);
+  await expect
+    .poll(() => page.evaluate(() => window.__simpleYtTweaksDelayedPreviewEvents ?? []), { timeout: 4_000 })
+    .toContainEqual('play');
+  await expect(page.locator('[data-testid="delayed-inline-preview-card"]')).not.toHaveClass(
     /simple-yt-tweaks-grid-hover-ready/,
   );
   expect(extensionErrors(errors)).toEqual([]);

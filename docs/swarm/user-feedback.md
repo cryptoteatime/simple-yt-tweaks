@@ -16,6 +16,7 @@ Use this file for durable human steering that should survive across controller t
 - 2026-06-10: Keep repo docs compact so controller passes do not repeatedly compact; archive completed-lane detail with clear reference maps. Run the heartbeat more frequently, around every 30 minutes, while active work is moving.
 - 2026-06-10: #21 was not actually fixed in live use. User reported Home hover autoplay still failing after watch-to-Home navigation and explicitly asked to stop deferring, avoid bypassing blocked browser surfaces, and finish the fix with real validation.
 - 2026-06-10: User provided screenshot showing multiple Home cards with stuck opaque hover backgrounds and missing hover autoplay after refresh -> watch video -> SPA Home navigation. Track as #36 / `SYT-036`; do not treat old #31 closure as proof this is fixed.
+- 2026-06-10: First `SYT-036` human QA failed. User reported autoplay on hover still does not work when going from a video back to Home, while it works on first YouTube load. Treat stricter advancing-preview validation and live signed-in Chrome inspection as required supporting evidence.
 
 ## Product Ideas
 
@@ -32,6 +33,7 @@ Use this file for durable human steering that should survive across controller t
 | --- | --- | --- | --- |
 | 2026-04-29 | v0.3.0 baseline | Passed previously | v0.3.0 released; hardening starts from passing baseline. |
 | 2026-06-10 | SYT-021 live Chrome smoke | Passed by controller | Signed-in Chrome: watch-to-Home Home hover previews played/advanced; Search previews/cleanup passed; comments visible; real player click toggled; modern recommendation hover delay passed. |
+| 2026-06-10 | SYT-036 PR #37 | Failed by user | Autoplay on hover still failed after video -> Home; only worked on fresh YouTube load. |
 
 ## Rules
 

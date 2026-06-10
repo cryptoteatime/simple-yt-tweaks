@@ -10,6 +10,17 @@ const SIDEBAR_HOVER_DELAY_MS = 560;
 const FALLBACK_HOVER_DELAY_MS = 250;
 const NATIVE_FEED_HOVER_NUDGE_DELAYS_MS = [80, 260, 620];
 const NATIVE_FEED_HOVER_NUDGE_COOLDOWN_MS = 1_400;
+const NATIVE_PREVIEW_PLAYBACK_FALLBACK_DELAYS_MS = [120, 320, 700, 1_200, 1_900, 2_800];
+const NATIVE_PREVIEW_VIDEO_SELECTOR = [
+  'ytd-video-preview video',
+  '#inline-preview-player video',
+  'ytd-moving-thumbnail-renderer video',
+  'ytd-thumbnail-overlay-loading-preview-renderer video',
+  'ytd-thumbnail-overlay-inline-preview-renderer video',
+  'yt-inline-player-view-model video',
+  'inline-player-view-model video',
+  '.ytInlinePlayerViewModelHost video',
+].join(',');
 const PREVIEW_CONTAINER_SELECTOR = [
   'ytd-moving-thumbnail-renderer',
   'ytd-thumbnail-overlay-loading-preview-renderer',
@@ -100,7 +111,8 @@ let handlersBound = false;
 let activeHoverCard: HTMLElement | null = null;
 let hoverReadyTimer: number | null = null;
 let hoverClearTimer: number | null = null;
-let nativePreviewPlayTimer: number | null = null;
+let nativePreviewPlayTimers: number[] = [];
+let nativePreviewPlaybackKey = '';
 let nativeFeedHoverNudgeTimers: number[] = [];
 let nativeFeedHoverNudgeHref = typeof location === 'undefined' ? '' : location.href;
 let nativeFeedHoverNudgeKey = '';
@@ -506,9 +518,12 @@ function clearHoverClearTimer(): void {
 }
 
 function clearNativePreviewPlayTimer(): void {
-  if (nativePreviewPlayTimer === null) return;
-  window.clearTimeout(nativePreviewPlayTimer);
-  nativePreviewPlayTimer = null;
+  for (const timer of nativePreviewPlayTimers) {
+    window.clearTimeout(timer);
+  }
+
+  nativePreviewPlayTimers = [];
+  nativePreviewPlaybackKey = '';
 }
 
 function clearNativeFeedHoverNudges(): void {
@@ -621,7 +636,7 @@ function getNativePreviewVideoUnderPointer(): HTMLVideoElement | null {
   if (!isNativeFeedPreviewPage()) return null;
   if (!Number.isFinite(lastPointerX) || !Number.isFinite(lastPointerY)) return null;
 
-  for (const video of document.querySelectorAll<HTMLVideoElement>('ytd-video-preview video, #inline-preview-player video')) {
+  for (const video of document.querySelectorAll<HTMLVideoElement>(NATIVE_PREVIEW_VIDEO_SELECTOR)) {
     const rect = video.getBoundingClientRect();
     if (rect.width <= 0 || rect.height <= 0) continue;
     if (
@@ -754,6 +769,24 @@ function nativePreviewMatchesCard(video: HTMLVideoElement, card: HTMLElement): b
   return cardVideoId === previewVideoId;
 }
 
+function getNativePreviewPlaybackFallbackKey(card: HTMLElement | null): string {
+  if (card) return getNativeFeedHoverNudgeKey(card);
+
+  const video = getNativePreviewVideoUnderPointer();
+  if (video) {
+    const rect = video.getBoundingClientRect();
+    return `${location.href}|preview|${Math.round(rect.left)}:${Math.round(rect.top)}|${video.currentSrc || video.src}`;
+  }
+
+  if (!Number.isFinite(lastPointerX) || !Number.isFinite(lastPointerY)) return '';
+  return `${location.href}|pointer|${Math.round(lastPointerX)}:${Math.round(lastPointerY)}`;
+}
+
+function getNativePreviewPlaybackFallbackCard(card: HTMLElement | null): HTMLElement | null {
+  if (card && document.body.contains(card) && isPointerInsideCard(card)) return card;
+  return getNativeFeedCardUnderPointer();
+}
+
 function dispatchNativeFeedHoverNudge(card: HTMLElement): void {
   if (!document.body.contains(card) || !isPointerInsideCard(card)) return;
 
@@ -764,7 +797,7 @@ function dispatchNativeFeedHoverNudge(card: HTMLElement): void {
     if (nativeFeedSyntheticHoverCard && nativeFeedSyntheticHoverCard !== card) {
       clearNativeFeedSyntheticHover(target);
     }
-    scheduleNativePreviewPlaybackFallback();
+    scheduleNativePreviewPlaybackFallback(card);
     return;
   }
 
@@ -791,7 +824,7 @@ function dispatchNativeFeedHoverNudge(card: HTMLElement): void {
     dispatchingNativeFeedHoverNudge = false;
   }
 
-  window.setTimeout(scheduleNativePreviewPlaybackFallback, 120);
+  window.setTimeout(() => scheduleNativePreviewPlaybackFallback(card), 120);
 }
 
 function scheduleNativeFeedHoverLifecycleRecovery(): void {
@@ -814,7 +847,7 @@ function scheduleNativeFeedHoverLifecycleRecovery(): void {
 
   const previewVideo = getNativePreviewVideoUnderPointer();
   if (previewVideo && nativePreviewMatchesCard(previewVideo, card)) {
-    scheduleNativePreviewPlaybackFallback();
+    scheduleNativePreviewPlaybackFallback(card);
     return;
   }
 
@@ -830,27 +863,55 @@ function scheduleNativeFeedHoverLifecycleRecovery(): void {
   nativeFeedHoverNudgeTimers = NATIVE_FEED_HOVER_NUDGE_DELAYS_MS.map((delay) =>
     window.setTimeout(() => dispatchNativeFeedHoverNudge(card), delay),
   );
+  scheduleNativePreviewPlaybackFallback(card);
 }
 
-function scheduleNativePreviewPlaybackFallback(): void {
+function tryNativePreviewPlaybackFallback(expectedKey: string, fallbackCard: HTMLElement | null): void {
+  if (nativePreviewPlaybackKey !== expectedKey) return;
+
   if (!isNativeFeedPreviewPage()) {
     clearNativePreviewPlayTimer();
     return;
   }
 
-  const video = getNativePreviewVideoUnderPointer();
-  if (!video || !video.paused || video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) return;
-  if (nativePreviewPlayTimer !== null) return;
+  const card = getNativePreviewPlaybackFallbackCard(fallbackCard);
+  const currentKey = getNativePreviewPlaybackFallbackKey(card);
+  if (currentKey && currentKey !== expectedKey) return;
 
-  nativePreviewPlayTimer = window.setTimeout(() => {
-    nativePreviewPlayTimer = null;
-    const currentVideo = getNativePreviewVideoUnderPointer();
-    if (!currentVideo || !currentVideo.paused || currentVideo.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) return;
+  const currentVideo = getNativePreviewVideoUnderPointer();
+  if (!currentVideo) return;
+  if (card && !nativePreviewMatchesCard(currentVideo, card)) return;
 
-    void currentVideo.play().catch(() => {
-      // Native preview autoplay can still be blocked by YouTube/account state; leave the UI untouched.
-    });
-  }, 220);
+  if (!currentVideo.paused) {
+    clearNativePreviewPlayTimer();
+    return;
+  }
+
+  if (currentVideo.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) return;
+
+  currentVideo.muted = true;
+  currentVideo.playsInline = true;
+  void currentVideo.play().then(clearNativePreviewPlayTimer).catch(() => {
+    // Native preview autoplay can still be blocked by YouTube/account state; leave the UI untouched.
+  });
+}
+
+function scheduleNativePreviewPlaybackFallback(card: HTMLElement | null = null): void {
+  if (!isNativeFeedPreviewPage()) {
+    clearNativePreviewPlayTimer();
+    return;
+  }
+
+  const fallbackCard = getNativePreviewPlaybackFallbackCard(card);
+  const key = getNativePreviewPlaybackFallbackKey(fallbackCard);
+  if (!key) return;
+  if (key === nativePreviewPlaybackKey && nativePreviewPlayTimers.length > 0) return;
+
+  clearNativePreviewPlayTimer();
+  nativePreviewPlaybackKey = key;
+  nativePreviewPlayTimers = NATIVE_PREVIEW_PLAYBACK_FALLBACK_DELAYS_MS.map((delay) =>
+    window.setTimeout(() => tryNativePreviewPlaybackFallback(key, fallbackCard), delay),
+  );
 }
 
 function isPointerInsideCard(card: HTMLElement): boolean {

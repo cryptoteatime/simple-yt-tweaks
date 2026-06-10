@@ -8,17 +8,17 @@ This file is the repo-local dynamic control plane for the controller chat and an
 - Heartbeat mode: `active-pulse`
 - Heartbeat automation id: `simple-yt-tweaks-controller-heartbeat`
 - Main controller chat: Simple YT Tweaks controller in Codex workspace
-- Last reviewed by controller: 2026-06-10 13:53 EDT
+- Last reviewed by controller: 2026-06-10 15:10 EDT
 
 ## Current Source Of Truth
 
 - Default branch: `main`
 - Current branch: `swarm/syt-036-home-hover-stuck-lifecycle`
-- Expected Git state: task branch clean after `SYT-036` human-QA state update is pushed
+- Expected Git state: task branch clean after `SYT-036` failed-QA follow-up patch is pushed
 - Open PR expectation: draft PR #37 for #36; PR #20 remains paused draft for #8 research
 - Active agents expectation: none
 - Controller lease expectation: none between bounded heartbeat passes
-- Current priority lane: `SYT-036` issue #36 Home hover stale-card lifecycle regression, Ready for Human QA
+- Current priority lane: `SYT-036` issue #36 Home hover stale-card lifecycle regression, Needs Review after failed human QA
 
 ## Controller Lease And Pacing
 
@@ -103,7 +103,7 @@ Heartbeat overlap rule:
 
 | Priority | Task ID | Action | Owner | Branch / Worktree | Stop Condition |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `SYT-036` | Wait for human QA on draft PR #37; integrate only after pass or explicit waiver | User / Controller | `swarm/syt-036-home-hover-stuck-lifecycle` | Human QA pass/fail or explicit waiver |
+| 1 | `SYT-036` | Review failed-QA follow-up patch on draft PR #37, then return to human QA gate | Reviewer / Controller | `swarm/syt-036-home-hover-stuck-lifecycle` | Review result recorded |
 | 2 | `SYT-010H` | Plan the next small #10 hardening lane only after `SYT-036` is resolved | Controller / Planner | TBD | New handoff created or decision to leave #10 open for later |
 | 3 | `SYT-008A` | Keep research gate paused until the user wants enhanced hover research again | Planner | `swarm/syt-008a-hover-research` | Decision to defer, prototype, or require human QA |
 
@@ -135,4 +135,4 @@ Heartbeat overlap rule:
 - 2026-06-10: `SYT-010G` selected fullscreen/player UI geometry hardening under issue #10; draft PR #34 opened after `npm run validate:all` passed. Next safe action is review, not #8.
 - 2026-06-10: Reviewer Russell marked PR #34 Ready to Integrate with no findings. Next safe action is integration with `npm run validate:all`.
 - 2026-06-10: PR #34 marked ready and squash-merged into `main` at `99156b5`; issue #10 remains open. Hot-state repair follows because controller docs still pointed at the completed lane.
-- 2026-06-10: User reported Home hover stale-card backgrounds and missing autoplay after refresh -> watch page -> SPA Home. Controller opened issue #36 and draft PR #37 for `SYT-036`; `npm run validate:all` and `npm run test:e2e:live` passed; reviewer marked Ready for Human QA with no findings.
+- 2026-06-10: User reported Home hover stale-card backgrounds and missing autoplay after refresh -> watch page -> SPA Home. Controller opened issue #36 and draft PR #37 for `SYT-036`; first human QA failed. Follow-up patch broadened/retried native preview playback fallback and tightened live smoke to require advancing playback; `npm run validate:all` and `npm run test:e2e:live` passed. Route review next.
