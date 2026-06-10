@@ -4,13 +4,13 @@ Use this file as the fast entrypoint after `SWARM.md` and `docs/swarm/controller
 
 ## Current Hot State
 
-- Active implementation lane: `SYT-031`
-- Last integrated lane: `SYT-010F` implementation
-- GitHub issues: #31 open; #10 open
-- PR: #32 draft for `SYT-031`
-- Branch: `swarm/syt-031-home-hover-stationary-spa`
-- Current status: `SYT-031` implemented locally and awaiting PR review
-- Next priority lane: review/integrate `SYT-031`; then decide whether to plan `SYT-010G` or leave #10 open for later
+- Active implementation lane: none
+- Last integrated lane: `SYT-031`
+- GitHub issues: #10 open; #31 closed
+- PR: #32 merged
+- Branch: `main`
+- Current status: `SYT-031` integrated; issue #31 closed
+- Next priority lane: decide whether to plan `SYT-010G` or leave #10 open for later
 - Do not route next: #8 enhanced Home/Search hover grow research unless the user explicitly reopens that gate
 
 ## Hot Files
@@ -37,15 +37,15 @@ Completed lanes are intentionally compacted to stubs:
 - `SYT-010F` planning -> PR #26, merge `66d756f`, refs #10
 - `SYT-010F` implementation -> PR #28, merge `fa07c18`, refs #10
 - `SYT-010F` docs follow-up -> PR #29, merge `6580065`
+- `SYT-031` -> PR #32, merge `8e881c9`, closes #31
 
 Full prior handoff text is recoverable through Git history before the 2026-06-10 compaction commit. Use `docs/swarm/archive/README.md` for the reference map.
 
 ## Next Safe Controller Action
 
-Review and integrate `SYT-031`:
+Decide whether to plan another #10 hardening lane:
 
-- Review the #31 branch for native Home/Search preview lifecycle scope and stale preview matching.
-- `npm run validate:all` and `npm run test:e2e:live` passed on the branch.
+- `SYT-031` is integrated; do not respawn it.
 - Do not bump version, tag, or release.
-- After `SYT-031` is integrated, start `SYT-010G` only with a narrow source/test target and fresh handoff.
+- Start `SYT-010G` only with a narrow source/test target and fresh handoff.
 - Do not restart #8 enhanced hover research.
