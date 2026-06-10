@@ -31,6 +31,44 @@ const SIDEBAR_CARD_SELECTOR = [
 const SEARCH_GRID_CONTENTS_SELECTOR =
   'ytd-search ytd-two-column-search-results-renderer #primary ytd-section-list-renderer > #contents.ytd-section-list-renderer';
 const HOVER_CARD_SELECTOR = SIDEBAR_CARD_SELECTOR;
+const LEGACY_WATCH_RECOMMENDATION_CARD_SELECTOR = 'ytd-compact-video-renderer';
+const MODERN_WATCH_RECOMMENDATION_CARD_SELECTORS = [
+  '#related yt-lockup-view-model:has(a[href*="/watch"])',
+  'ytd-watch-next-secondary-results-renderer yt-lockup-view-model:has(a[href*="/watch"])',
+  '#secondary yt-lockup-view-model:has(a[href*="/watch"])',
+];
+const WATCH_RECOMMENDATION_CARD_SELECTORS = [
+  LEGACY_WATCH_RECOMMENDATION_CARD_SELECTOR,
+  ...MODERN_WATCH_RECOMMENDATION_CARD_SELECTORS,
+];
+function addGridHoverReadyClass(selector: string): string {
+  if (selector === LEGACY_WATCH_RECOMMENDATION_CARD_SELECTOR) {
+    return `${LEGACY_WATCH_RECOMMENDATION_CARD_SELECTOR}.${GRID_HOVER_READY_CLASS}`;
+  }
+
+  return selector.replace('yt-lockup-view-model', `yt-lockup-view-model.${GRID_HOVER_READY_CLASS}`);
+}
+const READY_WATCH_RECOMMENDATION_CARD_SELECTORS =
+  WATCH_RECOMMENDATION_CARD_SELECTORS.map(addGridHoverReadyClass);
+const WATCH_RECOMMENDATION_MEDIA_SELECTORS = [
+  `${LEGACY_WATCH_RECOMMENDATION_CARD_SELECTOR} ytd-thumbnail`,
+  ...MODERN_WATCH_RECOMMENDATION_CARD_SELECTORS.map((selector) => `${selector} yt-thumbnail-view-model`),
+];
+const READY_WATCH_RECOMMENDATION_MEDIA_SELECTORS = [
+  `${addGridHoverReadyClass(LEGACY_WATCH_RECOMMENDATION_CARD_SELECTOR)} ytd-thumbnail`,
+  ...MODERN_WATCH_RECOMMENDATION_CARD_SELECTORS.map(
+    (selector) => `${addGridHoverReadyClass(selector)} yt-thumbnail-view-model`,
+  ),
+];
+const WATCH_RECOMMENDATION_OVERLAY_BUTTON_SELECTORS = [
+  ...MODERN_WATCH_RECOMMENDATION_CARD_SELECTORS.map(
+    (selector) => `${addGridHoverReadyClass(selector)} thumbnail-overlay-button-view-model`,
+  ),
+  `${addGridHoverReadyClass(LEGACY_WATCH_RECOMMENDATION_CARD_SELECTOR)} ytd-thumbnail-overlay-toggle-button-renderer`,
+];
+function appendDescendant(selectors: string[], descendant: string): string[] {
+  return selectors.map((selector) => `${selector} ${descendant}`);
+}
 const HOVER_MEDIA_SELECTOR = [
   '#related ytd-compact-video-renderer ytd-thumbnail',
   'ytd-watch-next-secondary-results-renderer ytd-compact-video-renderer ytd-thumbnail',
@@ -321,48 +359,16 @@ function buildSidebarHoverCss(settings: Settings): string {
 
   if (!scopes.length) return '';
 
-  const cards = scopedSelectors(scopes, [
-    'ytd-compact-video-renderer',
-    '#related yt-lockup-view-model:has(a[href*="/watch"])',
-    'ytd-watch-next-secondary-results-renderer yt-lockup-view-model:has(a[href*="/watch"])',
-    '#secondary yt-lockup-view-model:has(a[href*="/watch"])',
-  ]);
-  const media = scopedSelectors(scopes, [
-    'ytd-compact-video-renderer ytd-thumbnail',
-    '#related yt-lockup-view-model:has(a[href*="/watch"]) yt-thumbnail-view-model',
-    'ytd-watch-next-secondary-results-renderer yt-lockup-view-model:has(a[href*="/watch"]) yt-thumbnail-view-model',
-    '#secondary yt-lockup-view-model:has(a[href*="/watch"]) yt-thumbnail-view-model',
-  ]);
-  const readyMedia = scopedSelectors(scopes, [
-    `ytd-compact-video-renderer.${GRID_HOVER_READY_CLASS} ytd-thumbnail`,
-    `#related yt-lockup-view-model.${GRID_HOVER_READY_CLASS}:has(a[href*="/watch"]) yt-thumbnail-view-model`,
-    `ytd-watch-next-secondary-results-renderer yt-lockup-view-model.${GRID_HOVER_READY_CLASS}:has(a[href*="/watch"]) yt-thumbnail-view-model`,
-    `#secondary yt-lockup-view-model.${GRID_HOVER_READY_CLASS}:has(a[href*="/watch"]) yt-thumbnail-view-model`,
-  ]);
-  const readyCards = scopedSelectors(scopes, [
-    `ytd-compact-video-renderer.${GRID_HOVER_READY_CLASS}`,
-    `#related yt-lockup-view-model.${GRID_HOVER_READY_CLASS}:has(a[href*="/watch"])`,
-    `ytd-watch-next-secondary-results-renderer yt-lockup-view-model.${GRID_HOVER_READY_CLASS}:has(a[href*="/watch"])`,
-    `#secondary yt-lockup-view-model.${GRID_HOVER_READY_CLASS}:has(a[href*="/watch"])`,
-  ]);
-  const overlayButtons = scopedSelectors(scopes, [
-    `#related yt-lockup-view-model.${GRID_HOVER_READY_CLASS}:has(a[href*="/watch"]) thumbnail-overlay-button-view-model`,
-    `ytd-watch-next-secondary-results-renderer yt-lockup-view-model.${GRID_HOVER_READY_CLASS}:has(a[href*="/watch"]) thumbnail-overlay-button-view-model`,
-    `#secondary yt-lockup-view-model.${GRID_HOVER_READY_CLASS}:has(a[href*="/watch"]) thumbnail-overlay-button-view-model`,
-    `ytd-compact-video-renderer.${GRID_HOVER_READY_CLASS} ytd-thumbnail-overlay-toggle-button-renderer`,
-  ]);
-  const overlayButtonElements = scopedSelectors(scopes, [
-    `#related yt-lockup-view-model.${GRID_HOVER_READY_CLASS}:has(a[href*="/watch"]) thumbnail-overlay-button-view-model button`,
-    `ytd-watch-next-secondary-results-renderer yt-lockup-view-model.${GRID_HOVER_READY_CLASS}:has(a[href*="/watch"]) thumbnail-overlay-button-view-model button`,
-    `#secondary yt-lockup-view-model.${GRID_HOVER_READY_CLASS}:has(a[href*="/watch"]) thumbnail-overlay-button-view-model button`,
-    `ytd-compact-video-renderer.${GRID_HOVER_READY_CLASS} ytd-thumbnail-overlay-toggle-button-renderer button`,
-  ]);
-  const overlayButtonIcons = scopedSelectors(scopes, [
-    `#related yt-lockup-view-model.${GRID_HOVER_READY_CLASS}:has(a[href*="/watch"]) thumbnail-overlay-button-view-model button .ytIconWrapperHost`,
-    `ytd-watch-next-secondary-results-renderer yt-lockup-view-model.${GRID_HOVER_READY_CLASS}:has(a[href*="/watch"]) thumbnail-overlay-button-view-model button .ytIconWrapperHost`,
-    `#secondary yt-lockup-view-model.${GRID_HOVER_READY_CLASS}:has(a[href*="/watch"]) thumbnail-overlay-button-view-model button .ytIconWrapperHost`,
-    `ytd-compact-video-renderer.${GRID_HOVER_READY_CLASS} ytd-thumbnail-overlay-toggle-button-renderer button .ytIconWrapperHost`,
-  ]);
+  const cards = scopedSelectors(scopes, WATCH_RECOMMENDATION_CARD_SELECTORS);
+  const media = scopedSelectors(scopes, WATCH_RECOMMENDATION_MEDIA_SELECTORS);
+  const readyMedia = scopedSelectors(scopes, READY_WATCH_RECOMMENDATION_MEDIA_SELECTORS);
+  const readyCards = scopedSelectors(scopes, READY_WATCH_RECOMMENDATION_CARD_SELECTORS);
+  const overlayButtons = scopedSelectors(scopes, WATCH_RECOMMENDATION_OVERLAY_BUTTON_SELECTORS);
+  const overlayButtonElements = scopedSelectors(scopes, appendDescendant(WATCH_RECOMMENDATION_OVERLAY_BUTTON_SELECTORS, 'button'));
+  const overlayButtonIcons = scopedSelectors(
+    scopes,
+    appendDescendant(WATCH_RECOMMENDATION_OVERLAY_BUTTON_SELECTORS, 'button .ytIconWrapperHost'),
+  );
 
   return `
     ${cards} {
