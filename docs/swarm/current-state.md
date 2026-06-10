@@ -4,7 +4,7 @@
 
 - Name: Simple YT Tweaks
 - Folder: `/Users/d4ngl/Git Repos/Codex/simple-yt-tweaks`
-- Status: existing repo, post-v0.3.0 hardening with active live-regression fix lane
+- Status: existing repo, post-v0.3.0 hardening; #21 live-regression fix integrated
 - GitHub: `https://github.com/cryptoteatime/simple-yt-tweaks`
 
 ## Project Brief
@@ -19,7 +19,7 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 
 ## Current Focus
 
-1. Review and integrate `SYT-021` / GitHub #21 after the native hover SPA regression branch is pushed.
+1. Route `SYT-010E` as the next #10 code-hardening lane.
 2. Keep #10 hardening in small PRs with `validate:all` as the final gate.
 3. Keep #8 as a future high-risk research lane until tests and product direction justify it.
 4. Keep release-candidate work separate from routine fixture/source hardening.
@@ -54,7 +54,7 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 
 ## Recommended First Milestone
 
-`SYT-021` is ready for review in draft PR #22 on branch `swarm/syt-008b-native-hover-spa-regression`: it fixes GitHub #21, expands fixture coverage, and passed full validation plus signed-in Chrome live smoke.
+`SYT-021` is integrated via PR #22 at `8f90ef1`, closing #21. The next useful milestone is `SYT-010E`, a small #10 code-hardening lane that preserves `validate:all` as the final gate and does not reopen #8 enhanced hover research.
 
 ## Verification Defaults
 
@@ -79,11 +79,11 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 
 - Controller heartbeat: active.
 - Heartbeat automation id: `simple-yt-tweaks-controller-heartbeat`.
-- Heartbeat cadence: about 30 minutes while this live-regression lane is active.
+- Heartbeat cadence: slow back toward about 90 minutes after `SYT-021` integration.
 - Execution strategy: paced controller with direct subagents only after lane readiness.
 - Batch dispatch policy: disabled by default via max 1 active subagent; require disjoint parallel-safe labels if capacity is raised.
 - Shared docs lock: controller owns task-board, current-state, controller-directives, and agent-registry during parallel work unless assigned.
-- Active subagents: none; `SYT-021` is controller-authored and ready for reviewer routing on draft PR #22.
+- Active subagents: none after `SYT-021` integration.
 - Agent registry: `docs/swarm/agent-registry.md`.
 - Bootstrap log: `docs/swarm/bootstrap-log.md`.
 - GitHub workflow: `docs/swarm/github.md`.
@@ -91,4 +91,4 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 ## Last Updated
 
 - Date: 2026-06-10
-- By: Codex controller, `SYT-021` Runner
+- By: Lorentz, `SYT-021` Integrator
