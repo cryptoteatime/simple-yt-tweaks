@@ -45,7 +45,7 @@ Use this file to record the repo's GitHub status and autonomous PR policy.
 
 | Task ID | Branch | PR | Status | Owner | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `SYT-036` | `swarm/syt-036-home-hover-stuck-lifecycle` | #37 | draft | Controller/Runner | Issue #36 native Home hover lifecycle regression; validation and live smoke passed. |
+| `SYT-036` | `swarm/syt-036-home-hover-stuck-lifecycle` | #37 | Ready for Human QA | Controller/Runner/Reviewer | Issue #36 native Home hover lifecycle regression; validation, live smoke, and review passed. |
 
 ## Setup Log
 

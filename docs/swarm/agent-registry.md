@@ -21,7 +21,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Agent / Thread | Task ID | Role | Status | Branch | Worktree | PR | Started | Last Seen | Expected Next Step | Heartbeat |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `019eb2b0-254b-7230-9b53-3f98d55020f6` / Bacon | `SYT-036` | Reviewer | In Progress | `swarm/syt-036-home-hover-stuck-lifecycle` | `/Users/d4ngl/Git Repos/Codex/simple-yt-tweaks` | #37 | 2026-06-10 13:57 EDT | Review PR #37 and report Ready to Integrate, Ready for Human QA, Needs Fixes, or Blocked | none |
+| none | none | none | none | none | none | none | none | none | none | none |
 
 ## Paused / Stale Agents
 
@@ -67,6 +67,7 @@ Use this file to track who is working, where they are working, and whether the c
 | `019eb1a5-f3e6-7520-86aa-956ea3bd2de6` / Hume | `SYT-010F` | Integrator | Merged PR #28 | 2026-06-10 09:02 EDT | `npm run validate:all` passed; PR #28 squash-merged at `fa07c18`; docs follow-up PR #29 merged at `6580065`; issue #10 remains open. |
 | `019eb293-9f5e-7ca2-ada8-6bad5f84c002` / Russell | `SYT-010G` | Reviewer | Ready to Integrate | 2026-06-10 13:30 EDT | No findings; `git diff --check origin/main...origin/swarm/syt-010g-fullscreen-ui-geometry` and `npm run test:unit` passed; human QA not required. |
 | Codex / main controller | `SYT-010G` | Integrator | Merged PR #34 | 2026-06-10 13:33 EDT | `npm run validate:all` passed; PR #34 squash-merged at `99156b5`; issue #10 remains open. |
+| `019eb2b0-254b-7230-9b53-3f98d55020f6` / Bacon | `SYT-036` | Reviewer | Ready for Human QA | 2026-06-10 14:04 EDT | No findings; `git diff --check`, targeted Home hover regression, and full fixture suite passed. Keep human QA gate before merge due live YouTube hover behavior. |
 
 ## Pending Launch
 
