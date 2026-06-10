@@ -247,6 +247,7 @@ function watchFixture(): string {
                 <div id="below">
                   <div id="comments">Fixture comments</div>
                 </div>
+                <div data-testid="watch-scroll-spacer" style="height: 1400px;"></div>
               </div>
             </div>
             <div id="secondary">

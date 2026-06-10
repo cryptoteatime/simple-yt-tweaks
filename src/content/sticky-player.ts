@@ -1,6 +1,15 @@
 import { isDefaultWatchView, isNativeFullscreenActive, isTheaterMode, isWatchPage, query, queryAll } from './dom';
 import type { Settings } from './settings';
 import { state } from './state';
+import {
+  isStickyPlayerMostlyVisible,
+  resolveStickyPlayerResizedRect,
+  resolveStickyPlayerVisibility,
+  shouldDockStickyPlayer,
+  type StickyPlayerResizeDirection,
+  type StickyPlayerViewMode,
+  type StickyPlayerVisibility,
+} from './sticky-player-geometry';
 
 const STICKY_PLAYER_CLASS = 'simple-yt-tweaks-sticky-player-active';
 const STICKY_PLAYER_DISMISSED_CLASS = 'simple-yt-tweaks-sticky-player-dismissed';
@@ -16,20 +25,6 @@ type StickyPlayerDockState = {
   shell: HTMLElement;
   frame: HTMLElement;
 };
-
-type PlayerVisibility = {
-  rect: DOMRect;
-  viewportHeight: number;
-  visibleHeight: number;
-  visibleRatio: number;
-};
-
-type ResizeDirection = 'n' | 'ne' | 'e' | 'se' | 's' | 'sw' | 'w' | 'nw';
-
-const STICKY_ASPECT_RATIO = 16 / 9;
-const STICKY_MIN_WIDTH = 260;
-const STICKY_MAX_WIDTH = 640;
-const STICKY_VIEWPORT_MARGIN = 8;
 
 let stickyDock: StickyPlayerDockState | null = null;
 let stickyDismissedUntilPlayerVisible = false;
@@ -52,19 +47,10 @@ function hasUsableRect(element: HTMLElement): boolean {
   return rect.width > 0 && rect.height > 0;
 }
 
-function getPlayerVisibility(anchor: HTMLElement): PlayerVisibility | null {
+function getPlayerVisibility(anchor: HTMLElement): StickyPlayerVisibility | null {
   const rect = anchor.getBoundingClientRect();
-  if (rect.width <= 0 || rect.height <= 0) return null;
 
-  const viewportHeight = getViewportHeight();
-  const visibleHeight = Math.max(0, Math.min(rect.bottom, viewportHeight) - Math.max(rect.top, 0));
-
-  return {
-    rect,
-    viewportHeight,
-    visibleHeight,
-    visibleRatio: visibleHeight / rect.height,
-  };
+  return resolveStickyPlayerVisibility(rect, getViewportHeight());
 }
 
 function getPlayerAnchor(playerTarget: HTMLElement | null): HTMLElement | null {
@@ -97,28 +83,20 @@ function isStickyPlayerEligible(settings: Settings): boolean {
   return isDefaultWatchView() || isTheaterMode();
 }
 
+function getStickyPlayerViewMode(): StickyPlayerViewMode {
+  return isDefaultWatchView() && !isTheaterMode() ? 'default' : 'theater';
+}
+
 function isPlayerScrolledAway(anchor: HTMLElement): boolean {
   const visibility = getPlayerVisibility(anchor);
-  if (!visibility) return false;
 
-  const { rect, viewportHeight, visibleRatio } = visibility;
-
-  if (isDefaultWatchView() && !isTheaterMode()) {
-    return window.scrollY > 96 && rect.bottom <= viewportHeight * 0.52 && visibleRatio < 0.22;
-  }
-
-  return window.scrollY > 64 && rect.bottom <= viewportHeight * 0.72 && visibleRatio < 0.35;
+  return shouldDockStickyPlayer(visibility, getStickyPlayerViewMode(), window.scrollY);
 }
 
 function isPlayerMostlyVisible(anchor: HTMLElement): boolean {
   const visibility = getPlayerVisibility(anchor);
-  if (!visibility) return false;
 
-  if (isDefaultWatchView() && !isTheaterMode()) {
-    return visibility.visibleRatio > 0.78 || window.scrollY <= 64;
-  }
-
-  return visibility.visibleRatio > 0.6 || window.scrollY <= 64;
+  return isStickyPlayerMostlyVisible(visibility, getStickyPlayerViewMode(), window.scrollY);
 }
 
 function clamp(value: number, min: number, max: number): number {
@@ -420,10 +398,6 @@ function setImportantStyle(element: HTMLElement, property: string, value: string
   element.style.setProperty(property, value, 'important');
 }
 
-function getMaxStickyWidth(): number {
-  return Math.min(STICKY_MAX_WIDTH, window.innerWidth - STICKY_VIEWPORT_MARGIN * 2);
-}
-
 function bindShellDrag(shell: HTMLElement, handle: HTMLElement): void {
   handle.addEventListener('pointerdown', (event) => {
     if (event.button !== 0) return;
@@ -464,59 +438,21 @@ function bindShellDrag(shell: HTMLElement, handle: HTMLElement): void {
 
 function resolveResizedRect(
   rect: DOMRect,
-  direction: ResizeDirection,
+  direction: StickyPlayerResizeDirection,
   deltaX: number,
   deltaY: number,
 ): { left: number; top: number; width: number } {
-  const startRight = rect.right;
-  const startBottom = rect.bottom;
-  const maxWidth = getMaxStickyWidth();
-
-  let width = rect.width;
-
-  if (direction.includes('e')) {
-    width = rect.width + deltaX;
-  } else if (direction.includes('w')) {
-    width = rect.width - deltaX;
-  } else if (direction.includes('s')) {
-    width = rect.width + deltaY * STICKY_ASPECT_RATIO;
-  } else if (direction.includes('n')) {
-    width = rect.width - deltaY * STICKY_ASPECT_RATIO;
-  }
-
-  width = clamp(width, STICKY_MIN_WIDTH, maxWidth);
-
-  let left = direction.includes('w') ? startRight - width : rect.left;
-  let top = direction.includes('n') ? startBottom - width / STICKY_ASPECT_RATIO : rect.top;
-
-  if (left < STICKY_VIEWPORT_MARGIN) {
-    width = direction.includes('w') ? startRight - STICKY_VIEWPORT_MARGIN : width;
-    left = STICKY_VIEWPORT_MARGIN;
-  }
-
-  if (left + width > window.innerWidth - STICKY_VIEWPORT_MARGIN) {
-    width = window.innerWidth - STICKY_VIEWPORT_MARGIN - left;
-  }
-
-  const height = width / STICKY_ASPECT_RATIO;
-  if (top < STICKY_VIEWPORT_MARGIN) {
-    width = direction.includes('n') ? (startBottom - STICKY_VIEWPORT_MARGIN) * STICKY_ASPECT_RATIO : width;
-    top = STICKY_VIEWPORT_MARGIN;
-  }
-
-  if (top + height > window.innerHeight - STICKY_VIEWPORT_MARGIN) {
-    const maxHeightFromTop = window.innerHeight - STICKY_VIEWPORT_MARGIN - top;
-    width = Math.min(width, maxHeightFromTop * STICKY_ASPECT_RATIO);
-  }
-
-  return {
-    left: clamp(left, STICKY_VIEWPORT_MARGIN, window.innerWidth - width - STICKY_VIEWPORT_MARGIN),
-    top: clamp(top, STICKY_VIEWPORT_MARGIN, window.innerHeight - width / STICKY_ASPECT_RATIO - STICKY_VIEWPORT_MARGIN),
-    width: clamp(width, STICKY_MIN_WIDTH, getMaxStickyWidth()),
-  };
+  return resolveStickyPlayerResizedRect({
+    rect,
+    direction,
+    deltaX,
+    deltaY,
+    viewportWidth: window.innerWidth,
+    viewportHeight: window.innerHeight,
+  });
 }
 
-function bindShellResize(shell: HTMLElement, handle: HTMLElement, direction: ResizeDirection): void {
+function bindShellResize(shell: HTMLElement, handle: HTMLElement, direction: StickyPlayerResizeDirection): void {
   handle.addEventListener('pointerdown', (event) => {
     if (event.button !== 0) return;
 
@@ -553,7 +489,7 @@ function bindShellResize(shell: HTMLElement, handle: HTMLElement, direction: Res
   });
 }
 
-function createResizeHandle(direction: ResizeDirection): HTMLElement {
+function createResizeHandle(direction: StickyPlayerResizeDirection): HTMLElement {
   const handle = document.createElement('div');
   handle.className = `simple-yt-tweaks-sticky-player-resize simple-yt-tweaks-sticky-player-resize-${direction}`;
   handle.setAttribute('aria-hidden', 'true');
@@ -584,7 +520,7 @@ function createStickyShell(): { shell: HTMLElement; frame: HTMLElement } {
   dragHandle.className = 'simple-yt-tweaks-sticky-player-drag';
   dragHandle.setAttribute('aria-hidden', 'true');
 
-  const resizeHandles = (['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw'] as ResizeDirection[]).map((direction) => {
+  const resizeHandles = (['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw'] as StickyPlayerResizeDirection[]).map((direction) => {
     const handle = createResizeHandle(direction);
     bindShellResize(shell, handle, direction);
     return handle;

@@ -202,6 +202,30 @@ test('watch fixture validates mode classes, visible comments, hover grow, and vi
   expect(extensionErrors(errors)).toEqual([]);
 });
 
+test('watch fixture docks and restores sticky player when player scrolls away', async ({ context }) => {
+  const page = await context.newPage();
+  const errors = await openFixture(page, 'watch', 'https://www.youtube.com/watch?v=fixture');
+
+  await expect(page.locator('body')).toHaveClass(/simple-yt-tweaks-default-view/);
+  await expect(page.locator('body')).not.toHaveClass(/simple-yt-tweaks-sticky-player-active/);
+  await expect(page.locator('#simple-yt-tweaks-sticky-player-shell')).toHaveCount(0);
+  await expect(page.locator('#simple-yt-tweaks-sticky-player-placeholder')).toHaveCount(0);
+  await expect(page.locator('#player > #movie_player')).toHaveCount(1);
+
+  await page.evaluate(() => window.scrollTo(0, 650));
+  await expect(page.locator('body')).toHaveClass(/simple-yt-tweaks-sticky-player-active/);
+  await expect(page.locator('#simple-yt-tweaks-sticky-player-shell #movie_player')).toHaveCount(1);
+  await expect(page.locator('#player > #simple-yt-tweaks-sticky-player-placeholder')).toHaveCount(1);
+  await expect(page.locator('#player > #movie_player')).toHaveCount(0);
+
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await expect(page.locator('body')).not.toHaveClass(/simple-yt-tweaks-sticky-player-active/);
+  await expect(page.locator('#simple-yt-tweaks-sticky-player-shell')).toHaveCount(0);
+  await expect(page.locator('#simple-yt-tweaks-sticky-player-placeholder')).toHaveCount(0);
+  await expect(page.locator('#player > #movie_player')).toHaveCount(1);
+  expect(extensionErrors(errors)).toEqual([]);
+});
+
 test('watch fixture respects disabled hover grow and hidden comments settings', async ({ context, extensionId }) => {
   await writeExtensionSettings(context, extensionId, {
     defaultHideComments: true,
