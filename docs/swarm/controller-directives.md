@@ -8,17 +8,17 @@ This file is the repo-local dynamic control plane for the controller chat and an
 - Heartbeat mode: `active-pulse`
 - Heartbeat automation id: `simple-yt-tweaks-controller-heartbeat`
 - Main controller chat: Simple YT Tweaks controller in Codex workspace
-- Last reviewed by controller: 2026-06-10 06:13 EDT
+- Last reviewed by controller: 2026-06-10 06:18 EDT
 
 ## Current Source Of Truth
 
 - Default branch: `main`
-- Current branch: `main`
-- Expected Git state: clean `main...origin/main` after the `SYT-010E` integration-record docs follow-up lands
-- Open PR expectation: none after the `SYT-010E` integration-record docs follow-up lands
-- Active agents expectation: none
+- Current branch: `swarm/syt-010f-planning`
+- Expected Git state: clean `swarm/syt-010f-planning...origin/swarm/syt-010f-planning` after planner-route docs follow-up is pushed
+- Open PR expectation: draft PR #26 for `SYT-010F` planning until reviewed/merged
+- Active agents expectation: none after Planner reports final result
 - Controller lease expectation: none between bounded heartbeat passes
-- Current priority lane: `SYT-010F` planning/routing for the next #10 code-hardening lane while issue #10 remains open
+- Current priority lane: review/merge `SYT-010F` planning, then route Sticky Player hardening while issue #10 remains open
 
 ## Controller Lease And Pacing
 
@@ -103,7 +103,7 @@ Heartbeat overlap rule:
 
 | Priority | Task ID | Action | Owner | Branch / Worktree | Stop Condition |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `SYT-010F` | Plan and route the next small #10 code-hardening lane if issue #10 remains open | Planner / Senior Runner | TBD | Scoped hardening lane created with verification, or heartbeat slowed if no safe lane is ready |
+| 1 | `SYT-010F` | Review/merge planning docs, then spawn Sticky Player hardening Runner | Reviewer / Senior Runner | `swarm/syt-010f-planning`, then `swarm/syt-010f-sticky-player-hardening` | Planning docs reviewed/merged and Runner launched, or blocker recorded |
 | 2 | `SYT-008A` | Keep research gate paused until the user wants enhanced hover research again | Planner | `swarm/syt-008a-hover-research` | Decision to defer, prototype, or require human QA |
 
 ## Dynamic Notes
@@ -123,3 +123,5 @@ Heartbeat overlap rule:
 - 2026-06-10: PR #22 squash-merged into `main` at `8f90ef1`; issue #21 auto-closed; remote/local task branch cleanup completed. Next lane is `SYT-010E`.
 - 2026-06-10: PR #24 review passed with no findings; human QA not required.
 - 2026-06-10: PR #24 marked ready and squash-merged into `main` at `fae4e5d`; issue #10 remains open; remote/local task branch cleanup completed. Next safe action is `SYT-010F` planning/routing, not #8.
+- 2026-06-10: Controller routed `SYT-010F` to Planner Dalton on `swarm/syt-010f-planning`.
+- 2026-06-10: `SYT-010F` planning selected Sticky Player hardening: pure visibility/resize helper coverage plus one deterministic dock/restore fixture if feasible.
