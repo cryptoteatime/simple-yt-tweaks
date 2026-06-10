@@ -4,10 +4,10 @@
 
 - Task ID: `SYT-010G`
 - GitHub issue: #10
-- Branch: `swarm/syt-010g-fullscreen-ui-geometry`
-- PR: #34
-- State: Ready to Integrate
-- Role: Controller/Runner/Reviewer
+- Branch: `swarm/syt-010g-fullscreen-ui-geometry` merged and cleaned remotely
+- PR: #34 merged at `99156b5`
+- State: Integrated
+- Role: Controller/Runner/Reviewer/Integrator
 
 ## Scope
 
@@ -53,7 +53,8 @@ Extract and test the player UI hover/reveal geometry used by fullscreen and thea
 - `npm run typecheck`: PASS.
 - `npm run lint`: PASS.
 - `git diff --check`: PASS.
-- `npm run validate:all`: PASS, including package validation, 22 unit tests, and 12 fixture tests.
+- `npm run validate:all`: PASS before PR open, including package validation, 22 unit tests, and 12 fixture tests.
+- `npm run validate:all`: PASS before merge, including package validation, 22 unit tests, and 12 fixture tests.
 
 ## Review
 
@@ -71,4 +72,4 @@ Extract and test the player UI hover/reveal geometry used by fullscreen and thea
 
 ## Next Action
 
-Integrator should mark PR #34 ready, run `npm run validate:all`, then squash-merge if the PR remains clean.
+No immediate action for this lane. Issue #10 remains open for a future bounded hardening lane only if the controller can name a narrow source/test target.

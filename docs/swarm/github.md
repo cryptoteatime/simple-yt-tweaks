@@ -45,7 +45,7 @@ Use this file to record the repo's GitHub status and autonomous PR policy.
 
 | Task ID | Branch | PR | Status | Owner | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `SYT-010G` | `swarm/syt-010g-fullscreen-ui-geometry` | #34 | Draft / Needs Review | Controller/Runner | Fullscreen/player UI geometry hardening for #10. |
+| none | none | none | none | none | none |
 
 ## Setup Log
 
@@ -68,3 +68,4 @@ Use this file to record the repo's GitHub status and autonomous PR policy.
 - 2026-06-10: Opened issue #31 for the remaining Home native hover regression after watch-to-Home SPA navigation. Implemented `SYT-031` on `swarm/syt-031-home-hover-stationary-spa`; opened draft PR #32.
 - 2026-06-10: PR #32 marked ready and squash-merged at `8e881c9`; issue #31 closed; remote task branch deleted by merge.
 - 2026-06-10: Opened draft PR #34 for `SYT-010G` fullscreen/player UI geometry hardening under issue #10.
+- 2026-06-10: PR #34 marked ready and squash-merged at `99156b5` for `SYT-010G`; issue #10 remains open; remote/local task branch cleanup completed.

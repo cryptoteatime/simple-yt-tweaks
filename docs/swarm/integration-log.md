@@ -12,6 +12,35 @@ Use this file for merge decisions, conflict history, final checks, and release n
 
 ## Entries
 
+### 2026-06-10: SYT-010G Fullscreen Player UI Geometry Integration
+
+- Integrator: Codex
+- Target branch: `main`
+- Candidate branch(es): `swarm/syt-010g-fullscreen-ui-geometry`
+- PR(s): https://github.com/cryptoteatime/simple-yt-tweaks/pull/34
+- Issue(s): https://github.com/cryptoteatime/simple-yt-tweaks/issues/10
+- Decision: Integrated
+- Merge: squash merge commit `99156b5e2b91c5bf1c773580426dacd0c609094c`
+- Reason: Reviewer Russell reported no findings and `Ready to Integrate`; PR scope matched `SYT-010G`; full integration gate passed; PR was clean and mergeable.
+- Conflicts: none; PR #34 was mergeable and clean before merge.
+- Checks:
+  - `git diff --check origin/main...HEAD`: PASS.
+  - `npm run test:unit`: PASS, 22 tests.
+  - `npm run typecheck`: PASS.
+  - `npm run lint`: PASS.
+  - `npm run validate:all`: PASS, including typecheck, lint, package validation, 22 unit tests, and 12 fixture tests.
+  - Reviewer targeted checks: PASS, including `git diff --check origin/main...origin/swarm/syt-010g-fullscreen-ui-geometry` and `npm run test:unit`.
+- Human acceptance: NOT_REQUIRED
+- Human acceptance evidence: routine behavior-preserving fullscreen/player UI geometry hardening with unit coverage; no #8 enhanced Home/Search hover work, live YouTube smoke gate, release, tag, version bump, settings default change, popup change, or Web Store asset update was included.
+- Branch cleanup: GitHub deleted the remote task branch during merge.
+- Worktree cleanup: local `main` synced to `origin/main`; hot-state repair is being landed through a docs-only follow-up PR per repo policy.
+- Notes:
+  - Fullscreen/theater player UI hover reveal geometry now has unit coverage in `src/content/fullscreen-geometry.ts`.
+  - Runtime DOM querying and class toggling remain in `src/content/fullscreen.ts`.
+- Follow-ups:
+  - Keep issue #10 open unless the controller determines the overall hardening pass is complete.
+  - Keep #8 enhanced Home/Search hover research paused unless the user explicitly reopens that gate.
+
 ### 2026-06-10: SYT-031 Home Hover Autoplay Regression Integration
 
 - Integrator: Codex

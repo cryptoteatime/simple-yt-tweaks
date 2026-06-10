@@ -13,12 +13,12 @@ This file is the repo-local dynamic control plane for the controller chat and an
 ## Current Source Of Truth
 
 - Default branch: `main`
-- Current branch: `swarm/syt-010g-fullscreen-ui-geometry`
-- Expected Git state: `SYT-010G` branch with fullscreen/player UI geometry hardening awaiting review
-- Open PR expectation: PR #34 draft for `SYT-010G`; PR #20 remains paused draft for #8 research
+- Current branch: `main`
+- Expected Git state: clean `main...origin/main` after `SYT-010G` hot-state repair lands
+- Open PR expectation: none after `SYT-010G` hot-state repair lands; PR #20 remains paused draft for #8 research
 - Active agents expectation: none
 - Controller lease expectation: none between bounded heartbeat passes
-- Current priority lane: `SYT-010G` integration for issue #10
+- Current priority lane: no active implementation lane; decide whether issue #10 needs another bounded hardening lane or remains open for later
 
 ## Controller Lease And Pacing
 
@@ -103,9 +103,8 @@ Heartbeat overlap rule:
 
 | Priority | Task ID | Action | Owner | Branch / Worktree | Stop Condition |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `SYT-010G` | Integrate fullscreen/player UI geometry hardening | Integrator | `swarm/syt-010g-fullscreen-ui-geometry` | PR merged or final checks fail |
-| 2 | `SYT-010H` | Plan the next small #10 hardening lane only if the controller can name a narrow source/test target | Controller / Planner | TBD | New handoff created or decision to leave #10 open for later |
-| 3 | `SYT-008A` | Keep research gate paused until the user wants enhanced hover research again | Planner | `swarm/syt-008a-hover-research` | Decision to defer, prototype, or require human QA |
+| 1 | `SYT-010H` | Plan the next small #10 hardening lane only if the controller can name a narrow source/test target | Controller / Planner | TBD | New handoff created or decision to leave #10 open for later |
+| 2 | `SYT-008A` | Keep research gate paused until the user wants enhanced hover research again | Planner | `swarm/syt-008a-hover-research` | Decision to defer, prototype, or require human QA |
 
 ## Dynamic Notes
 
@@ -134,3 +133,4 @@ Heartbeat overlap rule:
 - 2026-06-10: PR #32 marked ready and squash-merged into `main` at `8e881c9`; issue #31 closed. Hot-state repair follows because controller docs still pointed at the completed regression lane.
 - 2026-06-10: `SYT-010G` selected fullscreen/player UI geometry hardening under issue #10; draft PR #34 opened after `npm run validate:all` passed. Next safe action is review, not #8.
 - 2026-06-10: Reviewer Russell marked PR #34 Ready to Integrate with no findings. Next safe action is integration with `npm run validate:all`.
+- 2026-06-10: PR #34 marked ready and squash-merged into `main` at `99156b5`; issue #10 remains open. Hot-state repair follows because controller docs still pointed at the completed lane.
