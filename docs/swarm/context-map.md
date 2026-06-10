@@ -5,12 +5,12 @@ Use this file as the fast entrypoint after `SWARM.md` and `docs/swarm/controller
 ## Current Hot State
 
 - Active implementation lane: none
-- Last integrated lane: `SYT-031`
+- Last integrated lane: `SYT-010G`
 - GitHub issues: #10 open; #31 closed
-- PR: #32 merged
+- PR: #34 merged
 - Branch: `main`
-- Current status: `SYT-031` integrated; issue #31 closed
-- Next priority lane: decide whether to plan `SYT-010G` or leave #10 open for later
+- Current status: `SYT-010G` integrated; issue #10 remains open
+- Next priority lane: decide whether to plan `SYT-010H` or leave #10 open for later
 - Do not route next: #8 enhanced Home/Search hover grow research unless the user explicitly reopens that gate
 
 ## Hot Files
@@ -20,7 +20,7 @@ Use this file as the fast entrypoint after `SWARM.md` and `docs/swarm/controller
 - Task queue: `docs/swarm/task-board.md`
 - Agent capacity: `docs/swarm/agent-registry.md`
 - GitHub policy/state: `docs/swarm/github.md`
-- Next handoff: `docs/swarm/handoffs/SYT-031.md`
+- Next handoff: `docs/swarm/handoffs/SYT-010G.md`
 - User steering: `docs/swarm/user-feedback.md`
 
 ## Cold / Archived History
@@ -38,6 +38,7 @@ Completed lanes are intentionally compacted to stubs:
 - `SYT-010F` implementation -> PR #28, merge `fa07c18`, refs #10
 - `SYT-010F` docs follow-up -> PR #29, merge `6580065`
 - `SYT-031` -> PR #32, merge `8e881c9`, closes #31
+- `SYT-010G` -> PR #34, merge `99156b5`, refs #10
 
 Full prior handoff text is recoverable through Git history before the 2026-06-10 compaction commit. Use `docs/swarm/archive/README.md` for the reference map.
 
@@ -45,7 +46,7 @@ Full prior handoff text is recoverable through Git history before the 2026-06-10
 
 Decide whether to plan another #10 hardening lane:
 
-- `SYT-031` is integrated; do not respawn it.
+- `SYT-010G` is integrated; do not respawn it.
 - Do not bump version, tag, or release.
-- Start `SYT-010G` only with a narrow source/test target and fresh handoff.
+- Start `SYT-010H` only with a narrow source/test target and fresh handoff.
 - Do not restart #8 enhanced hover research.
