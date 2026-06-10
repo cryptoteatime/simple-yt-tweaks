@@ -12,6 +12,35 @@ Use this file for merge decisions, conflict history, final checks, and release n
 
 ## Entries
 
+### 2026-06-10: SYT-031 Home Hover Autoplay Regression Integration
+
+- Integrator: Codex
+- Target branch: `main`
+- Candidate branch(es): `swarm/syt-031-home-hover-stationary-spa`
+- PR(s): https://github.com/cryptoteatime/simple-yt-tweaks/pull/32
+- Issue(s): https://github.com/cryptoteatime/simple-yt-tweaks/issues/31
+- Decision: Integrated
+- Merge: squash merge commit `8e881c9`
+- Reason: User reported #21 was still failing in live use. Signed-in Chrome inspection reproduced a stale mismatched preview overlay after watch-to-Home SPA navigation. The branch added scoped native feed hover recovery plus fixture/live coverage; full validation and optional live smoke passed.
+- Conflicts: none; PR #32 was mergeable before merge.
+- Checks:
+  - `npm run typecheck`: PASS.
+  - `npm run lint`: PASS.
+  - `npm run test:unit`: PASS, 18 tests.
+  - `npm run test:e2e`: PASS, 12 fixture tests.
+  - `npm run test:e2e:live`: PASS, 2 live smoke tests.
+  - `npm run validate:all`: PASS.
+- Human acceptance: WAIVED_BY_USER_DIRECTION
+- Human acceptance evidence: user explicitly directed Codex to stop deferring, avoid bypassing blocked browser surfaces, and finish the fix with real validation. The lane used repo fixture gates plus isolated live YouTube smoke; no version bump, tag, release, or Web Store asset update was included.
+- Branch cleanup: GitHub deleted the remote task branch during merge.
+- Worktree cleanup: local `main` synced to `origin/main`; hot-state repair is being landed through a docs-only follow-up PR per repo policy.
+- Notes:
+  - Home/Search enhanced hover grow/highlight was not reintroduced.
+  - Recovery only nudges native feed card hover lifecycle and checks preview/card watch ids before resuming existing previews.
+- Follow-ups:
+  - Keep issue #10 open unless the controller determines the overall hardening pass is complete.
+  - Keep #8 enhanced Home/Search hover research paused unless the user explicitly reopens that gate.
+
 ### 2026-06-10: SYT-010F Sticky Player Hardening Integration
 
 - Integrator: Codex
