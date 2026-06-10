@@ -17,16 +17,17 @@ Before acting, read:
 1. `../AGENTS.md` if available
 2. `SWARM.md`
 3. `docs/swarm/controller-directives.md`
-4. `docs/swarm/project-brief.md`
+4. `docs/swarm/context-map.md`
 5. `docs/swarm/current-state.md`
-6. `docs/swarm/bootstrap-log.md`
-7. `docs/swarm/agent-registry.md`
-8. `docs/swarm/github.md`
-9. `docs/swarm/task-board.md`
-10. `docs/swarm/user-feedback.md`
-11. Relevant files in `docs/swarm/handoffs/`
-12. `docs/swarm/integration-log.md`
-13. Existing repo docs such as `README.md`, `DEVELOPMENT.md`, `CHANGELOG.md`, and `KNOWN_ISSUES.md`
+6. `docs/swarm/agent-registry.md`
+7. `docs/swarm/github.md`
+8. `docs/swarm/task-board.md`
+9. `docs/swarm/user-feedback.md`
+10. Relevant current handoff files in `docs/swarm/handoffs/`
+11. `docs/swarm/project-brief.md`, `docs/swarm/bootstrap-log.md`, and `docs/swarm/integration-log.md` only when planning, bootstrapping, or integrating
+12. Existing repo docs such as `README.md`, `DEVELOPMENT.md`, `CHANGELOG.md`, and `KNOWN_ISSUES.md`
+
+Do not load archived completed-lane history unless the current task specifically needs it. Use `docs/swarm/archive/README.md` as the reference map.
 
 ## Repo Goal
 
@@ -57,6 +58,7 @@ The current goal is post-v0.3.0 hardening: make automated verification strong en
 ## Repo Swarm Files
 
 - `docs/swarm/controller-directives.md`: dynamic controller mode, pacing, next actions, spawn strategy, and stop conditions
+- `docs/swarm/context-map.md`: compact hot context, current lane, and archive references
 - `docs/swarm/current-state.md`: current mission, constraints, priorities, risks, and verification status
 - `docs/swarm/project-brief.md`: durable discovery brief and milestone lane map
 - `docs/swarm/task-board.md`: active queue and task state
@@ -73,5 +75,5 @@ This repo should use a paced controller-led model:
 
 - The main repo chat acts as controller.
 - Controller passes should do only a few safe orchestration actions, then leave a clean recovery point.
-- A 90-minute active-pulse heartbeat is proposed after the swarm packet branch is merged and the worktree is clean.
+- A 30-minute active-pulse heartbeat is active while `SYT-021` is in review/fix/integration.
 - The heartbeat prompt should stay generic and read `SWARM.md` plus `docs/swarm/controller-directives.md`; do not encode current PR lists or one-off task state in the automation prompt.

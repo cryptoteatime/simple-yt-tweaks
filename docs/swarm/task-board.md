@@ -28,7 +28,7 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 
 | Task ID | Title | Reason | Notes |
 | --- | --- | --- | --- |
-| `SYT-010E` | Large module split review | Reduce risk in large content modules only where it lowers real maintenance cost. | Do not split for aesthetics; require test coverage first. |
+| `SYT-010E` | Code-hardening lane after #21 | Reduce runtime risk in large content modules only where it lowers real maintenance cost. | Start after PR #22 review/integration state is clear. First target should be a small scoped audit/refactor with `validate:all`, not broad aesthetic splitting. |
 | `SYT-RC-001` | Next release-candidate checklist | Make future version bump/package/release flow smoother. | Human QA required before release. |
 
 ## Blocked
@@ -69,3 +69,4 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 - GitHub workflow: `docs/swarm/github.md`.
 - Current controller phase: Phase 4 active; `SYT-010D` integrated and no new lane started by the Integrator.
 - 2026-06-10: User reported live watch-to-Home native hover autoplay regression. Controller opened #21 and draft PR #22 for `SYT-021` on `swarm/syt-008b-native-hover-spa-regression`; review is next.
+- 2026-06-10: User requested compact context/docs and more frequent automation. Completed historical handoffs were compacted to stubs with `docs/swarm/archive/README.md` reference mapping; `docs/swarm/context-map.md` is now the hot context entrypoint.

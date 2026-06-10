@@ -30,8 +30,15 @@ This file is the repo-local dynamic control plane for the controller chat and an
 - Controller pass budget: max 6 safe orchestration actions or 60 minutes, hard stop at 75 minutes while `SYT-021` is active
 - Heartbeat pass budget: max 2 safe recovery/routing actions, then stop
 - Active capacity: max 1 active subagent total
-- Heartbeat cadence target: 45 minutes while `SYT-021` is in review/fix/integration, then slow back toward 90 minutes
+- Heartbeat cadence target: 30 minutes while `SYT-021` is in review/fix/integration, then slow back toward 90 minutes
 - Next human QA gate: optional `SYT-021` live YouTube spot-check, release-candidate lane, or #8 visual/product-direction gate
+
+## Context Hygiene
+
+- Read `docs/swarm/context-map.md` before loading historical handoffs.
+- Keep completed-lane details out of hot docs. Stubs plus PR/merge references are enough for normal controller passes.
+- Do not load `docs/swarm/archive/**` unless a current task needs old implementation details.
+- When a lane completes, compact its handoff to status, scope, verification, PR, merge, and archive references.
 
 Heartbeat overlap rule:
 
@@ -97,7 +104,8 @@ Heartbeat overlap rule:
 | Priority | Task ID | Action | Owner | Branch / Worktree | Stop Condition |
 | --- | --- | --- | --- | --- | --- |
 | 1 | `SYT-021` | Route review for draft PR #22 native hover SPA regression and live recommendation drift | Reviewer | `swarm/syt-008b-native-hover-spa-regression` | Reviewer result recorded |
-| 2 | `SYT-008A` | Keep research gate paused until #21 is resolved and user wants enhanced hover research again | Planner | `swarm/syt-008a-hover-research` | Decision to defer, prototype, or require human QA |
+| 2 | `SYT-010E` | Plan next #10 code-hardening lane after PR #22 review/integration state is clear | Planner / Senior Runner | TBD | Scoped hardening lane created with verification |
+| 3 | `SYT-008A` | Keep research gate paused until #21 is resolved and user wants enhanced hover research again | Planner | `swarm/syt-008a-hover-research` | Decision to defer, prototype, or require human QA |
 
 ## Dynamic Notes
 
@@ -111,3 +119,4 @@ Heartbeat overlap rule:
 - PR #16 squash-merged into `main` at `0fca6c3`; remote and local task branch cleanup completed.
 - PR #18 squash-merged into `main` at `88f0a91`; local branch cleanup completed and stale remote-tracking ref pruned.
 - 2026-06-10: User reported live watch-to-Home native hover autoplay regression and requested overnight automation. Controller opened #21 and draft PR #22, implemented `SYT-021`, ran `npm run validate:all`, and performed signed-in Chrome live smoke. Review is next.
+- 2026-06-10: User requested compact docs/context and faster automation. Heartbeat cadence updated to 30 minutes; completed handoffs compacted with archive references.

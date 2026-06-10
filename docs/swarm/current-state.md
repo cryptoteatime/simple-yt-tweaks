@@ -23,6 +23,7 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 2. Keep #10 hardening in small PRs with `validate:all` as the final gate.
 3. Keep #8 as a future high-risk research lane until tests and product direction justify it.
 4. Keep release-candidate work separate from routine fixture/source hardening.
+5. Keep hot swarm context compact; use `docs/swarm/context-map.md` and archive references instead of loading old completed handoffs.
 
 ## Success Criteria
 
@@ -78,7 +79,7 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 
 - Controller heartbeat: active.
 - Heartbeat automation id: `simple-yt-tweaks-controller-heartbeat`.
-- Heartbeat cadence: about 45 minutes while this live-regression lane is active.
+- Heartbeat cadence: about 30 minutes while this live-regression lane is active.
 - Execution strategy: paced controller with direct subagents only after lane readiness.
 - Batch dispatch policy: disabled by default via max 1 active subagent; require disjoint parallel-safe labels if capacity is raised.
 - Shared docs lock: controller owns task-board, current-state, controller-directives, and agent-registry during parallel work unless assigned.
