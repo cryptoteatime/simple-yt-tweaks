@@ -21,7 +21,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Agent / Thread | Task ID | Role | Status | Branch | Worktree | PR | Started | Last Seen | Expected Next Step | Heartbeat |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| none | none | none | none | none | none | none | none | none | none | none |
+| `019eb3ac-ad99-7b90-8a44-09fd13f141bc` / Anscombe | `SYT-036` | Reviewer | In Progress | `swarm/syt-036-home-hover-stuck-lifecycle` | main repo checkout | #37 | 2026-06-10 18:34 EDT | Review PR #37, update `docs/swarm/handoffs/SYT-036.md`, report review result | none |
 
 ## Paused / Stale Agents
 
