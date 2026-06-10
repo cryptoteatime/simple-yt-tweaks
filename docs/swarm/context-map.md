@@ -4,13 +4,13 @@ Use this file as the fast entrypoint after `SWARM.md` and `docs/swarm/controller
 
 ## Current Hot State
 
-- Active implementation lane: none; `SYT-010F` implementation is ready to launch
+- Active implementation lane: `SYT-010F`
 - Last integrated lane: `SYT-010F` planning
 - GitHub issue: #10 open
 - PR: #26 merged at `66d756f`; #24 merged at `fae4e5d`
-- Branch: `main` after integration-record docs land
-- Current status: `SYT-010F` planning integrated; Sticky Player implementation ready
-- Next priority lane: spawn Senior Runner on `swarm/syt-010f-sticky-player-hardening`
+- Branch: `swarm/syt-010f-sticky-player-hardening`
+- Current status: `SYT-010F` In Progress
+- Next priority lane: wait for active Sticky Player Senior Runner
 - Do not route next: #8 enhanced Home/Search hover grow research unless the user explicitly reopens that gate
 
 ## Hot Files
@@ -40,7 +40,7 @@ Full prior handoff text is recoverable through Git history before the 2026-06-10
 
 ## Next Safe Controller Action
 
-Spawn a Senior Runner from `docs/swarm/handoffs/SYT-010F.md`:
+Wait for the active Senior Runner from `docs/swarm/handoffs/SYT-010F.md`:
 
 - Branch: `swarm/syt-010f-sticky-player-hardening`.
 - Scope: behavior-preserving Sticky Player visibility/resize helper coverage plus deterministic dock/restore fixture coverage if feasible.
