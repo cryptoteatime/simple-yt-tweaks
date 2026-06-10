@@ -516,6 +516,24 @@ test('watch fixture keeps live chat overlay from squeezing the theater player', 
   await expect(page.locator('#panels-full-bleed-container')).toHaveCSS('width', '0px');
   await expect(page.locator('ytd-live-chat-frame#chat')).toHaveCSS('width', '380px');
   await expect(page.locator('iframe#chatframe')).toHaveCSS('width', '380px');
+  await expect(page.locator('#simple-yt-tweaks-live-chat-close')).toBeVisible();
+  await expect(page.locator('#simple-yt-tweaks-live-chat-restore')).toBeHidden();
+
+  await page.locator('#simple-yt-tweaks-live-chat-close').click();
+  await expect(page.locator('body')).toHaveClass(/simple-yt-tweaks-live-chat-minimized/);
+  await expect(page.locator('ytd-live-chat-frame#chat')).toHaveCSS('opacity', '0');
+  await expect(page.locator('#simple-yt-tweaks-live-chat-restore')).toBeVisible();
+
+  await page.locator('ytd-live-chat-frame#chat').evaluate((chat) => {
+    chat.setAttribute('collapsed', '');
+    chat.setAttribute('hide-chat-frame', '');
+    chat.querySelector('iframe#chatframe')?.removeAttribute('src');
+  });
+  await page.locator('#simple-yt-tweaks-live-chat-restore').click();
+  await expect(page.locator('body')).not.toHaveClass(/simple-yt-tweaks-live-chat-minimized/);
+  await expect(page.locator('ytd-live-chat-frame#chat')).not.toHaveAttribute('collapsed', '');
+  await expect(page.locator('ytd-live-chat-frame#chat')).not.toHaveAttribute('hide-chat-frame', '');
+  await expect(page.locator('iframe#chatframe')).toHaveAttribute('src', /live_chat\?v=live-fixture/);
   expect(extensionErrors(errors)).toEqual([]);
 });
 

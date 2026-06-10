@@ -4,7 +4,7 @@
 
 - Name: Simple YT Tweaks
 - Folder: `/Users/d4ngl/Git Repos/Codex/simple-yt-tweaks`
-- Status: existing repo, post-v0.3.0 hardening; `SYT-036` Home hover lifecycle regression passed user QA, and PR #37 now includes a post-review #38 live-stream Theater/chat overlay fix awaiting fresh review
+- Status: existing repo, post-v0.3.0 hardening; `SYT-036` Home hover lifecycle regression passed user QA, and PR #37 now includes post-review #38 live-stream Theater/chat overlay layout plus minimize/restore fixes awaiting fresh review
 - GitHub: `https://github.com/cryptoteatime/simple-yt-tweaks`
 
 ## Project Brief
@@ -19,7 +19,7 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 
 ## Current Focus
 
-1. Route fresh review for PR #37 after the post-review #38 patch: live streams in enhanced Theater mode no longer let YouTube's live-chat panel squeeze the player, and the chat overlay has usable dimensions.
+1. Route fresh review for PR #37 after the post-review #38 patch: live streams in enhanced Theater mode no longer let YouTube's live-chat panel squeeze the player, the chat overlay has usable dimensions, and the overlay `X` minimizes to a right-edge `Live chat` restore tab instead of leaving a collapsed opaque overlay.
 2. Keep the recorded SYT-036 human QA pass for Home hover autoplay; after review, integrate only if checks/review are clean and any remaining human QA gate is passed or explicitly waived with the recorded Brave PWA evidence.
 3. Keep #8 as a future high-risk research lane until tests and product direction justify it.
 4. Keep release-candidate work separate from routine fixture/source hardening.
@@ -54,7 +54,7 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 
 ## Recommended First Milestone
 
-`SYT-036` passed user QA for the Home hover autoplay route on PR #37. During that QA, the user found #38: live streams in enhanced Theater mode could appear cut off while live chat overlay collapsed. The #38 fix is now on PR #37 with fixture coverage, full validation, and live Brave PWA geometry/screenshot verification. Issue #10 remains open until the controller decides the hardening pass is complete.
+`SYT-036` passed user QA for the Home hover autoplay route on PR #37. During that QA, the user found #38: live streams in enhanced Theater mode could appear cut off while live chat overlay collapsed. The #38 fix is now on PR #37 with fixture coverage, full validation, and live Brave PWA geometry plus minimize/restore verification. Issue #10 remains open until the controller decides the hardening pass is complete.
 
 ## Verification Defaults
 

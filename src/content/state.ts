@@ -23,6 +23,7 @@ export type ContentState = {
   lastPointerY: number;
   lastEnhancedTheaterActive: boolean;
   lastWatchNavigationVideoId: string;
+  liveChatOverlayMinimized: boolean;
   modeTransitionTimers: number[];
   homeFeedCleanupDeferredUntil: number;
   homeFeedCleanupTimer: number | null;
@@ -44,6 +45,7 @@ export const state: ContentState = {
   lastPointerY: Number.POSITIVE_INFINITY,
   lastEnhancedTheaterActive: false,
   lastWatchNavigationVideoId: '',
+  liveChatOverlayMinimized: false,
   modeTransitionTimers: [],
   homeFeedCleanupDeferredUntil: 0,
   homeFeedCleanupTimer: null,
