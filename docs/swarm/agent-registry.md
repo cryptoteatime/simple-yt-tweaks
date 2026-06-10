@@ -21,7 +21,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Agent / Thread | Task ID | Role | Status | Branch | Worktree | PR | Started | Last Seen | Expected Next Step | Heartbeat |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| none | none | none | none | none | none | none | none | none | none | none |
+| `019eb0c7-e8dc-7352-9531-8f7be5692bdb` / Gibbs | `SYT-021` | Reviewer | In Progress | `swarm/syt-008b-native-hover-spa-regression` | main worktree | #22 | 2026-06-10 04:56 EDT | 2026-06-10 04:56 EDT | Re-review PR #22 after whitespace fix and report `Ready to Integrate`, `Needs Fixes`, or `Blocked`. | none |
 
 ## Paused / Stale Agents
 
@@ -59,7 +59,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Task ID | Role | Branch / Worktree | Launch Condition | Prompt Location |
 | --- | --- | --- | --- | --- |
-| `SYT-021` | Reviewer | `swarm/syt-008b-native-hover-spa-regression` / PR #22 | Whitespace fix pushed; launch one reviewer for source/test/docs/PR audit | `docs/swarm/handoffs/SYT-021.md` |
+| none | none | none | none | none |
 
 ## Side Chats
 
