@@ -21,7 +21,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Agent / Thread | Task ID | Role | Status | Branch | Worktree | PR | Started | Last Seen | Expected Next Step | Heartbeat |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| none | none | none | none | none | none | none | none | none | none | none |
+| `019eb2b0-254b-7230-9b53-3f98d55020f6` / Bacon | `SYT-036` | Reviewer | In Progress | `swarm/syt-036-home-hover-stuck-lifecycle` | `/Users/d4ngl/Git Repos/Codex/simple-yt-tweaks` | #37 | 2026-06-10 13:57 EDT | Review PR #37 and report Ready to Integrate, Ready for Human QA, Needs Fixes, or Blocked | none |
 
 ## Paused / Stale Agents
 
