@@ -31,6 +31,7 @@ Completed lanes are intentionally compacted to stubs:
 - `SYT-010B` -> PR #14, merge `5675059`
 - `SYT-010C` -> PR #16, merge `0fca6c3`
 - `SYT-010D` -> PR #18, merge `88f0a91`
+- `SYT-010E` -> next #10 hardening lane, `docs/swarm/handoffs/SYT-010E.md`
 
 Full prior handoff text is recoverable through Git history before the 2026-06-10 compaction commit. Use `docs/swarm/archive/README.md` for the reference map.
 
@@ -45,3 +46,4 @@ Route a reviewer for PR #22. The reviewer should focus on:
 - Player click fallback timing does not double-toggle normal native clicks.
 - Modern `#secondary yt-lockup-view-model` recommendations are covered.
 
+After PR #22 review/integration state is clear, route `SYT-010E` as the next #10 code-hardening lane.
