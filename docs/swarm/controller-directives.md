@@ -8,17 +8,17 @@ This file is the repo-local dynamic control plane for the controller chat and an
 - Heartbeat mode: `active-pulse`
 - Heartbeat automation id: `simple-yt-tweaks-controller-heartbeat`
 - Main controller chat: Simple YT Tweaks controller in Codex workspace
-- Last reviewed by controller: 2026-06-10 07:18 EDT
+- Last reviewed by controller: 2026-06-10 07:00 EDT
 
 ## Current Source Of Truth
 
 - Default branch: `main`
-- Current branch: `swarm/syt-010f-sticky-player-hardening`
-- Expected Git state: clean `swarm/syt-010f-sticky-player-hardening...origin/swarm/syt-010f-sticky-player-hardening` after runner-route docs follow-up is pushed
-- Open PR expectation: none until Runner opens draft PR
-- Active agents expectation: one Senior Runner for `SYT-010F`
+- Current branch: `main` after integration-record docs land
+- Expected Git state: clean `main...origin/main` after `SYT-010F` integration-record docs land
+- Open PR expectation: none after integration-record docs land
+- Active agents expectation: none
 - Controller lease expectation: none between bounded heartbeat passes
-- Current priority lane: `SYT-010F` Sticky Player Senior Runner in progress
+- Current priority lane: spawn `SYT-010F` Senior Runner for Sticky Player hardening
 
 ## Controller Lease And Pacing
 
@@ -103,7 +103,7 @@ Heartbeat overlap rule:
 
 | Priority | Task ID | Action | Owner | Branch / Worktree | Stop Condition |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `SYT-010F` | Wait for active Sticky Player Senior Runner | Senior Runner | `swarm/syt-010f-sticky-player-hardening` | Runner result recorded |
+| 1 | `SYT-010F` | Spawn Senior Runner from `docs/swarm/handoffs/SYT-010F.md` | Controller / Senior Runner | `swarm/syt-010f-sticky-player-hardening` | Runner launched and registry updated, or blocker recorded |
 | 2 | `SYT-008A` | Keep research gate paused until the user wants enhanced hover research again | Planner | `swarm/syt-008a-hover-research` | Decision to defer, prototype, or require human QA |
 
 ## Dynamic Notes
@@ -128,4 +128,3 @@ Heartbeat overlap rule:
 - 2026-06-10: Controller routed `SYT-010F` planning PR #26 to Reviewer McClintock.
 - 2026-06-10: PR #26 review passed with no findings; human QA not required.
 - 2026-06-10: PR #26 marked ready and squash-merged into `main` at `66d756f`; issue #10 remains open. Next safe action is `SYT-010F` Sticky Player Senior Runner, not #8.
-- 2026-06-10: Controller routed `SYT-010F` to Senior Runner Harvey on `swarm/syt-010f-sticky-player-hardening`.

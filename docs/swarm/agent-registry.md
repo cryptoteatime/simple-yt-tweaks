@@ -21,7 +21,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Agent / Thread | Task ID | Role | Status | Branch | Worktree | PR | Started | Last Seen | Expected Next Step | Heartbeat |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `019eb145-89d5-7e93-ae8e-46819bfb6ac0` / Harvey | `SYT-010F` | Senior Runner | In Progress | `swarm/syt-010f-sticky-player-hardening` | main worktree | TBD | 2026-06-10 07:18 EDT | 2026-06-10 07:18 EDT | Implement Sticky Player hardening, open draft PR, and report `Needs Review`, `Blocked`, or `Needs Fixes`. | none |
+| none | none | none | none | none | none | none | none | none | none | none |
 
 ## Paused / Stale Agents
 
