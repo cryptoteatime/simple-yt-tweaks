@@ -12,6 +12,34 @@ Use this file for merge decisions, conflict history, final checks, and release n
 
 ## Entries
 
+### 2026-06-10: SYT-021 Native Hover SPA Regression Integration
+
+- Integrator: Lorentz (`019eb0d4-9f71-7c52-a08f-2186cff049d5`)
+- Target branch: `main`
+- Candidate branch(es): `swarm/syt-008b-native-hover-spa-regression`
+- PR(s): https://github.com/cryptoteatime/simple-yt-tweaks/pull/22
+- Issue(s): https://github.com/cryptoteatime/simple-yt-tweaks/issues/21
+- Decision: Integrated
+- Merge: squash merge commit `8f90ef1072f0e2ac3e611417ef85919f6131a02f`
+- Reason: Reviewer re-review reported no findings; PR scope matched `SYT-021`; full integration gate passed; signed-in live Chrome smoke had already passed.
+- Conflicts: none; PR #22 was mergeable and clean before merge.
+- Checks:
+  - `git status --short --branch`: PASS, clean task branch before final validation.
+  - `gh pr view 22 --json ...`: PASS, PR was open, draft, mergeable, and clean at head `7d63be5`; it was marked ready before merge.
+  - `gh pr checks 22`: PASS/NOT_CONFIGURED, no GitHub status checks were reported for the branch.
+  - `git diff --check origin/main...HEAD`: PASS.
+  - `npm run validate:all`: PASS, including typecheck, lint, `git diff --check`, package validation, packaged validation, 8 unit tests, and 10 fixture tests.
+  - `gh issue view 21 --json ...`: PASS after merge, issue #21 closed automatically at 2026-06-10T09:22:57Z.
+- Human acceptance: NOT_REQUIRED
+- Human acceptance evidence: human QA was optional supplemental QA, not a merge gate; this lane already had fixture coverage, full validation, signed-in live Chrome smoke, and clean re-review. No release, tag, version bump, or Web Store asset update was included.
+- Branch cleanup: GitHub deleted the remote task branch during merge; local task branch was removed by the GitHub CLI merge workflow. `git ls-remote --heads origin swarm/syt-008b-native-hover-spa-regression` returned no remote branch.
+- Worktree cleanup: local `main` synced to `origin/main`; integration record is being landed through a docs-only follow-up PR per repo policy.
+- Notes:
+  - Home/Search native hover behavior remains native; #8 enhanced hover grow was not revived.
+  - Watch helpers now prefer the real `#movie_player` video, and modern `#secondary yt-lockup-view-model` recommendations are covered.
+- Follow-ups:
+  - Route `SYT-010E` as the next #10 code-hardening lane, not #8 enhanced hover research.
+
 ### 2026-04-29: SYT-010D Helper Unit Tests Integration
 
 - Integrator: Planck (`019ddc21-c7bb-75a2-94f6-e8d84b8f4489`)

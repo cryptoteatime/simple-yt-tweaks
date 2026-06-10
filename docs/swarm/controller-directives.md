@@ -8,17 +8,17 @@ This file is the repo-local dynamic control plane for the controller chat and an
 - Heartbeat mode: `active-pulse`
 - Heartbeat automation id: `simple-yt-tweaks-controller-heartbeat`
 - Main controller chat: Simple YT Tweaks controller in Codex workspace
-- Last reviewed by controller: 2026-06-10 04:05 EDT
+- Last reviewed by controller: 2026-06-10 05:23 EDT
 
 ## Current Source Of Truth
 
 - Default branch: `main`
-- Current branch: `swarm/syt-008b-native-hover-spa-regression`
-- Expected Git state: clean `swarm/syt-008b-native-hover-spa-regression...origin/swarm/syt-008b-native-hover-spa-regression` after PR-state docs follow-up is pushed
-- Open PR expectation: draft PR #22 for `SYT-021`
+- Current branch: `main`
+- Expected Git state: clean `main...origin/main` after the integration-record docs follow-up lands
+- Open PR expectation: none after `SYT-021` integration-record docs land
 - Active agents expectation: none
 - Controller lease expectation: none between bounded heartbeat passes
-- Current priority lane: none started by the Integrator; controller may choose the next lane in a later pass
+- Current priority lane: `SYT-010E` planning/routing for #10 code hardening
 
 ## Controller Lease And Pacing
 
@@ -27,11 +27,11 @@ This file is the repo-local dynamic control plane for the controller chat and an
 - Lease expected action: none
 - Lease stop condition: none
 - Lease stale after: 90 minutes
-- Controller pass budget: max 6 safe orchestration actions or 60 minutes, hard stop at 75 minutes while `SYT-021` is active
+- Controller pass budget: max 6 safe orchestration actions or 60 minutes
 - Heartbeat pass budget: max 2 safe recovery/routing actions, then stop
 - Active capacity: max 1 active subagent total
-- Heartbeat cadence target: 30 minutes while `SYT-021` is in review/fix/integration, then slow back toward 90 minutes
-- Next human QA gate: optional `SYT-021` live YouTube spot-check, release-candidate lane, or #8 visual/product-direction gate
+- Heartbeat cadence target: slow back toward 90 minutes after `SYT-021` integration
+- Next human QA gate: release-candidate lane or #8 visual/product-direction gate
 
 ## Context Hygiene
 
@@ -103,9 +103,8 @@ Heartbeat overlap rule:
 
 | Priority | Task ID | Action | Owner | Branch / Worktree | Stop Condition |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `SYT-021` | Route review for draft PR #22 native hover SPA regression and live recommendation drift | Reviewer | `swarm/syt-008b-native-hover-spa-regression` | Reviewer result recorded |
-| 2 | `SYT-010E` | Plan next #10 code-hardening lane after PR #22 review/integration state is clear | Planner / Senior Runner | TBD | Scoped hardening lane created with verification |
-| 3 | `SYT-008A` | Keep research gate paused until #21 is resolved and user wants enhanced hover research again | Planner | `swarm/syt-008a-hover-research` | Decision to defer, prototype, or require human QA |
+| 1 | `SYT-010E` | Plan and route the next #10 code-hardening lane | Planner / Senior Runner | TBD | Scoped hardening lane created with verification |
+| 2 | `SYT-008A` | Keep research gate paused until the user wants enhanced hover research again | Planner | `swarm/syt-008a-hover-research` | Decision to defer, prototype, or require human QA |
 
 ## Dynamic Notes
 
@@ -118,5 +117,7 @@ Heartbeat overlap rule:
 - PR #14 squash-merged into `main` at `5675059`; remote and local task branch cleanup completed.
 - PR #16 squash-merged into `main` at `0fca6c3`; remote and local task branch cleanup completed.
 - PR #18 squash-merged into `main` at `88f0a91`; local branch cleanup completed and stale remote-tracking ref pruned.
-- 2026-06-10: User reported live watch-to-Home native hover autoplay regression and requested overnight automation. Controller opened #21 and draft PR #22, implemented `SYT-021`, ran `npm run validate:all`, and performed signed-in Chrome live smoke. Review is next.
+- 2026-06-10: User reported live watch-to-Home native hover autoplay regression and requested overnight automation. Controller opened #21 and draft PR #22, implemented `SYT-021`, ran `npm run validate:all`, and performed signed-in Chrome live smoke.
 - 2026-06-10: User requested compact docs/context and faster automation. Heartbeat cadence updated to 30 minutes; completed handoffs compacted with archive references.
+- 2026-06-10: PR #22 re-review passed with no findings; human QA was optional supplemental QA, not a merge gate.
+- 2026-06-10: PR #22 squash-merged into `main` at `8f90ef1`; issue #21 auto-closed; remote/local task branch cleanup completed. Next lane is `SYT-010E`.
