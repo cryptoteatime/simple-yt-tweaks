@@ -257,6 +257,302 @@ test('home fixture retries delayed inline preview playback after watch-to-home n
   expect(extensionErrors(errors)).toEqual([]);
 });
 
+test('home fixture plays visible card preview when pointer is below the preview', async ({ context }) => {
+  const page = await context.newPage();
+  const errors = await openFixture(page, 'home', 'https://www.youtube.com/');
+
+  await page.mouse.move(80, 80);
+  await page.evaluate(() => {
+    history.pushState({}, '', '/watch?v=fixture');
+    window.dispatchEvent(new PopStateEvent('popstate'));
+  });
+  await page.waitForTimeout(220);
+  const hoverPoint = await page.evaluate(() => {
+    window.__simpleYtTweaksTitlePreviewEvents = [];
+
+    const card = document.createElement('ytd-rich-item-renderer');
+    card.setAttribute('data-testid', 'title-hover-preview-card');
+    card.setAttribute('data-native-preview-card', 'title-hover-preview-card');
+    card.setAttribute('items-per-row', '3');
+    card.setAttribute(
+      'style',
+      'display: block; width: 280px; height: 190px; margin: 0; padding: 0; position: fixed; left: 40px; top: 96px; z-index: 1;',
+    );
+    card.innerHTML = `
+      <a class="ytLockupViewModelContentImage" href="/watch?v=title-hover-preview-card" style="display: block; width: 100%; height: 128px;">
+        <yt-thumbnail-view-model style="display: block; width: 100%; height: 128px;"></yt-thumbnail-view-model>
+      </a>
+      <h3 style="margin: 12px 0 0;">Title hover preview fixture</h3>
+    `;
+    document.querySelector('ytd-browse[page-subtype="home"] ytd-rich-grid-renderer #contents')?.prepend(card);
+
+    const rect = card.getBoundingClientRect();
+    const preview = document.createElement('ytd-video-preview');
+    preview.setAttribute('data-testid', 'title-hover-preview-host');
+    preview.setAttribute(
+      'style',
+      `position: fixed; left: ${rect.left}px; top: ${rect.top}px; width: ${rect.width}px; height: 128px; z-index: 10000; pointer-events: auto;`,
+    );
+    preview.innerHTML = `
+      <a id="media-container-link" href="/watch?v=title-hover-preview-card">
+        <ytd-player id="inline-player"></ytd-player>
+      </a>
+    `;
+
+    const video = document.createElement('video');
+    video.setAttribute('data-testid', 'title-hover-preview-video');
+    video.muted = true;
+    video.playsInline = true;
+    video.setAttribute('style', 'display: block; width: 100%; height: 128px;');
+    video.addEventListener('play', () => {
+      window.__simpleYtTweaksTitlePreviewEvents?.push('play');
+    });
+
+    const canvas = document.createElement('canvas');
+    canvas.width = 16;
+    canvas.height = 16;
+    const context = canvas.getContext('2d');
+    context!.fillStyle = '#123456';
+    context!.fillRect(0, 0, 16, 16);
+    video.srcObject = canvas.captureStream(1);
+
+    preview.querySelector('#inline-player')?.append(video);
+    document.querySelector('#video-preview')?.append(preview);
+    history.pushState({}, '', '/');
+    window.dispatchEvent(new PopStateEvent('popstate'));
+
+    return {
+      x: rect.left + rect.width / 2,
+      y: rect.top + 154,
+    };
+  });
+
+  await page.mouse.move(hoverPoint.x, hoverPoint.y);
+  await expect
+    .poll(() => page.evaluate(() => window.__simpleYtTweaksTitlePreviewEvents ?? []), { timeout: 4_000 })
+    .toContainEqual('play');
+  await expect(page.locator('[data-testid="title-hover-preview-card"]')).not.toHaveClass(
+    /simple-yt-tweaks-grid-hover-ready/,
+  );
+  expect(extensionErrors(errors)).toEqual([]);
+});
+
+test('home fixture clears mismatched stale preview before title hover playback', async ({ context }) => {
+  const page = await context.newPage();
+  const errors = await openFixture(page, 'home', 'https://www.youtube.com/');
+
+  await page.mouse.move(80, 80);
+  await page.evaluate(() => {
+    history.pushState({}, '', '/watch?v=fixture');
+    window.dispatchEvent(new PopStateEvent('popstate'));
+  });
+  await page.waitForTimeout(220);
+  const hoverPoint = await page.evaluate(() => {
+    window.__simpleYtTweaksStaleMismatchEvents = [];
+
+    const card = document.createElement('ytd-rich-item-renderer');
+    card.setAttribute('data-testid', 'stale-mismatch-card');
+    card.setAttribute('data-native-preview-card', 'stale-mismatch-card');
+    card.setAttribute('items-per-row', '3');
+    card.setAttribute(
+      'style',
+      'display: block; width: 280px; height: 190px; margin: 0; padding: 0; position: fixed; left: 40px; top: 96px; z-index: 1;',
+    );
+    card.innerHTML = `
+      <a class="ytLockupViewModelContentImage" href="/watch?v=stale-mismatch-card" style="display: block; width: 100%; height: 128px;">
+        <yt-thumbnail-view-model style="display: block; width: 100%; height: 128px;"></yt-thumbnail-view-model>
+      </a>
+      <h3 style="margin: 12px 0 0;">Stale mismatch fixture</h3>
+    `;
+
+    let previewCreated = false;
+    card.addEventListener('mousemove', () => {
+      if (previewCreated) return;
+      previewCreated = true;
+
+      window.setTimeout(() => {
+        const rect = card.getBoundingClientRect();
+        const preview = document.createElement('ytd-video-preview');
+        preview.setAttribute('data-testid', 'stale-mismatch-current-preview');
+        preview.setAttribute(
+          'style',
+          `position: fixed; left: ${rect.left}px; top: ${rect.top}px; width: ${rect.width}px; height: 128px; z-index: 10000; pointer-events: auto;`,
+        );
+        preview.innerHTML = `
+          <a id="media-container-link" href="/watch?v=stale-mismatch-card">
+            <ytd-player id="inline-player"></ytd-player>
+          </a>
+        `;
+
+        const video = document.createElement('video');
+        video.setAttribute('data-testid', 'stale-mismatch-current-video');
+        video.muted = true;
+        video.playsInline = true;
+        video.setAttribute('style', 'display: block; width: 100%; height: 128px;');
+        video.addEventListener('play', () => {
+          window.__simpleYtTweaksStaleMismatchEvents?.push('play');
+        });
+
+        const canvas = document.createElement('canvas');
+        canvas.width = 16;
+        canvas.height = 16;
+        const context = canvas.getContext('2d');
+        context!.fillStyle = '#654321';
+        context!.fillRect(0, 0, 16, 16);
+        video.srcObject = canvas.captureStream(1);
+
+        preview.querySelector('#inline-player')?.append(video);
+        document.querySelector('#video-preview')?.append(preview);
+      }, 180);
+    });
+
+    document.querySelector('ytd-browse[page-subtype="home"] ytd-rich-grid-renderer #contents')?.prepend(card);
+    const rect = card.getBoundingClientRect();
+
+    const stalePreview = document.createElement('ytd-video-preview');
+    stalePreview.setAttribute('data-testid', 'stale-mismatch-old-preview');
+    stalePreview.setAttribute(
+      'style',
+      `position: fixed; left: ${rect.left}px; top: ${rect.top}px; width: ${rect.width}px; height: 128px; z-index: 10000; pointer-events: auto;`,
+    );
+    stalePreview.innerHTML = `
+      <a id="media-container-link" href="/watch?v=old-stale-preview">
+        <div id="inline-preview-player">
+          <video data-testid="stale-mismatch-old-video" style="display: block; width: 100%; height: 128px;"></video>
+        </div>
+      </a>
+    `;
+    document.querySelector('#video-preview')?.append(stalePreview);
+
+    history.pushState({}, '', '/');
+    window.dispatchEvent(new PopStateEvent('popstate'));
+
+    return {
+      x: rect.left + rect.width / 2,
+      y: rect.top + 154,
+    };
+  });
+
+  await page.mouse.move(hoverPoint.x, hoverPoint.y);
+  await expect(page.locator('[data-testid="stale-mismatch-old-preview"]')).toHaveCount(0, { timeout: 2_500 });
+  await expect
+    .poll(() => page.evaluate(() => window.__simpleYtTweaksStaleMismatchEvents ?? []), { timeout: 4_000 })
+    .toContainEqual('play');
+  await expect(page.locator('[data-testid="stale-mismatch-card"]')).not.toHaveClass(
+    /simple-yt-tweaks-grid-hover-ready/,
+  );
+  expect(extensionErrors(errors)).toEqual([]);
+});
+
+test('home fixture clears broken empty preview wrapper before title hover playback', async ({ context }) => {
+  const page = await context.newPage();
+  const errors = await openFixture(page, 'home', 'https://www.youtube.com/');
+
+  await page.mouse.move(80, 80);
+  await page.evaluate(() => {
+    history.pushState({}, '', '/watch?v=fixture');
+    window.dispatchEvent(new PopStateEvent('popstate'));
+  });
+  await page.waitForTimeout(220);
+  const hoverPoint = await page.evaluate(() => {
+    window.__simpleYtTweaksBrokenPreviewEvents = [];
+
+    const card = document.createElement('ytd-rich-item-renderer');
+    card.setAttribute('data-testid', 'broken-preview-card');
+    card.setAttribute('data-native-preview-card', 'broken-preview-card');
+    card.setAttribute('items-per-row', '3');
+    card.setAttribute(
+      'style',
+      'display: block; width: 280px; height: 190px; margin: 0; padding: 0; position: fixed; left: 40px; top: 96px; z-index: 1;',
+    );
+    card.innerHTML = `
+      <a class="ytLockupViewModelContentImage" href="/watch?v=broken-preview-card" style="display: block; width: 100%; height: 128px;">
+        <yt-thumbnail-view-model style="display: block; width: 100%; height: 128px;"></yt-thumbnail-view-model>
+      </a>
+      <h3 style="margin: 12px 0 0;">Broken preview fixture</h3>
+    `;
+
+    let previewCreated = false;
+    card.addEventListener('mousemove', () => {
+      if (previewCreated) return;
+      previewCreated = true;
+
+      window.setTimeout(() => {
+        const rect = card.getBoundingClientRect();
+        const preview = document.createElement('ytd-video-preview');
+        preview.setAttribute('data-testid', 'broken-preview-current-preview');
+        preview.setAttribute(
+          'style',
+          `position: fixed; left: ${rect.left}px; top: ${rect.top}px; width: ${rect.width}px; height: 128px; z-index: 10000; pointer-events: auto;`,
+        );
+        preview.innerHTML = `
+          <a id="media-container-link" href="/watch?v=broken-preview-card">
+            <ytd-player id="inline-player"></ytd-player>
+          </a>
+        `;
+
+        const video = document.createElement('video');
+        video.setAttribute('data-testid', 'broken-preview-current-video');
+        video.muted = true;
+        video.playsInline = true;
+        video.setAttribute('style', 'display: block; width: 100%; height: 128px;');
+        video.addEventListener('play', () => {
+          window.__simpleYtTweaksBrokenPreviewEvents?.push('play');
+        });
+
+        const canvas = document.createElement('canvas');
+        canvas.width = 16;
+        canvas.height = 16;
+        const context = canvas.getContext('2d');
+        context!.fillStyle = '#abcdef';
+        context!.fillRect(0, 0, 16, 16);
+        video.srcObject = canvas.captureStream(1);
+
+        preview.querySelector('#inline-player')?.append(video);
+        document.querySelector('#video-preview')?.append(preview);
+      }, 180);
+    });
+
+    document.querySelector('ytd-browse[page-subtype="home"] ytd-rich-grid-renderer #contents')?.prepend(card);
+    const rect = card.getBoundingClientRect();
+
+    const stalePreview = document.createElement('ytd-video-preview');
+    stalePreview.setAttribute('data-testid', 'broken-preview-old-preview');
+    stalePreview.setAttribute(
+      'style',
+      `position: fixed; left: ${rect.left}px; top: ${rect.top}px; width: ${rect.width}px; height: 128px; z-index: 10000; pointer-events: auto;`,
+    );
+    stalePreview.innerHTML = `
+      <div id="player-container">
+        <ytd-player id="inline-player">
+          <div id="inline-preview-player">
+            <video data-testid="broken-preview-old-video" style="display: block; width: 100%; height: 128px;"></video>
+          </div>
+        </ytd-player>
+      </div>
+    `;
+    document.querySelector('#video-preview')?.append(stalePreview);
+
+    history.pushState({}, '', '/');
+    window.dispatchEvent(new PopStateEvent('popstate'));
+
+    return {
+      x: rect.left + rect.width / 2,
+      y: rect.top + 154,
+    };
+  });
+
+  await page.mouse.move(hoverPoint.x, hoverPoint.y);
+  await expect(page.locator('[data-testid="broken-preview-old-preview"]')).toHaveCount(0, { timeout: 3_500 });
+  await expect
+    .poll(() => page.evaluate(() => window.__simpleYtTweaksBrokenPreviewEvents ?? []), { timeout: 5_000 })
+    .toContainEqual('play');
+  await expect(page.locator('[data-testid="broken-preview-card"]')).not.toHaveClass(
+    /simple-yt-tweaks-grid-hover-ready/,
+  );
+  expect(extensionErrors(errors)).toEqual([]);
+});
+
 test('home fixture still nudges card hover when stale preview is paused under the pointer', async ({ context }) => {
   const page = await context.newPage();
   const errors = await openFixture(page, 'home', 'https://www.youtube.com/');

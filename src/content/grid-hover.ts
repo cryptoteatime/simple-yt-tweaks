@@ -10,6 +10,7 @@ const SIDEBAR_HOVER_DELAY_MS = 560;
 const FALLBACK_HOVER_DELAY_MS = 250;
 const NATIVE_FEED_HOVER_NUDGE_DELAYS_MS = [80, 260, 620];
 const NATIVE_FEED_HOVER_NUDGE_COOLDOWN_MS = 1_400;
+const BROKEN_NATIVE_PREVIEW_CLEAR_DELAY_MS = 450;
 const NATIVE_PREVIEW_PLAYBACK_FALLBACK_DELAYS_MS = [120, 320, 700, 1_200, 1_900, 2_800];
 const NATIVE_PREVIEW_VIDEO_SELECTOR = [
   'ytd-video-preview video',
@@ -106,6 +107,12 @@ const NATIVE_FEED_HOVER_TARGET_SELECTOR = [
   'ytd-thumbnail',
   'yt-thumbnail-view-model',
 ].join(',');
+const NATIVE_FEED_MEDIA_HOVER_TARGET_SELECTOR = [
+  'a#thumbnail[href*="/watch"]',
+  '.ytLockupViewModelContentImage[href*="/watch"]',
+  'ytd-thumbnail',
+  'yt-thumbnail-view-model',
+].join(',');
 
 let handlersBound = false;
 let activeHoverCard: HTMLElement | null = null;
@@ -122,6 +129,7 @@ let nativeFeedSyntheticHoverCard: HTMLElement | null = null;
 let nativeFeedSyntheticHoverTarget: HTMLElement | null = null;
 let lastPointerX = Number.POSITIVE_INFINITY;
 let lastPointerY = Number.POSITIVE_INFINITY;
+const brokenNativePreviewSeenAt = new WeakMap<Element, number>();
 
 function buildSearchGridCss(columns: number): string {
   return `
@@ -653,6 +661,19 @@ function getNativePreviewVideoUnderPointer(): HTMLVideoElement | null {
   return null;
 }
 
+function getNativePreviewBounds(video: HTMLVideoElement): DOMRect {
+  const previewRoot = video.closest<HTMLElement>('ytd-video-preview');
+  const previewRect = previewRoot?.getBoundingClientRect();
+  if (previewRect && previewRect.width > 0 && previewRect.height > 0) return previewRect;
+
+  return video.getBoundingClientRect();
+}
+
+function isVisibleNativePreviewVideo(video: HTMLVideoElement): boolean {
+  const rect = getNativePreviewBounds(video);
+  return rect.width > 80 && rect.height > 60 && rect.bottom > 0 && rect.top < window.innerHeight;
+}
+
 function getNativeFeedCard(target: Element | null): HTMLElement | null {
   const card = target?.closest<HTMLElement>(NATIVE_FEED_CARD_SELECTOR) ?? null;
   if (!card || card.classList.contains(GENERAL_HIDDEN_CLASS) || card.hidden) return null;
@@ -728,21 +749,25 @@ function getNativeFeedCardUnderPointer(): HTMLElement | null {
 function getNativeFeedHoverTarget(card: HTMLElement): HTMLElement {
   const targetAtPointer = getElementUnderPointer();
   if (targetAtPointer && card.contains(targetAtPointer)) {
-    const mediaTarget = targetAtPointer.closest<HTMLElement>(NATIVE_FEED_HOVER_TARGET_SELECTOR);
+    const mediaTarget = targetAtPointer.closest<HTMLElement>(NATIVE_FEED_MEDIA_HOVER_TARGET_SELECTOR);
     if (mediaTarget && card.contains(mediaTarget)) return mediaTarget;
   }
 
-  return card.querySelector<HTMLElement>(NATIVE_FEED_HOVER_TARGET_SELECTOR) ?? card;
+  return card.querySelector<HTMLElement>(NATIVE_FEED_MEDIA_HOVER_TARGET_SELECTOR) ??
+    card.querySelector<HTMLElement>(NATIVE_FEED_HOVER_TARGET_SELECTOR) ??
+    card;
 }
 
 function getNativeFeedHoverPoint(card: HTMLElement, target: HTMLElement): { x: number; y: number } {
   if (Number.isFinite(lastPointerX) && Number.isFinite(lastPointerY)) {
-    const cardRect = card.getBoundingClientRect();
+    const targetRect = target.getBoundingClientRect();
     if (
-      lastPointerX >= cardRect.left &&
-      lastPointerX <= cardRect.right &&
-      lastPointerY >= cardRect.top &&
-      lastPointerY <= cardRect.bottom
+      targetRect.width > 0 &&
+      targetRect.height > 0 &&
+      lastPointerX >= targetRect.left &&
+      lastPointerX <= targetRect.right &&
+      lastPointerY >= targetRect.top &&
+      lastPointerY <= targetRect.bottom
     ) {
       return { x: lastPointerX, y: lastPointerY };
     }
@@ -768,6 +793,90 @@ function nativePreviewMatchesCard(video: HTMLVideoElement, card: HTMLElement): b
 
   if (!cardVideoId || !previewVideoId) return true;
   return cardVideoId === previewVideoId;
+}
+
+function nativePreviewHasSameWatchId(video: HTMLVideoElement, card: HTMLElement): boolean {
+  const cardVideoId = getWatchVideoId(getWatchHref(card));
+  const previewRoot = video.closest('ytd-video-preview');
+  const previewVideoId = previewRoot ? getWatchVideoId(getWatchHref(previewRoot)) : '';
+
+  return Boolean(cardVideoId && previewVideoId && cardVideoId === previewVideoId);
+}
+
+function nativePreviewHasDifferentWatchId(video: HTMLVideoElement, card: HTMLElement): boolean {
+  const cardVideoId = getWatchVideoId(getWatchHref(card));
+  const previewRoot = video.closest('ytd-video-preview');
+  const previewVideoId = previewRoot ? getWatchVideoId(getWatchHref(previewRoot)) : '';
+
+  return Boolean(cardVideoId && previewVideoId && cardVideoId !== previewVideoId);
+}
+
+function isBrokenNativePreview(video: HTMLVideoElement): boolean {
+  return video.readyState === HTMLMediaElement.HAVE_NOTHING && !video.currentSrc && !video.src;
+}
+
+function shouldClearBrokenNativePreview(video: HTMLVideoElement): boolean {
+  if (!isBrokenNativePreview(video)) return false;
+
+  const previewRoot = video.closest<HTMLElement>('ytd-video-preview');
+  if (!previewRoot) return false;
+
+  const firstSeenAt = brokenNativePreviewSeenAt.get(previewRoot);
+  const now = Date.now();
+  if (firstSeenAt === undefined) {
+    brokenNativePreviewSeenAt.set(previewRoot, now);
+    return false;
+  }
+
+  return now - firstSeenAt >= BROKEN_NATIVE_PREVIEW_CLEAR_DELAY_MS;
+}
+
+function nativePreviewOverlapsCard(video: HTMLVideoElement, card: HTMLElement): boolean {
+  const previewRect = getNativePreviewBounds(video);
+  const cardRect = card.getBoundingClientRect();
+
+  if (previewRect.width <= 0 || previewRect.height <= 0 || cardRect.width <= 0 || cardRect.height <= 0) return false;
+
+  const overlapWidth = Math.min(previewRect.right, cardRect.right) - Math.max(previewRect.left, cardRect.left);
+  const overlapHeight = Math.min(previewRect.bottom, cardRect.bottom) - Math.max(previewRect.top, cardRect.top);
+
+  return overlapWidth > Math.min(80, cardRect.width * 0.35) && overlapHeight > Math.min(60, cardRect.height * 0.25);
+}
+
+function getNativePreviewVideoForCard(card: HTMLElement): HTMLVideoElement | null {
+  let overlappingPreview: HTMLVideoElement | null = null;
+
+  for (const video of document.querySelectorAll<HTMLVideoElement>(NATIVE_PREVIEW_VIDEO_SELECTOR)) {
+    if (!isVisibleNativePreviewVideo(video)) continue;
+
+    if (nativePreviewHasSameWatchId(video, card)) {
+      return video;
+    }
+
+    if (!overlappingPreview && nativePreviewOverlapsCard(video, card)) {
+      overlappingPreview = video;
+    }
+  }
+
+  return overlappingPreview;
+}
+
+function clearStaleNativePreviewForCard(card: HTMLElement): boolean {
+  let cleared = false;
+
+  for (const video of document.querySelectorAll<HTMLVideoElement>(NATIVE_PREVIEW_VIDEO_SELECTOR)) {
+    if (!isVisibleNativePreviewVideo(video)) continue;
+    if (!nativePreviewHasDifferentWatchId(video, card) && !shouldClearBrokenNativePreview(video)) continue;
+    if (!nativePreviewOverlapsCard(video, card) && video !== getNativePreviewVideoUnderPointer()) continue;
+
+    const previewRoot = video.closest<HTMLElement>('ytd-video-preview');
+    if (!previewRoot || !document.body.contains(previewRoot)) continue;
+
+    previewRoot.remove();
+    cleared = true;
+  }
+
+  return cleared;
 }
 
 function nativePreviewIsPlaying(video: HTMLVideoElement): boolean {
@@ -797,7 +906,8 @@ function dispatchNativeFeedHoverNudge(card: HTMLElement): void {
 
   const target = getNativeFeedHoverTarget(card);
   const point = getNativeFeedHoverPoint(card, target);
-  const previewVideo = getNativePreviewVideoUnderPointer();
+  clearStaleNativePreviewForCard(card);
+  const previewVideo = getNativePreviewVideoForCard(card) ?? getNativePreviewVideoUnderPointer();
   if (previewVideo && nativePreviewMatchesCard(previewVideo, card)) {
     if (nativeFeedSyntheticHoverCard && nativeFeedSyntheticHoverCard !== card) {
       clearNativeFeedSyntheticHover(target);
@@ -850,7 +960,11 @@ function scheduleNativeFeedHoverLifecycleRecovery(): void {
     clearNativeFeedSyntheticHover(target);
   }
 
-  const previewVideo = getNativePreviewVideoUnderPointer();
+  if (clearStaleNativePreviewForCard(card)) {
+    clearNativePreviewPlayTimer();
+  }
+
+  const previewVideo = getNativePreviewVideoForCard(card) ?? getNativePreviewVideoUnderPointer();
   if (previewVideo && nativePreviewMatchesCard(previewVideo, card)) {
     scheduleNativePreviewPlaybackFallback(card);
     if (nativePreviewIsPlaying(previewVideo)) return;
@@ -883,9 +997,12 @@ function tryNativePreviewPlaybackFallback(expectedKey: string, fallbackCard: HTM
   const currentKey = getNativePreviewPlaybackFallbackKey(card);
   if (currentKey && currentKey !== expectedKey) return;
 
-  const currentVideo = getNativePreviewVideoUnderPointer();
+  const currentVideo = card ? getNativePreviewVideoForCard(card) : getNativePreviewVideoUnderPointer();
   if (!currentVideo) return;
-  if (card && !nativePreviewMatchesCard(currentVideo, card)) return;
+  if (card && !nativePreviewMatchesCard(currentVideo, card)) {
+    clearStaleNativePreviewForCard(card);
+    return;
+  }
 
   if (!currentVideo.paused) {
     clearNativePreviewPlayTimer();

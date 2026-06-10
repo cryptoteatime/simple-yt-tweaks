@@ -4,7 +4,7 @@
 
 - Name: Simple YT Tweaks
 - Folder: `/Users/d4ngl/Git Repos/Codex/simple-yt-tweaks`
-- Status: existing repo, post-v0.3.0 hardening; `SYT-036` Home hover lifecycle regression is in failed-QA follow-up review
+- Status: existing repo, post-v0.3.0 hardening; `SYT-036` Home hover lifecycle regression has a final follow-up patch awaiting PR review after fixture/live/Brave PWA verification
 - GitHub: `https://github.com/cryptoteatime/simple-yt-tweaks`
 
 ## Project Brief
@@ -19,8 +19,8 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 
 ## Current Focus
 
-1. Route review for the `SYT-036` / PR #37 failed-QA follow-up patch: native Home hover stale-card lifecycle cleanup after watch-to-Home SPA navigation.
-2. After review, wait for human QA on PR #37 and integrate only after the gate passes or is explicitly waived with evidence.
+1. Push and route review for the `SYT-036` / PR #37 final failed-QA follow-up patch: native Home hover stale-card lifecycle cleanup after watch-to-Home SPA navigation.
+2. After review, wait for human QA on PR #37 and integrate only after the gate passes or is explicitly waived with the recorded Brave PWA evidence.
 3. Keep #8 as a future high-risk research lane until tests and product direction justify it.
 4. Keep release-candidate work separate from routine fixture/source hardening.
 5. Keep hot swarm context compact; use `docs/swarm/context-map.md` and archive references instead of loading old completed handoffs.
@@ -54,7 +54,7 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 
 ## Recommended First Milestone
 
-`SYT-036` has a failed-QA follow-up patch on PR #37, following the user report that Home hover autoplay still failed after watch-to-Home SPA navigation. Issue #10 remains open until the controller decides the hardening pass is complete.
+`SYT-036` has a final failed-QA follow-up patch on PR #37, following the user report that Home hover autoplay still failed after watch-to-Home SPA navigation through YouTube's own logo/Home UI. The patch passed fixture/live validation and exact Brave PWA verification. Issue #10 remains open until the controller decides the hardening pass is complete.
 
 ## Verification Defaults
 

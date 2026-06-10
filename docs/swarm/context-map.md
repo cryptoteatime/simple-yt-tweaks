@@ -9,7 +9,7 @@ Use this file as the fast entrypoint after `SWARM.md` and `docs/swarm/controller
 - GitHub issues: #10 open; #36 open; #31 closed
 - PR: #37 draft for `SYT-036`
 - Branch: `swarm/syt-036-home-hover-stuck-lifecycle`
-- Current status: `SYT-036` draft PR #37 open; human QA failed, follow-up patch is local, validation/live smoke passed; route review next
+- Current status: `SYT-036` draft PR #37 open; human QA failed twice, final follow-up patch passed fixture/live validation and exact Brave PWA watch -> header hover -> logo Home -> title/body hover verification; push/update PR and route review next
 - Next priority lane: finish #36 before planning more #10 hardening
 - Do not route next: #8 enhanced Home/Search hover grow research unless the user explicitly reopens that gate
 
@@ -48,7 +48,7 @@ Full prior handoff text is recoverable through Git history before the 2026-06-10
 Finish `SYT-036`:
 
 - Do not bump version, tag, or release.
-- Route review for the failed-QA follow-up patch on PR #37.
-- After review passes, wait for `Human QA passed/failed for SYT-036: <notes>`.
+- Push and route review for the final failed-QA follow-up patch on PR #37.
+- After review passes, wait for `Human QA passed/failed for SYT-036: <notes>` unless reviewer/integrator records an explicit waiver based on the live Brave PWA evidence.
 - Integrate PR #37 only after review and human QA pass or an explicit waiver is recorded.
 - Do not restart #8 enhanced hover research.

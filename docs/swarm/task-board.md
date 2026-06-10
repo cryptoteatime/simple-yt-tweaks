@@ -27,7 +27,7 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 | `SYT-010F` | Sticky Player hardening | Integrator | Integrated | `swarm/syt-010f-sticky-player-hardening` | Sticky Player visibility/resize helpers and deterministic dock/restore fixture coverage | serial-required | `SYT-010F` planning PR #26 merged | medium/high, player DOM docking | `docs/swarm/handoffs/SYT-010F.md` | #28 merged |
 | `SYT-031` | Home native hover autoplay after watch-to-Home SPA | Integrator | Integrated | `swarm/syt-031-home-hover-stationary-spa` | #31 stale/missing Home native preview recovery, fixture/live coverage | serial-required | `SYT-021` | high, live YouTube SPA preview lifecycle | `docs/swarm/handoffs/SYT-031.md` | #32 merged |
 | `SYT-010G` | Fullscreen player UI geometry hardening | Integrator | Integrated | `swarm/syt-010g-fullscreen-ui-geometry` | Extract/test player UI hover reveal geometry | serial-required | `SYT-031` | medium, watch-page player UI behavior | `docs/swarm/handoffs/SYT-010G.md` | #34 merged |
-| `SYT-036` | Home hover stale card lifecycle regression | Reviewer | Needs Review | `swarm/syt-036-home-hover-stuck-lifecycle` | #36 native Home hover lifecycle cleanup and fixture/live regression | serial-required | `SYT-031`, `SYT-010G` | high, live YouTube SPA preview lifecycle | `docs/swarm/handoffs/SYT-036.md` | #37 draft |
+| `SYT-036` | Home hover stale card lifecycle regression | Reviewer | Needs Review | `swarm/syt-036-home-hover-stuck-lifecycle` | #36 native Home hover lifecycle cleanup and fixture/live/Brave PWA regression | serial-required | `SYT-031`, `SYT-010G` | high, live YouTube SPA preview lifecycle | `docs/swarm/handoffs/SYT-036.md` | #37 draft |
 
 ## Backlog
 
@@ -46,7 +46,7 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 
 | Task ID | Branch | Reviewer Focus | Verification Tier | Handoff |
 | --- | --- | --- | --- | --- |
-| `SYT-036` | `swarm/syt-036-home-hover-stuck-lifecycle` | Failed-QA follow-up: delayed inline preview retry, broad preview selector, stricter live smoke, no #8 grow/highlight | full + live smoke already run by Runner | `docs/swarm/handoffs/SYT-036.md` |
+| `SYT-036` | `swarm/syt-036-home-hover-stuck-lifecycle` | Final failed-QA follow-up: media-target nudges, wrapper-aware preview bounds, stale/mismatched/broken preview cleanup, stricter title/body live smoke, exact Brave PWA path evidence, no #8 grow/highlight | full + live smoke + Brave PWA supplemental check already run by Runner | `docs/swarm/handoffs/SYT-036.md` |
 
 ## Ready To Integrate
 
@@ -60,7 +60,7 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 | --- | --- | --- | --- | --- |
 | `SYT-008A` | none | Not started | Yes before implementing visual hover behavior | `Human QA passed/failed for SYT-008A: <notes>` |
 | `SYT-RC-001` | none | Not started | Yes before release | `Human QA passed/failed for SYT-RC-001: <notes>` |
-| `SYT-036` | #37 | Failed once; return after review | Yes before merge unless explicitly waived with live evidence | `Human QA passed/failed for SYT-036: <notes>` |
+| `SYT-036` | #37 | Failed twice; final controller Brave PWA verification passed; return after review | Yes before merge unless explicitly waived with live evidence | `Human QA passed/failed for SYT-036: <notes>` |
 
 ## Controller Notes
 
@@ -86,4 +86,4 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 - 2026-06-10: `SYT-010G` selected fullscreen/player UI geometry hardening. Unit/type/diff checks passed; route review next.
 - 2026-06-10: Reviewer Russell marked PR #34 Ready to Integrate with no findings; route Integrator next.
 - 2026-06-10: PR #34 squash-merged at `99156b5`, adding fullscreen/player UI geometry unit hardening. Issue #10 remains open; #8 remains paused.
-- 2026-06-10: User reported Home cards retaining opaque hover backgrounds and hover autoplay failing after refresh -> watch page -> SPA Home navigation. Controller opened #36 and draft PR #37 for `SYT-036`; first human QA failed. User clarified the failing route is watch -> YouTube logo/sidebar Home, not browser Back/profile navigation. Follow-up patch is ready for review after full validation and stricter live smoke passed.
+- 2026-06-10: User reported Home cards retaining opaque hover backgrounds and hover autoplay failing after refresh -> watch page -> SPA Home navigation. Controller opened #36 and draft PR #37 for `SYT-036`; human QA failed twice. User clarified the failing route is watch -> hover hidden header -> YouTube logo/sidebar Home, not browser Back/profile navigation, and that the app is Brave PWA. Final follow-up patch passed full validation, stricter live smoke, and exact Brave PWA verification.

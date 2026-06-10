@@ -2,6 +2,7 @@ import { collectPageErrors, expect, extensionErrors, test, waitForExtensionReady
 
 type LiveCardTarget = {
   href: string;
+  isLive: boolean;
   title: string;
   x: number;
   y: number;
@@ -37,8 +38,10 @@ async function getVisibleHomeCardTargets(page: import('@playwright/test').Page):
       .map((card) => {
         const link = card.querySelector<HTMLAnchorElement>('a[href*="/watch"]');
         const rect = card.getBoundingClientRect();
+        const text = card.textContent?.trim().replace(/\s+/g, ' ') ?? '';
         return {
-          title: card.textContent?.trim().replace(/\s+/g, ' ').slice(0, 120) ?? '',
+          title: text.slice(0, 120),
+          isLive: /\bLIVE\b|watching/i.test(text),
           href: link?.href ?? '',
           x: rect.left,
           y: rect.top,
@@ -48,7 +51,7 @@ async function getVisibleHomeCardTargets(page: import('@playwright/test').Page):
         };
       })
       .filter((card) => card.visible && card.href.includes('/watch') && !card.href.includes('/shorts/'))
-      .map(({ href, title, x, y, width, height }) => ({ href, title, x, y, width, height })),
+      .map(({ href, isLive, title, x, y, width, height }) => ({ href, isLive, title, x, y, width, height })),
   );
 }
 
@@ -225,8 +228,11 @@ test.describe('live YouTube smoke', () => {
       return;
     }
 
-    const hoverTarget = homeTargets[0];
-    await page.mouse.move(hoverTarget.x + hoverTarget.width / 2, hoverTarget.y + Math.min(90, hoverTarget.height / 2));
+    const hoverTarget = homeTargets.find((target) => !target.isLive) ?? homeTargets[0];
+    await page.mouse.move(
+      hoverTarget.x + hoverTarget.width / 2,
+      hoverTarget.y + Math.min(190, hoverTarget.height - 30),
+    );
     const preview = await expect
       .poll(() => getVisiblePreviewState(page), { timeout: 4_000 })
       .toHaveProperty('visible', true)
