@@ -8,17 +8,17 @@ This file is the repo-local dynamic control plane for the controller chat and an
 - Heartbeat mode: `active-pulse`
 - Heartbeat automation id: `simple-yt-tweaks-controller-heartbeat`
 - Main controller chat: Simple YT Tweaks controller in Codex workspace
-- Last reviewed by controller: 2026-06-10 07:00 EDT
+- Last reviewed by controller: 2026-06-10 09:32 EDT
 
 ## Current Source Of Truth
 
 - Default branch: `main`
-- Current branch: `main` after integration-record docs land
-- Expected Git state: clean `main...origin/main` after `SYT-010F` integration-record docs land
-- Open PR expectation: none after integration-record docs land
+- Current branch: `main` after hot-state repair lands
+- Expected Git state: clean `main...origin/main` after `SYT-010F` hot-state repair lands
+- Open PR expectation: none after hot-state repair lands; PR #20 remains paused draft for #8 research
 - Active agents expectation: none
 - Controller lease expectation: none between bounded heartbeat passes
-- Current priority lane: spawn `SYT-010F` Senior Runner for Sticky Player hardening
+- Current priority lane: no active implementation lane; decide whether issue #10 needs another bounded hardening lane or remains open for later
 
 ## Controller Lease And Pacing
 
@@ -30,7 +30,7 @@ This file is the repo-local dynamic control plane for the controller chat and an
 - Controller pass budget: max 6 safe orchestration actions or 60 minutes
 - Heartbeat pass budget: max 2 safe recovery/routing actions, then stop
 - Active capacity: max 1 active subagent total
-- Heartbeat cadence target: slow back toward 90 minutes after the `SYT-010F` integration-record docs follow-up lands
+- Heartbeat cadence target: slow back toward 90 minutes after the `SYT-010F` hot-state repair lands
 - Next human QA gate: release-candidate lane or #8 visual/product-direction gate
 
 ## Context Hygiene
@@ -103,7 +103,7 @@ Heartbeat overlap rule:
 
 | Priority | Task ID | Action | Owner | Branch / Worktree | Stop Condition |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `SYT-010F` | Spawn Senior Runner from `docs/swarm/handoffs/SYT-010F.md` | Controller / Senior Runner | `swarm/syt-010f-sticky-player-hardening` | Runner launched and registry updated, or blocker recorded |
+| 1 | `SYT-010G` | Plan the next small #10 hardening lane only if the controller can name a narrow source/test target | Controller / Planner | TBD | New handoff created or decision to leave #10 open for later |
 | 2 | `SYT-008A` | Keep research gate paused until the user wants enhanced hover research again | Planner | `swarm/syt-008a-hover-research` | Decision to defer, prototype, or require human QA |
 
 ## Dynamic Notes
@@ -128,3 +128,4 @@ Heartbeat overlap rule:
 - 2026-06-10: Controller routed `SYT-010F` planning PR #26 to Reviewer McClintock.
 - 2026-06-10: PR #26 review passed with no findings; human QA not required.
 - 2026-06-10: PR #26 marked ready and squash-merged into `main` at `66d756f`; issue #10 remains open. Next safe action is `SYT-010F` Sticky Player Senior Runner, not #8.
+- 2026-06-10: PR #28 marked ready and squash-merged into `main` at `fa07c18`; `npm run validate:all` passed; issue #10 remains open. Docs PR #29 recorded integration at `6580065`.
