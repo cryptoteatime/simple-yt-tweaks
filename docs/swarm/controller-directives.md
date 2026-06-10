@@ -16,9 +16,9 @@ This file is the repo-local dynamic control plane for the controller chat and an
 - Current branch: `swarm/syt-010f-planning`
 - Expected Git state: clean `swarm/syt-010f-planning...origin/swarm/syt-010f-planning` after planner-route docs follow-up is pushed
 - Open PR expectation: draft PR #26 for `SYT-010F` planning until reviewed/merged
-- Active agents expectation: one Reviewer for `SYT-010F` / PR #26
+- Active agents expectation: one Integrator for `SYT-010F` / PR #26
 - Controller lease expectation: none between bounded heartbeat passes
-- Current priority lane: `SYT-010F` planning review in progress
+- Current priority lane: `SYT-010F` planning integration in progress
 
 ## Controller Lease And Pacing
 
@@ -103,7 +103,7 @@ Heartbeat overlap rule:
 
 | Priority | Task ID | Action | Owner | Branch / Worktree | Stop Condition |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `SYT-010F` | Wait for active PR #26 Reviewer | Reviewer | `swarm/syt-010f-planning` | Reviewer result recorded |
+| 1 | `SYT-010F` | Wait for active PR #26 Integrator | Integrator | `swarm/syt-010f-planning` | Integration result recorded |
 | 2 | `SYT-008A` | Keep research gate paused until the user wants enhanced hover research again | Planner | `swarm/syt-008a-hover-research` | Decision to defer, prototype, or require human QA |
 
 ## Dynamic Notes
@@ -126,3 +126,4 @@ Heartbeat overlap rule:
 - 2026-06-10: Controller routed `SYT-010F` to Planner Dalton on `swarm/syt-010f-planning`.
 - 2026-06-10: `SYT-010F` planning selected Sticky Player hardening: pure visibility/resize helper coverage plus one deterministic dock/restore fixture if feasible.
 - 2026-06-10: Controller routed `SYT-010F` planning PR #26 to Reviewer McClintock.
+- 2026-06-10: PR #26 review passed with no findings; human QA not required. Integrator Faraday is active.

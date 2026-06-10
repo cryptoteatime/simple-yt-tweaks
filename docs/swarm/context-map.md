@@ -9,8 +9,8 @@ Use this file as the fast entrypoint after `SWARM.md` and `docs/swarm/controller
 - GitHub issue: #10 open
 - PR: #26 draft planning PR; #24 merged at `fae4e5d`
 - Branch: `swarm/syt-010f-planning`
-- Current status: `SYT-010F` Review in progress
-- Next priority lane: wait for active PR #26 reviewer
+- Current status: `SYT-010F` Integration in progress
+- Next priority lane: wait for active PR #26 Integrator
 - Do not route next: #8 enhanced Home/Search hover grow research unless the user explicitly reopens that gate
 
 ## Hot Files
@@ -39,9 +39,9 @@ Full prior handoff text is recoverable through Git history before the 2026-06-10
 
 ## Next Safe Controller Action
 
-Wait for the active `SYT-010F` reviewer on PR #26:
+Wait for the active `SYT-010F` Integrator on PR #26:
 
-- Confirm the Sticky Player hardening handoff is bounded and Runner-ready.
-- After review/merge, spawn a Senior Runner on `swarm/syt-010f-sticky-player-hardening`.
+- Mark the draft planning PR ready and merge if safe.
+- After merge, spawn a Senior Runner on `swarm/syt-010f-sticky-player-hardening`.
 - Keep issue #10 open until the controller decides the overall hardening pass is complete.
 - Do not restart #8 enhanced hover research.

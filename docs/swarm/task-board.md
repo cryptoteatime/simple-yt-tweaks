@@ -11,7 +11,7 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 - Project brief: Ready
 - Material questions: Deferred, not blocking
 - First milestone plan: Ready
-- Implementation dispatch: `SYT-010F` planning reviewer is active for PR #26.
+- Implementation dispatch: `SYT-010F` Integrator is active for PR #26.
 
 ## Active Tasks
 
@@ -24,7 +24,7 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 | `SYT-008A` | Enhanced home/search hover research gate | Planner | Paused | `swarm/syt-008a-hover-research` | #8 research, fixtures/prototype only | serial-required | `SYT-010A`, user/product gate | high, live YouTube preview lifecycle | `docs/swarm/handoffs/SYT-008A.md` | none |
 | `SYT-021` | Native hover SPA regression and live recommendation drift | Integrator | Integrated | `swarm/syt-008b-native-hover-spa-regression` | #21 native Home/Search preview repair, watch click fallback hardening, modern recommendation selector drift | serial-required | v0.3.0 baseline | high, live YouTube SPA/player behavior | `docs/swarm/handoffs/SYT-021.md` | #22 merged |
 | `SYT-010E` | Code-hardening lane after #21 | Integrator | Integrated | `swarm/syt-010e-code-hardening` | Grid-hover selector normalization with unit coverage | serial-required | `SYT-021` | medium/high, runtime source hardening | `docs/swarm/handoffs/SYT-010E.md` | #24 merged |
-| `SYT-010F` | Sticky Player hardening plan | Planner | Needs Review | `swarm/syt-010f-planning` | Plan next #10 lane: Sticky Player visibility/resize helpers and deterministic dock/restore fixture coverage | serial-required | `SYT-010E` | medium/high, player DOM docking | `docs/swarm/handoffs/SYT-010F.md` | #26 draft |
+| `SYT-010F` | Sticky Player hardening plan | Integrator | In Progress | `swarm/syt-010f-planning` | Plan next #10 lane: Sticky Player visibility/resize helpers and deterministic dock/restore fixture coverage | serial-required | `SYT-010E` | medium/high, player DOM docking | `docs/swarm/handoffs/SYT-010F.md` | #26 draft |
 
 ## Backlog
 
@@ -59,7 +59,7 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 
 ## Controller Notes
 
-- Active controller-spawned subagents: McClintock reviewing `SYT-010F` / PR #26.
+- Active controller-spawned subagents: Faraday integrating `SYT-010F` planning PR #26.
 - Active cron bursts: none; cron is a failsafe, not the normal execution path.
 - Parallel worktree root: none yet.
 - Batch dispatch policy: disabled by default because max active subagents is 1.
