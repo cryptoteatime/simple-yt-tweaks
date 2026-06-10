@@ -81,6 +81,7 @@ function homeFixture(): string {
                 <ad-badge-view-model>Sponsored</ad-badge-view-model>
                 <a href="https://googleadservices.com/pagead/aclk">Sponsored card</a>
               </ytd-rich-item-renderer>
+              <ytd-rich-item-renderer data-testid="home-spa-placeholder" items-per-row="3" hidden></ytd-rich-item-renderer>
               <ytd-rich-item-renderer data-testid="video-2" items-per-row="3">
                 <a class="ytLockupViewModelContentImage" href="/watch?v=home-2">
                   <yt-thumbnail-view-model></yt-thumbnail-view-model>
@@ -207,6 +208,13 @@ function watchFixture(): string {
     'YouTube Fixture Watch',
     `
       <ytd-app>
+        <div id="video-preview">
+          <ytd-video-preview>
+            <div id="inline-preview-player">
+              <video class="html5-main-video" data-testid="stale-preview-video"></video>
+            </div>
+          </ytd-video-preview>
+        </div>
         <ytd-watch-flexy>
           <div id="columns">
             <div id="primary">
@@ -254,6 +262,19 @@ function watchFixture(): string {
                   </div>
                 </ytd-compact-video-renderer>
               </div>
+              <yt-lockup-view-model class="lockup ytLockupViewModelWrapper" data-testid="modern-recommended-card">
+                <a class="ytLockupViewModelContentImage" href="/watch?v=modern-recommended-1">
+                  <yt-thumbnail-view-model>
+                    <div class="ytThumbnailViewModelHost">Modern recommended thumbnail</div>
+                  </yt-thumbnail-view-model>
+                  <thumbnail-overlay-button-view-model>
+                    <button type="button">
+                      <span class="ytIconWrapperHost">Queue</span>
+                    </button>
+                  </thumbnail-overlay-button-view-model>
+                </a>
+                <a class="ytLockupMetadataViewModelTitle" href="/watch?v=modern-recommended-1">Modern recommended title</a>
+              </yt-lockup-view-model>
             </div>
           </div>
         </ytd-watch-flexy>

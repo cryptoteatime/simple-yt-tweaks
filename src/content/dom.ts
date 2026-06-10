@@ -36,7 +36,7 @@ export function queryAll<T extends Element = Element>(
 }
 
 export function getVideo(): HTMLVideoElement | null {
-  return query<HTMLVideoElement>(SELECTORS.html5Video);
+  return query<HTMLVideoElement>('#movie_player video.html5-main-video') ?? query<HTMLVideoElement>(SELECTORS.html5Video);
 }
 
 export function getPlayer(): HTMLElement | null {

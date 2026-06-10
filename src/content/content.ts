@@ -120,6 +120,7 @@ function resetNavigationState(): void {
   document.body.classList.remove('simple-yt-tweaks-top-hover');
   resetStickyPlayerState();
   resetFullscreenNavigationState();
+  state.homeFeedCleanupDeferredUntil = Date.now() + 1_500;
 }
 
 function refreshPlayerLayout(): void {

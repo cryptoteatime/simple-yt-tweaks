@@ -23,8 +23,10 @@ const PREVIEW_CONTAINER_SELECTOR = [
 const SIDEBAR_CARD_SELECTOR = [
   '#related ytd-compact-video-renderer',
   'ytd-watch-next-secondary-results-renderer ytd-compact-video-renderer',
+  '#secondary ytd-compact-video-renderer',
   '#related yt-lockup-view-model',
   'ytd-watch-next-secondary-results-renderer yt-lockup-view-model',
+  '#secondary yt-lockup-view-model',
 ].join(',');
 const SEARCH_GRID_CONTENTS_SELECTOR =
   'ytd-search ytd-two-column-search-results-renderer #primary ytd-section-list-renderer > #contents.ytd-section-list-renderer';
@@ -32,14 +34,17 @@ const HOVER_CARD_SELECTOR = SIDEBAR_CARD_SELECTOR;
 const HOVER_MEDIA_SELECTOR = [
   '#related ytd-compact-video-renderer ytd-thumbnail',
   'ytd-watch-next-secondary-results-renderer ytd-compact-video-renderer ytd-thumbnail',
+  '#secondary ytd-compact-video-renderer ytd-thumbnail',
   '#related yt-lockup-view-model yt-thumbnail-view-model',
   'ytd-watch-next-secondary-results-renderer yt-lockup-view-model yt-thumbnail-view-model',
+  '#secondary yt-lockup-view-model yt-thumbnail-view-model',
 ].join(',');
 
 let handlersBound = false;
 let activeHoverCard: HTMLElement | null = null;
 let hoverReadyTimer: number | null = null;
 let hoverClearTimer: number | null = null;
+let nativePreviewPlayTimer: number | null = null;
 let lastPointerX = Number.POSITIVE_INFINITY;
 let lastPointerY = Number.POSITIVE_INFINITY;
 
@@ -294,7 +299,9 @@ function buildSidebarFoundationCss(): string {
     body.simple-yt-tweaks-active #related yt-lockup-view-model,
     body.simple-yt-tweaks-active #related .ytLockupViewModelHost,
     body.simple-yt-tweaks-active ytd-watch-next-secondary-results-renderer yt-lockup-view-model,
-    body.simple-yt-tweaks-active ytd-watch-next-secondary-results-renderer .ytLockupViewModelHost {
+    body.simple-yt-tweaks-active ytd-watch-next-secondary-results-renderer .ytLockupViewModelHost,
+    body.simple-yt-tweaks-active #secondary yt-lockup-view-model,
+    body.simple-yt-tweaks-active #secondary .ytLockupViewModelHost {
       overflow: visible !important;
     }
   `;
@@ -318,35 +325,42 @@ function buildSidebarHoverCss(settings: Settings): string {
     'ytd-compact-video-renderer',
     '#related yt-lockup-view-model:has(a[href*="/watch"])',
     'ytd-watch-next-secondary-results-renderer yt-lockup-view-model:has(a[href*="/watch"])',
+    '#secondary yt-lockup-view-model:has(a[href*="/watch"])',
   ]);
   const media = scopedSelectors(scopes, [
     'ytd-compact-video-renderer ytd-thumbnail',
     '#related yt-lockup-view-model:has(a[href*="/watch"]) yt-thumbnail-view-model',
     'ytd-watch-next-secondary-results-renderer yt-lockup-view-model:has(a[href*="/watch"]) yt-thumbnail-view-model',
+    '#secondary yt-lockup-view-model:has(a[href*="/watch"]) yt-thumbnail-view-model',
   ]);
   const readyMedia = scopedSelectors(scopes, [
     `ytd-compact-video-renderer.${GRID_HOVER_READY_CLASS} ytd-thumbnail`,
     `#related yt-lockup-view-model.${GRID_HOVER_READY_CLASS}:has(a[href*="/watch"]) yt-thumbnail-view-model`,
     `ytd-watch-next-secondary-results-renderer yt-lockup-view-model.${GRID_HOVER_READY_CLASS}:has(a[href*="/watch"]) yt-thumbnail-view-model`,
+    `#secondary yt-lockup-view-model.${GRID_HOVER_READY_CLASS}:has(a[href*="/watch"]) yt-thumbnail-view-model`,
   ]);
   const readyCards = scopedSelectors(scopes, [
     `ytd-compact-video-renderer.${GRID_HOVER_READY_CLASS}`,
     `#related yt-lockup-view-model.${GRID_HOVER_READY_CLASS}:has(a[href*="/watch"])`,
     `ytd-watch-next-secondary-results-renderer yt-lockup-view-model.${GRID_HOVER_READY_CLASS}:has(a[href*="/watch"])`,
+    `#secondary yt-lockup-view-model.${GRID_HOVER_READY_CLASS}:has(a[href*="/watch"])`,
   ]);
   const overlayButtons = scopedSelectors(scopes, [
     `#related yt-lockup-view-model.${GRID_HOVER_READY_CLASS}:has(a[href*="/watch"]) thumbnail-overlay-button-view-model`,
     `ytd-watch-next-secondary-results-renderer yt-lockup-view-model.${GRID_HOVER_READY_CLASS}:has(a[href*="/watch"]) thumbnail-overlay-button-view-model`,
+    `#secondary yt-lockup-view-model.${GRID_HOVER_READY_CLASS}:has(a[href*="/watch"]) thumbnail-overlay-button-view-model`,
     `ytd-compact-video-renderer.${GRID_HOVER_READY_CLASS} ytd-thumbnail-overlay-toggle-button-renderer`,
   ]);
   const overlayButtonElements = scopedSelectors(scopes, [
     `#related yt-lockup-view-model.${GRID_HOVER_READY_CLASS}:has(a[href*="/watch"]) thumbnail-overlay-button-view-model button`,
     `ytd-watch-next-secondary-results-renderer yt-lockup-view-model.${GRID_HOVER_READY_CLASS}:has(a[href*="/watch"]) thumbnail-overlay-button-view-model button`,
+    `#secondary yt-lockup-view-model.${GRID_HOVER_READY_CLASS}:has(a[href*="/watch"]) thumbnail-overlay-button-view-model button`,
     `ytd-compact-video-renderer.${GRID_HOVER_READY_CLASS} ytd-thumbnail-overlay-toggle-button-renderer button`,
   ]);
   const overlayButtonIcons = scopedSelectors(scopes, [
     `#related yt-lockup-view-model.${GRID_HOVER_READY_CLASS}:has(a[href*="/watch"]) thumbnail-overlay-button-view-model button .ytIconWrapperHost`,
     `ytd-watch-next-secondary-results-renderer yt-lockup-view-model.${GRID_HOVER_READY_CLASS}:has(a[href*="/watch"]) thumbnail-overlay-button-view-model button .ytIconWrapperHost`,
+    `#secondary yt-lockup-view-model.${GRID_HOVER_READY_CLASS}:has(a[href*="/watch"]) thumbnail-overlay-button-view-model button .ytIconWrapperHost`,
     `ytd-compact-video-renderer.${GRID_HOVER_READY_CLASS} ytd-thumbnail-overlay-toggle-button-renderer button .ytIconWrapperHost`,
   ]);
 
@@ -460,6 +474,12 @@ function clearHoverClearTimer(): void {
   hoverClearTimer = null;
 }
 
+function clearNativePreviewPlayTimer(): void {
+  if (nativePreviewPlayTimer === null) return;
+  window.clearTimeout(nativePreviewPlayTimer);
+  nativePreviewPlayTimer = null;
+}
+
 function clearActiveHoverCard(): void {
   clearHoverReadyTimer();
   clearHoverClearTimer();
@@ -489,6 +509,51 @@ function scheduleHoverReady(card: HTMLElement): void {
 function getElementUnderPointer(): Element | null {
   if (!Number.isFinite(lastPointerX) || !Number.isFinite(lastPointerY)) return null;
   return document.elementFromPoint(lastPointerX, lastPointerY);
+}
+
+function isNativeFeedPreviewPage(): boolean {
+  return location.pathname === '/' || location.pathname === '/results';
+}
+
+function getNativePreviewVideoUnderPointer(): HTMLVideoElement | null {
+  if (!isNativeFeedPreviewPage()) return null;
+  if (!Number.isFinite(lastPointerX) || !Number.isFinite(lastPointerY)) return null;
+
+  for (const video of document.querySelectorAll<HTMLVideoElement>('ytd-video-preview video, #inline-preview-player video')) {
+    const rect = video.getBoundingClientRect();
+    if (rect.width <= 0 || rect.height <= 0) continue;
+    if (
+      lastPointerX >= rect.left &&
+      lastPointerX <= rect.right &&
+      lastPointerY >= rect.top &&
+      lastPointerY <= rect.bottom
+    ) {
+      return video;
+    }
+  }
+
+  return null;
+}
+
+function scheduleNativePreviewPlaybackFallback(): void {
+  if (!isNativeFeedPreviewPage()) {
+    clearNativePreviewPlayTimer();
+    return;
+  }
+
+  const video = getNativePreviewVideoUnderPointer();
+  if (!video || !video.paused || video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) return;
+  if (nativePreviewPlayTimer !== null) return;
+
+  nativePreviewPlayTimer = window.setTimeout(() => {
+    nativePreviewPlayTimer = null;
+    const currentVideo = getNativePreviewVideoUnderPointer();
+    if (!currentVideo || !currentVideo.paused || currentVideo.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) return;
+
+    void currentVideo.play().catch(() => {
+      // Native preview autoplay can still be blocked by YouTube/account state; leave the UI untouched.
+    });
+  }, 220);
 }
 
 function isPointerInsideCard(card: HTMLElement): boolean {
@@ -610,6 +675,7 @@ function isRecommendedHoverGrowEnabled(settings: Settings): boolean {
 
 export function syncGridHoverState(settings: Settings): void {
   // Home/search feed previews stay native; avoid writing YouTube's own column metadata during preview startup.
+  scheduleNativePreviewPlaybackFallback();
 
   if (settings.generalApplyFeedColumnsToSearch) {
     moveSearchBadgesToChannelRow();
@@ -646,6 +712,7 @@ export function bindGridHoverHandlers(getSettings: () => Settings): void {
     (event) => {
       lastPointerX = event.clientX;
       lastPointerY = event.clientY;
+      scheduleNativePreviewPlaybackFallback();
       if (!isRecommendedHoverGrowEnabled(getSettings())) return;
 
       const card = getHoverCard(event.target);
@@ -665,6 +732,7 @@ export function bindGridHoverHandlers(getSettings: () => Settings): void {
     (event) => {
       lastPointerX = event.clientX;
       lastPointerY = event.clientY;
+      scheduleNativePreviewPlaybackFallback();
       if (!isRecommendedHoverGrowEnabled(getSettings())) return;
 
       const card = activeHoverCard ?? getHoverCard(event.target);
@@ -685,6 +753,7 @@ export function bindGridHoverHandlers(getSettings: () => Settings): void {
     (event) => {
       lastPointerX = event.clientX;
       lastPointerY = event.clientY;
+      clearNativePreviewPlayTimer();
       const card = activeHoverCard;
       if (!card) return;
       if (event.relatedTarget instanceof Node && card.contains(event.relatedTarget)) {

@@ -21,7 +21,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Agent / Thread | Task ID | Role | Status | Branch | Worktree | PR | Started | Last Seen | Expected Next Step | Heartbeat |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| none | none | none | none | none | none | none | none | none | none | none |
+| `019eb0c7-e8dc-7352-9531-8f7be5692bdb` / Gibbs | `SYT-021` | Reviewer | In Progress | `swarm/syt-008b-native-hover-spa-regression` | main worktree | #22 | 2026-06-10 04:56 EDT | 2026-06-10 04:56 EDT | Re-review PR #22 after whitespace fix and report `Ready to Integrate`, `Needs Fixes`, or `Blocked`. | none |
 
 ## Paused / Stale Agents
 
@@ -53,6 +53,7 @@ Use this file to track who is working, where they are working, and whether the c
 | `019ddb72-af51-7372-8146-43d5ead7148a` / Dirac | `SYT-010D` | Planner/Runner | Opened draft PR #18 | 2026-04-29 20:28 EDT | Added Playwright unit project and helper tests; `npm run test:unit`, `typecheck`, `lint`, and `validate:all` passed. |
 | `019ddbcb-2d65-76c1-982c-54abedb730cc` / Ptolemy | `SYT-010D` | Reviewer | Ready to Integrate, no findings | 2026-04-29 22:03 EDT | PR #18 review passed; `npm run test:unit`, `git diff --check origin/main...HEAD`, `npm run validate:all`, and `git diff --check` passed. |
 | `019ddc21-c7bb-75a2-94f6-e8d84b8f4489` / Planck | `SYT-010D` | Integrator | Merged PR #18 | 2026-04-29 22:07 EDT | PR #18 squash-merged into `main` at `88f0a91`; local branch cleanup completed and stale remote-tracking ref pruned. |
+| `019eb0bd-d604-78a3-a94f-949659401efb` / Godel | `SYT-021` | Reviewer | Needs Fixes | 2026-06-10 04:52 EDT | Review found `git diff --check origin/main...HEAD` failed on EOF blank lines in compact docs; `npm run test:e2e` passed. Controller fixed whitespace on the PR branch; re-review next. |
 
 ## Pending Launch
 

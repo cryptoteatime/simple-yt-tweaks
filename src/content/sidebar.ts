@@ -1,4 +1,4 @@
-import { query, queryAll, getElementLabel, elementMatchesAnyLabel, labelMatchesEntry, isDedicatedShortsPage, isVisibleNode } from './dom';
+import { query, queryAll, getElementLabel, elementMatchesAnyLabel, labelMatchesEntry, isDedicatedShortsPage } from './dom';
 import {
   GENERAL_HIDDEN_CLASS,
   SIDEBAR_HOME_NEUTRAL_CLASS,
@@ -33,6 +33,28 @@ const HOME_SPONSORED_CONTAINER_CSS_SELECTOR = [
   `body.simple-yt-tweaks-active ytd-browse[page-subtype="home"] ytd-rich-grid-renderer ${selector}:has(${HOME_SPONSORED_ITEM_SELECTORS})`,
 ).join(',\n    ');
 
+function scheduleDeferredHomeFeedCleanup(): void {
+  if (state.homeFeedCleanupTimer !== null) return;
+
+  const delay = Math.max(80, state.homeFeedCleanupDeferredUntil - Date.now() + 40);
+  state.homeFeedCleanupTimer = window.setTimeout(() => {
+    state.homeFeedCleanupTimer = null;
+    state.domRerun?.();
+  }, delay);
+}
+
+function isHomeFeedCleanupDeferred(): boolean {
+  if (location.pathname !== '/') return false;
+  return Date.now() < state.homeFeedCleanupDeferredUntil;
+}
+
+function shouldDeferHomeFeedCleanup(): boolean {
+  if (!isHomeFeedCleanupDeferred()) return false;
+
+  scheduleDeferredHomeFeedCleanup();
+  return true;
+}
+
 export function buildGeneralCss(settings: Settings): string {
   const generalHideEndScreenCards = settings.generalHideEndScreenCards;
   const generalFeedColumns = settings.generalFeedColumns;
@@ -57,7 +79,7 @@ export function buildGeneralCss(settings: Settings): string {
       display: none !important;
     }
 
-    ${generalHideSponsoredPosts ? `
+    ${generalHideSponsoredPosts && !isHomeFeedCleanupDeferred() ? `
     ${HOME_SPONSORED_CONTAINER_CSS_SELECTOR} {
       display: none !important;
     }
@@ -263,6 +285,7 @@ function isSponsoredHomeFeedItem(item: HTMLElement): boolean {
 
 function removeSponsoredHomeFeedItems(): void {
   if (!state.settings.generalHideSponsoredPosts) return;
+  if (shouldDeferHomeFeedCleanup()) return;
 
   for (const item of queryAll<HTMLElement>(
     'ytd-browse[page-subtype="home"] ytd-rich-grid-renderer #contents ytd-rich-item-renderer',
@@ -431,11 +454,14 @@ export function updateSidebarSectionPolish(): void {
 
 export function updateSponsoredVisibility(): void {
   if (!state.settings.generalHideSponsoredPosts) return;
+  const deferHomeFeedCleanup = shouldDeferHomeFeedCleanup();
 
   for (const target of queryAll<HTMLElement>(SPONSORED_CARD_SELECTORS.join(','))) {
     const onHomeFeed = Boolean(target.closest('ytd-browse[page-subtype="home"]'));
 
     if (onHomeFeed) {
+      if (deferHomeFeedCleanup) continue;
+
       removeClosestTag(target, [
         'ytd-rich-item-renderer',
         'ytd-rich-section-renderer',
@@ -581,6 +607,7 @@ export function updateShortsVisibility(): void {
 export function normalizeHomeFeedLayout(): void {
   const homeFeed = query<HTMLElement>('ytd-browse[page-subtype="home"] ytd-rich-grid-renderer #contents');
   if (!homeFeed) return;
+  if (shouldDeferHomeFeedCleanup()) return;
 
   for (const container of queryAll<HTMLElement>('ytd-rich-section-renderer, ytd-feed-nudge-renderer', homeFeed)) {
     if (
@@ -597,22 +624,6 @@ export function normalizeHomeFeedLayout(): void {
       (state.settings.generalHideSponsoredPosts && isSponsoredHomeFeedItem(item))
     ) {
       item.remove();
-      continue;
-    }
-
-    const hasVisibleChild = Array.from(item.children).some(
-      (child) => child instanceof HTMLElement && isVisibleNode(child),
-    );
-
-    if (!hasVisibleChild) {
-      item.remove();
-    }
-  }
-
-  for (const row of queryAll<HTMLElement>('ytd-rich-grid-row', homeFeed)) {
-    const visibleItems = queryAll<HTMLElement>('ytd-rich-item-renderer', row).filter(isVisibleNode);
-    if (visibleItems.length === 0) {
-      row.remove();
     }
   }
 }

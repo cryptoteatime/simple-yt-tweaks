@@ -23,6 +23,8 @@ export type ContentState = {
   lastPointerY: number;
   lastEnhancedTheaterActive: boolean;
   modeTransitionTimers: number[];
+  homeFeedCleanupDeferredUntil: number;
+  homeFeedCleanupTimer: number | null;
 };
 
 export const state: ContentState = {
@@ -41,4 +43,6 @@ export const state: ContentState = {
   lastPointerY: Number.POSITIVE_INFINITY,
   lastEnhancedTheaterActive: false,
   modeTransitionTimers: [],
+  homeFeedCleanupDeferredUntil: 0,
+  homeFeedCleanupTimer: null,
 };
