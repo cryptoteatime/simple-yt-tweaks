@@ -12,6 +12,36 @@ Use this file for merge decisions, conflict history, final checks, and release n
 
 ## Entries
 
+### 2026-06-10: SYT-010E Grid Hover Selector Hardening Integration
+
+- Integrator: Ramanujan (`019eb100-fe46-7bc3-b8a5-9c5f563a73b1`)
+- Target branch: `main`
+- Candidate branch(es): `swarm/syt-010e-code-hardening`
+- PR(s): https://github.com/cryptoteatime/simple-yt-tweaks/pull/24
+- Issue(s): https://github.com/cryptoteatime/simple-yt-tweaks/issues/10
+- Decision: Integrated
+- Merge: squash merge commit `fae4e5d99466b60c1149a277100f68db85c10b55`
+- Reason: Reviewer reported no findings; PR scope matched `SYT-010E`; full integration gate passed; PR was clean and mergeable.
+- Conflicts: none; PR #24 was mergeable and clean before merge.
+- Checks:
+  - `git status --short --branch`: PASS/CLASSIFIED, controller-owned routing docs were dirty on `main`; no product source or tests were dirty, and final state was reconciled in the docs follow-up.
+  - `gh pr view 24 --json ...`: PASS, PR was open, draft, mergeable, and clean at head `b1e4bc3`; it was marked ready before merge.
+  - `gh pr checks 24`: PASS/NOT_CONFIGURED, no GitHub status checks were reported for the branch.
+  - `git diff --name-status origin/main...origin/swarm/syt-010e-code-hardening`: PASS, scope was limited to `docs/swarm/handoffs/SYT-010E.md`, `src/content/grid-hover.ts`, and `tests/unit/grid-hover.unit.spec.ts`.
+  - `git diff --check origin/main...origin/swarm/syt-010e-code-hardening`: PASS.
+  - `npm run validate:all`: PASS, including typecheck, lint, `git diff --check`, package validation, packaged validation, 10 unit tests, and 10 fixture tests.
+  - `gh issue view 10 --json ...`: PASS after merge, issue #10 remains open.
+- Human acceptance: NOT_REQUIRED
+- Human acceptance evidence: routine behavior-preserving selector normalization with unit and fixture coverage; no #8 enhanced Home/Search hover work, release, tag, version bump, or Web Store asset update was included.
+- Branch cleanup: GitHub deleted the remote task branch during merge; local task branch was removed by the GitHub CLI merge workflow. `git branch --list 'swarm/syt-010e-code-hardening'` and `git ls-remote --heads origin swarm/syt-010e-code-hardening` returned no refs.
+- Worktree cleanup: local `main` synced to `origin/main`; integration record is being landed through a docs-only follow-up PR per repo policy.
+- Notes:
+  - Watch recommendation hover-grow selector families are centralized in `src/content/grid-hover.ts`.
+  - Unit coverage now asserts generated CSS scoping and disabled-mode omission for watch recommendation hover CSS.
+- Follow-ups:
+  - Plan or route `SYT-010F` as another small #10 code-hardening lane if issue #10 remains open.
+  - Keep #8 enhanced Home/Search hover research paused unless the user explicitly reopens that gate.
+
 ### 2026-06-10: SYT-021 Native Hover SPA Regression Integration
 
 - Integrator: Lorentz (`019eb0d4-9f71-7c52-a08f-2186cff049d5`)

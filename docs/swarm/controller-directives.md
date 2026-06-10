@@ -8,17 +8,17 @@ This file is the repo-local dynamic control plane for the controller chat and an
 - Heartbeat mode: `active-pulse`
 - Heartbeat automation id: `simple-yt-tweaks-controller-heartbeat`
 - Main controller chat: Simple YT Tweaks controller in Codex workspace
-- Last reviewed by controller: 2026-06-10 05:23 EDT
+- Last reviewed by controller: 2026-06-10 06:13 EDT
 
 ## Current Source Of Truth
 
 - Default branch: `main`
 - Current branch: `main`
-- Expected Git state: clean `main...origin/main` after the integration-record docs follow-up lands
-- Open PR expectation: none after `SYT-021` integration-record docs land
+- Expected Git state: clean `main...origin/main` after the `SYT-010E` integration-record docs follow-up lands
+- Open PR expectation: none after the `SYT-010E` integration-record docs follow-up lands
 - Active agents expectation: none
 - Controller lease expectation: none between bounded heartbeat passes
-- Current priority lane: `SYT-010E` planning/routing for #10 code hardening
+- Current priority lane: `SYT-010F` planning/routing for the next #10 code-hardening lane while issue #10 remains open
 
 ## Controller Lease And Pacing
 
@@ -30,7 +30,7 @@ This file is the repo-local dynamic control plane for the controller chat and an
 - Controller pass budget: max 6 safe orchestration actions or 60 minutes
 - Heartbeat pass budget: max 2 safe recovery/routing actions, then stop
 - Active capacity: max 1 active subagent total
-- Heartbeat cadence target: slow back toward 90 minutes after `SYT-021` integration
+- Heartbeat cadence target: slow back toward 90 minutes after the `SYT-010E` integration-record docs follow-up lands
 - Next human QA gate: release-candidate lane or #8 visual/product-direction gate
 
 ## Context Hygiene
@@ -103,7 +103,7 @@ Heartbeat overlap rule:
 
 | Priority | Task ID | Action | Owner | Branch / Worktree | Stop Condition |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `SYT-010E` | Plan and route the next #10 code-hardening lane | Planner / Senior Runner | TBD | Scoped hardening lane created with verification |
+| 1 | `SYT-010F` | Plan and route the next small #10 code-hardening lane if issue #10 remains open | Planner / Senior Runner | TBD | Scoped hardening lane created with verification, or heartbeat slowed if no safe lane is ready |
 | 2 | `SYT-008A` | Keep research gate paused until the user wants enhanced hover research again | Planner | `swarm/syt-008a-hover-research` | Decision to defer, prototype, or require human QA |
 
 ## Dynamic Notes
@@ -121,3 +121,5 @@ Heartbeat overlap rule:
 - 2026-06-10: User requested compact docs/context and faster automation. Heartbeat cadence updated to 30 minutes; completed handoffs compacted with archive references.
 - 2026-06-10: PR #22 re-review passed with no findings; human QA was optional supplemental QA, not a merge gate.
 - 2026-06-10: PR #22 squash-merged into `main` at `8f90ef1`; issue #21 auto-closed; remote/local task branch cleanup completed. Next lane is `SYT-010E`.
+- 2026-06-10: PR #24 review passed with no findings; human QA not required.
+- 2026-06-10: PR #24 marked ready and squash-merged into `main` at `fae4e5d`; issue #10 remains open; remote/local task branch cleanup completed. Next safe action is `SYT-010F` planning/routing, not #8.
