@@ -4,13 +4,13 @@ Use this file as the fast entrypoint after `SWARM.md` and `docs/swarm/controller
 
 ## Current Hot State
 
-- Active implementation lane: none; `SYT-010F` implementation is ready to launch
-- Last integrated lane: `SYT-010F` planning
+- Active implementation lane: none
+- Last integrated lane: `SYT-010F` implementation
 - GitHub issue: #10 open
-- PR: #26 merged at `66d756f`; #24 merged at `fae4e5d`
-- Branch: `main` after integration-record docs land
-- Current status: `SYT-010F` planning integrated; Sticky Player implementation ready
-- Next priority lane: spawn Senior Runner on `swarm/syt-010f-sticky-player-hardening`
+- PR: #28 merged at `fa07c18`; #29 docs follow-up merged at `6580065`
+- Branch: `main` after hot-state repair lands
+- Current status: `SYT-010F` integrated; issue #10 remains open for future bounded hardening
+- Next priority lane: decide whether to plan `SYT-010G` or leave #10 open for later
 - Do not route next: #8 enhanced Home/Search hover grow research unless the user explicitly reopens that gate
 
 ## Hot Files
@@ -35,14 +35,16 @@ Completed lanes are intentionally compacted to stubs:
 - `SYT-021` -> PR #22, merge `8f90ef1`, closes #21
 - `SYT-010E` -> PR #24, merge `fae4e5d`, refs #10
 - `SYT-010F` planning -> PR #26, merge `66d756f`, refs #10
+- `SYT-010F` implementation -> PR #28, merge `fa07c18`, refs #10
+- `SYT-010F` docs follow-up -> PR #29, merge `6580065`
 
 Full prior handoff text is recoverable through Git history before the 2026-06-10 compaction commit. Use `docs/swarm/archive/README.md` for the reference map.
 
 ## Next Safe Controller Action
 
-Spawn a Senior Runner from `docs/swarm/handoffs/SYT-010F.md`:
+Decide whether to plan another #10 hardening lane:
 
-- Branch: `swarm/syt-010f-sticky-player-hardening`.
-- Scope: behavior-preserving Sticky Player visibility/resize helper coverage plus deterministic dock/restore fixture coverage if feasible.
+- `SYT-010F` is integrated; do not respawn it.
+- Start `SYT-010G` only with a narrow source/test target and fresh handoff.
 - Keep issue #10 open until the controller decides the overall hardening pass is complete.
 - Do not restart #8 enhanced hover research.
