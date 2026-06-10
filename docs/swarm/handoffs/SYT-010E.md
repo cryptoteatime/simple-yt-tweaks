@@ -2,12 +2,13 @@
 
 ## Status
 
-- State: Needs Review
+- State: Integrated
 - GitHub issue: #10
-- Branch: `swarm/syt-010e-code-hardening`
-- PR: #24, https://github.com/cryptoteatime/simple-yt-tweaks/pull/24
-- Role: Senior Runner
-- Updated: 2026-06-10 by Senior Runner
+- Branch: `swarm/syt-010e-code-hardening` (cleaned locally and remotely)
+- PR: #24, https://github.com/cryptoteatime/simple-yt-tweaks/pull/24 (merged)
+- Merge: `fae4e5d99466b60c1149a277100f68db85c10b55`
+- Role: Integrator
+- Updated: 2026-06-10 by Integrator
 
 ## Goal
 
@@ -70,6 +71,14 @@ Completed:
 - Full gate: `npm run validate:all` - passed, including typecheck, lint, `git diff --check`, package validation, unit tests, and fixture tests.
 - Live Chrome/YouTube smoke not used; this target is selector/CSS generation cleanup with fixture coverage.
 
+## Integration
+
+- Reviewer Hilbert reported no findings and marked the lane `Ready to Integrate`.
+- Integrator Ramanujan verified PR #24 was mergeable and clean, marked it ready for review, and squash-merged it into `main`.
+- Final integration gate: `npm run validate:all` passed on 2026-06-10.
+- Branch cleanup completed: local and remote `swarm/syt-010e-code-hardening` refs are gone.
+- Issue #10 remains open for future hardening lanes.
+
 ## Risks
 
 - Low/medium residual risk: the selector normalization still touches watch recommendation hover CSS assembly, but the emitted legacy and modern selector families are covered by unit assertions and fixture watch hover tests.
@@ -79,4 +88,4 @@ Completed:
 
 ## Next Recommended Role
 
-Reviewer: review `src/content/grid-hover.ts` selector normalization, `tests/unit/grid-hover.unit.spec.ts` coverage, PR body test instructions, and confirm `Needs Review` can move to `Ready to Integrate`.
+Controller: after the integration-record docs follow-up lands and the worktree is clean, plan or route `SYT-010F` as another small #10 hardening lane if issue #10 remains open. Do not reopen #8 unless the user explicitly requests that gate.

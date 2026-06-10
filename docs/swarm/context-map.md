@@ -5,12 +5,12 @@ Use this file as the fast entrypoint after `SWARM.md` and `docs/swarm/controller
 ## Current Hot State
 
 - Active implementation lane: none
-- Last integrated lane: `SYT-021`
-- GitHub issue: #21 closed
-- PR: #22 merged at `8f90ef1`
-- Branch: `swarm/syt-008b-native-hover-spa-regression` cleaned locally and remotely
-- Current status: `SYT-021` Integrated
-- Next priority lane: `SYT-010E` (#10 code hardening)
+- Last integrated lane: `SYT-010E`
+- GitHub issue: #10 open
+- PR: #24 merged at `fae4e5d`
+- Branch: `swarm/syt-010e-code-hardening` cleaned locally and remotely
+- Current status: `SYT-010E` Integrated
+- Next priority lane: plan/route the next small #10 hardening lane (`SYT-010F`) if issue #10 remains open
 - Do not route next: #8 enhanced Home/Search hover grow research unless the user explicitly reopens that gate
 
 ## Hot Files
@@ -33,14 +33,15 @@ Completed lanes are intentionally compacted to stubs:
 - `SYT-010C` -> PR #16, merge `0fca6c3`
 - `SYT-010D` -> PR #18, merge `88f0a91`
 - `SYT-021` -> PR #22, merge `8f90ef1`, closes #21
-- `SYT-010E` -> next #10 hardening lane, `docs/swarm/handoffs/SYT-010E.md`
+- `SYT-010E` -> PR #24, merge `fae4e5d`, refs #10
 
 Full prior handoff text is recoverable through Git history before the 2026-06-10 compaction commit. Use `docs/swarm/archive/README.md` for the reference map.
 
 ## Next Safe Controller Action
 
-Route `SYT-010E` as the next #10 code-hardening lane. Keep it small and source-risk driven:
+After this integration-record docs follow-up lands and the worktree is clean, plan or route one more small #10 hardening lane (`SYT-010F`):
 
-- Start from `docs/swarm/handoffs/SYT-010E.md`.
-- Preserve the `validate:all` final gate.
+- Pick one bounded target from the remaining high-risk modules; do not start a broad rewrite.
+- Preserve the `npm run validate:all` final gate.
+- Keep issue #10 open until the controller decides the overall hardening pass is complete.
 - Do not restart #8 enhanced hover research.

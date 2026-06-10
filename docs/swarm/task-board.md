@@ -11,7 +11,7 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 - Project brief: Ready
 - Material questions: Deferred, not blocking
 - First milestone plan: Ready
-- Implementation dispatch: Idle after `SYT-021` integration; next lane should be `SYT-010E`.
+- Implementation dispatch: Idle after `SYT-010E` integration; next action is planning/routing another small #10 lane if issue #10 remains open.
 
 ## Active Tasks
 
@@ -23,12 +23,13 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 | `SYT-010D` | Pure helper tests | Integrator | Integrated | `swarm/syt-010d-helper-tests` | `tests/unit/**`, `playwright.config.ts`, `package.json`, helper modules only if needed | parallel-safe with no other source task | `SYT-010A`, `SYT-010B`, `SYT-010C` | low/medium, test config/helper exports | `docs/swarm/handoffs/SYT-010D.md` | #18 merged |
 | `SYT-008A` | Enhanced home/search hover research gate | Planner | Paused | `swarm/syt-008a-hover-research` | #8 research, fixtures/prototype only | serial-required | `SYT-010A`, user/product gate | high, live YouTube preview lifecycle | `docs/swarm/handoffs/SYT-008A.md` | none |
 | `SYT-021` | Native hover SPA regression and live recommendation drift | Integrator | Integrated | `swarm/syt-008b-native-hover-spa-regression` | #21 native Home/Search preview repair, watch click fallback hardening, modern recommendation selector drift | serial-required | v0.3.0 baseline | high, live YouTube SPA/player behavior | `docs/swarm/handoffs/SYT-021.md` | #22 merged |
+| `SYT-010E` | Code-hardening lane after #21 | Integrator | Integrated | `swarm/syt-010e-code-hardening` | Grid-hover selector normalization with unit coverage | serial-required | `SYT-021` | medium/high, runtime source hardening | `docs/swarm/handoffs/SYT-010E.md` | #24 merged |
 
 ## Backlog
 
 | Task ID | Title | Reason | Notes |
 | --- | --- | --- | --- |
-| `SYT-010E` | Code-hardening lane after #21 | Reduce runtime risk in large content modules only where it lowers real maintenance cost. | Next lane. First target should be a small scoped audit/refactor with `validate:all`, not broad aesthetic splitting. |
+| `SYT-010F` | Next #10 code-hardening lane | Reduce runtime risk in large content modules only where it lowers real maintenance cost. | Plan one small scoped target with `validate:all`, not broad aesthetic splitting. |
 | `SYT-RC-001` | Next release-candidate checklist | Make future version bump/package/release flow smoother. | Human QA required before release. |
 
 ## Blocked
@@ -58,7 +59,7 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 
 ## Controller Notes
 
-- Active controller-spawned subagents: none after Lorentz integrated `SYT-021` / PR #22.
+- Active controller-spawned subagents: none after Ramanujan integrated `SYT-010E` / PR #24.
 - Active cron bursts: none; cron is a failsafe, not the normal execution path.
 - Parallel worktree root: none yet.
 - Batch dispatch policy: disabled by default because max active subagents is 1.
@@ -67,7 +68,8 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 - Agent registry: `docs/swarm/agent-registry.md`.
 - Bootstrap log: `docs/swarm/bootstrap-log.md`.
 - GitHub workflow: `docs/swarm/github.md`.
-- Current controller phase: Phase 4 active; `SYT-021` integrated and no new lane started by the Integrator.
+- Current controller phase: Phase 4 active; `SYT-010E` integrated and no new implementation lane started by the Integrator.
 - 2026-06-10: User reported live watch-to-Home native hover autoplay regression. Controller opened #21 and draft PR #22 for `SYT-021` on `swarm/syt-008b-native-hover-spa-regression`.
 - 2026-06-10: User requested compact context/docs and more frequent automation. Completed historical handoffs were compacted to stubs with `docs/swarm/archive/README.md` reference mapping; `docs/swarm/context-map.md` is now the hot context entrypoint.
 - 2026-06-10: PR #22 squash-merged at `8f90ef1`, closing #21. Remote/local task branch cleanup completed. Route `SYT-010E` next.
+- 2026-06-10: PR #24 squash-merged at `fae4e5d`, leaving #10 open for future hardening lanes. Remote/local task branch cleanup completed. Plan/route `SYT-010F` next if work remains safe and bounded.

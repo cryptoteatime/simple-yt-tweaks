@@ -4,14 +4,14 @@
 
 - Name: Simple YT Tweaks
 - Folder: `/Users/d4ngl/Git Repos/Codex/simple-yt-tweaks`
-- Status: existing repo, post-v0.3.0 hardening; #21 live-regression fix integrated
+- Status: existing repo, post-v0.3.0 hardening; #21 and `SYT-010E` integrated
 - GitHub: `https://github.com/cryptoteatime/simple-yt-tweaks`
 
 ## Project Brief
 
 - Brief: `docs/swarm/project-brief.md`
 - Question gate: deferred, not blocking
-- Dispatch readiness: swarm packet integrated; `SYT-010D` helper-test lane is integrated
+- Dispatch readiness: swarm packet integrated; `SYT-010E` grid-hover selector hardening lane is integrated
 
 ## Goal
 
@@ -19,7 +19,7 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 
 ## Current Focus
 
-1. Route `SYT-010E` as the next #10 code-hardening lane.
+1. Plan or route the next small #10 code-hardening lane (`SYT-010F`) while issue #10 remains open.
 2. Keep #10 hardening in small PRs with `validate:all` as the final gate.
 3. Keep #8 as a future high-risk research lane until tests and product direction justify it.
 4. Keep release-candidate work separate from routine fixture/source hardening.
@@ -54,7 +54,7 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 
 ## Recommended First Milestone
 
-`SYT-021` is integrated via PR #22 at `8f90ef1`, closing #21. The next useful milestone is `SYT-010E`, a small #10 code-hardening lane that preserves `validate:all` as the final gate and does not reopen #8 enhanced hover research.
+`SYT-010E` is integrated via PR #24 at `fae4e5d`, and issue #10 remains open. The next useful milestone is one more small #10 code-hardening lane, tentatively `SYT-010F`, that preserves `validate:all` as the final gate and does not reopen #8 enhanced hover research.
 
 ## Verification Defaults
 
@@ -79,11 +79,11 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 
 - Controller heartbeat: active.
 - Heartbeat automation id: `simple-yt-tweaks-controller-heartbeat`.
-- Heartbeat cadence: slow back toward about 90 minutes after `SYT-021` integration.
+- Heartbeat cadence: slow back toward about 90 minutes after the `SYT-010E` integration-record docs follow-up lands.
 - Execution strategy: paced controller with direct subagents only after lane readiness.
 - Batch dispatch policy: disabled by default via max 1 active subagent; require disjoint parallel-safe labels if capacity is raised.
 - Shared docs lock: controller owns task-board, current-state, controller-directives, and agent-registry during parallel work unless assigned.
-- Active subagents: none after `SYT-021` integration.
+- Active subagents: none after `SYT-010E` integration.
 - Agent registry: `docs/swarm/agent-registry.md`.
 - Bootstrap log: `docs/swarm/bootstrap-log.md`.
 - GitHub workflow: `docs/swarm/github.md`.
@@ -91,4 +91,4 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 ## Last Updated
 
 - Date: 2026-06-10
-- By: Lorentz, `SYT-021` Integrator
+- By: Ramanujan, `SYT-010E` Integrator
