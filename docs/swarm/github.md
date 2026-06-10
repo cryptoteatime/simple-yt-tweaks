@@ -45,7 +45,7 @@ Use this file to record the repo's GitHub status and autonomous PR policy.
 
 | Task ID | Branch | PR | Status | Owner | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `SYT-010F` | `swarm/syt-010f-planning` | #26 | Draft | Planner | Docs-only planning PR; human review requested no. |
+| none | none | none | none | none | none |
 
 ## Setup Log
 
@@ -62,3 +62,4 @@ Use this file to record the repo's GitHub status and autonomous PR policy.
 - 2026-06-10: PR #22 marked ready and squash-merged at `8f90ef1`; issue #21 auto-closed; remote/local task branch cleanup completed.
 - 2026-06-10: PR #24 marked ready and squash-merged at `fae4e5d` for `SYT-010E`; issue #10 remains open; remote/local task branch cleanup completed.
 - 2026-06-10: Opened draft PR #26 for docs-only `SYT-010F` planning; chosen target is Sticky Player hardening under issue #10.
+- 2026-06-10: PR #26 marked ready and squash-merged at `66d756f`; issue #10 remains open; remote/local planning branch cleanup completed.
