@@ -2,13 +2,14 @@
 
 ## Status
 
-- State: Ready for Senior Runner; planning PR integrated
+- State: Needs Review
 - GitHub issue: #10
 - Planning PR: #26 merged at `66d756f`, https://github.com/cryptoteatime/simple-yt-tweaks/pull/26
+- Implementation PR: #28, https://github.com/cryptoteatime/simple-yt-tweaks/pull/28
 - Planning branch: `swarm/syt-010f-planning` cleaned locally/remotely
 - Recommended implementation branch: `swarm/syt-010f-sticky-player-hardening`
 - Role: Senior Runner
-- Updated: 2026-06-10 by Integrator
+- Updated: 2026-06-10 by Senior Runner
 
 ## Planning Integration
 
@@ -110,6 +111,39 @@ Do not run live YouTube for this lane unless the Runner uncovers behavior that c
 - Helper extraction should preserve the existing thresholds exactly unless a failing test proves an existing threshold is wrong.
 - `src/content/sticky-player.ts` imports `state`, which initializes browser-dependent state. Unit tests should avoid importing that module directly if it makes tests depend on global `location` or `document` setup.
 - Dock/restore moves the real player node; assertions must verify the node is restored to the watch fixture, not recreated or duplicated.
+
+## Senior Runner Result
+
+- Result: Needs Review.
+- Branch: `swarm/syt-010f-sticky-player-hardening`.
+- Implementation PR: #28, https://github.com/cryptoteatime/simple-yt-tweaks/pull/28.
+- Files touched:
+  - `src/content/sticky-player.ts`
+  - `src/content/sticky-player-geometry.ts`
+  - `tests/unit/sticky-player.unit.spec.ts`
+  - `tests/e2e/extension.fixture.spec.ts`
+  - `tests/e2e/youtube-fixtures.ts`
+  - `docs/swarm/handoffs/SYT-010F.md`
+- Changes:
+  - Extracted Sticky Player visibility threshold and resize-rectangle math into `src/content/sticky-player-geometry.ts`.
+  - Kept `src/content/sticky-player.ts` responsible for DOM queries, docking/restoring, timers, PiP coordination, shell controls, and event binding.
+  - Added unit coverage for default/theater dock thresholds, mostly-visible restore thresholds, unusable rectangles, and representative resize clamp/aspect-ratio paths.
+  - Added deterministic watch fixture dock/restore coverage by making the fixture scrollable, scrolling the player away, asserting shell/placeholder/body-class state, then scrolling back and asserting the real player returns to `#player`.
+- Fixture feasibility decision: feasible. The existing watch fixture player geometry was deterministic after adding a simple scroll spacer.
+- Commands run:
+  - `npm run test:unit` passed.
+  - `npm run test:e2e` passed.
+  - `npm run typecheck` passed.
+  - `npm run lint` passed after removing an unused extraction wrapper.
+  - `git diff --check` passed.
+  - `npm run validate:all` passed.
+- Decisions:
+  - No live YouTube smoke was run; fixture coverage represented the dock/restore path deterministically.
+  - No #8 enhanced Home/Search hover grow or highlight behavior was routed or implemented.
+  - No settings defaults, labels, storage keys, popup behavior, version metadata, release assets, or Web Store assets were changed.
+- Blockers: none.
+- Next recommended role: Reviewer.
+- Exact next action: review the branch/PR diff for behavior-preserving Sticky Player extraction, run targeted checks as needed, and report `Ready to Integrate` or `Needs Fixes`.
 
 ## Exact Runner Prompt
 
