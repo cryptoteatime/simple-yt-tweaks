@@ -253,8 +253,23 @@ export function buildTheaterCss(settings: Settings): string {
       padding: 0 !important;
     }
 
+    body.simple-yt-tweaks-theater.simple-yt-tweaks-has-live-chat #player-full-bleed-container {
+      flex: 0 0 100% !important;
+      width: 100% !important;
+      min-width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    body.simple-yt-tweaks-theater.simple-yt-tweaks-has-live-chat #panels-full-bleed-container {
+      flex: 0 0 0 !important;
+      width: 0 !important;
+      min-width: 0 !important;
+      max-width: 0 !important;
+      overflow: visible !important;
+    }
+
     body.simple-yt-tweaks-theater.simple-yt-tweaks-has-live-chat #chat-container,
-    body.simple-yt-tweaks-theater.simple-yt-tweaks-has-live-chat #chat {
+    body.simple-yt-tweaks-theater.simple-yt-tweaks-has-live-chat #chat:not(.${LIVE_CHAT_CLASS}) {
       display: block !important;
       visibility: visible !important;
       overflow: visible !important;
@@ -280,6 +295,22 @@ export function buildTheaterCss(settings: Settings): string {
       overflow: hidden !important;
       background: rgba(15, 15, 15, 0.92) !important;
       box-shadow: 0 16px 40px rgba(0, 0, 0, 0.42) !important;
+    }
+
+    body.simple-yt-tweaks-theater.simple-yt-tweaks-has-live-chat #chat.${LIVE_CHAT_CLASS},
+    body.simple-yt-tweaks-theater.simple-yt-tweaks-has-live-chat ytd-live-chat-frame.${LIVE_CHAT_CLASS} {
+      width: min(380px, calc(100vw - 32px)) !important;
+      height: min(70vh, calc(100vh - 120px)) !important;
+      max-width: calc(100vw - 32px) !important;
+      max-height: calc(100vh - 120px) !important;
+    }
+
+    body.simple-yt-tweaks-theater.simple-yt-tweaks-has-live-chat .${LIVE_CHAT_CLASS} iframe#chatframe {
+      display: block !important;
+      width: 100% !important;
+      height: 100% !important;
+      max-width: 100% !important;
+      max-height: 100% !important;
     }
     ` : ''}
 
@@ -419,6 +450,37 @@ export function updateLiveChatTargets(): void {
       frame.classList.remove(LIVE_CHAT_CLASS);
     }
   }
+}
+
+function isStandaloneLikeDisplayMode(): boolean {
+  return (
+    window.matchMedia('(display-mode: standalone)').matches ||
+    window.matchMedia('(display-mode: minimal-ui)').matches
+  );
+}
+
+function isLiveWatchPlayerActive(): boolean {
+  const player = document.querySelector<HTMLElement>(SELECTORS.player);
+  const watchFlexy = document.querySelector<HTMLElement>(SELECTORS.watchFlexy);
+
+  return Boolean(
+    player?.classList.contains('ytp-livebadge-color') ||
+      watchFlexy?.hasAttribute('live-chat-present-and-expanded') ||
+      watchFlexy?.hasAttribute('should-stamp-chat'),
+  );
+}
+
+export function resetLiveTheaterScrollOffset(): void {
+  if (!isStandaloneLikeDisplayMode()) return;
+  if (!isEnhancedTheaterActive(state.settings)) return;
+  if (!isLiveWatchPlayerActive()) return;
+  if (window.scrollY <= 0) return;
+
+  const player = document.querySelector<HTMLElement>(SELECTORS.player);
+  const playerRect = player?.getBoundingClientRect();
+  if (!playerRect || playerRect.top >= -8) return;
+
+  window.scrollTo(0, 0);
 }
 
 export function updateScrollbarState(): void {

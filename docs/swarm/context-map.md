@@ -6,11 +6,11 @@ Use this file as the fast entrypoint after `SWARM.md` and `docs/swarm/controller
 
 - Active implementation lane: `SYT-036`
 - Last integrated lane: `SYT-010G`
-- GitHub issues: #10 open; #36 open; #31 closed
-- PR: #37 draft for `SYT-036`
+- GitHub issues: #10 open; #36 open; #38 open; #31 closed
+- PR: #37 draft for `SYT-036` / `SYT-038`
 - Branch: `swarm/syt-036-home-hover-stuck-lifecycle`
-- Current status: `SYT-036` draft PR #37 open; human QA failed twice, final follow-up patch passed fixture/live validation and exact Brave PWA watch -> header hover -> logo Home -> title/body hover verification; push/update PR and route review next
-- Next priority lane: finish #36 before planning more #10 hardening
+- Current status: `SYT-036` Home autoplay route passed user QA; user then reported #38 live-stream Theater video cut-off/chat overlay collapse. #38 fix is on PR #37 with full validation and live Brave PWA geometry/screenshot verification; push/update PR and route fresh review next.
+- Next priority lane: finish #36/#38 before planning more #10 hardening
 - Do not route next: #8 enhanced Home/Search hover grow research unless the user explicitly reopens that gate
 
 ## Hot Files
@@ -39,16 +39,16 @@ Completed lanes are intentionally compacted to stubs:
 - `SYT-010F` docs follow-up -> PR #29, merge `6580065`
 - `SYT-031` -> PR #32, merge `8e881c9`, closes #31
 - `SYT-010G` -> PR #34, merge `99156b5`, refs #10
-- `SYT-036` -> issue #36, draft PR #37
+- `SYT-036` / `SYT-038` -> issues #36/#38, draft PR #37
 
 Full prior handoff text is recoverable through Git history before the 2026-06-10 compaction commit. Use `docs/swarm/archive/README.md` for the reference map.
 
 ## Next Safe Controller Action
 
-Finish `SYT-036`:
+Finish `SYT-036` / `SYT-038`:
 
 - Do not bump version, tag, or release.
-- Push and route review for the final failed-QA follow-up patch on PR #37.
-- After review passes, wait for `Human QA passed/failed for SYT-036: <notes>` unless reviewer/integrator records an explicit waiver based on the live Brave PWA evidence.
+- Push and route fresh review for PR #37 after the post-review #38 live-stream Theater/chat overlay patch.
+- After review passes, wait for `Human QA passed/failed for SYT-036/#38: <notes>` unless reviewer/integrator records an explicit waiver based on the live Brave PWA evidence.
 - Integrate PR #37 only after review and human QA pass or an explicit waiver is recorded.
 - Do not restart #8 enhanced hover research.

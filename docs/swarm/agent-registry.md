@@ -21,7 +21,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Agent / Thread | Task ID | Role | Status | Branch | Worktree | PR | Started | Last Seen | Expected Next Step | Heartbeat |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `019eb3ac-ad99-7b90-8a44-09fd13f141bc` / Anscombe | `SYT-036` | Reviewer | In Progress | `swarm/syt-036-home-hover-stuck-lifecycle` | main repo checkout | #37 | 2026-06-10 18:34 EDT | Review PR #37, update `docs/swarm/handoffs/SYT-036.md`, report review result | none |
+| none | none | none | none | none | none | none | none | none | none | none |
 
 ## Paused / Stale Agents
 
@@ -68,6 +68,7 @@ Use this file to track who is working, where they are working, and whether the c
 | `019eb293-9f5e-7ca2-ada8-6bad5f84c002` / Russell | `SYT-010G` | Reviewer | Ready to Integrate | 2026-06-10 13:30 EDT | No findings; `git diff --check origin/main...origin/swarm/syt-010g-fullscreen-ui-geometry` and `npm run test:unit` passed; human QA not required. |
 | Codex / main controller | `SYT-010G` | Integrator | Merged PR #34 | 2026-06-10 13:33 EDT | `npm run validate:all` passed; PR #34 squash-merged at `99156b5`; issue #10 remains open. |
 | `019eb2b0-254b-7230-9b53-3f98d55020f6` / Bacon | `SYT-036` | Reviewer | Ready for Human QA | 2026-06-10 14:04 EDT | No findings; `git diff --check`, targeted Home hover regression, and full fixture suite passed. Keep human QA gate before merge due live YouTube hover behavior. |
+| `019eb3ac-ad99-7b90-8a44-09fd13f141bc` / Anscombe | `SYT-036` | Reviewer | Ready for Human QA | 2026-06-10 18:44 EDT | No findings; `git diff --check origin/main...origin/swarm/syt-036-home-hover-stuck-lifecycle`, `npm run test:e2e`, and `npm run test:e2e:live` passed. Superseded by post-review #38 live-stream Theater/chat overlay patch. |
 
 ## Pending Launch
 

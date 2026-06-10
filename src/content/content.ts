@@ -7,7 +7,7 @@ import { loadSettings } from './settings';
 import { buildGeneralCss, buildSidebarCss, clearStaleSidebarItemFocus, updateGeneralVisibility, updateSidebarHomeSelectionState } from './sidebar';
 import { state } from './state';
 import { buildStickyPlayerCss, resetStickyPlayerState, updateStickyPlayerState } from './sticky-player';
-import { buildTheaterCss, clearStaleGuideFocus, updateLiveChatTargets, updateMastheadTargets, updateScrollbarState, updateTopHoverState, updateViewClasses } from './theater';
+import { buildTheaterCss, clearStaleGuideFocus, resetLiveTheaterScrollOffset, updateLiveChatTargets, updateMastheadTargets, updateScrollbarState, updateTopHoverState, updateViewClasses } from './theater';
 
 const WATCH_TO_HOME_RELOAD_KEY = 'simpleYtTweaksWatchToHomeReload';
 const WATCH_TO_HOME_RELOAD_GUARD_MS = 8_000;
@@ -266,6 +266,7 @@ function stabilizeUi(): void {
   resetFullscreenGridPeekState();
   updateMastheadTargets();
   updateLiveChatTargets();
+  resetLiveTheaterScrollOffset();
   updateGeneralVisibility();
   clearStaleGuideFocus();
   clearStaleSidebarItemFocus();
@@ -318,6 +319,7 @@ function applyFeatureState(): void {
   resetFullscreenGridPeekState();
   updateMastheadTargets();
   updateLiveChatTargets();
+  resetLiveTheaterScrollOffset();
   updateGeneralVisibility();
   clearStaleGuideFocus();
   clearStaleSidebarItemFocus();
@@ -380,6 +382,7 @@ async function init(): Promise<void> {
     rerun: applyFeatureState,
     onScrollUi: () => {
       resetFullscreenGridPeekState();
+      resetLiveTheaterScrollOffset();
       updateScrollbarState();
       refreshInteractionUiState();
       updateFullscreenActionDock();

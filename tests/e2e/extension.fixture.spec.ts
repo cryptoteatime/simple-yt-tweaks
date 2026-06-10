@@ -429,6 +429,96 @@ test('watch fixture validates mode classes, visible comments, hover grow, and vi
   expect(extensionErrors(errors)).toEqual([]);
 });
 
+test('watch fixture keeps live chat overlay from squeezing the theater player', async ({ context, extensionId }) => {
+  await writeExtensionSettings(context, extensionId, {
+    theaterHideLiveChat: true,
+    theaterShowLiveChatOverlay: true,
+  });
+
+  const page = await context.newPage();
+  await page.addInitScript(() => {
+    const originalMatchMedia = window.matchMedia.bind(window);
+    window.matchMedia = (query: string): MediaQueryList => {
+      const result = originalMatchMedia(query);
+      if (query.includes('display-mode: minimal-ui')) {
+        return {
+          ...result,
+          matches: true,
+          media: query,
+          addEventListener: result.addEventListener.bind(result),
+          removeEventListener: result.removeEventListener.bind(result),
+          addListener: result.addListener.bind(result),
+          removeListener: result.removeListener.bind(result),
+          dispatchEvent: result.dispatchEvent.bind(result),
+        };
+      }
+
+      return result;
+    };
+  });
+  const errors = await openFixture(page, 'watch', 'https://www.youtube.com/watch?v=live-fixture');
+
+  await page.locator('ytd-watch-flexy').evaluate((watchFlexy) => {
+    watchFlexy.setAttribute('theater', '');
+    watchFlexy.setAttribute('full-bleed-player', '');
+    watchFlexy.setAttribute('live-chat-present-and-expanded', '');
+    watchFlexy.setAttribute('should-stamp-chat', '');
+    watchFlexy.setAttribute('squeezeback', '');
+    watchFlexy.setAttribute('watch-while-panels-active', '');
+
+    const playerContainer = document.querySelector('#player-container');
+    const columns = document.querySelector('#columns');
+    const secondary = document.querySelector('#secondary');
+    if (!playerContainer || !columns || !secondary || document.querySelector('#full-bleed-container')) return;
+
+    const fullBleedContainer = document.createElement('div');
+    fullBleedContainer.id = 'full-bleed-container';
+    fullBleedContainer.style.cssText = 'display: flex; width: 100vw; height: 540px; overflow: hidden;';
+
+    const playerFullBleedContainer = document.createElement('div');
+    playerFullBleedContainer.id = 'player-full-bleed-container';
+    playerFullBleedContainer.style.cssText = 'display: block; flex: 1 1 0%; width: 558px; height: 540px; overflow: hidden; position: relative;';
+
+    const panelsFullBleedContainer = document.createElement('div');
+    panelsFullBleedContainer.id = 'panels-full-bleed-container';
+    panelsFullBleedContainer.style.cssText = 'display: block; flex: 0 1 auto; width: 402px; height: 540px;';
+
+    const chatContainer = document.createElement('div');
+    chatContainer.id = 'chat-container';
+    const liveChatFrame = document.createElement('ytd-live-chat-frame');
+    liveChatFrame.id = 'chat';
+    const chatFrame = document.createElement('iframe');
+    chatFrame.id = 'chatframe';
+    liveChatFrame.append(chatFrame);
+    chatContainer.append(liveChatFrame);
+    secondary.append(chatContainer);
+
+    playerContainer.parentElement?.insertBefore(fullBleedContainer, playerContainer);
+    playerFullBleedContainer.append(playerContainer);
+    panelsFullBleedContainer.append(secondary);
+    fullBleedContainer.append(playerFullBleedContainer, panelsFullBleedContainer);
+    columns.prepend(fullBleedContainer);
+
+    document.querySelector('#movie_player')?.classList.add('ytp-livebadge-color');
+  });
+
+  await expect(page.locator('body')).toHaveClass(/simple-yt-tweaks-theater/);
+  await expect(page.locator('body')).toHaveClass(/simple-yt-tweaks-has-live-chat/);
+  const viewportWidth = await page.evaluate(() => window.innerWidth);
+  await expect
+    .poll(() =>
+      page.locator('#player-full-bleed-container').evaluate((element) => ({
+        elementWidth: element.getBoundingClientRect().width,
+        viewportWidth: window.innerWidth,
+      })),
+    )
+    .toEqual({ elementWidth: viewportWidth, viewportWidth });
+  await expect(page.locator('#panels-full-bleed-container')).toHaveCSS('width', '0px');
+  await expect(page.locator('ytd-live-chat-frame#chat')).toHaveCSS('width', '380px');
+  await expect(page.locator('iframe#chatframe')).toHaveCSS('width', '380px');
+  expect(extensionErrors(errors)).toEqual([]);
+});
+
 test('watch fixture docks and restores sticky player when player scrolls away', async ({ context }) => {
   const page = await context.newPage();
   const errors = await openFixture(page, 'watch', 'https://www.youtube.com/watch?v=fixture');
