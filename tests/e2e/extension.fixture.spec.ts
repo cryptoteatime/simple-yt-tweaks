@@ -4,6 +4,7 @@ import { routeYouTubeFixture } from './youtube-fixtures';
 
 declare global {
   interface Window {
+    __simpleYtTweaksNativeHoverLifecycleEvents?: string[];
     __simpleYtTweaksNativePreviewEvents?: string[];
     __simpleYtTweaksPlaybackEvents?: string[];
     __simpleYtTweaksSimulateTransientClick?: boolean;
@@ -164,6 +165,103 @@ test('home fixture wakes native preview when SPA navigation leaves pointer over 
     .toContainEqual('mousemove:synthetic');
   await expect(page.locator('[data-testid="stationary-preview-started"]')).toHaveCount(1);
   await expect(page.locator('[data-testid="stationary-hover-video"]')).not.toHaveClass(
+    /simple-yt-tweaks-grid-hover-ready/,
+  );
+  expect(extensionErrors(errors)).toEqual([]);
+});
+
+test('home fixture clears stale synthetic native hover before nudging another card', async ({ context }) => {
+  const page = await context.newPage();
+  const errors = await openFixture(page, 'home', 'https://www.youtube.com/');
+
+  await page.mouse.move(80, 80);
+  await page.evaluate(() => {
+    history.pushState({}, '', '/watch?v=fixture');
+    window.dispatchEvent(new PopStateEvent('popstate'));
+  });
+  await page.waitForTimeout(220);
+  const hoverPoints = await page.evaluate(() => {
+    const stalePreview = document.createElement('ytd-video-preview');
+    stalePreview.setAttribute('data-testid', 'stale-hover-lifecycle-preview');
+    stalePreview.setAttribute(
+      'style',
+      'position: fixed; inset: 0; z-index: 10000; pointer-events: auto;',
+    );
+    stalePreview.innerHTML = `
+      <a id="media-container-link" href="/watch?v=stale-preview">
+        <div id="inline-preview-player">
+          <video data-testid="stale-hover-lifecycle-video" style="display: block; width: 100vw; height: 100vh;"></video>
+        </div>
+      </a>
+    `;
+    document.querySelector('#video-preview')?.append(stalePreview);
+
+    function buildCard(id: string, title: string, top: number): HTMLElement {
+      const card = document.createElement('ytd-rich-item-renderer');
+      card.setAttribute('data-testid', id);
+      card.setAttribute('data-native-preview-card', id);
+      card.setAttribute('items-per-row', '3');
+      card.setAttribute(
+        'style',
+        `display: block; width: 280px; height: 180px; margin: 0; padding: 0; position: fixed; left: 40px; top: ${top}px; z-index: 1;`,
+      );
+      card.innerHTML = `
+        <a class="ytLockupViewModelContentImage" href="/watch?v=${id}" style="display: block; width: 100%; height: 128px;">
+          <yt-thumbnail-view-model style="display: block; width: 100%; height: 128px;"></yt-thumbnail-view-model>
+        </a>
+        <h3>${title}</h3>
+      `;
+      return card;
+    }
+
+    const firstCard = buildCard('stationary-hover-a', 'Stationary hover fixture A', 80);
+    const secondCard = buildCard('stationary-hover-b', 'Stationary hover fixture B', 300);
+    document.querySelector('ytd-browse[page-subtype="home"] ytd-rich-grid-renderer #contents')?.prepend(secondCard);
+    document.querySelector('ytd-browse[page-subtype="home"] ytd-rich-grid-renderer #contents')?.prepend(firstCard);
+    history.pushState({}, '', '/');
+    window.dispatchEvent(new PopStateEvent('popstate'));
+
+    return [firstCard, secondCard].map((card) => {
+      const rect = card.getBoundingClientRect();
+      return {
+        id: card.getAttribute('data-testid'),
+        x: rect.left + rect.width / 2,
+        y: rect.top + Math.min(72, rect.height / 2),
+      };
+    });
+  });
+
+  await page.mouse.move(hoverPoints[0].x, hoverPoints[0].y);
+  await expect
+    .poll(() => page.evaluate(() => window.__simpleYtTweaksNativeHoverLifecycleEvents ?? []), { timeout: 2_500 })
+    .toContainEqual('stationary-hover-a:mousemove:synthetic');
+  await expect
+    .poll(() =>
+      page.evaluate(() =>
+        Array.from(document.querySelectorAll<HTMLElement>('[data-native-hover-active="true"]')).map(
+          (card) => card.dataset.testid,
+        ),
+      ),
+    )
+    .toEqual(['stationary-hover-a']);
+
+  await page.mouse.move(hoverPoints[1].x, hoverPoints[1].y);
+  await expect
+    .poll(() => page.evaluate(() => window.__simpleYtTweaksNativeHoverLifecycleEvents ?? []), { timeout: 2_500 })
+    .toContainEqual('stationary-hover-b:mousemove:synthetic');
+  await expect
+    .poll(() => page.evaluate(() => window.__simpleYtTweaksNativeHoverLifecycleEvents ?? []), { timeout: 2_500 })
+    .toContainEqual('stationary-hover-a:mouseout:synthetic');
+  await expect
+    .poll(() =>
+      page.evaluate(() =>
+        Array.from(document.querySelectorAll<HTMLElement>('[data-native-hover-active="true"]')).map(
+          (card) => card.dataset.testid,
+        ),
+      ),
+    )
+    .toEqual(['stationary-hover-b']);
+  await expect(page.locator('[data-testid="stationary-hover-b"]')).not.toHaveClass(
     /simple-yt-tweaks-grid-hover-ready/,
   );
   expect(extensionErrors(errors)).toEqual([]);

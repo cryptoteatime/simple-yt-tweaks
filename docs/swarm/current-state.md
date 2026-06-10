@@ -4,7 +4,7 @@
 
 - Name: Simple YT Tweaks
 - Folder: `/Users/d4ngl/Git Repos/Codex/simple-yt-tweaks`
-- Status: existing repo, post-v0.3.0 hardening; `SYT-010G` fullscreen/player UI geometry hardening integrated
+- Status: existing repo, post-v0.3.0 hardening; `SYT-036` Home hover lifecycle regression branch in progress
 - GitHub: `https://github.com/cryptoteatime/simple-yt-tweaks`
 
 ## Project Brief
@@ -19,8 +19,8 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 
 ## Current Focus
 
-1. Decide whether issue #10 needs another bounded hardening lane or should remain open for later.
-2. Keep #10 hardening in small PRs with `validate:all` as the final gate.
+1. Finish `SYT-036` for issue #36: native Home hover stale-card lifecycle cleanup after watch-to-Home SPA navigation.
+2. Run full validation and open a draft PR for review before integration.
 3. Keep #8 as a future high-risk research lane until tests and product direction justify it.
 4. Keep release-candidate work separate from routine fixture/source hardening.
 5. Keep hot swarm context compact; use `docs/swarm/context-map.md` and archive references instead of loading old completed handoffs.
@@ -54,7 +54,7 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 
 ## Recommended First Milestone
 
-`SYT-010G` is integrated via PR #34 at `99156b5`, adding fullscreen/player UI hover reveal geometry unit coverage. Issue #10 remains open until the controller decides the hardening pass is complete.
+`SYT-036` is the active bug lane for issue #36, following the user screenshot/report that Home cards can retain hover backgrounds and lose native autoplay after watch-to-Home SPA navigation. Issue #10 remains open until the controller decides the hardening pass is complete.
 
 ## Verification Defaults
 
@@ -91,4 +91,4 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 ## Last Updated
 
 - Date: 2026-06-10
-- By: Controller/Integrator for `SYT-010G`
+- By: Controller/Runner for `SYT-036`

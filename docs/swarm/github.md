@@ -45,7 +45,7 @@ Use this file to record the repo's GitHub status and autonomous PR policy.
 
 | Task ID | Branch | PR | Status | Owner | Notes |
 | --- | --- | --- | --- | --- | --- |
-| none | none | none | none | none | none |
+| `SYT-036` | `swarm/syt-036-home-hover-stuck-lifecycle` | pending | local branch | Controller/Runner | Issue #36 native Home hover lifecycle regression; PR after validation. |
 
 ## Setup Log
 
@@ -69,3 +69,4 @@ Use this file to record the repo's GitHub status and autonomous PR policy.
 - 2026-06-10: PR #32 marked ready and squash-merged at `8e881c9`; issue #31 closed; remote task branch deleted by merge.
 - 2026-06-10: Opened draft PR #34 for `SYT-010G` fullscreen/player UI geometry hardening under issue #10.
 - 2026-06-10: PR #34 marked ready and squash-merged at `99156b5` for `SYT-010G`; issue #10 remains open; remote/local task branch cleanup completed.
+- 2026-06-10: Opened issue #36 for Home hover previews leaving stale card states after watch-to-Home navigation. `SYT-036` branch is active pending validation/PR.

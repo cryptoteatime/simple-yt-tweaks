@@ -115,10 +115,43 @@ function homeFixture(): string {
       </ytd-app>
       <script>
         window.__simpleYtTweaksNativePreviewEvents = [];
-        document.addEventListener('mousemove', (event) => {
+        window.__simpleYtTweaksNativeHoverLifecycleEvents = [];
+
+        function nativeHoverCardFromEvent(event) {
           if (!(event.target instanceof Element)) return;
-          const card = event.target.closest('[data-testid="stationary-hover-video"]');
+          return event.target.closest('[data-native-preview-card], [data-testid="stationary-hover-video"]');
+        }
+
+        function nativeHoverCardId(card) {
+          return card.getAttribute('data-testid') || card.getAttribute('data-native-preview-card') || 'unknown';
+        }
+
+        function recordNativeHoverEvent(event) {
+          const card = nativeHoverCardFromEvent(event);
           if (!card) return;
+
+          const id = nativeHoverCardId(card);
+          const trust = event.isTrusted ? 'trusted' : 'synthetic';
+          window.__simpleYtTweaksNativeHoverLifecycleEvents.push(id + ':' + event.type + ':' + trust);
+
+          if (event.type === 'mouseover' || event.type === 'mouseenter' || event.type === 'mousemove') {
+            card.classList.add('fixture-native-hover-active');
+            card.setAttribute('data-native-hover-active', 'true');
+          }
+
+          if (event.type === 'mouseout' || event.type === 'mouseleave') {
+            card.classList.remove('fixture-native-hover-active');
+            card.removeAttribute('data-native-hover-active');
+          }
+        }
+
+        for (const eventName of ['mouseover', 'mouseenter', 'mousemove', 'mouseout', 'mouseleave']) {
+          document.addEventListener(eventName, recordNativeHoverEvent, true);
+        }
+
+        document.addEventListener('mousemove', (event) => {
+          const card = nativeHoverCardFromEvent(event);
+          if (!card || card.getAttribute('data-testid') !== 'stationary-hover-video') return;
 
           window.__simpleYtTweaksNativePreviewEvents.push(event.isTrusted ? 'mousemove:trusted' : 'mousemove:synthetic');
           if (document.querySelector('[data-testid="stationary-preview-started"]')) return;

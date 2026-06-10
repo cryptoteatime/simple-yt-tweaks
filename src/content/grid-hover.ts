@@ -106,6 +106,8 @@ let nativeFeedHoverNudgeHref = typeof location === 'undefined' ? '' : location.h
 let nativeFeedHoverNudgeKey = '';
 let nativeFeedHoverNudgeAt = 0;
 let dispatchingNativeFeedHoverNudge = false;
+let nativeFeedSyntheticHoverCard: HTMLElement | null = null;
+let nativeFeedSyntheticHoverTarget: HTMLElement | null = null;
 let lastPointerX = Number.POSITIVE_INFINITY;
 let lastPointerY = Number.POSITIVE_INFINITY;
 
@@ -517,6 +519,60 @@ function clearNativeFeedHoverNudges(): void {
   nativeFeedHoverNudgeTimers = [];
 }
 
+function getNativeFeedEventOptions(
+  point: { x: number; y: number },
+  relatedTarget: EventTarget | null = null,
+): { mouseOptions: MouseEventInit; pointerOptions: PointerEventInit } {
+  const mouseOptions: MouseEventInit = {
+    bubbles: true,
+    cancelable: true,
+    composed: true,
+    clientX: point.x,
+    clientY: point.y,
+    screenX: point.x,
+    screenY: point.y,
+    relatedTarget,
+    view: window,
+  };
+  const pointerOptions: PointerEventInit = {
+    ...mouseOptions,
+    pointerId: 1,
+    pointerType: 'mouse',
+    isPrimary: true,
+    buttons: 0,
+    pressure: 0,
+  };
+
+  return { mouseOptions, pointerOptions };
+}
+
+function clearNativeFeedSyntheticHover(relatedTarget: EventTarget | null = null): void {
+  const card = nativeFeedSyntheticHoverCard;
+  const target = nativeFeedSyntheticHoverTarget;
+  nativeFeedSyntheticHoverCard = null;
+  nativeFeedSyntheticHoverTarget = null;
+
+  if (!card || !target || !document.body.contains(card)) return;
+
+  const point = getNativeFeedHoverPoint(card, target);
+  const { mouseOptions, pointerOptions } = getNativeFeedEventOptions(point, relatedTarget);
+
+  dispatchingNativeFeedHoverNudge = true;
+  try {
+    target.dispatchEvent(new PointerEvent('pointerout', pointerOptions));
+    target.dispatchEvent(new MouseEvent('mouseout', mouseOptions));
+    target.dispatchEvent(new PointerEvent('pointerleave', { ...pointerOptions, bubbles: false }));
+    target.dispatchEvent(new MouseEvent('mouseleave', { ...mouseOptions, bubbles: false }));
+  } finally {
+    dispatchingNativeFeedHoverNudge = false;
+  }
+}
+
+function clearNativeFeedHoverLifecycle(relatedTarget: EventTarget | null = null): void {
+  clearNativeFeedHoverNudges();
+  clearNativeFeedSyntheticHover(relatedTarget);
+}
+
 function clearActiveHoverCard(): void {
   clearHoverReadyTimer();
   clearHoverClearTimer();
@@ -558,7 +614,7 @@ function resetNativeFeedHoverNudgeForNavigation(): void {
   nativeFeedHoverNudgeHref = location.href;
   nativeFeedHoverNudgeKey = '';
   nativeFeedHoverNudgeAt = 0;
-  clearNativeFeedHoverNudges();
+  clearNativeFeedHoverLifecycle();
 }
 
 function getNativePreviewVideoUnderPointer(): HTMLVideoElement | null {
@@ -700,39 +756,35 @@ function nativePreviewMatchesCard(video: HTMLVideoElement, card: HTMLElement): b
 
 function dispatchNativeFeedHoverNudge(card: HTMLElement): void {
   if (!document.body.contains(card) || !isPointerInsideCard(card)) return;
+
+  const target = getNativeFeedHoverTarget(card);
+  const point = getNativeFeedHoverPoint(card, target);
   const previewVideo = getNativePreviewVideoUnderPointer();
   if (previewVideo && nativePreviewMatchesCard(previewVideo, card)) {
+    if (nativeFeedSyntheticHoverCard && nativeFeedSyntheticHoverCard !== card) {
+      clearNativeFeedSyntheticHover(target);
+    }
     scheduleNativePreviewPlaybackFallback();
     return;
   }
 
-  const target = getNativeFeedHoverTarget(card);
-  const point = getNativeFeedHoverPoint(card, target);
-  const mouseOptions: MouseEventInit = {
-    bubbles: true,
-    cancelable: true,
-    composed: true,
-    clientX: point.x,
-    clientY: point.y,
-    screenX: point.x,
-    screenY: point.y,
-    view: window,
-  };
-  const pointerOptions: PointerEventInit = {
-    ...mouseOptions,
-    pointerId: 1,
-    pointerType: 'mouse',
-    isPrimary: true,
-    buttons: 0,
-    pressure: 0,
-  };
+  const alreadySyntheticHovered = nativeFeedSyntheticHoverCard === card && nativeFeedSyntheticHoverTarget === target;
+  if (nativeFeedSyntheticHoverCard && !alreadySyntheticHovered) {
+    clearNativeFeedSyntheticHover(target);
+  }
+
+  const { mouseOptions, pointerOptions } = getNativeFeedEventOptions(point);
 
   dispatchingNativeFeedHoverNudge = true;
   try {
-    target.dispatchEvent(new PointerEvent('pointerover', pointerOptions));
-    target.dispatchEvent(new MouseEvent('mouseover', mouseOptions));
-    target.dispatchEvent(new PointerEvent('pointerenter', { ...pointerOptions, bubbles: false }));
-    target.dispatchEvent(new MouseEvent('mouseenter', { ...mouseOptions, bubbles: false }));
+    if (!alreadySyntheticHovered) {
+      target.dispatchEvent(new PointerEvent('pointerover', pointerOptions));
+      target.dispatchEvent(new MouseEvent('mouseover', mouseOptions));
+      target.dispatchEvent(new PointerEvent('pointerenter', { ...pointerOptions, bubbles: false }));
+      target.dispatchEvent(new MouseEvent('mouseenter', { ...mouseOptions, bubbles: false }));
+      nativeFeedSyntheticHoverCard = card;
+      nativeFeedSyntheticHoverTarget = target;
+    }
     target.dispatchEvent(new PointerEvent('pointermove', pointerOptions));
     target.dispatchEvent(new MouseEvent('mousemove', mouseOptions));
   } finally {
@@ -746,12 +798,20 @@ function scheduleNativeFeedHoverLifecycleRecovery(): void {
   resetNativeFeedHoverNudgeForNavigation();
 
   if (!isNativeFeedPreviewPage()) {
-    clearNativeFeedHoverNudges();
+    clearNativeFeedHoverLifecycle();
     return;
   }
 
   const card = getNativeFeedCardUnderPointer();
-  if (!card) return;
+  if (!card) {
+    clearNativeFeedHoverLifecycle();
+    return;
+  }
+  const target = getNativeFeedHoverTarget(card);
+  if (nativeFeedSyntheticHoverCard && nativeFeedSyntheticHoverCard !== card) {
+    clearNativeFeedSyntheticHover(target);
+  }
+
   const previewVideo = getNativePreviewVideoUnderPointer();
   if (previewVideo && nativePreviewMatchesCard(previewVideo, card)) {
     scheduleNativePreviewPlaybackFallback();
@@ -948,12 +1008,11 @@ export function bindGridHoverHandlers(getSettings: () => Settings): void {
   document.addEventListener(
     'pointerover',
     (event) => {
+      if (dispatchingNativeFeedHoverNudge) return;
       lastPointerX = event.clientX;
       lastPointerY = event.clientY;
       scheduleNativePreviewPlaybackFallback();
-      if (!dispatchingNativeFeedHoverNudge) {
-        scheduleNativeFeedHoverLifecycleRecovery();
-      }
+      scheduleNativeFeedHoverLifecycleRecovery();
       if (!isRecommendedHoverGrowEnabled(getSettings())) return;
 
       const card = getHoverCard(event.target);
@@ -971,12 +1030,11 @@ export function bindGridHoverHandlers(getSettings: () => Settings): void {
   document.addEventListener(
     'pointermove',
     (event) => {
+      if (dispatchingNativeFeedHoverNudge) return;
       lastPointerX = event.clientX;
       lastPointerY = event.clientY;
       scheduleNativePreviewPlaybackFallback();
-      if (!dispatchingNativeFeedHoverNudge) {
-        scheduleNativeFeedHoverLifecycleRecovery();
-      }
+      scheduleNativeFeedHoverLifecycleRecovery();
       if (!isRecommendedHoverGrowEnabled(getSettings())) return;
 
       const card = activeHoverCard ?? getHoverCard(event.target);
@@ -995,10 +1053,11 @@ export function bindGridHoverHandlers(getSettings: () => Settings): void {
   document.addEventListener(
     'pointerout',
     (event) => {
+      if (dispatchingNativeFeedHoverNudge) return;
       lastPointerX = event.clientX;
       lastPointerY = event.clientY;
       clearNativePreviewPlayTimer();
-      clearNativeFeedHoverNudges();
+      clearNativeFeedHoverLifecycle(event.relatedTarget ?? null);
       const card = activeHoverCard;
       if (!card) return;
       if (event.relatedTarget instanceof Node && card.contains(event.relatedTarget)) {
@@ -1034,13 +1093,21 @@ export function bindGridHoverHandlers(getSettings: () => Settings): void {
     }, 0);
   });
 
-  document.addEventListener('pointercancel', clearActiveHoverCard, { passive: true });
+  document.addEventListener(
+    'pointercancel',
+    () => {
+      clearNativePreviewPlayTimer();
+      clearNativeFeedHoverLifecycle();
+      clearActiveHoverCard();
+    },
+    { passive: true },
+  );
   window.addEventListener(
     'blur',
     () => {
       lastPointerX = Number.POSITIVE_INFINITY;
       lastPointerY = Number.POSITIVE_INFINITY;
-      clearNativeFeedHoverNudges();
+      clearNativeFeedHoverLifecycle();
       clearActiveHoverCard();
     },
     { passive: true },
