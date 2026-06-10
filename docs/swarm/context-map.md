@@ -4,13 +4,13 @@ Use this file as the fast entrypoint after `SWARM.md` and `docs/swarm/controller
 
 ## Current Hot State
 
-- Active implementation lane: none
+- Active implementation lane: `SYT-010F` planning review
 - Last integrated lane: `SYT-010E`
 - GitHub issue: #10 open
-- PR: #24 merged at `fae4e5d`
-- Branch: `swarm/syt-010e-code-hardening` cleaned locally and remotely
-- Current status: `SYT-010E` Integrated
-- Next priority lane: plan/route the next small #10 hardening lane (`SYT-010F`) if issue #10 remains open
+- PR: #26 draft planning PR; #24 merged at `fae4e5d`
+- Branch: `swarm/syt-010f-planning`
+- Current status: `SYT-010F` Integration in progress
+- Next priority lane: wait for active PR #26 Integrator
 - Do not route next: #8 enhanced Home/Search hover grow research unless the user explicitly reopens that gate
 
 ## Hot Files
@@ -20,7 +20,7 @@ Use this file as the fast entrypoint after `SWARM.md` and `docs/swarm/controller
 - Task queue: `docs/swarm/task-board.md`
 - Agent capacity: `docs/swarm/agent-registry.md`
 - GitHub policy/state: `docs/swarm/github.md`
-- Next handoff: `docs/swarm/handoffs/SYT-010E.md`
+- Next handoff: `docs/swarm/handoffs/SYT-010F.md`
 - User steering: `docs/swarm/user-feedback.md`
 
 ## Cold / Archived History
@@ -39,9 +39,9 @@ Full prior handoff text is recoverable through Git history before the 2026-06-10
 
 ## Next Safe Controller Action
 
-After this integration-record docs follow-up lands and the worktree is clean, plan or route one more small #10 hardening lane (`SYT-010F`):
+Wait for the active `SYT-010F` Integrator on PR #26:
 
-- Pick one bounded target from the remaining high-risk modules; do not start a broad rewrite.
-- Preserve the `npm run validate:all` final gate.
+- Mark the draft planning PR ready and merge if safe.
+- After merge, spawn a Senior Runner on `swarm/syt-010f-sticky-player-hardening`.
 - Keep issue #10 open until the controller decides the overall hardening pass is complete.
 - Do not restart #8 enhanced hover research.
