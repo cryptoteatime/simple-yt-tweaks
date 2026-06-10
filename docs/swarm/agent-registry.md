@@ -58,7 +58,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Task ID | Role | Branch / Worktree | Launch Condition | Prompt Location |
 | --- | --- | --- | --- | --- |
-| none | none | none | none | none |
+| `SYT-021` | Reviewer | `swarm/syt-008b-native-hover-spa-regression` / PR #22 | Branch is clean and pushed; launch one reviewer for source/test/docs/PR audit | `docs/swarm/handoffs/SYT-021.md` |
 
 ## Side Chats
 

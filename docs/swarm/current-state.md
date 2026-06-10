@@ -53,7 +53,7 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 
 ## Recommended First Milestone
 
-`SYT-021` is ready for review on branch `swarm/syt-008b-native-hover-spa-regression`: it fixes GitHub #21, expands fixture coverage, and passed full validation plus signed-in Chrome live smoke.
+`SYT-021` is ready for review in draft PR #22 on branch `swarm/syt-008b-native-hover-spa-regression`: it fixes GitHub #21, expands fixture coverage, and passed full validation plus signed-in Chrome live smoke.
 
 ## Verification Defaults
 
@@ -82,7 +82,7 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 - Execution strategy: paced controller with direct subagents only after lane readiness.
 - Batch dispatch policy: disabled by default via max 1 active subagent; require disjoint parallel-safe labels if capacity is raised.
 - Shared docs lock: controller owns task-board, current-state, controller-directives, and agent-registry during parallel work unless assigned.
-- Active subagents: none; `SYT-021` is controller-authored and ready for reviewer routing after PR creation.
+- Active subagents: none; `SYT-021` is controller-authored and ready for reviewer routing on draft PR #22.
 - Agent registry: `docs/swarm/agent-registry.md`.
 - Bootstrap log: `docs/swarm/bootstrap-log.md`.
 - GitHub workflow: `docs/swarm/github.md`.

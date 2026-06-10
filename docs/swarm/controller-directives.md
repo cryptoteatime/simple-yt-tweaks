@@ -14,8 +14,8 @@ This file is the repo-local dynamic control plane for the controller chat and an
 
 - Default branch: `main`
 - Current branch: `swarm/syt-008b-native-hover-spa-regression`
-- Expected Git state: `SYT-021` branch dirty until docs/source/test changes are committed and pushed
-- Open PR expectation: draft PR for `SYT-021` after branch push
+- Expected Git state: clean `swarm/syt-008b-native-hover-spa-regression...origin/swarm/syt-008b-native-hover-spa-regression` after PR-state docs follow-up is pushed
+- Open PR expectation: draft PR #22 for `SYT-021`
 - Active agents expectation: none
 - Controller lease expectation: none between bounded heartbeat passes
 - Current priority lane: none started by the Integrator; controller may choose the next lane in a later pass
@@ -96,7 +96,7 @@ Heartbeat overlap rule:
 
 | Priority | Task ID | Action | Owner | Branch / Worktree | Stop Condition |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `SYT-021` | Push branch, open draft PR, route review for native hover SPA regression and live recommendation drift | Controller / Reviewer | `swarm/syt-008b-native-hover-spa-regression` | Draft PR opened and reviewer result recorded |
+| 1 | `SYT-021` | Route review for draft PR #22 native hover SPA regression and live recommendation drift | Reviewer | `swarm/syt-008b-native-hover-spa-regression` | Reviewer result recorded |
 | 2 | `SYT-008A` | Keep research gate paused until #21 is resolved and user wants enhanced hover research again | Planner | `swarm/syt-008a-hover-research` | Decision to defer, prototype, or require human QA |
 
 ## Dynamic Notes
@@ -110,4 +110,4 @@ Heartbeat overlap rule:
 - PR #14 squash-merged into `main` at `5675059`; remote and local task branch cleanup completed.
 - PR #16 squash-merged into `main` at `0fca6c3`; remote and local task branch cleanup completed.
 - PR #18 squash-merged into `main` at `88f0a91`; local branch cleanup completed and stale remote-tracking ref pruned.
-- 2026-06-10: User reported live watch-to-Home native hover autoplay regression and requested overnight automation. Controller opened #21, implemented `SYT-021`, ran `npm run validate:all`, and performed signed-in Chrome live smoke. Branch needs commit/push/draft PR/review next.
+- 2026-06-10: User reported live watch-to-Home native hover autoplay regression and requested overnight automation. Controller opened #21 and draft PR #22, implemented `SYT-021`, ran `npm run validate:all`, and performed signed-in Chrome live smoke. Review is next.
