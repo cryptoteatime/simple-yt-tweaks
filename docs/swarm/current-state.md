@@ -20,7 +20,7 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 ## Current Focus
 
 1. Finish `SYT-036` for issue #36: native Home hover stale-card lifecycle cleanup after watch-to-Home SPA navigation.
-2. Run full validation and open a draft PR for review before integration.
+2. Route review for draft PR #37 before integration.
 3. Keep #8 as a future high-risk research lane until tests and product direction justify it.
 4. Keep release-candidate work separate from routine fixture/source hardening.
 5. Keep hot swarm context compact; use `docs/swarm/context-map.md` and archive references instead of loading old completed handoffs.

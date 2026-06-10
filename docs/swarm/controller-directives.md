@@ -15,7 +15,7 @@ This file is the repo-local dynamic control plane for the controller chat and an
 - Default branch: `main`
 - Current branch: `swarm/syt-036-home-hover-stuck-lifecycle`
 - Expected Git state: task branch dirty until `SYT-036` validation/PR is complete
-- Open PR expectation: draft PR pending for #36; PR #20 remains paused draft for #8 research
+- Open PR expectation: draft PR #37 for #36; PR #20 remains paused draft for #8 research
 - Active agents expectation: none
 - Controller lease expectation: none between bounded heartbeat passes
 - Current priority lane: `SYT-036` issue #36 Home hover stale-card lifecycle regression
@@ -103,7 +103,7 @@ Heartbeat overlap rule:
 
 | Priority | Task ID | Action | Owner | Branch / Worktree | Stop Condition |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `SYT-036` | Push branch, open draft PR, then route review | Controller / Reviewer | `swarm/syt-036-home-hover-stuck-lifecycle` | PR ready for review or failed checks with fix route |
+| 1 | `SYT-036` | Route review for draft PR #37 | Controller / Reviewer | `swarm/syt-036-home-hover-stuck-lifecycle` | Review result recorded or required human QA gate identified |
 | 2 | `SYT-010H` | Plan the next small #10 hardening lane only after `SYT-036` is resolved | Controller / Planner | TBD | New handoff created or decision to leave #10 open for later |
 | 3 | `SYT-008A` | Keep research gate paused until the user wants enhanced hover research again | Planner | `swarm/syt-008a-hover-research` | Decision to defer, prototype, or require human QA |
 
@@ -135,4 +135,4 @@ Heartbeat overlap rule:
 - 2026-06-10: `SYT-010G` selected fullscreen/player UI geometry hardening under issue #10; draft PR #34 opened after `npm run validate:all` passed. Next safe action is review, not #8.
 - 2026-06-10: Reviewer Russell marked PR #34 Ready to Integrate with no findings. Next safe action is integration with `npm run validate:all`.
 - 2026-06-10: PR #34 marked ready and squash-merged into `main` at `99156b5`; issue #10 remains open. Hot-state repair follows because controller docs still pointed at the completed lane.
-- 2026-06-10: User reported Home hover stale-card backgrounds and missing autoplay after refresh -> watch page -> SPA Home. Controller opened issue #36 and implemented `SYT-036` on `swarm/syt-036-home-hover-stuck-lifecycle`; `npm run validate:all` and `npm run test:e2e:live` passed.
+- 2026-06-10: User reported Home hover stale-card backgrounds and missing autoplay after refresh -> watch page -> SPA Home. Controller opened issue #36 and draft PR #37 for `SYT-036`; `npm run validate:all` and `npm run test:e2e:live` passed.

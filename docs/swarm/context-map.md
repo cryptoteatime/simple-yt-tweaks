@@ -7,9 +7,9 @@ Use this file as the fast entrypoint after `SWARM.md` and `docs/swarm/controller
 - Active implementation lane: `SYT-036`
 - Last integrated lane: `SYT-010G`
 - GitHub issues: #10 open; #36 open; #31 closed
-- PR: pending for `SYT-036`
+- PR: #37 draft for `SYT-036`
 - Branch: `swarm/syt-036-home-hover-stuck-lifecycle`
-- Current status: `SYT-036` implemented locally; `validate:all` and live smoke passed; PR/review pending
+- Current status: `SYT-036` draft PR #37 open; `validate:all` and live smoke passed; review pending
 - Next priority lane: finish #36 before planning more #10 hardening
 - Do not route next: #8 enhanced Home/Search hover grow research unless the user explicitly reopens that gate
 
@@ -39,7 +39,7 @@ Completed lanes are intentionally compacted to stubs:
 - `SYT-010F` docs follow-up -> PR #29, merge `6580065`
 - `SYT-031` -> PR #32, merge `8e881c9`, closes #31
 - `SYT-010G` -> PR #34, merge `99156b5`, refs #10
-- `SYT-036` -> issue #36, PR pending
+- `SYT-036` -> issue #36, draft PR #37
 
 Full prior handoff text is recoverable through Git history before the 2026-06-10 compaction commit. Use `docs/swarm/archive/README.md` for the reference map.
 
@@ -48,6 +48,6 @@ Full prior handoff text is recoverable through Git history before the 2026-06-10
 Finish `SYT-036`:
 
 - Do not bump version, tag, or release.
-- Push the branch, open a draft PR, and review before integration.
+- Route review for draft PR #37 before integration.
 - Prefer live/user QA before merge because this is live YouTube hover behavior.
 - Do not restart #8 enhanced hover research.
