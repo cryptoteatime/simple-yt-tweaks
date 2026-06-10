@@ -11,7 +11,7 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 - Project brief: Ready
 - Material questions: Deferred, not blocking
 - First milestone plan: Ready
-- Implementation dispatch: `SYT-010F` planning selected Sticky Player hardening; review/merge planning docs before spawning the Senior Runner.
+- Implementation dispatch: `SYT-010F` planning reviewer is active for PR #26.
 
 ## Active Tasks
 
@@ -59,7 +59,7 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 
 ## Controller Notes
 
-- Active controller-spawned subagents: none after Dalton completed `SYT-010F` planning.
+- Active controller-spawned subagents: McClintock reviewing `SYT-010F` / PR #26.
 - Active cron bursts: none; cron is a failsafe, not the normal execution path.
 - Parallel worktree root: none yet.
 - Batch dispatch policy: disabled by default because max active subagents is 1.

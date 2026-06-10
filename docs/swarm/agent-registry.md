@@ -21,7 +21,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Agent / Thread | Task ID | Role | Status | Branch | Worktree | PR | Started | Last Seen | Expected Next Step | Heartbeat |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| none | none | none | none | none | none | none | none | none | none | none |
+| `019eb128-3fca-7111-bbb2-152f11a8747c` / McClintock | `SYT-010F` | Reviewer | In Progress | `swarm/syt-010f-planning` | main worktree | #26 | 2026-06-10 06:48 EDT | 2026-06-10 06:48 EDT | Review PR #26 and report `Ready to Integrate`, `Needs Fixes`, or `Blocked`. | none |
 
 ## Paused / Stale Agents
 
