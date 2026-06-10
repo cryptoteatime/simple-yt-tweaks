@@ -11,7 +11,7 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 - Project brief: Ready
 - Material questions: Deferred, not blocking
 - First milestone plan: Ready
-- Implementation dispatch: `SYT-010F` Integrator is active for PR #26.
+- Implementation dispatch: `SYT-010F` planning is integrated; spawn the Sticky Player Senior Runner next.
 
 ## Active Tasks
 
@@ -24,7 +24,7 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 | `SYT-008A` | Enhanced home/search hover research gate | Planner | Paused | `swarm/syt-008a-hover-research` | #8 research, fixtures/prototype only | serial-required | `SYT-010A`, user/product gate | high, live YouTube preview lifecycle | `docs/swarm/handoffs/SYT-008A.md` | none |
 | `SYT-021` | Native hover SPA regression and live recommendation drift | Integrator | Integrated | `swarm/syt-008b-native-hover-spa-regression` | #21 native Home/Search preview repair, watch click fallback hardening, modern recommendation selector drift | serial-required | v0.3.0 baseline | high, live YouTube SPA/player behavior | `docs/swarm/handoffs/SYT-021.md` | #22 merged |
 | `SYT-010E` | Code-hardening lane after #21 | Integrator | Integrated | `swarm/syt-010e-code-hardening` | Grid-hover selector normalization with unit coverage | serial-required | `SYT-021` | medium/high, runtime source hardening | `docs/swarm/handoffs/SYT-010E.md` | #24 merged |
-| `SYT-010F` | Sticky Player hardening plan | Integrator | In Progress | `swarm/syt-010f-planning` | Plan next #10 lane: Sticky Player visibility/resize helpers and deterministic dock/restore fixture coverage | serial-required | `SYT-010E` | medium/high, player DOM docking | `docs/swarm/handoffs/SYT-010F.md` | #26 draft |
+| `SYT-010F` | Sticky Player hardening | Senior Runner | Ready | `swarm/syt-010f-sticky-player-hardening` | Sticky Player visibility/resize helpers and deterministic dock/restore fixture coverage if feasible | serial-required | `SYT-010F` planning PR #26 merged | medium/high, player DOM docking | `docs/swarm/handoffs/SYT-010F.md` | #26 merged |
 
 ## Backlog
 
@@ -42,7 +42,7 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 
 | Task ID | Branch | Reviewer Focus | Verification Tier | Handoff |
 | --- | --- | --- | --- | --- |
-| `SYT-010F` | `swarm/syt-010f-planning` | Handoff is bounded, no #8 scope leakage, Runner prompt has write scope and verification | docs-only, `git diff --check` | `docs/swarm/handoffs/SYT-010F.md` |
+| none | none | none | none | none |
 
 ## Ready To Integrate
 
@@ -59,7 +59,7 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 
 ## Controller Notes
 
-- Active controller-spawned subagents: Faraday integrating `SYT-010F` planning PR #26.
+- Active controller-spawned subagents: none after Faraday integrated `SYT-010F` planning PR #26.
 - Active cron bursts: none; cron is a failsafe, not the normal execution path.
 - Parallel worktree root: none yet.
 - Batch dispatch policy: disabled by default because max active subagents is 1.
@@ -68,9 +68,10 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 - Agent registry: `docs/swarm/agent-registry.md`.
 - Bootstrap log: `docs/swarm/bootstrap-log.md`.
 - GitHub workflow: `docs/swarm/github.md`.
-- Current controller phase: Phase 4 active; `SYT-010F` planning ready for review, then Senior Runner dispatch.
+- Current controller phase: Phase 4 active; spawn the `SYT-010F` Sticky Player Senior Runner next.
 - 2026-06-10: User reported live watch-to-Home native hover autoplay regression. Controller opened #21 and draft PR #22 for `SYT-021` on `swarm/syt-008b-native-hover-spa-regression`.
 - 2026-06-10: User requested compact context/docs and more frequent automation. Completed historical handoffs were compacted to stubs with `docs/swarm/archive/README.md` reference mapping; `docs/swarm/context-map.md` is now the hot context entrypoint.
 - 2026-06-10: PR #22 squash-merged at `8f90ef1`, closing #21. Remote/local task branch cleanup completed. Route `SYT-010E` next.
 - 2026-06-10: PR #24 squash-merged at `fae4e5d`, leaving #10 open for future hardening lanes. Remote/local task branch cleanup completed. Plan/route `SYT-010F` next if work remains safe and bounded.
 - 2026-06-10: `SYT-010F` planning selected Sticky Player hardening: pure visibility/resize helper coverage plus one deterministic dock/restore fixture if feasible. Keep #8 paused.
+- 2026-06-10: PR #26 squash-merged at `66d756f`, leaving #10 open. Next safe action is Senior Runner on `swarm/syt-010f-sticky-player-hardening`.

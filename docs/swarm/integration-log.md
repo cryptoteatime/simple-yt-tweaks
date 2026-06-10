@@ -12,6 +12,35 @@ Use this file for merge decisions, conflict history, final checks, and release n
 
 ## Entries
 
+### 2026-06-10: SYT-010F Sticky Player Planning Integration
+
+- Integrator: Faraday (`019eb12d-5860-7852-8447-17dfb4db7cc3`)
+- Target branch: `main`
+- Candidate branch(es): `swarm/syt-010f-planning`
+- PR(s): https://github.com/cryptoteatime/simple-yt-tweaks/pull/26
+- Issue(s): https://github.com/cryptoteatime/simple-yt-tweaks/issues/10
+- Decision: Integrated
+- Merge: squash merge commit `66d756fe6b366b4f75205901deee89567ff46462`
+- Reason: Reviewer McClintock reported no findings; PR scope was docs-only planning; PR was clean and mergeable; human QA was not required.
+- Conflicts: none; PR #26 was mergeable and clean before merge.
+- Checks:
+  - `gh pr view 26 --json ...`: PASS, PR was open, draft, mergeable, and clean before merge; it was marked ready before squash merge.
+  - `gh pr diff 26 --name-only`: PASS, scope was limited to `docs/swarm/**`.
+  - `git diff --name-status origin/main...HEAD`: PASS, scope was limited to swarm planning docs.
+  - `git diff --check origin/main...HEAD`: PASS.
+  - `gh issue view 10 --json ...`: PASS after merge, issue #10 remains open.
+  - `npm run validate:all`: NOT_RUN, not required for docs-only planning with no source/test changes.
+- Human acceptance: NOT_REQUIRED
+- Human acceptance evidence: docs-only planning PR selecting the next #10 hardening lane; no runtime source, tests, version, release, Web Store asset, or #8 enhanced Home/Search hover work changed.
+- Branch cleanup: GitHub deleted the remote planning branch during merge; local planning branch was already absent; stale remote-tracking ref was pruned.
+- Worktree cleanup: local `main` synced to `origin/main`; integration record is being landed through a docs-only follow-up PR per repo policy.
+- Notes:
+  - `SYT-010F` implementation target is Sticky Player visibility/resize helper coverage plus deterministic dock/restore fixture coverage where feasible.
+  - Issue #10 remains open for the implementation lane.
+- Follow-ups:
+  - Spawn a Senior Runner from `docs/swarm/handoffs/SYT-010F.md` on `swarm/syt-010f-sticky-player-hardening`.
+  - Keep #8 enhanced Home/Search hover research paused unless the user explicitly reopens that gate.
+
 ### 2026-06-10: SYT-010E Grid Hover Selector Hardening Integration
 
 - Integrator: Ramanujan (`019eb100-fe46-7bc3-b8a5-9c5f563a73b1`)

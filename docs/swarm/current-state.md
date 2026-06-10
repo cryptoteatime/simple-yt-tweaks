@@ -4,14 +4,14 @@
 
 - Name: Simple YT Tweaks
 - Folder: `/Users/d4ngl/Git Repos/Codex/simple-yt-tweaks`
-- Status: existing repo, post-v0.3.0 hardening; #21 and `SYT-010E` integrated; `SYT-010F` planning selected Sticky Player hardening
+- Status: existing repo, post-v0.3.0 hardening; #21, `SYT-010E`, and `SYT-010F` planning integrated
 - GitHub: `https://github.com/cryptoteatime/simple-yt-tweaks`
 
 ## Project Brief
 
 - Brief: `docs/swarm/project-brief.md`
 - Question gate: deferred, not blocking
-- Dispatch readiness: swarm packet integrated; `SYT-010F` Sticky Player implementation lane is ready after planning PR review/merge
+- Dispatch readiness: swarm packet integrated; `SYT-010F` Sticky Player implementation lane is ready for Senior Runner dispatch
 
 ## Goal
 
@@ -19,7 +19,7 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 
 ## Current Focus
 
-1. Review/merge the `SYT-010F` planning PR, then route Sticky Player hardening while issue #10 remains open.
+1. Spawn the `SYT-010F` Senior Runner for Sticky Player hardening while issue #10 remains open.
 2. Keep #10 hardening in small PRs with `validate:all` as the final gate.
 3. Keep #8 as a future high-risk research lane until tests and product direction justify it.
 4. Keep release-candidate work separate from routine fixture/source hardening.
@@ -54,7 +54,7 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 
 ## Recommended First Milestone
 
-`SYT-010E` is integrated via PR #24 at `fae4e5d`, and issue #10 remains open. The next useful milestone is `SYT-010F`: Sticky Player visibility/resize helper hardening plus deterministic dock/restore fixture coverage where feasible.
+`SYT-010F` planning is integrated via PR #26 at `66d756f`, and issue #10 remains open. The next useful milestone is the `SYT-010F` implementation lane: Sticky Player visibility/resize helper hardening plus deterministic dock/restore fixture coverage where feasible.
 
 ## Verification Defaults
 
@@ -79,11 +79,11 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 
 - Controller heartbeat: active.
 - Heartbeat automation id: `simple-yt-tweaks-controller-heartbeat`.
-- Heartbeat cadence: slow back toward about 90 minutes after the `SYT-010E` integration-record docs follow-up lands.
+- Heartbeat cadence: slow back toward about 90 minutes after the `SYT-010F` integration-record docs follow-up lands.
 - Execution strategy: paced controller with direct subagents only after lane readiness.
 - Batch dispatch policy: disabled by default via max 1 active subagent; require disjoint parallel-safe labels if capacity is raised.
 - Shared docs lock: controller owns task-board, current-state, controller-directives, and agent-registry during parallel work unless assigned.
-- Active subagents: none expected after the `SYT-010F` planning PR is reviewed/merged.
+- Active subagents: none.
 - Agent registry: `docs/swarm/agent-registry.md`.
 - Bootstrap log: `docs/swarm/bootstrap-log.md`.
 - GitHub workflow: `docs/swarm/github.md`.
@@ -91,4 +91,4 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 ## Last Updated
 
 - Date: 2026-06-10
-- By: Planner, `SYT-010F`
+- By: Faraday, `SYT-010F` Integrator
