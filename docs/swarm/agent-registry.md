@@ -21,7 +21,9 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Agent / Thread | Task ID | Role | Status | Branch | Worktree | PR | Started | Last Seen | Expected Next Step | Heartbeat |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `019eb492-7de4-7e50-8df0-fc9e66b1f2c8` / Avicenna | `SYT-010H` | Planner | Running | `swarm/syt-010h-polish-plan` expected | agent workspace | TBD | 2026-06-11 02:35 UTC | Produce lane map, update `docs/swarm/handoffs/SYT-010H.md`, run `git diff --check`, open draft PR if docs changed | none |
+| `019eb49a-c484-7b40-9f6f-662172dd8c22` / Nietzsche | `SYT-010H-A` | Runner | Running | `swarm/syt-010h-settings-popup` | agent workspace | TBD | 2026-06-11 02:55 UTC | Add settings/popup/defaults/persistence coverage, run focused checks, open draft PR | none |
+| `019eb49b-58af-79f1-aca5-38fba53c14da` / Wegener | `SYT-010H-B` | Runner/Auditor | Running | `swarm/syt-010h-selector-runtime-audit` | agent workspace | TBD | 2026-06-11 02:55 UTC | Produce selector/runtime churn audit with no production source edits, run checks, open draft PR if changed | none |
+| `019eb49b-ef01-7923-8c57-f4faedee2108` / Leibniz | `SYT-010H-C` | Docs Runner | Running | `swarm/syt-010h-docs-compaction` | agent workspace | TBD | 2026-06-11 02:55 UTC | Compact hot swarm docs without source/test edits, run `git diff --check`, open draft PR | none |
 
 ## Paused / Stale Agents
 
@@ -33,7 +35,9 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Path / Area | Task ID | Owner | Branch / Worktree | Reason | Release Condition |
 | --- | --- | --- | --- | --- | --- |
-| none | none | none | none | none | none |
+| `tests/e2e/extension.fixture.spec.ts`, `tests/unit/settings.unit.spec.ts`, optional `src/shared/settings.ts`, `src/content/settings.ts`, `src/popup/popup.ts` | `SYT-010H-A` | Nietzsche | `swarm/syt-010h-settings-popup` | Settings/popup coverage lane | PR reviewed/integrated or lane closed |
+| `docs/swarm/handoffs/SYT-010H-B.md`, optional isolated unit helper tests only | `SYT-010H-B` | Wegener | `swarm/syt-010h-selector-runtime-audit` | Selector/runtime churn audit lane; no production source edits | PR reviewed/integrated or lane closed |
+| `docs/swarm/context-map.md`, `docs/swarm/current-state.md`, `docs/swarm/task-board.md`, selected completed handoff stubs/archive docs | `SYT-010H-C` | Leibniz | `swarm/syt-010h-docs-compaction` | Hot docs/context compaction lane | PR reviewed/integrated or lane closed |
 
 ## Recently Completed
 
@@ -71,6 +75,7 @@ Use this file to track who is working, where they are working, and whether the c
 | `019eb3ac-ad99-7b90-8a44-09fd13f141bc` / Anscombe | `SYT-036` | Reviewer | Ready for Human QA | 2026-06-10 18:44 EDT | No findings; `git diff --check origin/main...origin/swarm/syt-036-home-hover-stuck-lifecycle`, `npm run test:e2e`, and `npm run test:e2e:live` passed. Superseded by post-review #38 live-stream Theater/chat overlay patch. |
 | `019eb401-965a-7551-84e5-e5212c4eb10d` / Bernoulli | `SYT-036` / `SYT-038` | Reviewer | Ready for Human QA, superseded | 2026-06-10 20:13 EDT | No findings; targeted live-chat/native-hover checks and full fixture suite passed. Superseded by screenshot QA patch that removed the extension-created duplicate close button. |
 | `019eb455-9972-7030-9acc-b0f041d55f9b` / Sagan | `SYT-036` / `SYT-038` | Reviewer | Shutdown before result | 2026-06-10 21:43 EDT | Closed by controller because user reported a new non-overlay live-chat black-panel regression before review completed; route fresh review after the follow-up patch. |
+| `019eb492-7de4-7e50-8df0-fc9e66b1f2c8` / Avicenna | `SYT-010H` | Planner | Opened draft PR #43, merged | 2026-06-11 02:52 UTC | Produced SYT-010H lane map; PR #43 squash-merged at `7ce7872`; closed by controller. |
 
 ## Pending Launch
 
