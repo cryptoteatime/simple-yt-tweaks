@@ -8,17 +8,17 @@ This file is the repo-local dynamic control plane for the controller chat and an
 - Heartbeat mode: `active-pulse`
 - Heartbeat automation id: `simple-yt-tweaks-controller-heartbeat`
 - Main controller chat: Simple YT Tweaks controller in Codex workspace
-- Last reviewed by controller: 2026-06-11 00:32 EDT
+- Last reviewed by controller: 2026-06-11 00:45 EDT
 
 ## Current Source Of Truth
 
 - Default branch: `main`
 - Current branch: `main`
 - Expected Git state: clean `main` synced with `origin/main`
-- Open PR expectation: PR #20 remains paused draft for #8 research; no active #10 PR after #54 merge
+- Open PR expectation: PR #20 remains paused draft for #8 research; no active #10 PR after #55 merge
 - Active agents expectation: none
 - Controller lease expectation: none between bounded heartbeat passes
-- Current priority lane: `SYT-RC-001`, release-candidate checklist / #10 completion decision
+- Current priority lane: `SYT-RC-001`, human release-candidate QA gate / #10 completion decision
 
 ## Controller Lease And Pacing
 
@@ -106,7 +106,7 @@ Heartbeat overlap rule:
 
 | Priority | Task ID | Action | Owner | Branch / Worktree | Stop Condition |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `SYT-RC-001` | Integrate the release-candidate checklist and record the #10 completion decision. Do not bump version, tag, release, close #10, or update Web Store assets. | Controller / Planner | `swarm/syt-rc-001-checklist` | Checklist PR merged or human QA gate recorded |
+| 1 | `SYT-RC-001` | Request or await human RC QA using the integrated checklist. Do not bump version, tag, release, close #10, or update Web Store assets. | Controller / Planner | `main` | Human QA pass/fail received |
 | 2 | `SYT-008A` | Keep research gate paused until the user wants enhanced hover research again | Planner | `swarm/syt-008a-hover-research` | Decision to defer, prototype, or require human QA |
 
 ## Dynamic Notes
@@ -144,3 +144,4 @@ Heartbeat overlap rule:
 - 2026-06-11: `SYT-010H` A/B/C/D/E are integrated through PR #50. `npm run validate:all` passed before #48 and #50 merges. Next safe source lane is serial `SYT-010H-F`; keep #8 paused.
 - 2026-06-11: `SYT-010H-F` integrated through PR #54 after focused checks and `npm run validate:all`. Next safe action is `SYT-RC-001` checklist / #10 completion decision; no release action is approved yet.
 - 2026-06-11: Controller prepared `SYT-RC-001` checklist branch. #10 remains open until checklist integration and RC pass/fail decision.
+- 2026-06-11: PR #55 merged the `SYT-RC-001` checklist at `82188cf`. `npm run validate:all` passed on clean `main`. Next safe action is human RC QA; do not close #10 or release until the checklist gate is passed.
