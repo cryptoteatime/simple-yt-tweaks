@@ -9,11 +9,11 @@
 
 ## Current Focus
 
-1. Finish the first `SYT-010H` supervised burst:
-   - A: settings/popup/defaults/persistence coverage.
-   - B: selector/runtime churn audit.
-   - C: swarm docs/context compaction.
-2. Keep runtime implementation serial until B reports. Do not mix `SYT-010H-D/E/F` with the active A/B/C batch.
+1. Reconcile the completed first `SYT-010H` supervised burst:
+   - A: settings/popup/defaults/persistence coverage, PR #45 merged at `ce09953`.
+   - B: selector/runtime churn audit, PR #46 merged at `ddac456`.
+   - C: swarm docs/context compaction, PR #47.
+2. Launch at most one serial `SYT-010H-D` runtime apply-loop/polling hardening target from the B audit.
 3. Keep #8 enhanced Home/Search hover grow research paused unless the user explicitly reopens it.
 4. Keep release-candidate/version/tag/Web Store work out of the hardening lanes.
 
@@ -24,7 +24,9 @@
 - PRs #40/#41/#42 repaired SYT-010H context, burst capacity, and planner registry state.
 - PR #43 merged the `SYT-010H` lane map at `7ce7872`.
 - PR #44 registered the A/B/C batch at `2f991ef`.
-- PRs #45 and #46 are open for A and B; C is this docs compaction branch.
+- PR #45 merged settings/popup coverage.
+- PR #46 merged the selector/runtime churn audit.
+- PR #47 is this docs compaction branch.
 - Issue #10 remains open for final-leg hardening; #8 remains a future gated research lane.
 
 ## Constraints And Risks
@@ -52,4 +54,4 @@
 ## Last Updated
 
 - Date: 2026-06-11
-- By: Docs Runner for `SYT-010H-C`
+- By: Controller/Docs Runner for `SYT-010H-C`

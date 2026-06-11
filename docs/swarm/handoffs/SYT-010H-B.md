@@ -5,10 +5,10 @@
 - Task ID: `SYT-010H-B`
 - Title: Selector Accuracy And Runtime Churn Audit
 - Assigned role: Runner/Auditor
-- Current state: Needs Review
+- Current state: Integrated
 - Repo: `/Users/d4ngl/Git Repos/Codex/simple-yt-tweaks`
 - Branch: `swarm/syt-010h-selector-runtime-audit`
-- PR: https://github.com/cryptoteatime/simple-yt-tweaks/pull/46
+- PR: https://github.com/cryptoteatime/simple-yt-tweaks/pull/46, merged at `ddac456`
 - GitHub issue: #10
 - Verification tier: focused docs-only
 
@@ -133,4 +133,4 @@ No helper tests were added, so `npm run test:unit`, `npm run typecheck`, and `np
 
 ## Next Recommended Role And Action
 
-Reviewer: validate that this audit is source-backed and complete enough to route `SYT-010H-D` and `SYT-010H-E`. If accepted, ask the controller to launch one serial runtime lane focused on event-first polling/downstream gate reductions, plus a separate selector-fixture lane before any selector rewrites.
+Controller: use this integrated audit to launch one serial runtime lane focused on event-first polling/downstream gate reductions, plus a separate selector-fixture lane before any selector rewrites if needed.

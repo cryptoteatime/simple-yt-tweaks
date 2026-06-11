@@ -5,14 +5,14 @@ Use this file as the fast entrypoint after `SWARM.md` and `docs/swarm/controller
 ## Current Hot State
 
 - Active lane family: `SYT-010H`, final-leg polish/code-hardening under issue #10.
-- Current routing: planning PR #43 merged at `7ce7872`; batch registration PR #44 merged at `2f991ef`; first supervised burst is A/B/C only.
-- Active batch:
-  - `SYT-010H-A`: settings/popup/defaults/persistence coverage on `swarm/syt-010h-settings-popup`, PR #45 open.
-  - `SYT-010H-B`: selector/runtime churn audit on `swarm/syt-010h-selector-runtime-audit`, PR #46 open.
-  - `SYT-010H-C`: docs/context compaction on `swarm/syt-010h-docs-compaction`.
-- Hold lanes: `SYT-010H-D/E/F` stay serial until A/B/C report and the controller reconciles docs.
+- Current routing: planning PR #43, batch registration PR #44, settings/popup coverage PR #45, and selector/runtime audit PR #46 are merged; docs compaction PR #47 is this state repair.
+- Completed first burst:
+  - `SYT-010H-A`: settings/popup/defaults/persistence test coverage, PR #45, merge `ce09953`.
+  - `SYT-010H-B`: selector/runtime churn audit, PR #46, merge `ddac456`.
+  - `SYT-010H-C`: docs/context compaction, PR #47.
+- Next serial lane: choose one `SYT-010H-D` runtime apply-loop/polling hardening target from the B audit. Keep implementation serial.
 - GitHub issues: #10 open; #36/#38/#31 closed; #8 paused.
-- Recent merged swarm docs PRs: #39 integration record, #40 context repair, #41 burst capacity, #42 planner registration, #43 SYT-010H lane plan, #44 batch registration.
+- Recent merged swarm docs PRs: #39 integration record, #40 context repair, #41 burst capacity, #42 planner registration, #43 SYT-010H lane plan, #44 batch registration, #45 settings tests, #46 selector/runtime audit.
 - Do not route next: #8 enhanced Home/Search hover grow research unless the user explicitly reopens that gate.
 
 ## Hot Files
@@ -40,8 +40,10 @@ Completed lanes are intentionally compacted to stubs. Use PRs and `docs/swarm/ar
 - `SYT-031` -> PR #32, merge `8e881c9`, closes #31
 - `SYT-010G` -> PR #34, merge `99156b5`, refs #10
 - `SYT-036` / `SYT-038` -> PR #37, merge `342854f`, closes #36/#38
-- `SYT-036`/`SYT-010H` docs repairs -> PRs #39/#40/#41/#42/#43/#44, through merge `2f991ef`
+- `SYT-036`/`SYT-010H` docs repairs -> PRs #39/#40/#41/#42/#43/#44/#47, through this compaction lane
+- `SYT-010H-A` -> PR #45, merge `ce09953`, refs #10
+- `SYT-010H-B` -> PR #46, merge `ddac456`, refs #10
 
 ## Next Safe Controller Action
 
-Wait for or reconcile the active `SYT-010H-A/B/C` batch. After all three report, update the registry/task board, review their PRs serially, then select at most one serial runtime lane from B's audit recommendations.
+Launch one serial `SYT-010H-D` runtime apply-loop/polling hardening lane, scoped from the B audit. Do not launch multiple runtime lanes in parallel.

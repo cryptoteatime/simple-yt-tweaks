@@ -30,14 +30,15 @@ GitHub PR bodies, reviews, and issue comments remain the preferred public histor
 | `SYT-036` / `SYT-038` | PR #37 / issues #36/#38 | `342854f`, Home hover lifecycle and live Theater/chat fixes integrated | `docs/swarm/handoffs/SYT-036.md` |
 | `SYT-036` integration record | PR #39 | `969c3b7`, post-integration state recorded | `docs/swarm/context-map.md`, `docs/swarm/task-board.md` |
 | `SYT-010H` setup | PRs #40/#41/#42/#43/#44 / issue #10 | context repair, burst capacity, planner registration, lane map, and batch registration integrated through `2f991ef` | `docs/swarm/handoffs/SYT-010H.md` |
+| `SYT-010H-A` | PR #45 / issue #10 | `ce09953`, settings/popup coverage integrated | `docs/swarm/handoffs/SYT-010H.md` |
+| `SYT-010H-B` | PR #46 / issue #10 | `ddac456`, selector/runtime churn audit integrated | `docs/swarm/handoffs/SYT-010H-B.md` |
+| `SYT-010H-C` | PR #47 / issue #10 | docs/context compaction integrated | `docs/swarm/context-map.md` |
 
 ## Active / Deferred Work
 
 | Task | Status | Reference |
 | --- | --- | --- |
-| `SYT-010H-A` | Active settings/popup lane | `docs/swarm/handoffs/SYT-010H.md` |
-| `SYT-010H-B` | Active selector/runtime audit lane | `docs/swarm/handoffs/SYT-010H.md` |
-| `SYT-010H-C` | Active docs compaction lane | `docs/swarm/handoffs/SYT-010H.md` |
-| `SYT-010H-D/E/F` | Hold until A/B/C reconciliation | `docs/swarm/handoffs/SYT-010H.md` |
+| `SYT-010H-D` | Ready serial runtime apply-loop/polling lane | `docs/swarm/handoffs/SYT-010H.md`, `docs/swarm/handoffs/SYT-010H-B.md` |
+| `SYT-010H-E/F` | Hold until D or selector-fixture decision | `docs/swarm/handoffs/SYT-010H.md` |
 | `SYT-008A` | Paused future research | `docs/swarm/handoffs/SYT-008A.md` |
 | `SYT-RC-001` | Backlog release candidate checklist | `docs/swarm/task-board.md` |

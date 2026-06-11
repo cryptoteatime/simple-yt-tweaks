@@ -19,13 +19,11 @@ Use this file to track who is working, where they are working, and whether the c
 
 ## Active Agents
 
-Active rows preserve the registered A/B/C batch from PR #44. If a row is stale, the controller should reconcile it against branch/PR state before removing it.
+No active agents after the first `SYT-010H` A/B/C burst is reconciled.
 
 | Agent / Thread | Task ID | Role | Status | Branch | Worktree | PR | Started | Last Seen | Expected Next Step | Heartbeat |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `019eb49a-c484-7b40-9f6f-662172dd8c22` / Nietzsche | `SYT-010H-A` | Runner | Needs Review | `swarm/syt-010h-settings-popup` | agent workspace | #45 | 2026-06-11 02:55 UTC | 2026-06-11 | Controller should route review for PR #45 after active batch reconciliation | none |
-| `019eb49b-58af-79f1-aca5-38fba53c14da` / Wegener | `SYT-010H-B` | Runner/Auditor | Needs Review | `swarm/syt-010h-selector-runtime-audit` | agent workspace | #46 | 2026-06-11 02:55 UTC | 2026-06-11 | Controller should route review for PR #46 after active batch reconciliation | none |
-| `019eb49b-ef01-7923-8c57-f4faedee2108` / Leibniz | `SYT-010H-C` | Docs Runner | Running | `swarm/syt-010h-docs-compaction` | agent workspace | TBD | 2026-06-11 02:55 UTC | 2026-06-11 | Compact hot swarm docs without source/test edits, run `git diff --check`, open draft PR | none |
+| none | none | none | none | none | none | none | none | none | none | none |
 
 ## Paused / Stale Agents
 
@@ -37,9 +35,7 @@ Active rows preserve the registered A/B/C batch from PR #44. If a row is stale, 
 
 | Path / Area | Task ID | Owner | Branch / Worktree | Reason | Release Condition |
 | --- | --- | --- | --- | --- | --- |
-| `tests/e2e/extension.fixture.spec.ts`, `tests/unit/settings.unit.spec.ts`, optional `src/shared/settings.ts`, `src/content/settings.ts`, `src/popup/popup.ts` | `SYT-010H-A` | Nietzsche | `swarm/syt-010h-settings-popup` | Settings/popup coverage lane | PR reviewed/integrated or lane closed |
-| `docs/swarm/handoffs/SYT-010H-B.md`, optional isolated unit helper tests only | `SYT-010H-B` | Wegener | `swarm/syt-010h-selector-runtime-audit` | Selector/runtime churn audit lane; no production source edits | PR reviewed/integrated or lane closed |
-| `docs/swarm/context-map.md`, `docs/swarm/current-state.md`, `docs/swarm/task-board.md`, `docs/swarm/agent-registry.md`, selected completed handoff stubs/archive docs | `SYT-010H-C` | Leibniz | `swarm/syt-010h-docs-compaction` | Hot docs/context compaction lane | PR reviewed/integrated or lane closed |
+| none | none | none | none | none | none |
 
 ## Recently Completed
 
@@ -60,6 +56,9 @@ Completed agent history is compacted here. Use `docs/swarm/archive/README.md`, t
 | `SYT-036` / #37 | Home hover lifecycle and #38 live Theater/chat fixes integrated |
 | `SYT-010H` setup / #39/#40/#41/#42/#43 | integration record, context repair, burst capacity, planner registration, and lane plan integrated |
 | `SYT-010H` batch registration / #44 | active A/B/C batch registered; preserve active rows until controller reconciliation |
+| `SYT-010H-A` / #45 | settings/popup coverage integrated |
+| `SYT-010H-B` / #46 | selector/runtime churn audit integrated |
+| `SYT-010H-C` / #47 | docs/context compaction integrated |
 
 ## Pending Launch
 

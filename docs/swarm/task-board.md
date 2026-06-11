@@ -11,22 +11,22 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 - Project brief: Ready
 - Material questions: Deferred, not blocking
 - Current milestone plan: `SYT-010H` lane map integrated in PR #43; A/B/C batch registered in PR #44.
-- Implementation dispatch: first burst A/B/C is active or being reconciled; D/E/F are hold/serial lanes.
+- Implementation dispatch: first burst A/B/C is integrated or being finalized by this docs PR; next source lane is serial `SYT-010H-D`.
 
 ## Active Tasks
 
 | Task ID | Title | Role | Status | Branch | Scope | Parallel | Depends On | Conflict Risk | Handoff | PR |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `SYT-010H-A` | Settings, popup defaults, and persistence | Runner | Needs Review | `swarm/syt-010h-settings-popup` | settings/popup/defaults tests; source only for small test-proven fixes | parallel-safe with B/C while test-only | `SYT-010H` plan | medium | `docs/swarm/handoffs/SYT-010H.md` | #45 open |
-| `SYT-010H-B` | Selector accuracy and runtime churn audit | Senior/Planner | Needs Review | `swarm/syt-010h-selector-runtime-audit` | docs/audit or isolated helper-test work; no production runtime edits in parallel batch | parallel-safe as audit-only | `SYT-010H` plan | low for audit, high for implementation | `docs/swarm/handoffs/SYT-010H.md` | #46 open |
-| `SYT-010H-C` | Swarm docs and context compaction | Docs Runner | In Progress | `swarm/syt-010h-docs-compaction` | compact hot swarm docs and completed handoff stubs | parallel-safe | `SYT-010H` plan | low/medium docs state | `docs/swarm/handoffs/SYT-010H.md` | TBD |
+| `SYT-010H-A` | Settings, popup defaults, and persistence | Integrator | Integrated | `swarm/syt-010h-settings-popup` | settings/popup/defaults tests | parallel-safe with B/C while test-only | `SYT-010H` plan | medium | `docs/swarm/handoffs/SYT-010H.md` | #45 merged |
+| `SYT-010H-B` | Selector accuracy and runtime churn audit | Integrator | Integrated | `swarm/syt-010h-selector-runtime-audit` | docs/audit; no production runtime edits | parallel-safe as audit-only | `SYT-010H` plan | low for audit, high for implementation | `docs/swarm/handoffs/SYT-010H-B.md` | #46 merged |
+| `SYT-010H-C` | Swarm docs and context compaction | Docs Runner | Ready to Integrate | `swarm/syt-010h-docs-compaction` | compact hot swarm docs and completed handoff stubs | parallel-safe | `SYT-010H` plan | low/medium docs state | `docs/swarm/handoffs/SYT-010H.md` | #47 |
 | `SYT-008A` | Enhanced Home/Search hover research gate | Planner | Paused | `swarm/syt-008a-hover-research` | #8 research, fixtures/prototype only | serial-required | user/product gate | high | `docs/swarm/handoffs/SYT-008A.md` | none |
 
 ## Hold / Future Tasks
 
 | Task ID | Title | Status | Release Condition |
 | --- | --- | --- | --- |
-| `SYT-010H-D` | Runtime apply-loop and polling hardening | Hold | Start only after B reports; serial runtime source lane. |
+| `SYT-010H-D` | Runtime apply-loop and polling hardening | Ready | Start one serial source lane from B audit; include focused fixtures and Brave PWA QA if watch-to-Home behavior changes. |
 | `SYT-010H-E` | Selector helper and fixture gap hardening | Hold | Start only after B identifies targets and A is not touching overlapping tests. |
 | `SYT-010H-F` | Theater/grid/sidebar organization cleanup | Proposed | Serial-only after coverage/audit lanes, one module per PR. |
 | `SYT-RC-001` | Next release-candidate checklist | Backlog | After #10 hardening. Human QA required before release. |
@@ -50,13 +50,14 @@ Completed lanes are stubs in `docs/swarm/handoffs/` and indexed in `docs/swarm/a
 | `SYT-010G` | PR #34 merged at `99156b5` |
 | `SYT-036` / `SYT-038` | PR #37 merged at `342854f`; issues #36/#38 closed |
 | `SYT-010H` planning/docs setup | PRs #39/#40/#41/#42/#43/#44 merged through `2f991ef` |
+| `SYT-010H-A` | PR #45 merged at `ce09953` |
+| `SYT-010H-B` | PR #46 merged at `ddac456` |
 
 ## Review / Integration Queues
 
 | Queue | Task ID | Branch | Next Action |
 | --- | --- | --- | --- |
-| Ready For Review | `SYT-010H-A` | `swarm/syt-010h-settings-popup` | Review PR #45 after C opens/finishes if controller wants serial review. |
-| Ready For Review | `SYT-010H-B` | `swarm/syt-010h-selector-runtime-audit` | Review PR #46 after C opens/finishes if controller wants serial review. |
+| Ready For Review | none | none | none |
 | Ready To Integrate | none | none | none |
 | Blocked | none | none | none |
 
@@ -69,7 +70,7 @@ Completed lanes are stubs in `docs/swarm/handoffs/` and indexed in `docs/swarm/a
 
 ## Controller Notes
 
-- Capacity is up to 3 only for the active `SYT-010H-A/B/C` burst with separate branches/worktrees and disjoint path locks.
+- Capacity returns to serial for runtime implementation after the A/B/C burst.
 - Runtime source changes, review, integration, merge conflicts, and release-candidate work stay serial.
-- Current controller phase: reconcile A/B/C outputs, then choose at most one serial implementation lane from B's audit.
+- Current controller phase: integrate C if clean, then launch one serial `SYT-010H-D` implementation lane from B's audit.
 - Do not route #8 unless the user explicitly reopens that gate.
