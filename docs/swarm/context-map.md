@@ -50,6 +50,6 @@ Launch `SYT-010H`:
 
 - Do not bump version, tag, or release.
 - Start with a planner/audit branch such as `swarm/syt-010h-polish-plan`.
-- Produce a small list of runner-sized cleanup tasks before source refactors.
+- Produce a small list of runner-sized cleanup tasks before source refactors, including which tasks are safe for up to 3-way parallel dispatch.
 - Focus on settings walkthrough, selector accuracy, runtime polling/churn reduction, fixture gaps, redundancy, and docs compaction.
 - Do not restart #8 enhanced hover research.

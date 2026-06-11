@@ -34,6 +34,7 @@ Polish the post-v0.3.0 codebase without broad churn: reduce redundant logic, rem
   - shared settings helpers as needed
 - Add or adjust fixture/unit tests for behavior that is currently protected only by live/manual QA.
 - Compact hot handoffs/docs after PR #37 integration so future controller passes start fast.
+- Produce a parallel-safe lane map before implementation dispatch. Up to 3 subagents are allowed only when their path scopes are disjoint and at least one lane is audit/docs/test-only.
 
 ## Non-Scope
 
@@ -45,10 +46,23 @@ Polish the post-v0.3.0 codebase without broad churn: reduce redundant logic, rem
 
 ## Parallelization
 
-- `parallel-safe`: no for the initial planner/audit pass
-- `serial-required`: yes
+- `parallel-safe`: no for the initial planner/audit pass; yes only for planner-approved disjoint follow-up lanes
+- `serial-required`: yes for planning, shared runtime implementation, review, and integration
 - `depends-on`: PR #37 integrated
 - `conflict-risk`: medium/high, because this touches shared content-script behavior and settings flow
+
+## Burst Capacity Rules
+
+- Maximum active subagents: 3, only after this lane has a concrete sublane map.
+- Good parallel lanes:
+  - Settings/popup audit and fixture coverage.
+  - DOM selector/polling audit with no source edits.
+  - Docs/context compaction.
+  - Isolated helper/unit-test cleanup.
+- Keep serial:
+  - Any edit touching `src/content/theater.ts`, `grid-hover.ts`, `sticky-player.ts`, `fullscreen.ts`, `sidebar.ts`, or shared settings contracts.
+  - Any live YouTube/Brave PWA behavior fix.
+  - Review and integration.
 
 ## Verification Plan
 
@@ -60,4 +74,4 @@ Polish the post-v0.3.0 codebase without broad churn: reduce redundant logic, rem
 
 ## First Recommended Action
 
-After PR #37 is merged, create a planner branch `swarm/syt-010h-polish-plan` that audits code paths and produces a small list of runner-sized cleanup tasks. Prefer one high-value implementation lane at a time over a broad refactor.
+Create a planner branch `swarm/syt-010h-polish-plan` that audits code paths and produces a small list of runner-sized cleanup tasks. Prefer one high-value implementation lane at a time unless the lane map proves 2-3 agents can work without overlapping files or behavior.

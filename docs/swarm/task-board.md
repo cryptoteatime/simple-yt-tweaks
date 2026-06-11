@@ -28,7 +28,7 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 | `SYT-031` | Home native hover autoplay after watch-to-Home SPA | Integrator | Integrated | `swarm/syt-031-home-hover-stationary-spa` | #31 stale/missing Home native preview recovery, fixture/live coverage | serial-required | `SYT-021` | high, live YouTube SPA preview lifecycle | `docs/swarm/handoffs/SYT-031.md` | #32 merged |
 | `SYT-010G` | Fullscreen player UI geometry hardening | Integrator | Integrated | `swarm/syt-010g-fullscreen-ui-geometry` | Extract/test player UI hover reveal geometry | serial-required | `SYT-031` | medium, watch-page player UI behavior | `docs/swarm/handoffs/SYT-010G.md` | #34 merged |
 | `SYT-036` | Home hover stale card lifecycle regression + live Theater chat fix | Integrator | Integrated | `swarm/syt-036-home-hover-stuck-lifecycle` | #36 native Home hover lifecycle cleanup plus #38 live-stream Theater/chat overlay layout, minimize/restore, comments scroll, and non-overlay hide-live-chat fix | serial-required | `SYT-031`, `SYT-010G` | high, live YouTube SPA/player layout behavior | `docs/swarm/handoffs/SYT-036.md` | #37 merged |
-| `SYT-010H` | Final-leg polish and code hardening | Planner | Ready | TBD after PR #37 | Audit settings/UI flows, selector accuracy, runtime polling/churn, fixture gaps, redundant code, and compact docs before release-candidate work | serial-required | `SYT-036` integrated | medium/high, shared content modules and popup/settings behavior | `docs/swarm/handoffs/SYT-010H.md` | none |
+| `SYT-010H` | Final-leg polish and code hardening | Planner | Ready | TBD | Audit settings/UI flows, selector accuracy, runtime polling/churn, fixture gaps, redundant code, and compact docs before release-candidate work; define parallel-safe sublanes before dispatch | serial-required for planning, then planner may split disjoint lanes | `SYT-036` integrated | medium/high, shared content modules and popup/settings behavior | `docs/swarm/handoffs/SYT-010H.md` | none |
 
 ## Backlog
 
@@ -74,7 +74,7 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 - Agent registry: `docs/swarm/agent-registry.md`.
 - Bootstrap log: `docs/swarm/bootstrap-log.md`.
 - GitHub workflow: `docs/swarm/github.md`.
-- Current controller phase: Phase 4 active; launch `SYT-010H` final-leg polish/hardening under #10.
+- Current controller phase: Phase 4 active; launch `SYT-010H` final-leg polish/hardening under #10 with planner-approved capacity up to 3 only for disjoint lanes.
 - 2026-06-10: User reported live watch-to-Home native hover autoplay regression. Controller opened #21 and draft PR #22 for `SYT-021` on `swarm/syt-008b-native-hover-spa-regression`.
 - 2026-06-10: User requested compact context/docs and more frequent automation. Completed historical handoffs were compacted to stubs with `docs/swarm/archive/README.md` reference mapping; `docs/swarm/context-map.md` is now the hot context entrypoint.
 - 2026-06-10: PR #22 squash-merged at `8f90ef1`, closing #21. Remote/local task branch cleanup completed. Route `SYT-010E` next.
@@ -91,3 +91,4 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 - 2026-06-10: User confirmed Home hover autoplay works, then reported live-stream Theater video cut-off/chat overlay collapse and a broken live chat close state. Controller opened #38 and patched PR #37 so live chat overlay no longer reserves full-bleed layout width, `iframe#chatframe` fills the overlay, and the overlay `X` minimizes to a right-edge restore tab. `npm run validate:all` passed; live Brave PWA geometry and minimize/restore verification passed. Follow-up placement refinement moved the close button outside the chat panel and made the minimized tab visibly exposed; focused fixture and full validation passed.
 - 2026-06-11: User confirmed everything currently desired appears to be working and asked for final-leg polish/hardening. Treat PR #37 human QA as passed; route fresh review, integrate if clean, then launch `SYT-010H`.
 - 2026-06-11: PR #37 was marked ready and squash-merged at `342854f` after `npm run validate:all` passed. Issues #36 and #38 are closed. Next lane is `SYT-010H`.
+- 2026-06-11: User approved up to 3 subagents for the final-leg push. `SYT-010H` planner must split explicit non-overlapping lanes before any parallel dispatch.
