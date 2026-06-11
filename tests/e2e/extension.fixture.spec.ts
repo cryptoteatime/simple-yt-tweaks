@@ -425,6 +425,7 @@ test('watch fixture validates mode classes, visible comments, hover grow, and vi
   await expect(page.locator('#comments')).toBeVisible();
   await page.locator('#comments').scrollIntoViewIfNeeded();
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(100);
+  await page.locator('#comments').evaluate((comments) => comments.append(document.createElement('span')));
   await page.waitForTimeout(300);
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(100);
 
@@ -566,6 +567,17 @@ test('watch fixture keeps live chat overlay from squeezing the theater player', 
     chat.setAttribute('collapsed', '');
     chat.setAttribute('hide-chat-frame', '');
     chat.querySelector('iframe#chatframe')?.removeAttribute('src');
+
+    const showHide = document.createElement('div');
+    showHide.id = 'show-hide-button';
+    const showButton = document.createElement('button');
+    showButton.setAttribute('aria-label', 'Show chat');
+    showButton.addEventListener('click', () => {
+      showHide.setAttribute('hidden', '');
+      chat.setAttribute('theater-watch-while', '');
+    });
+    showHide.append(showButton);
+    chat.append(showHide);
   });
   await expect(page.locator('body')).toHaveClass(/simple-yt-tweaks-live-chat-minimized/);
   await expect(page.locator('ytd-live-chat-frame#chat')).toHaveCSS('opacity', '0');
@@ -583,6 +595,8 @@ test('watch fixture keeps live chat overlay from squeezing the theater player', 
   await expect(page.locator('body')).not.toHaveClass(/simple-yt-tweaks-live-chat-minimized/);
   await expect(page.locator('ytd-live-chat-frame#chat')).not.toHaveAttribute('collapsed', '');
   await expect(page.locator('ytd-live-chat-frame#chat')).not.toHaveAttribute('hide-chat-frame', '');
+  await expect(page.locator('ytd-live-chat-frame#chat #show-hide-button')).toHaveAttribute('hidden', '');
+  await expect(page.locator('ytd-live-chat-frame#chat')).toHaveAttribute('theater-watch-while', '');
   await expect(page.locator('iframe#chatframe')).toHaveAttribute(
     'src',
     '/live_chat?v=live-fixture&dark_theme=1&continuation=original-chat',

@@ -266,7 +266,6 @@ function stabilizeUi(): void {
   resetFullscreenGridPeekState();
   updateMastheadTargets();
   updateLiveChatTargets();
-  resetLiveTheaterScrollOffset();
   updateGeneralVisibility();
   clearStaleGuideFocus();
   clearStaleSidebarItemFocus();

@@ -4,6 +4,8 @@ import type { Settings } from './settings';
 import { state } from './state';
 
 const LIVE_CHAT_RESTORE_BUTTON_ID = 'simple-yt-tweaks-live-chat-restore';
+const LIVE_CHAT_IFRAME_CLOSE_BUTTON_ID = 'simple-yt-tweaks-live-chat-frame-close';
+const LIVE_CHAT_IFRAME_STYLE_ID = 'simple-yt-tweaks-live-chat-frame-style';
 const LIVE_CHAT_FRAME_SRC_ATTR = 'data-simple-yt-tweaks-chat-src';
 const LEGACY_LIVE_CHAT_CLOSE_BUTTON_ID = 'simple-yt-tweaks-live-chat-close';
 const liveChatCloseBoundTargets = new WeakSet<EventTarget>();
@@ -368,6 +370,7 @@ export function buildTheaterCss(settings: Settings): string {
       transform: translate(0, -50%) !important;
       background: rgba(15, 15, 15, 0.94) !important;
     }
+
     ` : ''}
 
     ${isTheaterMinimalLayoutActive(settings) ? `
@@ -442,6 +445,7 @@ export function updateViewClasses(): boolean {
     document.body.classList.remove('simple-yt-tweaks-scrollbar-hidden');
     document.body.classList.remove('simple-yt-tweaks-theater-scrollbar-hidden');
     document.body.classList.remove('simple-yt-tweaks-live-chat-minimized');
+    document.body.classList.remove('simple-yt-tweaks-live-chat-native-close-missing');
     state.liveChatOverlayMinimized = false;
     restoreTheaterOnlyTargets();
   }
@@ -499,12 +503,15 @@ export function updateLiveChatTargets(): void {
     state.settings.theaterHideLiveChat;
   const liveChatFrames = queryAll<HTMLElement>('ytd-live-chat-frame');
   const hasLiveChat = shouldUseLiveChat && liveChatFrames.length > 0;
+  let hasNativeLiveChatClose = false;
 
   for (const frame of liveChatFrames) {
     frame.classList.toggle(LIVE_CHAT_CLASS, hasLiveChat);
     bindLiveChatNativeClose(frame);
+    syncLiveChatIframeCloseButton(frame, hasLiveChat && state.settings.theaterShowLiveChatOverlay);
+    hasNativeLiveChatClose ||= hasLiveChat && frameHasNativeLiveChatClose(frame);
     const iframeSrc = frame.querySelector<HTMLIFrameElement>('iframe#chatframe')?.getAttribute('src');
-    if (iframeSrc) {
+    if (iframeSrc && shouldStoreLiveChatFrameSrc(frame, iframeSrc)) {
       frame.setAttribute(LIVE_CHAT_FRAME_SRC_ATTR, iframeSrc);
     }
   }
@@ -522,13 +529,154 @@ export function updateLiveChatTargets(): void {
     'simple-yt-tweaks-live-chat-minimized',
     hasLiveChat && state.settings.theaterShowLiveChatOverlay && state.liveChatOverlayMinimized,
   );
+  document.body.classList.toggle(
+    'simple-yt-tweaks-live-chat-native-close-missing',
+    hasLiveChat && state.settings.theaterShowLiveChatOverlay && !state.liveChatOverlayMinimized && !hasNativeLiveChatClose,
+  );
   syncLiveChatOverlayControls(hasLiveChat && state.settings.theaterShowLiveChatOverlay);
+
+  if (hasLiveChat && state.settings.theaterShowLiveChatOverlay && !state.liveChatOverlayMinimized) {
+    restoreLiveChatOverlayFrames();
+  }
 
   if (!hasLiveChat) {
     for (const frame of queryAll<HTMLElement>(`.${LIVE_CHAT_CLASS}`)) {
+      removeLiveChatIframeCloseButton(frame);
       frame.classList.remove(LIVE_CHAT_CLASS);
     }
   }
+}
+
+function frameHasNativeLiveChatClose(frame: HTMLElement): boolean {
+  const iframe = frame.querySelector<HTMLIFrameElement>('iframe#chatframe');
+  if (!iframe) return false;
+
+  try {
+    const iframeDocument = iframe.contentDocument;
+    return Boolean(
+      iframeDocument &&
+        Array.from(iframeDocument.querySelectorAll('button, [role="button"]')).some((element) =>
+          /\bclose\b/i.test(
+            [
+              element.getAttribute('aria-label'),
+              element.getAttribute('title'),
+              element.textContent,
+            ].join(' '),
+          ),
+        ),
+    );
+  } catch {
+    return false;
+  }
+}
+
+function getLiveChatIframeDocument(frame: HTMLElement): Document | null {
+  const iframe = frame.querySelector<HTMLIFrameElement>('iframe#chatframe');
+  if (!iframe) return null;
+
+  try {
+    return iframe.contentDocument;
+  } catch {
+    return null;
+  }
+}
+
+function syncLiveChatIframeCloseButton(frame: HTMLElement, shouldShowControls: boolean): void {
+  const iframeDocument = getLiveChatIframeDocument(frame);
+  if (!iframeDocument) return;
+
+  const hasNativeClose = frameHasNativeLiveChatClose(frame);
+  if (!shouldShowControls || hasNativeClose || state.liveChatOverlayMinimized) {
+    iframeDocument.getElementById(LIVE_CHAT_IFRAME_CLOSE_BUTTON_ID)?.remove();
+    return;
+  }
+
+  ensureLiveChatIframeStyle(iframeDocument);
+
+  let closeButton = iframeDocument.getElementById(LIVE_CHAT_IFRAME_CLOSE_BUTTON_ID) as HTMLButtonElement | null;
+  if (!closeButton) {
+    closeButton = iframeDocument.createElement('button');
+    closeButton.id = LIVE_CHAT_IFRAME_CLOSE_BUTTON_ID;
+    closeButton.type = 'button';
+    closeButton.textContent = '×';
+    closeButton.setAttribute('aria-label', 'Minimize live chat');
+    closeButton.title = 'Minimize live chat';
+    closeButton.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+      setLiveChatOverlayMinimized(true);
+    });
+  }
+
+  const moreOptionsButton = Array.from(iframeDocument.querySelectorAll<HTMLElement>('button, [role="button"]')).find((element) =>
+    /\bmore\b/i.test(
+      [
+        element.getAttribute('aria-label'),
+        element.getAttribute('title'),
+        element.textContent,
+      ].join(' '),
+    ),
+  );
+  const insertionTarget =
+    moreOptionsButton?.closest('yt-live-chat-button#live-chat-header-context-menu') ??
+    moreOptionsButton?.closest('yt-live-chat-button') ??
+    moreOptionsButton?.closest('button-view-model') ??
+    moreOptionsButton?.closest('yt-button-renderer') ??
+    moreOptionsButton ??
+    iframeDocument.querySelector('yt-live-chat-header-renderer');
+
+  if (insertionTarget?.parentElement) {
+    insertionTarget.parentElement.insertBefore(closeButton, insertionTarget.nextSibling);
+  }
+}
+
+function ensureLiveChatIframeStyle(iframeDocument: Document): void {
+  if (iframeDocument.getElementById(LIVE_CHAT_IFRAME_STYLE_ID)) return;
+
+  const style = iframeDocument.createElement('style');
+  style.id = LIVE_CHAT_IFRAME_STYLE_ID;
+  style.textContent = `
+    #${LIVE_CHAT_IFRAME_CLOSE_BUTTON_ID} {
+      appearance: none !important;
+      width: 40px !important;
+      height: 40px !important;
+      min-width: 40px !important;
+      border: 0 !important;
+      border-radius: 999px !important;
+      padding: 0 !important;
+      margin: 4px 0 0 0 !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      background: transparent !important;
+      color: var(--yt-spec-text-primary, #fff) !important;
+      font: 400 28px/1 Roboto, Arial, sans-serif !important;
+      cursor: pointer !important;
+    }
+
+    #${LIVE_CHAT_IFRAME_CLOSE_BUTTON_ID}:hover,
+    #${LIVE_CHAT_IFRAME_CLOSE_BUTTON_ID}:focus-visible {
+      background: rgba(255, 255, 255, 0.12) !important;
+      outline: none !important;
+    }
+  `;
+  iframeDocument.documentElement.append(style);
+}
+
+function removeLiveChatIframeCloseButton(frame: HTMLElement): void {
+  const iframeDocument = getLiveChatIframeDocument(frame);
+  iframeDocument?.getElementById(LIVE_CHAT_IFRAME_CLOSE_BUTTON_ID)?.remove();
+}
+
+function shouldStoreLiveChatFrameSrc(frame: HTMLElement, nextSrc: string): boolean {
+  const previousSrc = frame.getAttribute(LIVE_CHAT_FRAME_SRC_ATTR);
+  if (!previousSrc) return true;
+
+  const previousParams = previousSrc.includes('?') ? previousSrc.split('?')[1] : '';
+  const nextParams = nextSrc.includes('?') ? nextSrc.split('?')[1] : '';
+
+  return nextParams.length > previousParams.length;
 }
 
 function bindLiveChatNativeClose(frame: HTMLElement): void {
@@ -537,7 +685,13 @@ function bindLiveChatNativeClose(frame: HTMLElement): void {
   const iframe = frame.querySelector<HTMLIFrameElement>('iframe#chatframe');
   if (!iframe) return;
 
+  bindLiveChatNativeCloseTarget(iframe);
+  iframe.addEventListener('load', () => bindLiveChatNativeClose(frame), { once: true });
+
   try {
+    if (iframe.contentWindow) {
+      bindLiveChatNativeCloseTarget(iframe.contentWindow);
+    }
     const iframeDocument = iframe.contentDocument;
     if (iframeDocument) {
       bindLiveChatNativeCloseTarget(iframeDocument);
@@ -600,10 +754,17 @@ function setLiveChatOverlayMinimized(minimized: boolean): void {
 
 function restoreLiveChatOverlayFrames(): void {
   for (const frame of queryAll<HTMLElement>(`ytd-live-chat-frame.${LIVE_CHAT_CLASS}`)) {
+    const iframe = frame.querySelector<HTMLIFrameElement>('iframe#chatframe');
+    const showHideButton = frame.querySelector<HTMLElement>('#show-hide-button');
+    const showChatButton = frame.querySelector<HTMLButtonElement>('#show-hide-button button[aria-label*="Show chat" i]');
+
+    if (showChatButton && showHideButton && !showHideButton.hasAttribute('hidden')) {
+      showChatButton.click();
+    }
+
     frame.removeAttribute('collapsed');
     frame.removeAttribute('hide-chat-frame');
 
-    const iframe = frame.querySelector<HTMLIFrameElement>('iframe#chatframe');
     if (!iframe) continue;
 
     const previousSrc = frame.getAttribute(LIVE_CHAT_FRAME_SRC_ATTR);
