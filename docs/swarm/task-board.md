@@ -10,8 +10,8 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 
 - Project brief: Ready
 - Material questions: Deferred, not blocking
-- Current milestone plan: `SYT-010H` lane map integrated in PR #43; A/B/C batch registered in PR #44.
-- Implementation dispatch: first burst A/B/C is integrated or being finalized by this docs PR; next source lane is serial `SYT-010H-D`.
+- Current milestone plan: `SYT-010H` lane map integrated in PR #43; A/B/C/D are integrated through PR #48.
+- Implementation dispatch: next source lane is serial `SYT-010H-E` selector helper and fixture gap hardening, after controller reconciliation.
 
 ## Active Tasks
 
@@ -19,15 +19,15 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `SYT-010H-A` | Settings, popup defaults, and persistence | Integrator | Integrated | `swarm/syt-010h-settings-popup` | settings/popup/defaults tests | parallel-safe with B/C while test-only | `SYT-010H` plan | medium | `docs/swarm/handoffs/SYT-010H.md` | #45 merged |
 | `SYT-010H-B` | Selector accuracy and runtime churn audit | Integrator | Integrated | `swarm/syt-010h-selector-runtime-audit` | docs/audit; no production runtime edits | parallel-safe as audit-only | `SYT-010H` plan | low for audit, high for implementation | `docs/swarm/handoffs/SYT-010H-B.md` | #46 merged |
-| `SYT-010H-C` | Swarm docs and context compaction | Docs Runner | Ready to Integrate | `swarm/syt-010h-docs-compaction` | compact hot swarm docs and completed handoff stubs | parallel-safe | `SYT-010H` plan | low/medium docs state | `docs/swarm/handoffs/SYT-010H.md` | #47 |
+| `SYT-010H-C` | Swarm docs and context compaction | Integrator | Integrated | `swarm/syt-010h-docs-compaction` | compact hot swarm docs and completed handoff stubs | parallel-safe | `SYT-010H` plan | low/medium docs state | `docs/swarm/handoffs/SYT-010H.md` | #47 merged |
 | `SYT-008A` | Enhanced Home/Search hover research gate | Planner | Paused | `swarm/syt-008a-hover-research` | #8 research, fixtures/prototype only | serial-required | user/product gate | high | `docs/swarm/handoffs/SYT-008A.md` | none |
 
 ## Hold / Future Tasks
 
 | Task ID | Title | Status | Release Condition |
 | --- | --- | --- | --- |
-| `SYT-010H-D` | Runtime apply-loop and polling hardening | Ready | Start one serial source lane from B audit; include focused fixtures and Brave PWA QA if watch-to-Home behavior changes. |
-| `SYT-010H-E` | Selector helper and fixture gap hardening | Hold | Start only after B identifies targets and A is not touching overlapping tests. |
+| `SYT-010H-D` | Runtime apply-loop and polling hardening | Integrated | PR #48; event/apply-loop video binding hardening. |
+| `SYT-010H-E` | Selector helper and fixture gap hardening | Ready | Start after D is integrated and repo is clean; keep serial if touching runtime selectors. |
 | `SYT-010H-F` | Theater/grid/sidebar organization cleanup | Proposed | Serial-only after coverage/audit lanes, one module per PR. |
 | `SYT-RC-001` | Next release-candidate checklist | Backlog | After #10 hardening. Human QA required before release. |
 | `SYT-RC-002` | Release-candidate polish after #10 hardening | Backlog | After `SYT-010H` and follow-up fixes are integrated. |
@@ -52,6 +52,8 @@ Completed lanes are stubs in `docs/swarm/handoffs/` and indexed in `docs/swarm/a
 | `SYT-010H` planning/docs setup | PRs #39/#40/#41/#42/#43/#44 merged through `2f991ef` |
 | `SYT-010H-A` | PR #45 merged at `ce09953` |
 | `SYT-010H-B` | PR #46 merged at `ddac456` |
+| `SYT-010H-C` | PR #47 merged at `b5e3f34` |
+| `SYT-010H-D` | PR #48 merged; runtime video binding hardening |
 
 ## Review / Integration Queues
 
@@ -72,5 +74,5 @@ Completed lanes are stubs in `docs/swarm/handoffs/` and indexed in `docs/swarm/a
 
 - Capacity returns to serial for runtime implementation after the A/B/C burst.
 - Runtime source changes, review, integration, merge conflicts, and release-candidate work stay serial.
-- Current controller phase: integrate C if clean, then launch one serial `SYT-010H-D` implementation lane from B's audit.
+- Current controller phase: reconcile PR #48 integration, then route `SYT-010H-E` if clean.
 - Do not route #8 unless the user explicitly reopens that gate.

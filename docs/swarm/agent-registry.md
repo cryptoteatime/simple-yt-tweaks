@@ -19,7 +19,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 ## Active Agents
 
-No active agents after the first `SYT-010H` A/B/C burst is reconciled.
+No active agents after `SYT-010H-D` integrated via PR #48.
 
 | Agent / Thread | Task ID | Role | Status | Branch | Worktree | PR | Started | Last Seen | Expected Next Step | Heartbeat |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -59,12 +59,13 @@ Completed agent history is compacted here. Use `docs/swarm/archive/README.md`, t
 | `SYT-010H-A` / #45 | settings/popup coverage integrated |
 | `SYT-010H-B` / #46 | selector/runtime churn audit integrated |
 | `SYT-010H-C` / #47 | docs/context compaction integrated |
+| `SYT-010H-D` / #48 | runtime video binding hardening integrated |
 
 ## Pending Launch
 
 | Task ID | Role | Branch / Worktree | Launch Condition | Prompt Location |
 | --- | --- | --- | --- | --- |
-| `SYT-010H-D` | Senior Developer | `swarm/syt-010h-runtime-churn` | Only after B reports and controller selects one serial implementation target | `docs/swarm/handoffs/SYT-010H.md` |
+| none | none | none | none | none |
 
 ## Side Chats
 

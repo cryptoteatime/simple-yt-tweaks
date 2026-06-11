@@ -1,6 +1,6 @@
 import { buildFullscreenCss, buildSharedPlayerUiCss, resetFullscreenGridPeekState, resetFullscreenNavigationState, shouldSuppressFullscreenGridPeekInteraction, updateFullscreenActionDock, updatePlayerUiFocusState, updatePlayerUiHoverState } from './fullscreen';
 import { bindGridHoverHandlers, buildGridHoverCss, syncGridHoverState } from './grid-hover';
-import { bindPlayerSurfaceClickFallback, bindPointerHandlers, bindRuntimeMessages, bindStorageObserver, bindVideoEvents, observeDom, observeNavigation, scheduleModeStabilization, syncWatchObserver, updateViewportHeightVar } from './lifecycle';
+import { bindPlayerSurfaceClickFallback, bindPointerHandlers, bindRuntimeMessages, bindStorageObserver, bindVideoEvents, observeDom, observeNavigation, scheduleModeStabilization, syncVideoEventBinding, syncWatchObserver, updateViewportHeightVar } from './lifecycle';
 import { buildPipCss, ensureMiniPlayerPipButton, syncPipButtons } from './pip';
 import { GENERAL_HIDDEN_CLASS, SELECTORS, STYLE_ID } from './selectors';
 import { loadSettings } from './settings';
@@ -274,6 +274,7 @@ function stabilizeUi(): void {
   ensureMiniPlayerPipButton();
   updateFullscreenActionDock();
   updateStickyPlayerState();
+  syncVideoEventBinding();
   syncGridHoverState(state.settings);
   refreshPlayerLayout();
 }
@@ -327,6 +328,7 @@ function applyFeatureState(): void {
   syncPipButtons();
   updateFullscreenActionDock();
   updateStickyPlayerState();
+  syncVideoEventBinding();
   syncGridHoverState(state.settings);
 
   if (
