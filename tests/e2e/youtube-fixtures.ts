@@ -192,6 +192,17 @@ function videoRenderer(id: string, title: string, badges = ''): string {
   `;
 }
 
+function searchLockup(id: string, title: string, href: string): string {
+  return `
+    <yt-lockup-view-model data-testid="${id}">
+      <a class="ytLockupViewModelContentImage" href="${href}">
+        <yt-thumbnail-view-model></yt-thumbnail-view-model>
+      </a>
+      <a class="ytLockupMetadataViewModelTitle" href="${href}">${title}</a>
+    </yt-lockup-view-model>
+  `;
+}
+
 function searchFixture(): string {
   return pageShell(
     'YouTube Fixture Search',
@@ -234,6 +245,10 @@ function searchFixture(): string {
                       <ytd-radio-renderer data-testid="radio-result">
                         <a href="/watch?v=radio&start_radio=1">Radio result</a>
                       </ytd-radio-renderer>
+                      ${searchLockup('modern-search-video', 'Modern search video', '/watch?v=modern-search-video')}
+                      ${searchLockup('modern-search-shorts', 'Modern Shorts lockup', '/shorts/modern-search-short')}
+                      ${searchLockup('modern-search-radio', 'Modern radio lockup', '/watch?v=modern-radio&list=RDfixture')}
+                      ${searchLockup('modern-search-playlist', 'Modern playlist lockup', '/playlist?list=PLmodern')}
                       <ytd-shelf-renderer data-testid="generic-shelf">
                         <a href="/watch?v=shelf">Generic shelf</a>
                       </ytd-shelf-renderer>
