@@ -63,6 +63,39 @@ Bring Simple YT Tweaks from RC-passed to nearly Web Store-ready without changing
 - Existing accepted behavior remains native YouTube Home/Search hover only.
 - The watch-to-Home watcher is allowed to remain if the audit confirms it is still the narrowest fix for Brave PWA / YouTube SPA behavior.
 
+## Audit Results
+
+### `SYT-WS-001A` Store/Listings
+
+- Assets present:
+  - `public/icons/icon16.png`, `icon32.png`, `icon48.png`, `icon128.png`.
+  - Five `1280x800` PNG screenshots in `store-assets/screenshots/`.
+  - Small promo tile `440x280` in `store-assets/promo/`.
+  - README banner and three repo feature cards in `store-assets/repo/`.
+  - `PRIVACY.md` exists; README points support to GitHub issues.
+  - Private listing notes exist at `.private/WEBSTORE.md` and remain ignored.
+- Gaps:
+  - Marketing assets are stale and still show older `v0.2.0` popup imagery while package/manifest are `0.3.0`.
+  - Marketing assets do not reflect the refreshed red play/settings icon.
+  - Optional marquee promo `1400x560` is missing.
+  - Current screenshots are partly marketing cards instead of clean full-bleed product screenshots.
+  - Some real YouTube captures are visually noisy; neutral deterministic captures are preferable where possible.
+  - `.private/WEBSTORE.md` needs local refresh for current version, package path, screenshot list, copy, privacy answers, and support URL.
+- Next safe lane: refresh marketing generation and assets first; use a distinct Simple YT Tweaks red play/settings mark rather than copying YouTube branding directly.
+
+### `SYT-WS-001B` Code Polish
+
+- No code/manifest Web Store no-go found.
+- Manifest remains narrow: `storage`, `https://www.youtube.com/*`, popup, and a single YouTube content script.
+- Keep the 250ms watch-to-Home watcher/reload path stable before Web Store submission unless a specific change gets fixture coverage plus Brave PWA live QA.
+- Safe-now candidates:
+  - Keep deleting ignored `.DS_Store` files from the working tree when they appear.
+  - Optional settings cleanup: make `src/content/settings.ts` thinner over `src/shared/settings.ts` only if it stays low-risk with existing parity tests.
+  - Optional tests-only coverage for the one-shot reload guard/sessionStorage behavior.
+- Defer:
+  - Broad splits of `theater.ts`, `grid-hover.ts`, `sidebar.ts`, `sticky-player.ts`, and `fullscreen.ts`.
+  - Selector rewrites without a concrete live regression.
+
 ## Next Recommended Role
 
-Controller should integrate this planning docs branch, reactivate the heartbeat at 30 minutes, then route `SYT-WS-001A` or `SYT-WS-001B` depending on capacity and risk. Keep runtime work serial.
+Controller should route `SYT-WS-001A` implementation next: refresh marketing generation/assets and private Web Store notes. Keep code cleanup conservative; do not touch runtime behavior unless a concrete low-risk test-backed change is selected.

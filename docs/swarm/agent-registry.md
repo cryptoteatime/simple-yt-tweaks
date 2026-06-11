@@ -19,7 +19,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 ## Active Agents
 
-No active agents after `SYT-010H-F` integrated via PR #54.
+No active agents after the `SYT-WS-001A` and `SYT-WS-001B` read-only audits completed.
 
 | Agent / Thread | Task ID | Role | Status | Branch | Worktree | PR | Started | Last Seen | Expected Next Step | Heartbeat |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -63,6 +63,8 @@ Completed agent history is compacted here. Use `docs/swarm/archive/README.md`, t
 | `SYT-010H-E` / #50 | Search modern lockup selector fixture hardening integrated |
 | `SYT-010H-F` / #54 | grid-hover watch recommendation selector organization integrated |
 | `SYT-RC-001` / #55/#56 | release-candidate checklist integrated; human QA passed; #10 closed |
+| `SYT-WS-001A` audit / Tesla | store/listing graphics audit completed; assets stale and next lane should refresh marketing assets/screenshots/listing notes under #60 |
+| `SYT-WS-001B` audit / Feynman | code polish audit completed; no code/manifest no-go; keep watch-to-Home path stable for release; avoid broad module splits before submission |
 
 ## Pending Launch
 
