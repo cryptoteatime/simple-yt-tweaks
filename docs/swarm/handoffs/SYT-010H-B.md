@@ -8,7 +8,7 @@
 - Current state: Needs Review
 - Repo: `/Users/d4ngl/Git Repos/Codex/simple-yt-tweaks`
 - Branch: `swarm/syt-010h-selector-runtime-audit`
-- PR: TBD
+- PR: https://github.com/cryptoteatime/simple-yt-tweaks/pull/46
 - GitHub issue: #10
 - Verification tier: focused docs-only
 
