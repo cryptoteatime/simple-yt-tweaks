@@ -245,6 +245,30 @@ export function buildTheaterCss(settings: Settings): string {
     ` : ''}
 
     ${enhancedTheater && theaterHideLiveChat && !theaterShowLiveChatOverlay ? `
+    body.simple-yt-tweaks-theater.simple-yt-tweaks-has-live-chat #player-full-bleed-container {
+      flex: 0 0 100% !important;
+      width: 100% !important;
+      min-width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    body.simple-yt-tweaks-theater.simple-yt-tweaks-has-live-chat #panels-full-bleed-container {
+      flex: 0 0 0 !important;
+      width: 0 !important;
+      min-width: 0 !important;
+      max-width: 0 !important;
+      overflow: hidden !important;
+    }
+
+    body.simple-yt-tweaks-theater.simple-yt-tweaks-has-live-chat #secondary {
+      width: 0 !important;
+      min-width: 0 !important;
+      max-width: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      overflow: hidden !important;
+    }
+
     body.simple-yt-tweaks-theater.simple-yt-tweaks-has-live-chat ${SELECTORS.liveChat} {
       display: none !important;
     }
