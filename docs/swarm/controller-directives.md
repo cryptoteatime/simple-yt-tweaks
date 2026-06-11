@@ -8,17 +8,17 @@ This file is the repo-local dynamic control plane for the controller chat and an
 - Heartbeat mode: `active-pulse`
 - Heartbeat automation id: `simple-yt-tweaks-controller-heartbeat`
 - Main controller chat: Simple YT Tweaks controller in Codex workspace
-- Last reviewed by controller: 2026-06-11 00:35 EDT
+- Last reviewed by controller: 2026-06-10 23:45 EDT
 
 ## Current Source Of Truth
 
 - Default branch: `main`
 - Current branch: `main`
 - Expected Git state: clean `main` synced with `origin/main`
-- Open PR expectation: PR #37 merged; PR #20 remains paused draft for #8 research
+- Open PR expectation: PR #20 remains paused draft for #8 research; no active #10 PR after #48 merge
 - Active agents expectation: none
 - Controller lease expectation: none between bounded heartbeat passes
-- Current priority lane: `SYT-010H`, final-leg polish/code-hardening under #10
+- Current priority lane: `SYT-010H-E`, selector helper and fixture gap hardening under #10
 
 ## Controller Lease And Pacing
 
@@ -106,7 +106,7 @@ Heartbeat overlap rule:
 
 | Priority | Task ID | Action | Owner | Branch / Worktree | Stop Condition |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `SYT-010H` | Launch final-leg #10 polish/hardening planner: settings walk-through, visual audit matrix, selector/code cleanup, polling/churn reduction, fixture gaps, docs compaction, and a parallel-safe lane map for up to 3 disjoint agents | Controller / Planner | TBD | Handoff created, lane map produced, and first safe runner/reviewer batch selected |
+| 1 | `SYT-010H-E` | Launch a serial selector/helper and fixture gap hardening Runner from the B audit recommendations. Keep scope to one behavior area unless test-only fixtures stay isolated. | Controller / Runner | `swarm/syt-010h-selector-fixtures` | Draft PR opened with focused checks, or handoff records a blocker |
 | 2 | `SYT-008A` | Keep research gate paused until the user wants enhanced hover research again | Planner | `swarm/syt-008a-hover-research` | Decision to defer, prototype, or require human QA |
 
 ## Dynamic Notes
@@ -141,3 +141,4 @@ Heartbeat overlap rule:
 - 2026-06-11: User confirmed the desired #36/#38 behavior appears to be working and asked to proceed into final-leg polish/hardening. PR #37 still requires fresh review before integration; `SYT-010H` should follow only after PR #37 lands.
 - 2026-06-11: PR #37 was marked ready and squash-merged at `342854f` after `npm run validate:all` passed. Issues #36 and #38 are closed; route `SYT-010H` next.
 - 2026-06-11: User approved a supervised final-leg push with up to 3 subagents if useful. Apply that only to planner-approved disjoint `SYT-010H` lanes; do not parallelize overlapping runtime implementation.
+- 2026-06-11: `SYT-010H` A/B/C/D are integrated through PR #48. `npm run validate:all` passed before #48 merge. Next safe source lane is serial `SYT-010H-E`; keep #8 paused.
