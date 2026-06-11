@@ -7,11 +7,16 @@ import {
   normalizeSettings,
   type Settings,
 } from '../../src/content/settings';
-import { DEFAULT_SETTINGS as SHARED_DEFAULT_SETTINGS } from '../../src/shared/settings';
+import {
+  DEFAULT_SETTINGS as SHARED_DEFAULT_SETTINGS,
+  SETTING_KEYS as SHARED_SETTING_KEYS,
+  normalizeSettings as normalizeSharedSettings,
+} from '../../src/shared/settings';
 
 test('content defaults stay aligned with shared settings defaults', () => {
   expect(CONTENT_DEFAULT_SETTINGS).toEqual(SHARED_DEFAULT_SETTINGS);
   expect(SETTING_KEYS).toEqual(Object.keys(CONTENT_DEFAULT_SETTINGS));
+  expect(SETTING_KEYS).toEqual(SHARED_SETTING_KEYS);
 });
 
 test('normalizeSettings accepts valid stored values and falls back for invalid values', () => {
@@ -44,6 +49,51 @@ test('normalizeSettings rejects unsupported feed column counts', () => {
   for (const generalFeedColumns of [2, 3, 4]) {
     expect(normalizeSettings({ generalFeedColumns }).generalFeedColumns).toBe(generalFeedColumns);
   }
+});
+
+test('content and shared normalizeSettings stay behaviorally identical', () => {
+  const cases = [
+    {},
+    {
+      generalFeedColumns: 2,
+      generalHideShorts: false,
+      generalSidebarCleanup: false,
+      generalHideSidebarShorts: false,
+      defaultHideMetadata: false,
+    },
+    {
+      generalFeedColumns: '4',
+      enhancedTheaterMode: 'true',
+      theaterShowHeaderOnHover: 1,
+      theaterHideLiveChat: false,
+      theaterShowLiveChatOverlay: true,
+    },
+    {
+      generalFeedColumns: 4,
+      pipButton: false,
+      floatingMiniPlayer: true,
+      fullscreenHideActionOverlay: false,
+    },
+  ];
+
+  for (const storedSettings of cases) {
+    expect(normalizeSettings(storedSettings)).toEqual(normalizeSharedSettings(storedSettings));
+  }
+});
+
+test('normalizeSettings persists floatingMiniPlayer as a compatibility alias of pipButton', () => {
+  expect(normalizeSettings({ pipButton: false, floatingMiniPlayer: true })).toMatchObject({
+    pipButton: false,
+    floatingMiniPlayer: false,
+  });
+  expect(normalizeSettings({ pipButton: true, floatingMiniPlayer: false })).toMatchObject({
+    pipButton: true,
+    floatingMiniPlayer: true,
+  });
+  expect(normalizeSettings({ floatingMiniPlayer: false })).toMatchObject({
+    pipButton: CONTENT_DEFAULT_SETTINGS.pipButton,
+    floatingMiniPlayer: CONTENT_DEFAULT_SETTINGS.pipButton,
+  });
 });
 
 test('isFeatureEnabled preserves the PiP-controlled floating mini player compatibility alias', () => {

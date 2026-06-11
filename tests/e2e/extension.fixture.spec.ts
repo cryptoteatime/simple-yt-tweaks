@@ -45,6 +45,23 @@ async function writeExtensionSettings(
   await page.close();
 }
 
+async function readExtensionSettings(page: Page): Promise<Record<string, unknown>> {
+  return page.evaluate(
+    () =>
+      new Promise<Record<string, unknown>>((resolve, reject) => {
+        chrome.storage.sync.get(null, (items) => {
+          const error = chrome.runtime.lastError;
+          if (error) {
+            reject(new Error(error.message));
+            return;
+          }
+
+          resolve(items);
+        });
+      }),
+  );
+}
+
 async function setupPlaybackProbe(page: Page): Promise<void> {
   await page.locator('#movie_player video.html5-main-video').evaluate(async (video) => {
     window.__simpleYtTweaksPlaybackEvents = [];
@@ -785,10 +802,18 @@ test('popup fixture renders settings, nested controls, version, and storage pers
   await expect(page.locator('#generalApplyFeedColumnsToSearch')).toBeChecked();
 
   await page.locator('#pipButton').uncheck();
+  await expect.poll(() => readExtensionSettings(page)).toMatchObject({
+    pipButton: false,
+    floatingMiniPlayer: false,
+  });
   await page.reload();
   await expect(page.locator('#pipButton')).not.toBeChecked();
   await page.locator('#resetBtn').click();
   await expect(page.locator('#pipButton')).toBeChecked();
+  await expect.poll(() => readExtensionSettings(page)).toMatchObject({
+    pipButton: true,
+    floatingMiniPlayer: true,
+  });
 
   await page.locator('#settingsTabs button', { hasText: 'Modes' }).click();
   await page.locator('#viewModes button', { hasText: 'Default' }).click();
@@ -799,6 +824,114 @@ test('popup fixture renders settings, nested controls, version, and storage pers
   await expect(page.locator('#theaterHideRecommendations')).toBeChecked();
   await expect(page.locator('#theaterRecommendedHoverGrow')).toBeChecked();
   await expect(page.locator('#theaterRecommendedHoverGrow')).toBeEnabled();
+  expect(extensionErrors(errors)).toEqual([]);
+});
+
+test('popup fixture resets only the active settings pane', async ({ context, extensionId }) => {
+  await writeExtensionSettings(context, extensionId, {
+    generalFeedColumns: 4,
+    generalApplyFeedColumnsToSearch: false,
+    generalStickyPlayer: false,
+    pipButton: false,
+    floatingMiniPlayer: false,
+    generalSidebarCleanup: false,
+    generalHideSidebar: true,
+    defaultHideComments: true,
+  });
+
+  const page = await context.newPage();
+  const errors = collectPageErrors(page);
+  await page.goto(`chrome-extension://${extensionId}/popup/popup.html`);
+
+  await expect(page.locator('#settingsTabs button', { hasText: 'General' })).toHaveAttribute('aria-selected', 'true');
+  await expect(page.locator('#generalFeedColumns')).toHaveValue('4');
+  await expect(page.locator('#generalStickyPlayer')).not.toBeChecked();
+  await page.locator('#resetBtn').click();
+
+  await expect(page.locator('#generalFeedColumns')).toHaveValue('3');
+  await expect(page.locator('#generalStickyPlayer')).toBeChecked();
+  await expect.poll(() => readExtensionSettings(page)).toMatchObject({
+    generalFeedColumns: 3,
+    generalApplyFeedColumnsToSearch: true,
+    generalStickyPlayer: true,
+    pipButton: true,
+    floatingMiniPlayer: true,
+    generalSidebarCleanup: false,
+    generalHideSidebar: true,
+    defaultHideComments: true,
+  });
+
+  await page.locator('#settingsTabs button', { hasText: 'Modes' }).click();
+  await page.locator('#viewModes button', { hasText: 'Default' }).click();
+  await expect(page.locator('#defaultHideComments')).toBeChecked();
+  await page.locator('#resetBtn').click();
+  await expect(page.locator('#defaultHideComments')).not.toBeChecked();
+  await expect.poll(() => readExtensionSettings(page)).toMatchObject({
+    generalSidebarCleanup: false,
+    generalHideSidebar: true,
+    defaultHideComments: false,
+  });
+  expect(extensionErrors(errors)).toEqual([]);
+});
+
+test('popup fixture keeps nested child disabled state aligned with parent settings', async ({ context, extensionId }) => {
+  await writeExtensionSettings(context, extensionId, {
+    enhancedTheaterMode: true,
+    theaterHideHeader: false,
+    theaterShowHeaderOnHover: true,
+    theaterHideRecommendations: false,
+    theaterRecommendedHoverGrow: true,
+    defaultHideMetadata: false,
+    defaultShowPrimaryMetadata: true,
+    defaultHideRecommendations: false,
+    defaultRecommendedHoverGrow: true,
+  });
+
+  const page = await context.newPage();
+  const errors = collectPageErrors(page);
+  await page.goto(`chrome-extension://${extensionId}/popup/popup.html`);
+
+  await page.locator('#settingsTabs button', { hasText: 'Modes' }).click();
+  await expect(page.locator('#theaterHideHeader')).not.toBeChecked();
+  await expect(page.locator('#theaterShowHeaderOnHover')).toBeChecked();
+  await expect(page.locator('#theaterShowHeaderOnHover')).toBeDisabled();
+  await expect(page.locator('#theaterHideRecommendations')).not.toBeChecked();
+  await expect(page.locator('#theaterRecommendedHoverGrow')).toBeChecked();
+  await expect(page.locator('#theaterRecommendedHoverGrow')).toBeEnabled();
+
+  await page.locator('#viewModes button', { hasText: 'Default' }).click();
+  await expect(page.locator('#defaultHideMetadata')).not.toBeChecked();
+  await expect(page.locator('#defaultShowPrimaryMetadata')).toBeChecked();
+  await expect(page.locator('#defaultShowPrimaryMetadata')).toBeDisabled();
+  await expect(page.locator('#defaultHideRecommendations')).not.toBeChecked();
+  await expect(page.locator('#defaultRecommendedHoverGrow')).toBeChecked();
+  await expect(page.locator('#defaultRecommendedHoverGrow')).toBeEnabled();
+  expect(extensionErrors(errors)).toEqual([]);
+});
+
+test('popup fixture turns on sidebar Shorts cleanup when Hide Shorts is enabled', async ({ context, extensionId }) => {
+  await writeExtensionSettings(context, extensionId, {
+    generalHideShorts: false,
+    generalSidebarCleanup: false,
+    generalHideSidebarShorts: false,
+  });
+
+  const page = await context.newPage();
+  const errors = collectPageErrors(page);
+  await page.goto(`chrome-extension://${extensionId}/popup/popup.html`);
+
+  await expect(page.locator('#generalHideShorts')).not.toBeChecked();
+  await page.locator('#generalHideShorts').check();
+  await expect.poll(() => readExtensionSettings(page)).toMatchObject({
+    generalHideShorts: true,
+    generalSidebarCleanup: true,
+    generalHideSidebarShorts: true,
+  });
+
+  await page.locator('#settingsTabs button', { hasText: 'Sidebar' }).click();
+  await expect(page.locator('#generalSidebarCleanup')).toBeChecked();
+  await expect(page.locator('#generalHideSidebarShorts')).toBeChecked();
+  await expect(page.locator('#generalHideSidebarShorts')).toBeEnabled();
   expect(extensionErrors(errors)).toEqual([]);
 });
 
