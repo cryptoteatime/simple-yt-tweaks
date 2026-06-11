@@ -15,15 +15,15 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Owner | Started | Expected Action | Stop Condition | Stale After | Notes |
 | --- | --- | --- | --- | --- | --- |
-| none | none | none | none | 90 minutes | No active controller lease after `SYT-021` integration. |
+| none | none | none | none | 90 minutes | No active controller lease between bounded passes. |
 
 ## Active Agents
 
+No active agents after the first `SYT-010H` A/B/C burst is reconciled.
+
 | Agent / Thread | Task ID | Role | Status | Branch | Worktree | PR | Started | Last Seen | Expected Next Step | Heartbeat |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `019eb49a-c484-7b40-9f6f-662172dd8c22` / Nietzsche | `SYT-010H-A` | Runner | Running | `swarm/syt-010h-settings-popup` | agent workspace | TBD | 2026-06-11 02:55 UTC | Add settings/popup/defaults/persistence coverage, run focused checks, open draft PR | none |
-| `019eb49b-58af-79f1-aca5-38fba53c14da` / Wegener | `SYT-010H-B` | Runner/Auditor | Running | `swarm/syt-010h-selector-runtime-audit` | agent workspace | TBD | 2026-06-11 02:55 UTC | Produce selector/runtime churn audit with no production source edits, run checks, open draft PR if changed | none |
-| `019eb49b-ef01-7923-8c57-f4faedee2108` / Leibniz | `SYT-010H-C` | Docs Runner | Running | `swarm/syt-010h-docs-compaction` | agent workspace | TBD | 2026-06-11 02:55 UTC | Compact hot swarm docs without source/test edits, run `git diff --check`, open draft PR | none |
+| none | none | none | none | none | none | none | none | none | none | none |
 
 ## Paused / Stale Agents
 
@@ -35,53 +35,36 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Path / Area | Task ID | Owner | Branch / Worktree | Reason | Release Condition |
 | --- | --- | --- | --- | --- | --- |
-| `tests/e2e/extension.fixture.spec.ts`, `tests/unit/settings.unit.spec.ts`, optional `src/shared/settings.ts`, `src/content/settings.ts`, `src/popup/popup.ts` | `SYT-010H-A` | Nietzsche | `swarm/syt-010h-settings-popup` | Settings/popup coverage lane | PR reviewed/integrated or lane closed |
-| `docs/swarm/handoffs/SYT-010H-B.md`, optional isolated unit helper tests only | `SYT-010H-B` | Wegener | `swarm/syt-010h-selector-runtime-audit` | Selector/runtime churn audit lane; no production source edits | PR reviewed/integrated or lane closed |
-| `docs/swarm/context-map.md`, `docs/swarm/current-state.md`, `docs/swarm/task-board.md`, selected completed handoff stubs/archive docs | `SYT-010H-C` | Leibniz | `swarm/syt-010h-docs-compaction` | Hot docs/context compaction lane | PR reviewed/integrated or lane closed |
+| none | none | none | none | none | none |
 
 ## Recently Completed
 
-| Agent / Thread | Task ID | Role | Result | Completed | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `019dd83b-c95c-7ab3-a871-ed8aa6fb941c` / Gauss | `SYT-CTL-001` | Reviewer | Ready to Integrate, no findings | 2026-04-29 03:54 EDT | Read-only PR #11 review passed. |
-| `019dd83e-75af-73d2-81c1-a30a12305198` / Meitner | `SYT-CTL-001` | Integrator | Merged PR #11 | 2026-04-29 03:58 EDT | PR #11 squash-merged into `main` at `676efc8`; branch cleaned. |
-| `019dd841-965d-7cf2-be3b-d79b0f2e0595` / Beauvoir | `SYT-010A` | Runner | Opened draft PR #12 | 2026-04-29 05:37 EDT | `npm run test:e2e`, `npm run validate:all`, and `git diff --check` passed. |
-| `019dd89b-89b0-79f3-bf62-b64b3cb0ae6f` / Mendel | `SYT-010A` | Reviewer | Ready to Integrate, no findings | 2026-04-29 07:12 EDT | Targeted PR #12 review passed; `npm run test:e2e` and `git diff --check origin/main...HEAD` passed. |
-| `019dd8f8-d696-7f82-a403-c1f7b70e2716` / McClintock | `SYT-010A` | Integrator | Merged PR #12 | 2026-04-29 07:25 EDT | PR #12 squash-merged into `main` at `59ec975`; local task branch deleted and remote branch already removed. |
-| `019dd952-fc1f-7692-878b-cc0cbaa13d42` / Linnaeus | `SYT-010B` | Senior Runner | Opened draft PR #14 | 2026-04-29 10:38 EDT | Conservative validation hardening; `npm run validate:all`, `npm run test:e2e`, `npm run lint`, and `npm run typecheck` passed. |
-| `019dd9b0-7e98-7983-88de-9463e804000e` / Hypatia | `SYT-010B` | Reviewer | Ready to Integrate, no findings | 2026-04-29 12:15 EDT | Targeted PR #14 review passed; `npm run validate`, `npm run build`, `npm run test:e2e`, and content-script module checks passed. |
-| `019dda09-c04a-7040-ab08-a641d093f545` / Helmholtz | `SYT-010B` | Integrator | Merged PR #14 | 2026-04-29 12:25 EDT | PR #14 squash-merged into `main` at `5675059`; local `main` synced; remote and local task branch cleanup completed. |
-| `019dda63-8fdc-7531-b649-2a91669070c4` / Ampere | `SYT-010C` | Planner/Runner | Opened draft PR #16 | 2026-04-29 15:30 EDT | Docs-only RC gate; `git diff --check` passed; human QA requested no. |
-| `019ddabc-9d77-7692-81b6-80ff60498621` / Boole | `SYT-010C` | Reviewer | Ready to Integrate, no findings | 2026-04-29 17:06 EDT | Docs/process review passed; `git diff --check origin/main...HEAD` passed; human QA requested no. |
-| `019ddb16-4dcd-7c83-9fce-e664dfdf53a1` / Carson | `SYT-010C` | Integrator | Merged PR #16 | 2026-04-29 17:14 EDT | PR #16 squash-merged into `main` at `0fca6c3`; remote and local task branch cleanup completed; integration-record docs landed through follow-up PR policy. |
-| `019ddb72-af51-7372-8146-43d5ead7148a` / Dirac | `SYT-010D` | Planner/Runner | Opened draft PR #18 | 2026-04-29 20:28 EDT | Added Playwright unit project and helper tests; `npm run test:unit`, `typecheck`, `lint`, and `validate:all` passed. |
-| `019ddbcb-2d65-76c1-982c-54abedb730cc` / Ptolemy | `SYT-010D` | Reviewer | Ready to Integrate, no findings | 2026-04-29 22:03 EDT | PR #18 review passed; `npm run test:unit`, `git diff --check origin/main...HEAD`, `npm run validate:all`, and `git diff --check` passed. |
-| `019ddc21-c7bb-75a2-94f6-e8d84b8f4489` / Planck | `SYT-010D` | Integrator | Merged PR #18 | 2026-04-29 22:07 EDT | PR #18 squash-merged into `main` at `88f0a91`; local branch cleanup completed and stale remote-tracking ref pruned. |
-| `019eb0bd-d604-78a3-a94f-949659401efb` / Godel | `SYT-021` | Reviewer | Needs Fixes | 2026-06-10 04:52 EDT | Review found `git diff --check origin/main...HEAD` failed on EOF blank lines in compact docs; `npm run test:e2e` passed. Controller fixed whitespace on the PR branch; re-review next. |
-| `019eb0c7-e8dc-7352-9531-8f7be5692bdb` / Gibbs | `SYT-021` | Reviewer | Ready to Integrate | 2026-06-10 05:13 EDT | Re-review passed with no findings; `git diff --check origin/main...HEAD` and `npm run test:e2e` passed; human QA optional, not required. |
-| `019eb0d4-9f71-7c52-a08f-2186cff049d5` / Lorentz | `SYT-021` | Integrator | Merged PR #22 | 2026-06-10 05:23 EDT | `npm run validate:all` passed; PR #22 squash-merged into `main` at `8f90ef1`; issue #21 closed; remote/local task branch cleanup completed. |
-| `019eb0f1-9608-74f3-af18-2f13569896b5` / Euler | `SYT-010E` | Senior Runner | Opened draft PR #24 | 2026-06-10 05:52 EDT | Narrow grid-hover selector normalization; `npm run test:unit`, `npm run test:e2e`, and `npm run validate:all` passed; issue #10 commented. |
-| `019eb0fc-5137-71b1-ad83-a22a768775ed` / Hilbert | `SYT-010E` | Reviewer | Ready to Integrate | 2026-06-10 05:55 EDT | No findings; `git diff --check origin/main...HEAD` and `npm run test:unit` passed; human QA not required; PR #24 still draft. |
-| `019eb100-fe46-7bc3-b8a5-9c5f563a73b1` / Ramanujan | `SYT-010E` | Integrator | Merged PR #24 | 2026-06-10 06:13 EDT | `npm run validate:all` passed; PR #24 marked ready and squash-merged into `main` at `fae4e5d`; issue #10 remains open; remote/local task branch cleanup completed. |
-| `019eb10d-7fef-7c52-916f-0245bf25d828` / Dalton | `SYT-010F` | Planner | Needs Review | 2026-06-10 06:40 EDT | Chose Sticky Player hardening, created Runner-ready handoff, and opened draft PR #26 for review; #8 remains paused. |
-| `019eb128-3fca-7111-bbb2-152f11a8747c` / McClintock | `SYT-010F` | Reviewer | Ready to Integrate | 2026-06-10 06:49 EDT | No findings; `git diff --check origin/main...HEAD` passed; human QA not required; PR #26 still draft. |
-| `019eb12d-5860-7852-8447-17dfb4db7cc3` / Faraday | `SYT-010F` | Integrator | Merged PR #26 | 2026-06-10 07:00 EDT | PR #26 marked ready and squash-merged into `main` at `66d756f`; issue #10 remains open; remote/local planning branch cleanup completed. |
-| `019eb145-89d5-7e93-ae8e-46819bfb6ac0` / Harvey | `SYT-010F` | Senior Runner | Needs Review | 2026-06-10 07:47 EDT | Opened draft PR #28; full validation passed; issue #10 commented. |
-| `019eb18b-2df6-74b3-baba-68adfc94427a` / Newton | `SYT-010F` | Reviewer | Ready to Integrate | 2026-06-10 08:56 EDT | Final PR #28 review passed with no findings; unit/e2e/typecheck/lint and diff checks passed. |
-| `019eb1a5-f3e6-7520-86aa-956ea3bd2de6` / Hume | `SYT-010F` | Integrator | Merged PR #28 | 2026-06-10 09:02 EDT | `npm run validate:all` passed; PR #28 squash-merged at `fa07c18`; docs follow-up PR #29 merged at `6580065`; issue #10 remains open. |
-| `019eb293-9f5e-7ca2-ada8-6bad5f84c002` / Russell | `SYT-010G` | Reviewer | Ready to Integrate | 2026-06-10 13:30 EDT | No findings; `git diff --check origin/main...origin/swarm/syt-010g-fullscreen-ui-geometry` and `npm run test:unit` passed; human QA not required. |
-| Codex / main controller | `SYT-010G` | Integrator | Merged PR #34 | 2026-06-10 13:33 EDT | `npm run validate:all` passed; PR #34 squash-merged at `99156b5`; issue #10 remains open. |
-| `019eb2b0-254b-7230-9b53-3f98d55020f6` / Bacon | `SYT-036` | Reviewer | Ready for Human QA | 2026-06-10 14:04 EDT | No findings; `git diff --check`, targeted Home hover regression, and full fixture suite passed. Keep human QA gate before merge due live YouTube hover behavior. |
-| `019eb3ac-ad99-7b90-8a44-09fd13f141bc` / Anscombe | `SYT-036` | Reviewer | Ready for Human QA | 2026-06-10 18:44 EDT | No findings; `git diff --check origin/main...origin/swarm/syt-036-home-hover-stuck-lifecycle`, `npm run test:e2e`, and `npm run test:e2e:live` passed. Superseded by post-review #38 live-stream Theater/chat overlay patch. |
-| `019eb401-965a-7551-84e5-e5212c4eb10d` / Bernoulli | `SYT-036` / `SYT-038` | Reviewer | Ready for Human QA, superseded | 2026-06-10 20:13 EDT | No findings; targeted live-chat/native-hover checks and full fixture suite passed. Superseded by screenshot QA patch that removed the extension-created duplicate close button. |
-| `019eb455-9972-7030-9acc-b0f041d55f9b` / Sagan | `SYT-036` / `SYT-038` | Reviewer | Shutdown before result | 2026-06-10 21:43 EDT | Closed by controller because user reported a new non-overlay live-chat black-panel regression before review completed; route fresh review after the follow-up patch. |
-| `019eb492-7de4-7e50-8df0-fc9e66b1f2c8` / Avicenna | `SYT-010H` | Planner | Opened draft PR #43, merged | 2026-06-11 02:52 UTC | Produced SYT-010H lane map; PR #43 squash-merged at `7ce7872`; closed by controller. |
+Completed agent history is compacted here. Use `docs/swarm/archive/README.md`, task handoff stubs, PRs, and Git history for details.
+
+| Task / PR | Result |
+| --- | --- |
+| `SYT-CTL-001` / #11 | swarm packet integrated |
+| `SYT-010A` / #12 | fixture coverage hardening integrated |
+| `SYT-010B` / #14 | settings parity validation hardening integrated |
+| `SYT-010C` / #16 | release-candidate process docs integrated |
+| `SYT-010D` / #18 | helper unit-test project integrated |
+| `SYT-021` / #22 | native hover SPA regression integrated; issue #21 closed |
+| `SYT-010E` / #24 | grid-hover selector normalization integrated |
+| `SYT-010F` / #26/#28/#29 | Sticky Player planning, implementation, and docs follow-up integrated |
+| `SYT-031` / #32 | Home native hover autoplay regression integrated; issue #31 closed |
+| `SYT-010G` / #34 | fullscreen/player UI geometry hardening integrated |
+| `SYT-036` / #37 | Home hover lifecycle and #38 live Theater/chat fixes integrated |
+| `SYT-010H` setup / #39/#40/#41/#42/#43 | integration record, context repair, burst capacity, planner registration, and lane plan integrated |
+| `SYT-010H` batch registration / #44 | active A/B/C batch registered; preserve active rows until controller reconciliation |
+| `SYT-010H-A` / #45 | settings/popup coverage integrated |
+| `SYT-010H-B` / #46 | selector/runtime churn audit integrated |
+| `SYT-010H-C` / #47 | docs/context compaction integrated |
 
 ## Pending Launch
 
 | Task ID | Role | Branch / Worktree | Launch Condition | Prompt Location |
 | --- | --- | --- | --- | --- |
-| none | none | none | none | none |
+| `SYT-010H-D` | Senior Developer | `swarm/syt-010h-runtime-churn` | Only after B reports and controller selects one serial implementation target | `docs/swarm/handoffs/SYT-010H.md` |
 
 ## Side Chats
 
