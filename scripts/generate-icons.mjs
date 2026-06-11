@@ -67,42 +67,100 @@ function fillCircle(pixels, size, cx, cy, radius, color) {
   }
 }
 
-function drawIcon(size) {
-  const pixels = Buffer.alloc(size * size * 4);
-  const pad = Math.max(1, Math.round(size * 0.12));
-  const radius = Math.max(3, Math.round(size * 0.18));
+function fillPolygon(pixels, size, points, color) {
+  const minX = Math.floor(Math.min(...points.map(([x]) => x)));
+  const maxX = Math.ceil(Math.max(...points.map(([x]) => x)));
+  const minY = Math.floor(Math.min(...points.map(([, y]) => y)));
+  const maxY = Math.ceil(Math.max(...points.map(([, y]) => y)));
 
-  fillRoundedRect(pixels, size, pad, pad, size - pad * 2, size - pad * 2, radius, [17, 18, 22, 255]);
-  fillRoundedRect(
+  for (let py = minY; py <= maxY; py += 1) {
+    for (let px = minX; px <= maxX; px += 1) {
+      let inside = false;
+
+      for (let index = 0, previous = points.length - 1; index < points.length; previous = index, index += 1) {
+        const [ix, iy] = points[index];
+        const [jx, jy] = points[previous];
+        const intersects = iy > py !== jy > py && px < ((jx - ix) * (py - iy)) / (jy - iy) + ix;
+        if (intersects) inside = !inside;
+      }
+
+      if (inside) {
+        blendPixel(pixels, size, px, py, color);
+      }
+    }
+  }
+}
+
+function downsample(pixels, sourceSize, outputSize, scale) {
+  const output = Buffer.alloc(outputSize * outputSize * 4);
+
+  for (let y = 0; y < outputSize; y += 1) {
+    for (let x = 0; x < outputSize; x += 1) {
+      const totals = [0, 0, 0, 0];
+
+      for (let sy = 0; sy < scale; sy += 1) {
+        for (let sx = 0; sx < scale; sx += 1) {
+          const sourceOffset = ((y * scale + sy) * sourceSize + x * scale + sx) * 4;
+          totals[0] += pixels[sourceOffset];
+          totals[1] += pixels[sourceOffset + 1];
+          totals[2] += pixels[sourceOffset + 2];
+          totals[3] += pixels[sourceOffset + 3];
+        }
+      }
+
+      const outputOffset = (y * outputSize + x) * 4;
+      const divisor = scale * scale;
+      output[outputOffset] = Math.round(totals[0] / divisor);
+      output[outputOffset + 1] = Math.round(totals[1] / divisor);
+      output[outputOffset + 2] = Math.round(totals[2] / divisor);
+      output[outputOffset + 3] = Math.round(totals[3] / divisor);
+    }
+  }
+
+  return output;
+}
+
+function drawIcon(size) {
+  const scale = 4;
+  const canvasSize = size * scale;
+  const pixels = Buffer.alloc(canvasSize * canvasSize * 4);
+  const unit = canvasSize / 128;
+
+  const shadowOffset = 4 * unit;
+  fillRoundedRect(pixels, canvasSize, 9 * unit + shadowOffset, 22 * unit + shadowOffset, 110 * unit, 78 * unit, 20 * unit, [0, 0, 0, 46]);
+  fillRoundedRect(pixels, canvasSize, 9 * unit, 22 * unit, 110 * unit, 78 * unit, 20 * unit, [255, 0, 0, 255]);
+  fillRoundedRect(pixels, canvasSize, 12 * unit, 25 * unit, 104 * unit, 72 * unit, 17 * unit, [255, 24, 24, 255]);
+
+  fillPolygon(
     pixels,
-    size,
-    pad + 1,
-    pad + 1,
-    size - pad * 2 - 2,
-    size - pad * 2 - 2,
-    Math.max(2, radius - 1),
-    [29, 32, 40, 255],
+    canvasSize,
+    [
+      [51 * unit, 43 * unit],
+      [51 * unit, 79 * unit],
+      [82 * unit, 61 * unit],
+    ],
+    [255, 255, 255, 255],
   );
 
-  const lineHeight = Math.max(1, Math.round(size * 0.08));
-  const lineLength = size - pad * 4;
-  const startX = pad * 2;
-  const rows = [0.34, 0.5, 0.66].map((value) => Math.round(size * value));
-  const colors = [
-    [69, 214, 181, 255],
-    [255, 107, 107, 255],
-    [242, 244, 248, 230],
-  ];
+  const badgeX = 60 * unit;
+  const badgeY = 67 * unit;
+  const badgeWidth = 57 * unit;
+  const badgeHeight = 45 * unit;
+  fillRoundedRect(pixels, canvasSize, badgeX + 3 * unit, badgeY + 3 * unit, badgeWidth, badgeHeight, 13 * unit, [0, 0, 0, 60]);
+  fillRoundedRect(pixels, canvasSize, badgeX, badgeY, badgeWidth, badgeHeight, 13 * unit, [18, 20, 24, 242]);
 
-  rows.forEach((rowY, index) => {
-    fillRoundedRect(pixels, size, startX, rowY, lineLength, lineHeight, lineHeight, colors[index]);
-  });
+  const trackHeight = Math.max(2 * unit, 3 * unit);
+  const trackRadius = trackHeight / 2;
+  const trackX = badgeX + 11 * unit;
+  const trackWidth = badgeWidth - 22 * unit;
+  const topTrackY = badgeY + 14 * unit;
+  const bottomTrackY = badgeY + 29 * unit;
+  fillRoundedRect(pixels, canvasSize, trackX, topTrackY, trackWidth, trackHeight, trackRadius, [255, 255, 255, 235]);
+  fillRoundedRect(pixels, canvasSize, trackX, bottomTrackY, trackWidth, trackHeight, trackRadius, [255, 255, 255, 235]);
+  fillCircle(pixels, canvasSize, trackX + trackWidth * 0.72, topTrackY + trackHeight / 2, 5.5 * unit, [255, 255, 255, 255]);
+  fillCircle(pixels, canvasSize, trackX + trackWidth * 0.35, bottomTrackY + trackHeight / 2, 5.5 * unit, [255, 255, 255, 255]);
 
-  fillCircle(pixels, size, Math.round(size * 0.66), rows[0] + lineHeight / 2, Math.max(2, size * 0.09), [242, 244, 248, 255]);
-  fillCircle(pixels, size, Math.round(size * 0.42), rows[1] + lineHeight / 2, Math.max(2, size * 0.09), [242, 244, 248, 255]);
-  fillCircle(pixels, size, Math.round(size * 0.76), rows[2] + lineHeight / 2, Math.max(2, size * 0.09), [69, 214, 181, 255]);
-
-  return pixels;
+  return downsample(pixels, canvasSize, size, scale);
 }
 
 function encodePng(size, pixels) {
