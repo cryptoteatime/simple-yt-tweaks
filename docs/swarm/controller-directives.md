@@ -15,7 +15,7 @@ This file is the repo-local dynamic control plane for the controller chat and an
 - Default branch: `main`
 - Current branch: `main`
 - Expected Git state: clean `main` synced with `origin/main`
-- Open PR expectation: PR #20 remains paused draft for #8 research; no active #10 PR after #10 closure
+- Open PR expectation: none after #8/#10 closure
 - Active agents expectation: none
 - Controller lease expectation: none between bounded heartbeat passes
 - Current priority lane: idle after `SYT-RC-001` human QA pass and #10 closure
@@ -31,7 +31,7 @@ This file is the repo-local dynamic control plane for the controller chat and an
 - Heartbeat pass budget: max 4 safe recovery/routing actions, then stop
 - Active capacity: max 3 active subagents total only for `SYT-010H` lanes that the planner marks disjoint and low/medium conflict; keep max 1 for runtime implementation touching the same content modules, review, integration, merge conflicts, live YouTube behavior, or release-candidate work
 - Heartbeat cadence target: paused while idle after `SYT-RC-001`; resume only when new scoped work or release work is requested
-- Next human QA gate: release candidate/release approval or #8 visual/product-direction gate later
+- Next human QA gate: release candidate/release approval or a fresh high-risk visual/product-direction gate later
 
 ## Context Hygiene
 
@@ -107,14 +107,14 @@ Heartbeat overlap rule:
 | Priority | Task ID | Action | Owner | Branch / Worktree | Stop Condition |
 | --- | --- | --- | --- | --- | --- |
 | 1 | `IDLE` | Wait for explicit release/version/tag/Web Store instruction or a new scoped issue. Do not bump version, tag, release, or update Web Store assets on heartbeat alone. | Controller | `main` | User request received |
-| 2 | `SYT-008A` | Keep research gate paused until the user wants enhanced hover research again | Planner | `swarm/syt-008a-hover-research` | Decision to defer, prototype, or require human QA |
+| 2 | none | none | none | none | none |
 
 ## Dynamic Notes
 
 - `npm run validate:all` passed on 2026-04-29 during bootstrap.
 - Chrome-for-Testing-backed `agent-browser` wrapper opened and closed `about:blank` successfully.
 - The live YouTube test exists but should not be the normal gate.
-- Issue #8 is intentionally paused until #10 coverage and hardening reduce regression risk.
+- Issue #8 was closed as not planned after native Home/Search hover passed RC QA.
 - PR #11 merged; PR #12 squash-merged into `main` at `59ec975`.
 - `SYT-010A` remote and local task branches were cleaned after merge.
 - PR #14 squash-merged into `main` at `5675059`; remote and local task branch cleanup completed.
@@ -141,8 +141,9 @@ Heartbeat overlap rule:
 - 2026-06-11: User confirmed the desired #36/#38 behavior appears to be working and asked to proceed into final-leg polish/hardening. PR #37 still requires fresh review before integration; `SYT-010H` should follow only after PR #37 lands.
 - 2026-06-11: PR #37 was marked ready and squash-merged at `342854f` after `npm run validate:all` passed. Issues #36 and #38 are closed; route `SYT-010H` next.
 - 2026-06-11: User approved a supervised final-leg push with up to 3 subagents if useful. Apply that only to planner-approved disjoint `SYT-010H` lanes; do not parallelize overlapping runtime implementation.
-- 2026-06-11: `SYT-010H` A/B/C/D/E are integrated through PR #50. `npm run validate:all` passed before #48 and #50 merges. Next safe source lane is serial `SYT-010H-F`; keep #8 paused.
+- 2026-06-11: `SYT-010H` A/B/C/D/E are integrated through PR #50. `npm run validate:all` passed before #48 and #50 merges. Next safe source lane is serial `SYT-010H-F`; #8 stayed paused at that point and was later closed as not planned.
 - 2026-06-11: `SYT-010H-F` integrated through PR #54 after focused checks and `npm run validate:all`. Next safe action is `SYT-RC-001` checklist / #10 completion decision; no release action is approved yet.
 - 2026-06-11: Controller prepared `SYT-RC-001` checklist branch. #10 remains open until checklist integration and RC pass/fail decision.
 - 2026-06-11: PR #55 merged the `SYT-RC-001` checklist at `82188cf`. `npm run validate:all` passed on clean `main`. Next safe action is human RC QA; do not close #10 or release until the checklist gate is passed.
 - 2026-06-11: User reported `Human QA passed for SYT-RC-001`; issue #10 was closed with a hardening summary. No release/version/tag/Web Store action was performed.
+- 2026-06-11: User indicated issue #8 was effectively handled. PR #20 was closed, issue #8 was closed as not planned, and native YouTube Home/Search hover remains the accepted direction.

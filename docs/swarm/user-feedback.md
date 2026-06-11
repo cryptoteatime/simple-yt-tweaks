@@ -24,10 +24,10 @@ Use this file for durable human steering that should survive across controller t
 
 | Idea | Source | Status | Routed Task |
 | --- | --- | --- | --- |
-| Revisit enhanced home/search grid hover preview | GitHub #8 / prior manual testing | Deferred | `SYT-008A` |
+| Revisit enhanced home/search grid hover preview | GitHub #8 / prior manual testing | Closed as not planned | `SYT-008A` |
 | Strengthen fixture tests before hardening code | User | Planned | `SYT-010A` |
 | Smooth release-candidate validation/package flow | User | Planned | `SYT-010C` |
-| Keep native Home/Search hover only, with no enhanced grow/highlight | User / #8 decision | Active constraint | `SYT-021`, `SYT-008A` deferred |
+| Keep native Home/Search hover only, with no enhanced grow/highlight | User / #8 decision | Active constraint | `SYT-021`, `SYT-008A` closed |
 
 ## Human QA Notes
 

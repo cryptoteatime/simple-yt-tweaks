@@ -52,7 +52,7 @@ The current goal is post-v0.3.0 hardening: make automated verification strong en
 - Default active capacity is 1 total active subagent.
 - Keep shared coordination files controller-owned during parallel work unless a handoff explicitly assigns them: `docs/swarm/task-board.md`, `docs/swarm/current-state.md`, `docs/swarm/controller-directives.md`, and `docs/swarm/agent-registry.md`.
 - Workers normally update only their handoff, scoped source/test files, and PR body.
-- Do not reintroduce enhanced home/search hover implementation under #10; #8 is the separate future enhancement lane.
+- Do not reintroduce enhanced home/search hover implementation under #10; #8 was closed as not planned after native YouTube Home/Search hover passed RC QA.
 - Do not bump version, tag, release, or update Web Store assets unless a release-candidate lane explicitly asks for it.
 
 ## Repo Swarm Files

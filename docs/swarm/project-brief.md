@@ -4,7 +4,7 @@
 
 - Name: Simple YT Tweaks
 - Folder: `/Users/d4ngl/Git Repos/Codex/simple-yt-tweaks`
-- Status: existing repo, active post-v0.3.0 hardening
+- Status: existing repo, post-v0.3.0 hardening complete; release work requires explicit approval
 - Owner / GitHub Org: `cryptoteatime`
 - Primary Controller Chat: Simple YT Tweaks Codex controller
 
@@ -20,7 +20,7 @@ Make Simple YT Tweaks a small, dependable Chrome/Brave extension with enough aut
 ## First Useful Milestone
 
 - Goal: post-v0.3.0 hardening and autonomous controller setup.
-- Success looks like: fixture tests cover current regression-prone behavior, #8/#10 are decomposed into scoped lanes, PRs include controller test instructions, and `npm run validate:all` is the normal gate.
+- Success looks like: fixture tests cover current regression-prone behavior, #8/#10 are closed, PRs include controller test instructions, and `npm run validate:all` is the normal gate.
 - Human QA required before merge: no for routine docs/test/hardening PRs; yes for release-candidate behavior and high-risk live YouTube behavior.
 
 ## Non-Goals And Constraints
@@ -51,7 +51,7 @@ Make Simple YT Tweaks a small, dependable Chrome/Brave extension with enough aut
 - Git status at discovery: clean `main...origin/main`.
 - Remote: `https://github.com/cryptoteatime/simple-yt-tweaks.git`.
 - GitHub repository: `cryptoteatime/simple-yt-tweaks`, public, default branch `main`.
-- Open issues at discovery:
+- Issues at discovery, now closed:
   - #8 `Revisit enhanced home/search grid hover preview`
   - #10 `Post-harness code hardening pass`
 - Browser tooling:
@@ -81,10 +81,10 @@ No blocking material questions for the current setup. Defaults are safe:
 | Milestone | Goal | Human QA Gate | Notes |
 | --- | --- | --- | --- |
 | M0 | Land repo-local swarm packet | No | Docs-only PR, validates with `git diff --check`. |
-| M1 | Test harness coverage audit | No | Ensure fixtures catch #10 hardening risks and guard #8 prerequisites. |
-| M2 | Code hardening slices under #10 | No by default | Start with settings parity/source-of-truth and pure helper tests. |
-| M3 | Release-candidate workflow smoothing | Yes at final RC | Make validation/package/release checklist controller-friendly. |
-| M4 | Future #8 hover research | Yes before implementation merge | Treat as research/prototype because live YouTube preview behavior is high risk. |
+| M1 | Test harness coverage audit | No | Integrated; fixture coverage guards current native hover behavior and hardening risks. |
+| M2 | Code hardening slices under #10 | No by default | Integrated; #10 closed after `SYT-RC-001` passed. |
+| M3 | Release-candidate workflow smoothing | Yes at final RC | Checklist integrated and human QA passed; release still requires explicit approval. |
+| M4 | Future hover research | Yes before implementation merge | Closed as not planned under #8; open a fresh issue for any future prototype. |
 
 ## Candidate Parallel Lanes
 
@@ -94,7 +94,7 @@ No blocking material questions for the current setup. Defaults are safe:
 | `SYT-010A` | Planner/Runner | `tests/e2e/**`, `DEVELOPMENT.md`, handoff | Yes with docs-only lanes if capacity raised | No | `SYT-CTL-001` merged | Medium: fixture contracts | none by default |
 | `SYT-010B` | Senior Runner | `src/shared/settings.ts`, `src/content/settings.ts`, `scripts/validate-extension.mjs`, tests | No while settings contracts change | Yes | `SYT-010A` coverage decision | High: shared settings contracts | none |
 | `SYT-010C` | Planner/Runner | `DEVELOPMENT.md`, `docs/swarm/**`, package scripts if needed | Yes with source-free docs if capacity raised | No | `SYT-CTL-001`; ideally after `SYT-010A` | Low/Medium | none by default |
-| `SYT-008A` | Planner | issue #8 research notes, fixtures/prototype branch only | No with #10 source work | Yes until research gate passes | `SYT-010A`; user/product gate before implementation | High: live YouTube preview lifecycle | none |
+| `SYT-008A` | Planner | closed issue #8 notes only | No | Yes if a fresh hover prototype is opened later | fresh user/product gate | High: live YouTube preview lifecycle | none |
 
 ## Verification Strategy
 
@@ -104,11 +104,11 @@ No blocking material questions for the current setup. Defaults are safe:
 - Full gate: `npm run validate:all`.
 - Optional live smoke: `npm run test:e2e:live` for RC or live-site risk only.
 - Browser QA: Playwright fixtures first; Browser Use or `agent-browser` only for supplemental visual/live inspection.
-- Human milestone QA: release candidates and #8 visual behavior.
+- Human milestone QA: release candidates and any fresh visual hover behavior issue.
 - Runner verification tier: focused task checks.
 - Reviewer verification tier: targeted checks based on changed risk.
 - Integrator verification tier: full `npm run validate:all` before merge for non-docs/checkpoint work.
 
 ## Next Controller Decision
 
-`SYT-010C` is integrated. The next safe controller action is to route or defer `SYT-010D` pure helper tests when capacity is available.
+Post-v0.3.0 hardening is complete, #8/#10 are closed, and `SYT-RC-001` passed. The next safe controller action is to wait for explicit release/version/tag/Web Store instructions or a new scoped issue.
