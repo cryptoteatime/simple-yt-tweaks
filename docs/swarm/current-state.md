@@ -16,7 +16,7 @@
    - D: runtime video binding hardening, PR #48.
    - E: modern Search lockup selector fixture hardening, PR #50.
 2. `SYT-010H-F` integrated one-module `grid-hover.ts` watch-recommendation selector organization cleanup.
-3. Current controller step is `SYT-RC-001`: publish the RC checklist and make #10 completion criteria explicit.
+3. Current controller step is `SYT-RC-001`: request/await human RC QA using the integrated checklist.
 4. Keep #8 enhanced Home/Search hover grow research paused unless the user explicitly reopens it.
 5. Keep version/tag/Web Store release actions out unless explicitly approved.
 
@@ -33,6 +33,8 @@
 - PR #48 hardened runtime video binding from the existing apply loop.
 - PR #50 hardened modern Search lockup fixture coverage.
 - PR #54 organized grid-hover watch recommendation selector construction and added unit assertions.
+- PR #55 integrated the `SYT-RC-001` checklist and #10 completion criteria.
+- `npm run validate:all` passed on clean `main` after PR #55.
 - Issue #10 remains open for final-leg hardening; #8 remains a future gated research lane.
 
 ## Constraints And Risks
@@ -42,7 +44,7 @@
 - Live YouTube smoke can be noisy; fixture-first checks remain the normal gate.
 - Do not reintroduce Home/Search enhanced hover grow, synthetic hover, or forced preview playback.
 - Do not bump version, tag releases, edit Web Store assets, or close #10 from docs/test lanes.
-- #10 should remain open until the RC checklist is integrated and the next controller/user RC pass confirms no new hardening defects.
+- #10 should remain open until the next controller/user RC pass confirms no new hardening defects.
 
 ## Verification Defaults
 
@@ -61,4 +63,4 @@
 ## Last Updated
 
 - Date: 2026-06-11
-- By: Controller heartbeat preparing `SYT-RC-001`
+- By: Controller heartbeat after `SYT-RC-001` checklist integration
