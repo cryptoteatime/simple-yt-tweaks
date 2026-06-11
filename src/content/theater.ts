@@ -3,7 +3,6 @@ import { LIVE_CHAT_CLASS, MASTHEAD_CLASS, SELECTORS, THEATER_PRIMARY_METADATA_CL
 import type { Settings } from './settings';
 import { state } from './state';
 
-const LIVE_CHAT_CLOSE_BUTTON_ID = 'simple-yt-tweaks-live-chat-close';
 const LIVE_CHAT_RESTORE_BUTTON_ID = 'simple-yt-tweaks-live-chat-restore';
 
 export function buildTheaterCss(settings: Settings): string {
@@ -324,7 +323,6 @@ export function buildTheaterCss(settings: Settings): string {
       transform: translateX(calc(100% + 24px)) !important;
     }
 
-    body.simple-yt-tweaks-theater #${LIVE_CHAT_CLOSE_BUTTON_ID},
     body.simple-yt-tweaks-theater #${LIVE_CHAT_RESTORE_BUTTON_ID} {
       appearance: none !important;
       border: 1px solid rgba(255, 255, 255, 0.18) !important;
@@ -336,31 +334,6 @@ export function buildTheaterCss(settings: Settings): string {
       z-index: 2147483645 !important;
       -webkit-user-select: none !important;
       user-select: none !important;
-    }
-
-    body.simple-yt-tweaks-theater #${LIVE_CHAT_CLOSE_BUTTON_ID} {
-      position: fixed !important;
-      top: 152px !important;
-      right: min(calc(min(380px, calc(100vw - 32px)) + 28px), calc(100vw - 48px)) !important;
-      display: none !important;
-      align-items: center !important;
-      justify-content: center !important;
-      width: 40px !important;
-      height: 40px !important;
-      border-radius: 999px !important;
-      font-size: 20px !important;
-      opacity: 0.9 !important;
-      transition: opacity 0.14s ease, background 0.14s ease !important;
-    }
-
-    body.simple-yt-tweaks-theater.simple-yt-tweaks-has-live-chat:not(.simple-yt-tweaks-live-chat-minimized) #${LIVE_CHAT_CLOSE_BUTTON_ID} {
-      display: inline-flex !important;
-    }
-
-    body.simple-yt-tweaks-theater #${LIVE_CHAT_CLOSE_BUTTON_ID}:hover,
-    body.simple-yt-tweaks-theater #${LIVE_CHAT_CLOSE_BUTTON_ID}:focus-visible {
-      opacity: 1 !important;
-      background: rgba(15, 15, 15, 0.94) !important;
     }
 
     body.simple-yt-tweaks-theater #${LIVE_CHAT_RESTORE_BUTTON_ID} {
@@ -501,7 +474,6 @@ export function restoreTheaterOnlyTargets(): void {
     target.classList.remove(LIVE_CHAT_CLASS);
   }
 
-  document.getElementById(LIVE_CHAT_CLOSE_BUTTON_ID)?.remove();
   document.getElementById(LIVE_CHAT_RESTORE_BUTTON_ID)?.remove();
 }
 
@@ -579,25 +551,8 @@ function restoreLiveChatOverlayFrames(): void {
 
 function syncLiveChatOverlayControls(shouldShowControls: boolean): void {
   if (!shouldShowControls) {
-    document.getElementById(LIVE_CHAT_CLOSE_BUTTON_ID)?.remove();
     document.getElementById(LIVE_CHAT_RESTORE_BUTTON_ID)?.remove();
     return;
-  }
-
-  let closeButton = document.getElementById(LIVE_CHAT_CLOSE_BUTTON_ID) as HTMLButtonElement | null;
-  if (!closeButton) {
-    closeButton = document.createElement('button');
-    closeButton.id = LIVE_CHAT_CLOSE_BUTTON_ID;
-    closeButton.type = 'button';
-    closeButton.textContent = '×';
-    closeButton.setAttribute('aria-label', 'Minimize live chat');
-    closeButton.title = 'Minimize live chat';
-    closeButton.addEventListener('click', (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      setLiveChatOverlayMinimized(true);
-    });
-    document.body.append(closeButton);
   }
 
   let restoreButton = document.getElementById(LIVE_CHAT_RESTORE_BUTTON_ID) as HTMLButtonElement | null;
