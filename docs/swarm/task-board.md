@@ -28,7 +28,7 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 | --- | --- | --- | --- |
 | `SYT-010H-D` | Runtime apply-loop and polling hardening | Integrated | PR #48; event/apply-loop video binding hardening. |
 | `SYT-010H-E` | Selector helper and fixture gap hardening | Integrated | PR #50; modern Search lockup fixture coverage. |
-| `SYT-010H-F` | Theater/grid/sidebar organization cleanup | Proposed | Serial-only after coverage/audit lanes, one module per PR. |
+| `SYT-010H-F` | Grid-hover watch recommendation selector organization cleanup | In Progress | Dirac is running on `swarm/syt-010h-content-organization`; one module only. |
 | `SYT-RC-001` | Next release-candidate checklist | Backlog | After #10 hardening. Human QA required before release. |
 | `SYT-RC-002` | Release-candidate polish after #10 hardening | Backlog | After `SYT-010H` and follow-up fixes are integrated. |
 
@@ -75,5 +75,5 @@ Completed lanes are stubs in `docs/swarm/handoffs/` and indexed in `docs/swarm/a
 
 - Capacity returns to serial for runtime implementation after the A/B/C burst.
 - Runtime source changes, review, integration, merge conflicts, and release-candidate work stay serial.
-- Current controller phase: post-`SYT-010H-E` clean state; consider `SYT-010H-F` only as one covered module per PR.
+- Current controller phase: wait for `SYT-010H-F` draft PR or blocker; do not spawn overlapping runtime/organization work.
 - Do not route #8 unless the user explicitly reopens that gate.

@@ -12,7 +12,7 @@ Use this file as the fast entrypoint after `SWARM.md` and `docs/swarm/controller
   - `SYT-010H-C`: docs/context compaction, PR #47, merge `b5e3f34`.
   - `SYT-010H-D`: runtime video binding hardening, PR #48.
   - `SYT-010H-E`: Search modern lockup selector fixture hardening, PR #50.
-- Active serial lane: none after PR #50 integration.
+- Active serial lane: `SYT-010H-F`, assigned to Dirac (`019eb4e0-ebda-7913-9651-dc03c9c18991`) on `swarm/syt-010h-content-organization` in `/Users/d4ngl/Git Repos/Codex/simple-yt-tweaks-syt010h-f`.
 - GitHub issues: #10 open; #36/#38/#31 closed; #8 paused.
 - Recent merged swarm docs/code PRs: #39 integration record, #40 context repair, #41 burst capacity, #42 planner registration, #43 SYT-010H lane plan, #44 batch registration, #45 settings tests, #46 selector/runtime audit, #47 docs compaction, #48 runtime video binding, #50 Search lockup fixtures.
 - Do not route next: #8 enhanced Home/Search hover grow research unless the user explicitly reopens that gate.
@@ -50,4 +50,4 @@ Completed lanes are intentionally compacted to stubs. Use PRs and `docs/swarm/ar
 
 ## Next Safe Controller Action
 
-If continuing #10 hardening, pick one covered `SYT-010H-F` organization target and keep it serial. Do not launch #8 hover research unless the user explicitly reopens that gate.
+Wait for `SYT-010H-F` to report a draft PR or blocker. Do not launch overlapping runtime/organization work and do not launch #8 hover research unless the user explicitly reopens that gate.
