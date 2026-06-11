@@ -38,6 +38,8 @@
 - `npm run validate:all` passed on clean `main` after PR #55.
 - Issues #8 and #10 are closed after `SYT-RC-001` human QA passed and the Home/Search hover direction was accepted as native-only.
 - Issue #60 is open to coordinate final code polish, graphics/listing refresh, package readiness, and exact user handoff before Web Store submission.
+- `SYT-WS-001A` store/listing audit found stale marketing assets and private Web Store notes; asset refresh is the next best lane.
+- `SYT-WS-001B` code audit found no code/manifest no-go; defer broad runtime refactors and keep the watch-to-Home path stable before submission.
 
 ## Constraints And Risks
 
