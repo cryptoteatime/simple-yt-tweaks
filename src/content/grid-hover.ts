@@ -20,62 +20,70 @@ const PREVIEW_CONTAINER_SELECTOR = [
   '.ytp-inline-preview-ui',
   'video',
 ].join(',');
-const SIDEBAR_CARD_SELECTOR = [
-  '#related ytd-compact-video-renderer',
-  'ytd-watch-next-secondary-results-renderer ytd-compact-video-renderer',
-  '#secondary ytd-compact-video-renderer',
-  '#related yt-lockup-view-model',
-  'ytd-watch-next-secondary-results-renderer yt-lockup-view-model',
-  '#secondary yt-lockup-view-model',
-].join(',');
 const SEARCH_GRID_CONTENTS_SELECTOR =
   'ytd-search ytd-two-column-search-results-renderer #primary ytd-section-list-renderer > #contents.ytd-section-list-renderer';
-const HOVER_CARD_SELECTOR = SIDEBAR_CARD_SELECTOR;
-const LEGACY_WATCH_RECOMMENDATION_CARD_SELECTOR = 'ytd-compact-video-renderer';
-const MODERN_WATCH_RECOMMENDATION_CARD_SELECTORS = [
-  '#related yt-lockup-view-model:has(a[href*="/watch"])',
-  'ytd-watch-next-secondary-results-renderer yt-lockup-view-model:has(a[href*="/watch"])',
-  '#secondary yt-lockup-view-model:has(a[href*="/watch"])',
+const WATCH_RECOMMENDATION_SCOPES = [
+  '#related',
+  'ytd-watch-next-secondary-results-renderer',
+  '#secondary',
 ];
+const LEGACY_WATCH_RECOMMENDATION_CARD_SELECTOR = 'ytd-compact-video-renderer';
+const MODERN_WATCH_RECOMMENDATION_CARD_SELECTOR = 'yt-lockup-view-model:has(a[href*="/watch"])';
+const MODERN_WATCH_RECOMMENDATION_BASE_SELECTOR = 'yt-lockup-view-model';
+
+function scopeWatchRecommendationSelector(selector: string): string[] {
+  return WATCH_RECOMMENDATION_SCOPES.map((scope) => `${scope} ${selector}`);
+}
+
+function appendDescendant(selectors: string[], descendant: string): string[] {
+  return selectors.map((selector) => `${selector} ${descendant}`);
+}
+
+const SIDEBAR_CARD_SELECTOR = [
+  ...scopeWatchRecommendationSelector(LEGACY_WATCH_RECOMMENDATION_CARD_SELECTOR),
+  ...scopeWatchRecommendationSelector(MODERN_WATCH_RECOMMENDATION_BASE_SELECTOR),
+].join(',');
+const HOVER_CARD_SELECTOR = SIDEBAR_CARD_SELECTOR;
+const MODERN_WATCH_RECOMMENDATION_CARD_SELECTORS = scopeWatchRecommendationSelector(
+  MODERN_WATCH_RECOMMENDATION_CARD_SELECTOR,
+);
 const WATCH_RECOMMENDATION_CARD_SELECTORS = [
   LEGACY_WATCH_RECOMMENDATION_CARD_SELECTOR,
   ...MODERN_WATCH_RECOMMENDATION_CARD_SELECTORS,
 ];
-function addGridHoverReadyClass(selector: string): string {
+function readyWatchRecommendationSelector(selector: string): string {
   if (selector === LEGACY_WATCH_RECOMMENDATION_CARD_SELECTOR) {
     return `${LEGACY_WATCH_RECOMMENDATION_CARD_SELECTOR}.${GRID_HOVER_READY_CLASS}`;
   }
 
-  return selector.replace('yt-lockup-view-model', `yt-lockup-view-model.${GRID_HOVER_READY_CLASS}`);
+  return selector.replace(
+    MODERN_WATCH_RECOMMENDATION_BASE_SELECTOR,
+    `${MODERN_WATCH_RECOMMENDATION_BASE_SELECTOR}.${GRID_HOVER_READY_CLASS}`,
+  );
 }
 const READY_WATCH_RECOMMENDATION_CARD_SELECTORS =
-  WATCH_RECOMMENDATION_CARD_SELECTORS.map(addGridHoverReadyClass);
+  WATCH_RECOMMENDATION_CARD_SELECTORS.map(readyWatchRecommendationSelector);
 const WATCH_RECOMMENDATION_MEDIA_SELECTORS = [
   `${LEGACY_WATCH_RECOMMENDATION_CARD_SELECTOR} ytd-thumbnail`,
-  ...MODERN_WATCH_RECOMMENDATION_CARD_SELECTORS.map((selector) => `${selector} yt-thumbnail-view-model`),
+  ...appendDescendant(MODERN_WATCH_RECOMMENDATION_CARD_SELECTORS, 'yt-thumbnail-view-model'),
 ];
 const READY_WATCH_RECOMMENDATION_MEDIA_SELECTORS = [
-  `${addGridHoverReadyClass(LEGACY_WATCH_RECOMMENDATION_CARD_SELECTOR)} ytd-thumbnail`,
-  ...MODERN_WATCH_RECOMMENDATION_CARD_SELECTORS.map(
-    (selector) => `${addGridHoverReadyClass(selector)} yt-thumbnail-view-model`,
+  `${readyWatchRecommendationSelector(LEGACY_WATCH_RECOMMENDATION_CARD_SELECTOR)} ytd-thumbnail`,
+  ...appendDescendant(
+    MODERN_WATCH_RECOMMENDATION_CARD_SELECTORS.map(readyWatchRecommendationSelector),
+    'yt-thumbnail-view-model',
   ),
 ];
 const WATCH_RECOMMENDATION_OVERLAY_BUTTON_SELECTORS = [
-  ...MODERN_WATCH_RECOMMENDATION_CARD_SELECTORS.map(
-    (selector) => `${addGridHoverReadyClass(selector)} thumbnail-overlay-button-view-model`,
+  ...appendDescendant(
+    MODERN_WATCH_RECOMMENDATION_CARD_SELECTORS.map(readyWatchRecommendationSelector),
+    'thumbnail-overlay-button-view-model',
   ),
-  `${addGridHoverReadyClass(LEGACY_WATCH_RECOMMENDATION_CARD_SELECTOR)} ytd-thumbnail-overlay-toggle-button-renderer`,
+  `${readyWatchRecommendationSelector(LEGACY_WATCH_RECOMMENDATION_CARD_SELECTOR)} ytd-thumbnail-overlay-toggle-button-renderer`,
 ];
-function appendDescendant(selectors: string[], descendant: string): string[] {
-  return selectors.map((selector) => `${selector} ${descendant}`);
-}
 const HOVER_MEDIA_SELECTOR = [
-  '#related ytd-compact-video-renderer ytd-thumbnail',
-  'ytd-watch-next-secondary-results-renderer ytd-compact-video-renderer ytd-thumbnail',
-  '#secondary ytd-compact-video-renderer ytd-thumbnail',
-  '#related yt-lockup-view-model yt-thumbnail-view-model',
-  'ytd-watch-next-secondary-results-renderer yt-lockup-view-model yt-thumbnail-view-model',
-  '#secondary yt-lockup-view-model yt-thumbnail-view-model',
+  ...scopeWatchRecommendationSelector(`${LEGACY_WATCH_RECOMMENDATION_CARD_SELECTOR} ytd-thumbnail`),
+  ...scopeWatchRecommendationSelector(`${MODERN_WATCH_RECOMMENDATION_BASE_SELECTOR} yt-thumbnail-view-model`),
 ].join(',');
 const NATIVE_FEED_CARD_SELECTORS = [
   'ytd-browse[page-subtype="home"] ytd-rich-item-renderer',

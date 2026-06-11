@@ -15,9 +15,10 @@
    - C: swarm docs/context compaction, PR #47 merged at `b5e3f34`.
    - D: runtime video binding hardening, PR #48.
    - E: modern Search lockup selector fixture hardening, PR #50.
-2. `SYT-010H-F` is active as a one-module `grid-hover.ts` watch-recommendation selector organization cleanup.
-3. Keep #8 enhanced Home/Search hover grow research paused unless the user explicitly reopens it.
-4. Keep release-candidate/version/tag/Web Store work out of the hardening lanes.
+2. `SYT-010H-F` integrated one-module `grid-hover.ts` watch-recommendation selector organization cleanup.
+3. Next controller step is `SYT-RC-001` checklist / #10 completion decision.
+4. Keep #8 enhanced Home/Search hover grow research paused unless the user explicitly reopens it.
+5. Keep version/tag/Web Store release actions out unless explicitly approved.
 
 ## Recent State
 
@@ -31,7 +32,7 @@
 - PR #47 merged docs compaction at `b5e3f34`.
 - PR #48 hardened runtime video binding from the existing apply loop.
 - PR #50 hardened modern Search lockup fixture coverage.
-- `SYT-010H-F` runner Dirac is active in a separate worktree for one-module grid-hover organization cleanup.
+- PR #54 organized grid-hover watch recommendation selector construction and added unit assertions.
 - Issue #10 remains open for final-leg hardening; #8 remains a future gated research lane.
 
 ## Constraints And Risks
@@ -59,4 +60,4 @@
 ## Last Updated
 
 - Date: 2026-06-11
-- By: Controller review/integration for `SYT-010H-E`
+- By: Controller review/integration for `SYT-010H-F`

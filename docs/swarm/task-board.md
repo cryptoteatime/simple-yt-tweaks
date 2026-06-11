@@ -10,8 +10,8 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 
 - Project brief: Ready
 - Material questions: Deferred, not blocking
-- Current milestone plan: `SYT-010H` lane map integrated in PR #43; A/B/C/D/E are integrated through PR #50.
-- Implementation dispatch: `SYT-010H-F` remains proposed; only start if the next pass selects one covered module.
+- Current milestone plan: `SYT-010H` lane map integrated in PR #43; A/B/C/D/E/F are integrated through PR #54.
+- Implementation dispatch: no active hardening runner; next controller step is `SYT-RC-001` checklist / #10 completion decision.
 
 ## Active Tasks
 
@@ -28,7 +28,7 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 | --- | --- | --- | --- |
 | `SYT-010H-D` | Runtime apply-loop and polling hardening | Integrated | PR #48; event/apply-loop video binding hardening. |
 | `SYT-010H-E` | Selector helper and fixture gap hardening | Integrated | PR #50; modern Search lockup fixture coverage. |
-| `SYT-010H-F` | Grid-hover watch recommendation selector organization cleanup | In Progress | Dirac is running on `swarm/syt-010h-content-organization`; one module only. |
+| `SYT-010H-F` | Grid-hover watch recommendation selector organization cleanup | Integrated | PR #54; one-module selector organization and unit coverage. |
 | `SYT-RC-001` | Next release-candidate checklist | Backlog | After #10 hardening. Human QA required before release. |
 | `SYT-RC-002` | Release-candidate polish after #10 hardening | Backlog | After `SYT-010H` and follow-up fixes are integrated. |
 
@@ -55,6 +55,7 @@ Completed lanes are stubs in `docs/swarm/handoffs/` and indexed in `docs/swarm/a
 | `SYT-010H-C` | PR #47 merged at `b5e3f34` |
 | `SYT-010H-D` | PR #48 merged; runtime video binding hardening |
 | `SYT-010H-E` | PR #50 merged; Search modern lockup selector fixture hardening |
+| `SYT-010H-F` | PR #54 merged; grid-hover watch recommendation selector organization |
 
 ## Review / Integration Queues
 
@@ -75,5 +76,5 @@ Completed lanes are stubs in `docs/swarm/handoffs/` and indexed in `docs/swarm/a
 
 - Capacity returns to serial for runtime implementation after the A/B/C burst.
 - Runtime source changes, review, integration, merge conflicts, and release-candidate work stay serial.
-- Current controller phase: wait for `SYT-010H-F` draft PR or blocker; do not spawn overlapping runtime/organization work.
+- Current controller phase: post-`SYT-010H-F` clean state; prepare `SYT-RC-001` checklist or decide whether #10 can close.
 - Do not route #8 unless the user explicitly reopens that gate.

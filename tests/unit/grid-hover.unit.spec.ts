@@ -28,6 +28,31 @@ test('grid hover CSS scopes watch recommendation selectors to enabled modes', ()
   );
 });
 
+test('grid hover CSS keeps legacy and modern watch recommendation scopes aligned', () => {
+  const css = buildGridHoverCss(settings({
+    generalApplyFeedColumnsToSearch: false,
+    defaultRecommendedHoverGrow: true,
+    theaterRecommendedHoverGrow: false,
+  }));
+  const scope = 'body.simple-yt-tweaks-active.simple-yt-tweaks-default-view';
+
+  expect(css).toContain(`${scope} ytd-compact-video-renderer`);
+  expect(css).toContain(`${scope} ytd-compact-video-renderer ytd-thumbnail`);
+  expect(css).toContain(`${scope} ytd-compact-video-renderer.simple-yt-tweaks-grid-hover-ready ytd-thumbnail`);
+
+  for (const container of ['#related', 'ytd-watch-next-secondary-results-renderer', '#secondary']) {
+    expect(css).toContain(
+      `${scope} ${container} yt-lockup-view-model:has(a[href*="/watch"]) yt-thumbnail-view-model`,
+    );
+    expect(css).toContain(
+      `${scope} ${container} yt-lockup-view-model.simple-yt-tweaks-grid-hover-ready:has(a[href*="/watch"]) yt-thumbnail-view-model`,
+    );
+    expect(css).toContain(
+      `${scope} ${container} yt-lockup-view-model.simple-yt-tweaks-grid-hover-ready:has(a[href*="/watch"]) thumbnail-overlay-button-view-model`,
+    );
+  }
+});
+
 test('grid hover CSS omits disabled watch recommendation hover scopes', () => {
   const theaterOnlyCss = buildGridHoverCss(settings({
     generalApplyFeedColumnsToSearch: false,
