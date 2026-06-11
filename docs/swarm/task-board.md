@@ -10,50 +10,55 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 
 - Project brief: Ready
 - Material questions: Deferred, not blocking
-- First milestone plan: Ready
-- Implementation dispatch: `SYT-010H` is ready; `SYT-036` / #38 are integrated and issue #10 remains open.
+- Current milestone plan: `SYT-010H` lane map integrated in PR #43; A/B/C batch registered in PR #44.
+- Implementation dispatch: first burst A/B/C is active or being reconciled; D/E/F are hold/serial lanes.
 
 ## Active Tasks
 
 | Task ID | Title | Role | Status | Branch | Scope | Parallel | Depends On | Conflict Risk | Handoff | PR |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `SYT-010A` | Audit and harden fixture coverage for #10/#8 risk | Integrator | Integrated | `swarm/syt-010a-test-harness-audit` | `tests/e2e/**`, docs as needed | parallel-safe after bootstrap | `SYT-CTL-001` | medium, fixture contracts | `docs/swarm/handoffs/SYT-010A.md` | #12 merged |
-| `SYT-010B` | Settings parity and source-of-truth hardening | Integrator | Integrated | `swarm/syt-010b-settings-hardening` | `src/shared/settings.ts`, `src/content/settings.ts`, validation/tests | serial-required | `SYT-010A` | high, settings contracts | `docs/swarm/handoffs/SYT-010B.md` | #14 merged |
-| `SYT-010C` | Release-candidate process smoothing | Integrator | Integrated | `swarm/syt-010c-rc-process` | `DEVELOPMENT.md`, `docs/swarm/**`, scripts if needed | parallel-safe with source-free work | `SYT-010A` preferred | low/medium, release docs | `docs/swarm/handoffs/SYT-010C.md` | #16 merged |
-| `SYT-010D` | Pure helper tests | Integrator | Integrated | `swarm/syt-010d-helper-tests` | `tests/unit/**`, `playwright.config.ts`, `package.json`, helper modules only if needed | parallel-safe with no other source task | `SYT-010A`, `SYT-010B`, `SYT-010C` | low/medium, test config/helper exports | `docs/swarm/handoffs/SYT-010D.md` | #18 merged |
-| `SYT-008A` | Enhanced home/search hover research gate | Planner | Paused | `swarm/syt-008a-hover-research` | #8 research, fixtures/prototype only | serial-required | `SYT-010A`, user/product gate | high, live YouTube preview lifecycle | `docs/swarm/handoffs/SYT-008A.md` | none |
-| `SYT-021` | Native hover SPA regression and live recommendation drift | Integrator | Integrated | `swarm/syt-008b-native-hover-spa-regression` | #21 native Home/Search preview repair, watch click fallback hardening, modern recommendation selector drift | serial-required | v0.3.0 baseline | high, live YouTube SPA/player behavior | `docs/swarm/handoffs/SYT-021.md` | #22 merged |
-| `SYT-010E` | Code-hardening lane after #21 | Integrator | Integrated | `swarm/syt-010e-code-hardening` | Grid-hover selector normalization with unit coverage | serial-required | `SYT-021` | medium/high, runtime source hardening | `docs/swarm/handoffs/SYT-010E.md` | #24 merged |
-| `SYT-010F` | Sticky Player hardening | Integrator | Integrated | `swarm/syt-010f-sticky-player-hardening` | Sticky Player visibility/resize helpers and deterministic dock/restore fixture coverage | serial-required | `SYT-010F` planning PR #26 merged | medium/high, player DOM docking | `docs/swarm/handoffs/SYT-010F.md` | #28 merged |
-| `SYT-031` | Home native hover autoplay after watch-to-Home SPA | Integrator | Integrated | `swarm/syt-031-home-hover-stationary-spa` | #31 stale/missing Home native preview recovery, fixture/live coverage | serial-required | `SYT-021` | high, live YouTube SPA preview lifecycle | `docs/swarm/handoffs/SYT-031.md` | #32 merged |
-| `SYT-010G` | Fullscreen player UI geometry hardening | Integrator | Integrated | `swarm/syt-010g-fullscreen-ui-geometry` | Extract/test player UI hover reveal geometry | serial-required | `SYT-031` | medium, watch-page player UI behavior | `docs/swarm/handoffs/SYT-010G.md` | #34 merged |
-| `SYT-036` | Home hover stale card lifecycle regression + live Theater chat fix | Integrator | Integrated | `swarm/syt-036-home-hover-stuck-lifecycle` | #36 native Home hover lifecycle cleanup plus #38 live-stream Theater/chat overlay layout, minimize/restore, comments scroll, and non-overlay hide-live-chat fix | serial-required | `SYT-031`, `SYT-010G` | high, live YouTube SPA/player layout behavior | `docs/swarm/handoffs/SYT-036.md` | #37 merged |
-| `SYT-010H` | Final-leg polish and code hardening | Planner | Ready | TBD | Audit settings/UI flows, selector accuracy, runtime polling/churn, fixture gaps, redundant code, and compact docs before release-candidate work; define parallel-safe sublanes before dispatch | serial-required for planning, then planner may split disjoint lanes | `SYT-036` integrated | medium/high, shared content modules and popup/settings behavior | `docs/swarm/handoffs/SYT-010H.md` | none |
+| `SYT-010H-A` | Settings, popup defaults, and persistence | Runner | Needs Review | `swarm/syt-010h-settings-popup` | settings/popup/defaults tests; source only for small test-proven fixes | parallel-safe with B/C while test-only | `SYT-010H` plan | medium | `docs/swarm/handoffs/SYT-010H.md` | #45 open |
+| `SYT-010H-B` | Selector accuracy and runtime churn audit | Senior/Planner | Needs Review | `swarm/syt-010h-selector-runtime-audit` | docs/audit or isolated helper-test work; no production runtime edits in parallel batch | parallel-safe as audit-only | `SYT-010H` plan | low for audit, high for implementation | `docs/swarm/handoffs/SYT-010H.md` | #46 open |
+| `SYT-010H-C` | Swarm docs and context compaction | Docs Runner | In Progress | `swarm/syt-010h-docs-compaction` | compact hot swarm docs and completed handoff stubs | parallel-safe | `SYT-010H` plan | low/medium docs state | `docs/swarm/handoffs/SYT-010H.md` | TBD |
+| `SYT-008A` | Enhanced Home/Search hover research gate | Planner | Paused | `swarm/syt-008a-hover-research` | #8 research, fixtures/prototype only | serial-required | user/product gate | high | `docs/swarm/handoffs/SYT-008A.md` | none |
 
-## Backlog
+## Hold / Future Tasks
 
-| Task ID | Title | Reason | Notes |
+| Task ID | Title | Status | Release Condition |
 | --- | --- | --- | --- |
-| `SYT-RC-001` | Next release-candidate checklist | Make future version bump/package/release flow smoother. | Human QA required before release. |
-| `SYT-RC-002` | Release-candidate polish after #10 hardening | Run only after `SYT-010H` and any follow-up fixes are integrated. | Human QA required before version bump/release. |
+| `SYT-010H-D` | Runtime apply-loop and polling hardening | Hold | Start only after B reports; serial runtime source lane. |
+| `SYT-010H-E` | Selector helper and fixture gap hardening | Hold | Start only after B identifies targets and A is not touching overlapping tests. |
+| `SYT-010H-F` | Theater/grid/sidebar organization cleanup | Proposed | Serial-only after coverage/audit lanes, one module per PR. |
+| `SYT-RC-001` | Next release-candidate checklist | Backlog | After #10 hardening. Human QA required before release. |
+| `SYT-RC-002` | Release-candidate polish after #10 hardening | Backlog | After `SYT-010H` and follow-up fixes are integrated. |
 
-## Blocked
+## Completed / Archived
 
-| Task ID | Blocker | Needed From | Next Check |
+Completed lanes are stubs in `docs/swarm/handoffs/` and indexed in `docs/swarm/archive/README.md`.
+
+| Task ID | Result |
+| --- | --- |
+| `SYT-CTL-001` | PR #11 merged at `676efc8` |
+| `SYT-010A` | PR #12 merged at `59ec975` |
+| `SYT-010B` | PR #14 merged at `5675059` |
+| `SYT-010C` | PR #16 merged at `0fca6c3` |
+| `SYT-010D` | PR #18 merged at `88f0a91` |
+| `SYT-021` | PR #22 merged at `8f90ef1`; issue #21 closed |
+| `SYT-010E` | PR #24 merged at `fae4e5d` |
+| `SYT-010F` | PRs #26/#28/#29 merged through `6580065` |
+| `SYT-031` | PR #32 merged at `8e881c9`; issue #31 closed |
+| `SYT-010G` | PR #34 merged at `99156b5` |
+| `SYT-036` / `SYT-038` | PR #37 merged at `342854f`; issues #36/#38 closed |
+| `SYT-010H` planning/docs setup | PRs #39/#40/#41/#42/#43/#44 merged through `2f991ef` |
+
+## Review / Integration Queues
+
+| Queue | Task ID | Branch | Next Action |
 | --- | --- | --- | --- |
-| none | none | none | none |
-
-## Ready For Review
-
-| Task ID | Branch | Reviewer Focus | Verification Tier | Handoff |
-| --- | --- | --- | --- | --- |
-| none | none | none | none | none |
-
-## Ready To Integrate
-
-| Task ID | Branch | Checks | Cleanup Plan | Handoff |
-| --- | --- | --- | --- | --- |
-| none | none | none | none | none |
+| Ready For Review | `SYT-010H-A` | `swarm/syt-010h-settings-popup` | Review PR #45 after C opens/finishes if controller wants serial review. |
+| Ready For Review | `SYT-010H-B` | `swarm/syt-010h-selector-runtime-audit` | Review PR #46 after C opens/finishes if controller wants serial review. |
+| Ready To Integrate | none | none | none |
+| Blocked | none | none | none |
 
 ## Human QA
 
@@ -61,34 +66,10 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 | --- | --- | --- | --- | --- |
 | `SYT-008A` | none | Not started | Yes before implementing visual hover behavior | `Human QA passed/failed for SYT-008A: <notes>` |
 | `SYT-RC-001` | none | Not started | Yes before release | `Human QA passed/failed for SYT-RC-001: <notes>` |
-| `SYT-036` | #37 | Passed by user on 2026-06-11: Home autoplay, live overlay behavior, comments scroll, and non-overlay hidden live chat are working as desired | Satisfied; fresh review still required before merge | `Human QA passed for SYT-036/#38: behavior working; proceed to review/integration` |
 
 ## Controller Notes
 
-- Active controller-spawned subagents: none after Hume integrated `SYT-010F` implementation PR #28.
-- Active cron bursts: none; cron is a failsafe, not the normal execution path.
-- Parallel worktree root: none yet.
-- Batch dispatch policy: disabled by default because max active subagents is 1.
-- Shared docs lock: controller owns task-board, current-state, controller-directives, and agent-registry during parallel work.
-- Verification tiers: focused runner checks, targeted reviewer checks, full integrator/checkpoint verify.
-- Agent registry: `docs/swarm/agent-registry.md`.
-- Bootstrap log: `docs/swarm/bootstrap-log.md`.
-- GitHub workflow: `docs/swarm/github.md`.
-- Current controller phase: Phase 4 active; launch `SYT-010H` final-leg polish/hardening under #10 with planner-approved capacity up to 3 only for disjoint lanes.
-- 2026-06-10: User reported live watch-to-Home native hover autoplay regression. Controller opened #21 and draft PR #22 for `SYT-021` on `swarm/syt-008b-native-hover-spa-regression`.
-- 2026-06-10: User requested compact context/docs and more frequent automation. Completed historical handoffs were compacted to stubs with `docs/swarm/archive/README.md` reference mapping; `docs/swarm/context-map.md` is now the hot context entrypoint.
-- 2026-06-10: PR #22 squash-merged at `8f90ef1`, closing #21. Remote/local task branch cleanup completed. Route `SYT-010E` next.
-- 2026-06-10: PR #24 squash-merged at `fae4e5d`, leaving #10 open for future hardening lanes. Remote/local task branch cleanup completed. Plan/route `SYT-010F` next if work remains safe and bounded.
-- 2026-06-10: `SYT-010F` planning selected Sticky Player hardening: pure visibility/resize helper coverage plus one deterministic dock/restore fixture if feasible. Keep #8 paused.
-- 2026-06-10: PR #26 squash-merged at `66d756f`, leaving #10 open. Next safe action is Senior Runner on `swarm/syt-010f-sticky-player-hardening`.
-- 2026-06-10: PR #28 squash-merged at `fa07c18`, adding Sticky Player geometry/unit/fixture hardening. PR #29 docs follow-up merged at `6580065`. Issue #10 remains open; #8 remains paused.
-- 2026-06-10: User reported #21 still failed after watch-to-Home SPA navigation. Controller opened #31 and implemented `SYT-031` to recover stale/missing native Home previews without reintroducing #8 hover grow.
-- 2026-06-10: PR #32 squash-merged at `8e881c9`, closing #31. Route `SYT-010G` next only if a narrow #10 hardening target is identified.
-- 2026-06-10: `SYT-010G` selected fullscreen/player UI geometry hardening. Unit/type/diff checks passed; route review next.
-- 2026-06-10: Reviewer Russell marked PR #34 Ready to Integrate with no findings; route Integrator next.
-- 2026-06-10: PR #34 squash-merged at `99156b5`, adding fullscreen/player UI geometry unit hardening. Issue #10 remains open; #8 remains paused.
-- 2026-06-10: User reported Home cards retaining opaque hover backgrounds and hover autoplay failing after refresh -> watch page -> SPA Home navigation. Controller opened #36 and draft PR #37 for `SYT-036`; human QA failed twice. User clarified the failing route is watch -> hover hidden header -> YouTube logo/sidebar Home, not browser Back/profile navigation, and that the app is Brave PWA. Final follow-up patch passed full validation, stricter live smoke, and exact Brave PWA verification.
-- 2026-06-10: User confirmed Home hover autoplay works, then reported live-stream Theater video cut-off/chat overlay collapse and a broken live chat close state. Controller opened #38 and patched PR #37 so live chat overlay no longer reserves full-bleed layout width, `iframe#chatframe` fills the overlay, and the overlay `X` minimizes to a right-edge restore tab. `npm run validate:all` passed; live Brave PWA geometry and minimize/restore verification passed. Follow-up placement refinement moved the close button outside the chat panel and made the minimized tab visibly exposed; focused fixture and full validation passed.
-- 2026-06-11: User confirmed everything currently desired appears to be working and asked for final-leg polish/hardening. Treat PR #37 human QA as passed; route fresh review, integrate if clean, then launch `SYT-010H`.
-- 2026-06-11: PR #37 was marked ready and squash-merged at `342854f` after `npm run validate:all` passed. Issues #36 and #38 are closed. Next lane is `SYT-010H`.
-- 2026-06-11: User approved up to 3 subagents for the final-leg push. `SYT-010H` planner must split explicit non-overlapping lanes before any parallel dispatch.
+- Capacity is up to 3 only for the active `SYT-010H-A/B/C` burst with separate branches/worktrees and disjoint path locks.
+- Runtime source changes, review, integration, merge conflicts, and release-candidate work stay serial.
+- Current controller phase: reconcile A/B/C outputs, then choose at most one serial implementation lane from B's audit.
+- Do not route #8 unless the user explicitly reopens that gate.
