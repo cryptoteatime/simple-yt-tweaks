@@ -5,7 +5,7 @@
 - Task ID: `SYT-010H-E`
 - Title: Selector Helper And Fixture Gap Hardening
 - Assigned role: Senior Developer Runner
-- Current state: Needs Review
+- Current state: Integrated
 - Repo: `/Users/d4ngl/Git Repos/Codex/simple-yt-tweaks`
 - Branch: `swarm/syt-010h-selector-fixtures`
 - PR: https://github.com/cryptoteatime/simple-yt-tweaks/pull/50
@@ -61,6 +61,8 @@ Chosen target: Search modern `yt-lockup-view-model` non-video filtering. The pro
 - Passed: `npm run lint`
 - Passed: `git diff --check`
 - Passed after PR-scope cleanup: `git diff --check main...HEAD`
+- Controller review passed: no findings.
+- Controller integration gate passed: `npm run validate:all`
 
 ## Decisions Made
 
@@ -75,4 +77,4 @@ Chosen target: Search modern `yt-lockup-view-model` non-video filtering. The pro
 
 ## Next Recommended Role And Action
 
-Reviewer: review the fixture additions and PR body, then mark Ready to Integrate if the Search selector coverage is acceptable. Controller/Integrator can run the standard integration gate after review.
+Controller: keep `SYT-010H-F` proposed until the next clean pass. Do not start broad organization cleanup unless it is one module per PR with coverage already in place.
