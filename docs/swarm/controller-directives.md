@@ -13,12 +13,12 @@ This file is the repo-local dynamic control plane for the controller chat and an
 ## Current Source Of Truth
 
 - Default branch: `main`
-- Current branch: `swarm/syt-036-home-hover-stuck-lifecycle`
-- Expected Git state: task branch clean after the combined `SYT-036` / `SYT-038` patch is pushed
-- Open PR expectation: draft PR #37 for #36/#38; PR #20 remains paused draft for #8 research
+- Current branch: `main`
+- Expected Git state: clean `main` synced with `origin/main`
+- Open PR expectation: PR #37 merged; PR #20 remains paused draft for #8 research
 - Active agents expectation: none
 - Controller lease expectation: none between bounded heartbeat passes
-- Current priority lane: `SYT-036` / `SYT-038`, Needs Review after user-confirmed live-stream Theater/chat overlay and non-overlay black-panel fixes on PR #37
+- Current priority lane: `SYT-010H`, final-leg polish/code-hardening under #10
 
 ## Controller Lease And Pacing
 
@@ -31,7 +31,7 @@ This file is the repo-local dynamic control plane for the controller chat and an
 - Heartbeat pass budget: max 2 safe recovery/routing actions, then stop
 - Active capacity: max 1 active subagent total
 - Heartbeat cadence target: slow back toward 90 minutes after the `SYT-010F` hot-state repair lands
-- Next human QA gate: satisfied for PR #37 by user confirmation on 2026-06-11; release-candidate lane or #8 visual/product-direction gate later
+- Next human QA gate: release-candidate lane or #8 visual/product-direction gate later
 
 ## Context Hygiene
 
@@ -103,10 +103,8 @@ Heartbeat overlap rule:
 
 | Priority | Task ID | Action | Owner | Branch / Worktree | Stop Condition |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `SYT-036` / `SYT-038` | Review PR #37 after user-confirmed #38 live-stream Theater/chat overlay and non-overlay hide-live-chat fixes; verify #36 Home native hover behavior was not regressed | Reviewer / Controller | `swarm/syt-036-home-hover-stuck-lifecycle` | Review result recorded |
-| 2 | `SYT-036` / `SYT-038` | Integrate PR #37 if review/checks are clean; close #36/#38 through PR merge or issue comments as appropriate | Integrator | `swarm/syt-036-home-hover-stuck-lifecycle` -> `main` | PR merged or blocker recorded |
-| 3 | `SYT-010H` | Launch final-leg #10 polish/hardening planner: settings walk-through, visual audit matrix, selector/code cleanup, polling/churn reduction, fixture gaps, and docs compaction | Controller / Planner | TBD | Handoff created and first bounded runner lane selected |
-| 4 | `SYT-008A` | Keep research gate paused until the user wants enhanced hover research again | Planner | `swarm/syt-008a-hover-research` | Decision to defer, prototype, or require human QA |
+| 1 | `SYT-010H` | Launch final-leg #10 polish/hardening planner: settings walk-through, visual audit matrix, selector/code cleanup, polling/churn reduction, fixture gaps, and docs compaction | Controller / Planner | TBD | Handoff created and first bounded runner lane selected |
+| 2 | `SYT-008A` | Keep research gate paused until the user wants enhanced hover research again | Planner | `swarm/syt-008a-hover-research` | Decision to defer, prototype, or require human QA |
 
 ## Dynamic Notes
 
@@ -138,3 +136,4 @@ Heartbeat overlap rule:
 - 2026-06-10: PR #34 marked ready and squash-merged into `main` at `99156b5`; issue #10 remains open. Hot-state repair follows because controller docs still pointed at the completed lane.
 - 2026-06-10: User reported Home hover stale-card backgrounds and missing autoplay after refresh -> watch page -> SPA Home. Controller opened issue #36 and draft PR #37 for `SYT-036`; human QA failed twice. Final follow-up diagnosed Brave PWA watch -> hover hidden header -> YouTube logo/Home -> Home hover path, removed Home/Search synthetic hover/playback recovery, preserved YouTube's zero-height preview loader, added a guarded real watch-to-Home URL watcher/reload, and verified with fixtures, `npm run test:e2e:live`, `npm run validate:all`, and exact Brave PWA playback advancement. Commit `f669141` pushed and PR/issue updated; route review next.
 - 2026-06-11: User confirmed the desired #36/#38 behavior appears to be working and asked to proceed into final-leg polish/hardening. PR #37 still requires fresh review before integration; `SYT-010H` should follow only after PR #37 lands.
+- 2026-06-11: PR #37 was marked ready and squash-merged at `342854f` after `npm run validate:all` passed. Issues #36 and #38 are closed; route `SYT-010H` next.
