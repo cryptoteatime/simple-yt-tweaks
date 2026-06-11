@@ -4,7 +4,7 @@
 
 - Name: Simple YT Tweaks
 - Folder: `/Users/d4ngl/Git Repos/Codex/simple-yt-tweaks`
-- Status: existing repo, post-v0.3.0 hardening; `SYT-036` Home hover lifecycle regression passed user QA, and PR #37 now includes post-review #38 live-stream Theater/chat overlay layout plus minimize/restore fixes awaiting fresh review
+- Status: existing repo, post-v0.3.0 hardening; `SYT-036` Home hover lifecycle regression and #38 live-stream Theater/chat overlay behavior passed user QA, with PR #37 awaiting fresh review/integration before the next polish lane
 - GitHub: `https://github.com/cryptoteatime/simple-yt-tweaks`
 
 ## Project Brief
@@ -19,11 +19,12 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 
 ## Current Focus
 
-1. Route fresh review for PR #37 after the post-review #38 patch: live streams in enhanced Theater mode no longer let YouTube's live-chat panel squeeze the player, the chat overlay has usable dimensions, and the overlay `X` minimizes to a visibly exposed right-edge `Live chat` restore tab without covering YouTube's chat controls.
-2. Keep the recorded SYT-036 human QA pass for Home hover autoplay; after review, integrate only if checks/review are clean and any remaining human QA gate is passed or explicitly waived with the recorded Brave PWA evidence.
+1. Route fresh review for PR #37 after the post-review #38 patch: live streams in enhanced Theater mode no longer let YouTube's live-chat panel squeeze the player, overlay mode behaves correctly, comments scroll, and non-overlay hide-live-chat no longer leaves a black panel.
+2. Treat the latest user confirmation as the human QA pass for PR #37; after review, integrate only if checks/review are clean.
 3. Keep #8 as a future high-risk research lane until tests and product direction justify it.
-4. Keep release-candidate work separate from routine fixture/source hardening.
-5. Keep hot swarm context compact; use `docs/swarm/context-map.md` and archive references instead of loading old completed handoffs.
+4. After PR #37 lands, start `SYT-010H` as the final-leg polish/code-hardening lane under #10: settings walkthrough, selector cleanup, fixture gaps, runtime polling audit, and small refactors only where they reduce risk.
+5. Keep release-candidate work separate from routine fixture/source hardening.
+6. Keep hot swarm context compact; use `docs/swarm/context-map.md` and archive references instead of loading old completed handoffs.
 
 ## Success Criteria
 
@@ -54,7 +55,7 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 
 ## Recommended First Milestone
 
-`SYT-036` passed user QA for the Home hover autoplay route on PR #37. During that QA, the user found #38: live streams in enhanced Theater mode could appear cut off while live chat overlay collapsed. The #38 fix is now on PR #37 with fixture coverage, full validation, and live Brave PWA geometry plus minimize/restore verification; the latest close/restore placement refinement is fixture/full-validation verified and needs extension reload before the active PWA reflects it. Issue #10 remains open until the controller decides the hardening pass is complete.
+`SYT-036` passed user QA for the Home hover autoplay route on PR #37. During that QA, the user found #38: live streams in enhanced Theater mode could appear cut off while live chat overlay collapsed, and non-overlay hidden live chat could leave a black panel. The #38 fixes are now on PR #37 with fixture coverage, full validation, live Brave PWA geometry/minimize/restore verification, and user confirmation that the desired behavior is working. Issue #10 remains open for `SYT-010H`, the next polish/code-hardening lane.
 
 ## Verification Defaults
 
@@ -90,5 +91,5 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 
 ## Last Updated
 
-- Date: 2026-06-10
+- Date: 2026-06-11
 - By: Controller/Runner for `SYT-036`

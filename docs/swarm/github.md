@@ -45,7 +45,7 @@ Use this file to record the repo's GitHub status and autonomous PR policy.
 
 | Task ID | Branch | PR | Status | Owner | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `SYT-036` / `SYT-038` | `swarm/syt-036-home-hover-stuck-lifecycle` | #37 | Needs Review | Controller/Runner/Reviewer | Home autoplay QA passed by user; post-review #38 live-stream Theater/chat overlay layout and minimize/restore fixes added with full validation and Brave PWA verification. |
+| `SYT-036` / `SYT-038` | `swarm/syt-036-home-hover-stuck-lifecycle` | #37 | Needs Review | Controller/Runner/Reviewer | Home autoplay and #38 live-stream Theater/chat behavior passed user QA; fresh review is the remaining gate before integration. |
 
 ## Setup Log
 
@@ -71,3 +71,4 @@ Use this file to record the repo's GitHub status and autonomous PR policy.
 - 2026-06-10: PR #34 marked ready and squash-merged at `99156b5` for `SYT-010G`; issue #10 remains open; remote/local task branch cleanup completed.
 - 2026-06-10: Opened issue #36 for Home hover previews leaving stale card states after watch-to-Home navigation. Opened draft PR #37 for `SYT-036`; after failed QA, final follow-up was verified in the Brave YouTube PWA on the header-hover -> logo/Home path.
 - 2026-06-10: Opened issue #38 for live streams being squeezed in enhanced Theater mode when live chat overlay is enabled. Patched PR #37 to cover #38 after the user confirmed #36 Home autoplay worked; follow-up patch made the overlay `X` minimize to a right-edge restore tab instead of leaving YouTube's collapsed opaque chat overlay.
+- 2026-06-11: User confirmed desired #36/#38 behavior is working and asked to proceed to polish/hardening. Keep PR #37 in review path, then integrate if clean before launching `SYT-010H` under #10.

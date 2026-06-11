@@ -27,14 +27,15 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 | `SYT-010F` | Sticky Player hardening | Integrator | Integrated | `swarm/syt-010f-sticky-player-hardening` | Sticky Player visibility/resize helpers and deterministic dock/restore fixture coverage | serial-required | `SYT-010F` planning PR #26 merged | medium/high, player DOM docking | `docs/swarm/handoffs/SYT-010F.md` | #28 merged |
 | `SYT-031` | Home native hover autoplay after watch-to-Home SPA | Integrator | Integrated | `swarm/syt-031-home-hover-stationary-spa` | #31 stale/missing Home native preview recovery, fixture/live coverage | serial-required | `SYT-021` | high, live YouTube SPA preview lifecycle | `docs/swarm/handoffs/SYT-031.md` | #32 merged |
 | `SYT-010G` | Fullscreen player UI geometry hardening | Integrator | Integrated | `swarm/syt-010g-fullscreen-ui-geometry` | Extract/test player UI hover reveal geometry | serial-required | `SYT-031` | medium, watch-page player UI behavior | `docs/swarm/handoffs/SYT-010G.md` | #34 merged |
-| `SYT-036` | Home hover stale card lifecycle regression + live Theater chat fix | Reviewer | Needs Review | `swarm/syt-036-home-hover-stuck-lifecycle` | #36 native Home hover lifecycle cleanup plus #38 live-stream Theater/chat overlay layout and minimize/restore fix | serial-required | `SYT-031`, `SYT-010G` | high, live YouTube SPA/player layout behavior | `docs/swarm/handoffs/SYT-036.md` | #37 draft |
+| `SYT-036` | Home hover stale card lifecycle regression + live Theater chat fix | Reviewer | Needs Review | `swarm/syt-036-home-hover-stuck-lifecycle` | #36 native Home hover lifecycle cleanup plus #38 live-stream Theater/chat overlay layout, minimize/restore, comments scroll, and non-overlay hide-live-chat fix | serial-required | `SYT-031`, `SYT-010G` | high, live YouTube SPA/player layout behavior | `docs/swarm/handoffs/SYT-036.md` | #37 draft |
+| `SYT-010H` | Final-leg polish and code hardening | Planner | Ready | TBD after PR #37 | Audit settings/UI flows, selector accuracy, runtime polling/churn, fixture gaps, redundant code, and compact docs before release-candidate work | serial-required | `SYT-036` integrated | medium/high, shared content modules and popup/settings behavior | `docs/swarm/handoffs/SYT-010H.md` | none |
 
 ## Backlog
 
 | Task ID | Title | Reason | Notes |
 | --- | --- | --- | --- |
 | `SYT-RC-001` | Next release-candidate checklist | Make future version bump/package/release flow smoother. | Human QA required before release. |
-| `SYT-010H` | Next bounded #10 hardening lane | Issue #10 remains open after `SYT-010G` unless the controller closes it. | Proposed only; requires a narrow source/test target and handoff before dispatch. |
+| `SYT-RC-002` | Release-candidate polish after #10 hardening | Run only after `SYT-010H` and any follow-up fixes are integrated. | Human QA required before version bump/release. |
 
 ## Blocked
 
@@ -46,7 +47,7 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 
 | Task ID | Branch | Reviewer Focus | Verification Tier | Handoff |
 | --- | --- | --- | --- | --- |
-| `SYT-036` | `swarm/syt-036-home-hover-stuck-lifecycle` | Fresh review after post-review #38 patch: live Theater `#panels-full-bleed-container` must not squeeze the player, live chat overlay dimensions/minimize/restore must override YouTube collapsed state without covering chat controls, and the already-passed Home hover native-only fix must not regress | full validation + live Brave PWA geometry/minimize/restore already run by Controller; latest placement refinement fixture/full-validation verified | `docs/swarm/handoffs/SYT-036.md` |
+| `SYT-036` | `swarm/syt-036-home-hover-stuck-lifecycle` | Fresh review after final #38 patch: live Theater `#panels-full-bleed-container` must not squeeze the player, overlay and non-overlay live-chat states must not leave black panels, comments must remain scrollable, and the already-passed Home hover native-only fix must not regress | full validation + live Brave PWA geometry/minimize/restore already run by Controller; latest user QA says desired behavior is working | `docs/swarm/handoffs/SYT-036.md` |
 
 ## Ready To Integrate
 
@@ -60,7 +61,7 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 | --- | --- | --- | --- | --- |
 | `SYT-008A` | none | Not started | Yes before implementing visual hover behavior | `Human QA passed/failed for SYT-008A: <notes>` |
 | `SYT-RC-001` | none | Not started | Yes before release | `Human QA passed/failed for SYT-RC-001: <notes>` |
-| `SYT-036` | #37 | Home autoplay passed by user; #38 live-stream Theater layout and minimize/restore verified by controller; fresh review needed after post-review patch | Yes before merge unless explicitly waived with live evidence | `Human QA passed/failed for SYT-036/#38: <notes>` |
+| `SYT-036` | #37 | Passed by user on 2026-06-11: Home autoplay, live overlay behavior, comments scroll, and non-overlay hidden live chat are working as desired | Satisfied; fresh review still required before merge | `Human QA passed for SYT-036/#38: behavior working; proceed to review/integration` |
 
 ## Controller Notes
 
@@ -73,7 +74,7 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 - Agent registry: `docs/swarm/agent-registry.md`.
 - Bootstrap log: `docs/swarm/bootstrap-log.md`.
 - GitHub workflow: `docs/swarm/github.md`.
-- Current controller phase: Phase 4 active; decide whether to plan `SYT-010H` or leave #10 open for later.
+- Current controller phase: Phase 4 active; after PR #37 review/integration, launch `SYT-010H` final-leg polish/hardening under #10.
 - 2026-06-10: User reported live watch-to-Home native hover autoplay regression. Controller opened #21 and draft PR #22 for `SYT-021` on `swarm/syt-008b-native-hover-spa-regression`.
 - 2026-06-10: User requested compact context/docs and more frequent automation. Completed historical handoffs were compacted to stubs with `docs/swarm/archive/README.md` reference mapping; `docs/swarm/context-map.md` is now the hot context entrypoint.
 - 2026-06-10: PR #22 squash-merged at `8f90ef1`, closing #21. Remote/local task branch cleanup completed. Route `SYT-010E` next.
@@ -88,3 +89,4 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 - 2026-06-10: PR #34 squash-merged at `99156b5`, adding fullscreen/player UI geometry unit hardening. Issue #10 remains open; #8 remains paused.
 - 2026-06-10: User reported Home cards retaining opaque hover backgrounds and hover autoplay failing after refresh -> watch page -> SPA Home navigation. Controller opened #36 and draft PR #37 for `SYT-036`; human QA failed twice. User clarified the failing route is watch -> hover hidden header -> YouTube logo/sidebar Home, not browser Back/profile navigation, and that the app is Brave PWA. Final follow-up patch passed full validation, stricter live smoke, and exact Brave PWA verification.
 - 2026-06-10: User confirmed Home hover autoplay works, then reported live-stream Theater video cut-off/chat overlay collapse and a broken live chat close state. Controller opened #38 and patched PR #37 so live chat overlay no longer reserves full-bleed layout width, `iframe#chatframe` fills the overlay, and the overlay `X` minimizes to a right-edge restore tab. `npm run validate:all` passed; live Brave PWA geometry and minimize/restore verification passed. Follow-up placement refinement moved the close button outside the chat panel and made the minimized tab visibly exposed; focused fixture and full validation passed.
+- 2026-06-11: User confirmed everything currently desired appears to be working and asked for final-leg polish/hardening. Treat PR #37 human QA as passed; route fresh review, integrate if clean, then launch `SYT-010H`.
