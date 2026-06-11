@@ -8,7 +8,7 @@
 - Current state: Needs Review
 - Repo: `/Users/d4ngl/Git Repos/Codex/simple-yt-tweaks`
 - Branch: `swarm/syt-010h-selector-fixtures`
-- PR: pending
+- PR: https://github.com/cryptoteatime/simple-yt-tweaks/pull/50
 - GitHub issue: #10
 - Verification tier: focused fixture plus static checks
 
