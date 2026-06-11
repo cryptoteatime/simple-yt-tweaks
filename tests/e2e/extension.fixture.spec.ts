@@ -380,6 +380,10 @@ test('search fixture applies compact grid cleanup and badge movement', async ({ 
   await expect(page.locator('[data-testid="search-shorts-video"]')).toBeHidden();
   await expect(page.locator('[data-testid="search-radio-video"]')).toBeHidden();
   await expect(page.locator('[data-testid="radio-result"]')).toBeHidden();
+  await expect(page.locator('[data-testid="modern-search-video"]')).toBeVisible();
+  await expect(page.locator('[data-testid="modern-search-shorts"]')).toBeHidden();
+  await expect(page.locator('[data-testid="modern-search-radio"]')).toBeHidden();
+  await expect(page.locator('[data-testid="modern-search-playlist"]')).toBeHidden();
   await expect(page.locator('[data-testid="generic-shelf"]')).toBeHidden();
   await expect(page.locator('[data-testid="channel-card"] #channel-title #text')).toHaveCSS('text-align', 'center');
   await expect(page.locator('[data-testid="search-1"] #channel-info .simple-yt-tweaks-search-badges')).toContainText('New');
@@ -402,6 +406,7 @@ test('search fixture can disable compact grid through stored settings', async ({
   );
   await expect(results).not.toHaveCSS('display', 'grid');
   await expect(page.locator('[data-testid="playlist-result"]')).toBeVisible();
+  await expect(page.locator('[data-testid="modern-search-playlist"]')).toBeVisible();
   await expect(page.locator('[data-testid="search-1"] .simple-yt-tweaks-search-badges')).toHaveCount(0);
   expect(extensionErrors(errors)).toEqual([]);
 });

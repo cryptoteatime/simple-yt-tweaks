@@ -9,12 +9,13 @@
 
 ## Current Focus
 
-1. Reconcile the completed first `SYT-010H` supervised burst and first serial runtime lane:
+1. Reconcile completed `SYT-010H` lanes:
    - A: settings/popup/defaults/persistence coverage, PR #45 merged at `ce09953`.
    - B: selector/runtime churn audit, PR #46 merged at `ddac456`.
    - C: swarm docs/context compaction, PR #47 merged at `b5e3f34`.
    - D: runtime video binding hardening, PR #48.
-2. Route the next serial selector/fixture hardening lane (`SYT-010H-E`) only after PR #48 is integrated and `main` is clean.
+   - E: modern Search lockup selector fixture hardening, PR #50.
+2. Keep `SYT-010H-F` proposed unless the next controller pass selects one covered module cleanup.
 3. Keep #8 enhanced Home/Search hover grow research paused unless the user explicitly reopens it.
 4. Keep release-candidate/version/tag/Web Store work out of the hardening lanes.
 
@@ -29,6 +30,7 @@
 - PR #46 merged the selector/runtime churn audit.
 - PR #47 merged docs compaction at `b5e3f34`.
 - PR #48 hardened runtime video binding from the existing apply loop.
+- PR #50 hardened modern Search lockup fixture coverage.
 - Issue #10 remains open for final-leg hardening; #8 remains a future gated research lane.
 
 ## Constraints And Risks
@@ -56,4 +58,4 @@
 ## Last Updated
 
 - Date: 2026-06-11
-- By: Controller review/integration for `SYT-010H-D`
+- By: Controller review/integration for `SYT-010H-E`

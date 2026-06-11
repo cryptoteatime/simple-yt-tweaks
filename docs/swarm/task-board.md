@@ -10,8 +10,8 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 
 - Project brief: Ready
 - Material questions: Deferred, not blocking
-- Current milestone plan: `SYT-010H` lane map integrated in PR #43; A/B/C/D are integrated through PR #48.
-- Implementation dispatch: next source lane is serial `SYT-010H-E` selector helper and fixture gap hardening, after controller reconciliation.
+- Current milestone plan: `SYT-010H` lane map integrated in PR #43; A/B/C/D/E are integrated through PR #50.
+- Implementation dispatch: `SYT-010H-F` remains proposed; only start if the next pass selects one covered module.
 
 ## Active Tasks
 
@@ -27,7 +27,7 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 | Task ID | Title | Status | Release Condition |
 | --- | --- | --- | --- |
 | `SYT-010H-D` | Runtime apply-loop and polling hardening | Integrated | PR #48; event/apply-loop video binding hardening. |
-| `SYT-010H-E` | Selector helper and fixture gap hardening | In Progress | Archimedes is running on `swarm/syt-010h-selector-fixtures`; keep serial if touching runtime selectors. |
+| `SYT-010H-E` | Selector helper and fixture gap hardening | Integrated | PR #50; modern Search lockup fixture coverage. |
 | `SYT-010H-F` | Theater/grid/sidebar organization cleanup | Proposed | Serial-only after coverage/audit lanes, one module per PR. |
 | `SYT-RC-001` | Next release-candidate checklist | Backlog | After #10 hardening. Human QA required before release. |
 | `SYT-RC-002` | Release-candidate polish after #10 hardening | Backlog | After `SYT-010H` and follow-up fixes are integrated. |
@@ -54,6 +54,7 @@ Completed lanes are stubs in `docs/swarm/handoffs/` and indexed in `docs/swarm/a
 | `SYT-010H-B` | PR #46 merged at `ddac456` |
 | `SYT-010H-C` | PR #47 merged at `b5e3f34` |
 | `SYT-010H-D` | PR #48 merged; runtime video binding hardening |
+| `SYT-010H-E` | PR #50 merged; Search modern lockup selector fixture hardening |
 
 ## Review / Integration Queues
 
@@ -74,5 +75,5 @@ Completed lanes are stubs in `docs/swarm/handoffs/` and indexed in `docs/swarm/a
 
 - Capacity returns to serial for runtime implementation after the A/B/C burst.
 - Runtime source changes, review, integration, merge conflicts, and release-candidate work stay serial.
-- Current controller phase: wait for `SYT-010H-E` draft PR or blocker; do not spawn overlapping selector/runtime work.
+- Current controller phase: post-`SYT-010H-E` clean state; consider `SYT-010H-F` only as one covered module per PR.
 - Do not route #8 unless the user explicitly reopens that gate.
