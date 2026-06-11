@@ -27,7 +27,7 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 | Task ID | Title | Status | Release Condition |
 | --- | --- | --- | --- |
 | `SYT-010H-D` | Runtime apply-loop and polling hardening | Integrated | PR #48; event/apply-loop video binding hardening. |
-| `SYT-010H-E` | Selector helper and fixture gap hardening | Ready | Start after D is integrated and repo is clean; keep serial if touching runtime selectors. |
+| `SYT-010H-E` | Selector helper and fixture gap hardening | In Progress | Archimedes is running on `swarm/syt-010h-selector-fixtures`; keep serial if touching runtime selectors. |
 | `SYT-010H-F` | Theater/grid/sidebar organization cleanup | Proposed | Serial-only after coverage/audit lanes, one module per PR. |
 | `SYT-RC-001` | Next release-candidate checklist | Backlog | After #10 hardening. Human QA required before release. |
 | `SYT-RC-002` | Release-candidate polish after #10 hardening | Backlog | After `SYT-010H` and follow-up fixes are integrated. |
@@ -74,5 +74,5 @@ Completed lanes are stubs in `docs/swarm/handoffs/` and indexed in `docs/swarm/a
 
 - Capacity returns to serial for runtime implementation after the A/B/C burst.
 - Runtime source changes, review, integration, merge conflicts, and release-candidate work stay serial.
-- Current controller phase: reconcile PR #48 integration, then route `SYT-010H-E` if clean.
+- Current controller phase: wait for `SYT-010H-E` draft PR or blocker; do not spawn overlapping selector/runtime work.
 - Do not route #8 unless the user explicitly reopens that gate.
