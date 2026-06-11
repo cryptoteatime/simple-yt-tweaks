@@ -60,12 +60,13 @@ Chosen target: Search modern `yt-lockup-view-model` non-video filtering. The pro
 - Passed: `npm run typecheck`
 - Passed: `npm run lint`
 - Passed: `git diff --check`
+- Passed after PR-scope cleanup: `git diff --check main...HEAD`
 
 ## Decisions Made
 
 - Kept the lane fixture-only because the existing selectors already handled the modern lockup variants.
 - Chose Search lockup filtering over live chat/fullscreen source extraction to avoid unnecessary runtime changes in this final-leg lane.
-- Left controller-owned `docs/swarm/agent-registry.md`, `docs/swarm/context-map.md`, and `docs/swarm/task-board.md` changes unstaged because they appeared to be controller registration state for this runner, not runner-owned handoff work.
+- Preserved the earlier controller registration state on local backup branch `swarm/syt-010h-selector-fixtures-with-registration`, then narrowed the pushed PR branch so this runner PR contains only the fixture and handoff files.
 
 ## Blockers Or Risks
 
