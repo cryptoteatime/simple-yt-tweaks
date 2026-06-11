@@ -8,7 +8,7 @@ This file is the repo-local dynamic control plane for the controller chat and an
 - Heartbeat mode: `active-pulse`
 - Heartbeat automation id: `simple-yt-tweaks-controller-heartbeat`
 - Main controller chat: Simple YT Tweaks controller in Codex workspace
-- Last reviewed by controller: 2026-06-11 00:19 EDT
+- Last reviewed by controller: 2026-06-11 00:32 EDT
 
 ## Current Source Of Truth
 
@@ -106,7 +106,7 @@ Heartbeat overlap rule:
 
 | Priority | Task ID | Action | Owner | Branch / Worktree | Stop Condition |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `SYT-RC-001` | Prepare the release-candidate checklist and decide whether #10 hardening is complete. Do not bump version, tag, release, or update Web Store assets. | Controller / Planner | TBD | Checklist PR opened or human QA gate recorded |
+| 1 | `SYT-RC-001` | Integrate the release-candidate checklist and record the #10 completion decision. Do not bump version, tag, release, close #10, or update Web Store assets. | Controller / Planner | `swarm/syt-rc-001-checklist` | Checklist PR merged or human QA gate recorded |
 | 2 | `SYT-008A` | Keep research gate paused until the user wants enhanced hover research again | Planner | `swarm/syt-008a-hover-research` | Decision to defer, prototype, or require human QA |
 
 ## Dynamic Notes
@@ -143,3 +143,4 @@ Heartbeat overlap rule:
 - 2026-06-11: User approved a supervised final-leg push with up to 3 subagents if useful. Apply that only to planner-approved disjoint `SYT-010H` lanes; do not parallelize overlapping runtime implementation.
 - 2026-06-11: `SYT-010H` A/B/C/D/E are integrated through PR #50. `npm run validate:all` passed before #48 and #50 merges. Next safe source lane is serial `SYT-010H-F`; keep #8 paused.
 - 2026-06-11: `SYT-010H-F` integrated through PR #54 after focused checks and `npm run validate:all`. Next safe action is `SYT-RC-001` checklist / #10 completion decision; no release action is approved yet.
+- 2026-06-11: Controller prepared `SYT-RC-001` checklist branch. #10 remains open until checklist integration and RC pass/fail decision.

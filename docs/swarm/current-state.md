@@ -4,19 +4,19 @@
 
 - Name: Simple YT Tweaks
 - Folder: `/Users/d4ngl/Git Repos/Codex/simple-yt-tweaks`
-- Status: existing repo, post-v0.3.0 hardening; `SYT-010H` final-leg polish/code-hardening is active under issue #10.
+- Status: existing repo, post-v0.3.0 hardening; `SYT-010H` implementation lanes are integrated and the repo is moving into `SYT-RC-001` release-candidate validation.
 - GitHub: `https://github.com/cryptoteatime/simple-yt-tweaks`
 
 ## Current Focus
 
-1. Reconcile completed `SYT-010H` lanes:
+1. Completed `SYT-010H` lanes:
    - A: settings/popup/defaults/persistence coverage, PR #45 merged at `ce09953`.
    - B: selector/runtime churn audit, PR #46 merged at `ddac456`.
    - C: swarm docs/context compaction, PR #47 merged at `b5e3f34`.
    - D: runtime video binding hardening, PR #48.
    - E: modern Search lockup selector fixture hardening, PR #50.
 2. `SYT-010H-F` integrated one-module `grid-hover.ts` watch-recommendation selector organization cleanup.
-3. Next controller step is `SYT-RC-001` checklist / #10 completion decision.
+3. Current controller step is `SYT-RC-001`: publish the RC checklist and make #10 completion criteria explicit.
 4. Keep #8 enhanced Home/Search hover grow research paused unless the user explicitly reopens it.
 5. Keep version/tag/Web Store release actions out unless explicitly approved.
 
@@ -42,13 +42,14 @@
 - Live YouTube smoke can be noisy; fixture-first checks remain the normal gate.
 - Do not reintroduce Home/Search enhanced hover grow, synthetic hover, or forced preview playback.
 - Do not bump version, tag releases, edit Web Store assets, or close #10 from docs/test lanes.
+- #10 should remain open until the RC checklist is integrated and the next controller/user RC pass confirms no new hardening defects.
 
 ## Verification Defaults
 
 - Runner focused checks: task-specific `npm run test:e2e`, `npm run test:unit`, `npm run lint`, `npm run typecheck`, or `git diff --check` as assigned.
 - Reviewer targeted checks: changed-risk checks plus PR body/handoff validation.
 - Integrator full gate for source/test PRs: `npm run validate:all`.
-- Human QA: release candidate, #8 visual hover implementation, or explicit high-risk live browser behavior.
+- Human QA: required for `SYT-RC-001`, #8 visual hover implementation, or explicit high-risk live browser behavior.
 
 ## Automation Notes
 
@@ -60,4 +61,4 @@
 ## Last Updated
 
 - Date: 2026-06-11
-- By: Controller review/integration for `SYT-010H-F`
+- By: Controller heartbeat preparing `SYT-RC-001`
