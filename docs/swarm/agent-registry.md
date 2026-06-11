@@ -5,11 +5,11 @@ Use this file to track who is working, where they are working, and whether the c
 ## Capacity
 
 - Max active planners: 1
-- Max active runners: 3 during planner-approved `SYT-010H` disjoint lanes; otherwise 1
+- Max active runners: 3 during planner-approved `SYT-WS-001` disjoint lanes; otherwise 1
 - Max active reviewers: 1
 - Max active integrators: 1
-- Max total active agents: 3 during planner-approved `SYT-010H` disjoint lanes; otherwise 1
-- Capacity note: user approved a supervised `SYT-010H` final-leg burst up to 3 subagents. Use it only for non-overlapping audit/test/docs/helper lanes with separate branches/worktrees and explicit path locks. Keep fragile runtime implementation, review, and integration serial.
+- Max total active agents: 3 during planner-approved `SYT-WS-001` disjoint lanes; otherwise 1
+- Capacity note: user approved a supervised final-leg push up to 3 subagents when useful. Use it only for non-overlapping audit/assets/docs/helper lanes with separate branches/worktrees and explicit path locks. Keep fragile runtime implementation, review, and integration serial.
 
 ## Controller Lease
 

@@ -8,17 +8,17 @@ This file is the repo-local dynamic control plane for the controller chat and an
 - Heartbeat mode: `active-pulse`
 - Heartbeat automation id: `simple-yt-tweaks-controller-heartbeat`
 - Main controller chat: Simple YT Tweaks controller in Codex workspace
-- Last reviewed by controller: 2026-06-11 01:36 EDT
+- Last reviewed by controller: 2026-06-11 02:45 EDT
 
 ## Current Source Of Truth
 
 - Default branch: `main`
 - Current branch: `main`
 - Expected Git state: clean `main` synced with `origin/main`
-- Open PR expectation: none after #8/#10 closure
+- Open PR expectation: docs planning PR for `SYT-WS-001` until integrated
 - Active agents expectation: none
 - Controller lease expectation: none between bounded heartbeat passes
-- Current priority lane: idle after `SYT-RC-001` human QA pass and #10 closure
+- Current priority lane: `SYT-WS-001` / GitHub #60 Web Store readiness polish and asset refresh
 
 ## Controller Lease And Pacing
 
@@ -29,9 +29,9 @@ This file is the repo-local dynamic control plane for the controller chat and an
 - Lease stale after: 90 minutes
 - Controller pass budget: max 10 safe orchestration actions or 90 minutes during the `SYT-010H` final-leg push
 - Heartbeat pass budget: max 4 safe recovery/routing actions, then stop
-- Active capacity: max 3 active subagents total only for `SYT-010H` lanes that the planner marks disjoint and low/medium conflict; keep max 1 for runtime implementation touching the same content modules, review, integration, merge conflicts, live YouTube behavior, or release-candidate work
-- Heartbeat cadence target: paused while idle after `SYT-RC-001`; resume only when new scoped work or release work is requested
-- Next human QA gate: release candidate/release approval or a fresh high-risk visual/product-direction gate later
+- Active capacity: max 3 active subagents total only for `SYT-WS-001` lanes that the planner marks disjoint and low/medium conflict; keep max 1 for runtime implementation touching the same content modules, review, integration, merge conflicts, live YouTube behavior, or release-candidate work
+- Heartbeat cadence target: 30 minutes while `SYT-WS-001` is active; pause when final readiness handoff is complete
+- Next human QA gate: final Web Store listing/assets acceptance and release approval after automation stops
 
 ## Context Hygiene
 
@@ -72,8 +72,8 @@ Heartbeat overlap rule:
 ## Spawn Strategy
 
 - Read `docs/swarm/agent-registry.md` before spawning.
-- Default to 1 active subagent at a time outside the supervised `SYT-010H` hardening burst.
-- For `SYT-010H`, capacity may rise to 3 total active subagents only after the planner produces non-overlapping lanes with explicit path scopes, branch/worktree names, verification commands, and conflict-risk labels.
+- Default to 1 active subagent at a time outside the supervised `SYT-WS-001` readiness push.
+- For `SYT-WS-001`, capacity may rise to 3 total active subagents only after the planner produces non-overlapping lanes with explicit path scopes, branch/worktree names, verification commands, and conflict-risk labels.
 - Good parallel candidates: read-only audit/planning, fixture coverage audit, popup/settings audit, docs compaction, and isolated unit-test/helper work.
 - Serial-only candidates: changes to `src/content/theater.ts`, `src/content/grid-hover.ts`, `src/content/sticky-player.ts`, shared settings contracts, live YouTube behavior, PR review, and integration.
 - Use low/medium effort for routine routing, docs, review, and fixture-test work.
@@ -106,8 +106,9 @@ Heartbeat overlap rule:
 
 | Priority | Task ID | Action | Owner | Branch / Worktree | Stop Condition |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `IDLE` | Wait for explicit release/version/tag/Web Store instruction or a new scoped issue. Do not bump version, tag, release, or update Web Store assets on heartbeat alone. | Controller | `main` | User request received |
-| 2 | none | none | none | none | none |
+| 1 | `SYT-WS-001` | Integrate the readiness planning docs, then route the first safe lane from `docs/swarm/handoffs/SYT-WS-001.md`. | Controller | `swarm/syt-ws001-readiness-planning` then task branches | Planning PR merged or blocked |
+| 2 | `SYT-WS-001A` | Audit Web Store/repo graphics, listing copy, and package collateral; produce concrete asset refresh tasks before editing assets. | Planner/Runner | task branch | Handoff ready for review |
+| 3 | `SYT-WS-001B` | Code polish audit focused on duplicate settings, polling/watchers, and large fragile modules; implement only low-risk cleanups with tests. | Planner/Runner | task branch | Handoff ready for review |
 
 ## Dynamic Notes
 
@@ -147,3 +148,4 @@ Heartbeat overlap rule:
 - 2026-06-11: PR #55 merged the `SYT-RC-001` checklist at `82188cf`. `npm run validate:all` passed on clean `main`. Next safe action is human RC QA; do not close #10 or release until the checklist gate is passed.
 - 2026-06-11: User reported `Human QA passed for SYT-RC-001`; issue #10 was closed with a hardening summary. No release/version/tag/Web Store action was performed.
 - 2026-06-11: User indicated issue #8 was effectively handled. PR #20 was closed, issue #8 was closed as not planned, and native YouTube Home/Search hover remains the accepted direction.
+- 2026-06-11: User requested final Web Store readiness polish, removal of local `.DS_Store` noise, new/refined graphics, and a 30-minute automation cadence. Controller opened #60 and started `SYT-WS-001`. No version bump, tag, release, or Web Store submission is approved yet.

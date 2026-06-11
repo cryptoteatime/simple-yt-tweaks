@@ -75,5 +75,5 @@ This repo should use a paced controller-led model:
 
 - The main repo chat acts as controller.
 - Controller passes should do only a few safe orchestration actions, then leave a clean recovery point.
-- A 30-minute active-pulse heartbeat is active while `SYT-021` is in review/fix/integration.
+- A 30-minute active-pulse heartbeat is active while `SYT-WS-001` / #60 Web Store readiness polish is moving.
 - The heartbeat prompt should stay generic and read `SWARM.md` plus `docs/swarm/controller-directives.md`; do not encode current PR lists or one-off task state in the automation prompt.
