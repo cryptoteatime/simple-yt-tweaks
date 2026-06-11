@@ -21,7 +21,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Agent / Thread | Task ID | Role | Status | Branch | Worktree | PR | Started | Last Seen | Expected Next Step | Heartbeat |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| none | none | none | none | none | none | none | none | none | none | none |
+| `019eb492-7de4-7e50-8df0-fc9e66b1f2c8` / Avicenna | `SYT-010H` | Planner | Running | `swarm/syt-010h-polish-plan` expected | agent workspace | TBD | 2026-06-11 02:35 UTC | Produce lane map, update `docs/swarm/handoffs/SYT-010H.md`, run `git diff --check`, open draft PR if docs changed | none |
 
 ## Paused / Stale Agents
 
