@@ -4,7 +4,7 @@
 
 - Name: Simple YT Tweaks
 - Folder: `/Users/d4ngl/Git Repos/Codex/simple-yt-tweaks`
-- Status: existing repo, post-v0.3.0 hardening; `SYT-010H` implementation lanes are integrated and the repo is moving into `SYT-RC-001` release-candidate validation.
+- Status: existing repo, post-v0.3.0 hardening; `SYT-010H` implementation lanes are integrated, `SYT-RC-001` human QA passed, and #10 is closed.
 - GitHub: `https://github.com/cryptoteatime/simple-yt-tweaks`
 
 ## Current Focus
@@ -16,7 +16,7 @@
    - D: runtime video binding hardening, PR #48.
    - E: modern Search lockup selector fixture hardening, PR #50.
 2. `SYT-010H-F` integrated one-module `grid-hover.ts` watch-recommendation selector organization cleanup.
-3. Current controller step is `SYT-RC-001`: request/await human RC QA using the integrated checklist.
+3. `SYT-RC-001` human QA passed on 2026-06-11.
 4. Keep #8 enhanced Home/Search hover grow research paused unless the user explicitly reopens it.
 5. Keep version/tag/Web Store release actions out unless explicitly approved.
 
@@ -35,7 +35,7 @@
 - PR #54 organized grid-hover watch recommendation selector construction and added unit assertions.
 - PR #55 integrated the `SYT-RC-001` checklist and #10 completion criteria.
 - `npm run validate:all` passed on clean `main` after PR #55.
-- Issue #10 remains open for final-leg hardening; #8 remains a future gated research lane.
+- Issue #10 is closed after `SYT-RC-001` human QA passed; #8 remains a future gated research lane.
 
 ## Constraints And Risks
 
@@ -43,19 +43,18 @@
 - Settings are duplicated between `src/shared/settings.ts` and `src/content/settings.ts`; parity tests are the guardrail.
 - Live YouTube smoke can be noisy; fixture-first checks remain the normal gate.
 - Do not reintroduce Home/Search enhanced hover grow, synthetic hover, or forced preview playback.
-- Do not bump version, tag releases, edit Web Store assets, or close #10 from docs/test lanes.
-- #10 should remain open until the next controller/user RC pass confirms no new hardening defects.
+- Do not bump version, tag releases, edit Web Store assets, or restart #8 without explicit user approval.
 
 ## Verification Defaults
 
 - Runner focused checks: task-specific `npm run test:e2e`, `npm run test:unit`, `npm run lint`, `npm run typecheck`, or `git diff --check` as assigned.
 - Reviewer targeted checks: changed-risk checks plus PR body/handoff validation.
 - Integrator full gate for source/test PRs: `npm run validate:all`.
-- Human QA: required for `SYT-RC-001`, #8 visual hover implementation, or explicit high-risk live browser behavior.
+- Human QA: `SYT-RC-001` passed; future human QA is required for #8 visual hover implementation, release candidates, or explicit high-risk live browser behavior.
 
 ## Automation Notes
 
-- Controller heartbeat: active, id `simple-yt-tweaks-controller-heartbeat`.
+- Controller heartbeat: paused after `SYT-RC-001` became human-gated, id `simple-yt-tweaks-controller-heartbeat`.
 - Capacity: up to 3 only for planner-approved disjoint `SYT-010H` A/B/C work; review, integration, and runtime implementation stay serial.
 - Shared docs lock: controller owns task-board, current-state, controller-directives, and agent-registry unless a handoff explicitly assigns them.
 - Registry: `docs/swarm/agent-registry.md`.
@@ -63,4 +62,4 @@
 ## Last Updated
 
 - Date: 2026-06-11
-- By: Controller heartbeat after `SYT-RC-001` checklist integration
+- By: Controller after `SYT-RC-001` human QA pass and #10 closure

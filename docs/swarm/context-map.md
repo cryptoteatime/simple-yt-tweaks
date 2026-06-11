@@ -4,7 +4,7 @@ Use this file as the fast entrypoint after `SWARM.md` and `docs/swarm/controller
 
 ## Current Hot State
 
-- Active lane family: `SYT-RC-001`, release-candidate checklist and #10 completion decision.
+- Active lane family: none; `SYT-RC-001` passed and #10 is closed.
 - Current routing: planning PR #43, batch registration PR #44, settings/popup coverage PR #45, selector/runtime audit PR #46, docs compaction PR #47, runtime video binding PR #48, Search lockup fixture PR #50, grid-hover organization PR #54, and RC checklist PR #55 are merged.
 - Completed first burst:
   - `SYT-010H-A`: settings/popup/defaults/persistence test coverage, PR #45, merge `ce09953`.
@@ -13,8 +13,8 @@ Use this file as the fast entrypoint after `SWARM.md` and `docs/swarm/controller
   - `SYT-010H-D`: runtime video binding hardening, PR #48.
   - `SYT-010H-E`: Search modern lockup selector fixture hardening, PR #50.
   - `SYT-010H-F`: grid-hover watch recommendation selector organization, PR #54.
-- Active serial lane: none after PR #55 integration; next state is human RC QA.
-- GitHub issues: #10 open; #36/#38/#31 closed; #8 paused.
+- Active serial lane: none after `SYT-RC-001` human QA pass.
+- GitHub issues: #10/#36/#38/#31 closed; #8 paused.
 - Recent merged swarm docs/code PRs: #39 integration record, #40 context repair, #41 burst capacity, #42 planner registration, #43 SYT-010H lane plan, #44 batch registration, #45 settings tests, #46 selector/runtime audit, #47 docs compaction, #48 runtime video binding, #50 Search lockup fixtures, #54 grid-hover organization, #55 RC checklist.
 - Do not route next: #8 enhanced Home/Search hover grow research unless the user explicitly reopens that gate.
 
@@ -52,4 +52,4 @@ Completed lanes are intentionally compacted to stubs. Use PRs and `docs/swarm/ar
 
 ## Next Safe Controller Action
 
-Request `SYT-RC-001` human RC QA using `docs/swarm/handoffs/SYT-RC-001.md`. `npm run validate:all` passed on clean `main` after PR #55. Do not release, bump version, tag, close #10, or launch #8 hover research without explicit user approval or the checklist's stated gate.
+Wait for explicit release/version/tag/Web Store instruction or a new scoped issue. `SYT-RC-001` human QA passed and #10 is closed. Do not release, bump version, tag, or launch #8 hover research without explicit user approval.
