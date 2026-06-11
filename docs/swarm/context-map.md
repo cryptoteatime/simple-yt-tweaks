@@ -4,7 +4,7 @@ Use this file as the fast entrypoint after `SWARM.md` and `docs/swarm/controller
 
 ## Current Hot State
 
-- Active lane family: none; `SYT-RC-001` passed and #10 is closed.
+- Active lane family: `SYT-WS-001` / #60 Web Store readiness polish and asset refresh.
 - Current routing: planning PR #43, batch registration PR #44, settings/popup coverage PR #45, selector/runtime audit PR #46, docs compaction PR #47, runtime video binding PR #48, Search lockup fixture PR #50, grid-hover organization PR #54, and RC checklist PR #55 are merged.
 - Completed first burst:
   - `SYT-010H-A`: settings/popup/defaults/persistence test coverage, PR #45, merge `ce09953`.
@@ -13,8 +13,8 @@ Use this file as the fast entrypoint after `SWARM.md` and `docs/swarm/controller
   - `SYT-010H-D`: runtime video binding hardening, PR #48.
   - `SYT-010H-E`: Search modern lockup selector fixture hardening, PR #50.
   - `SYT-010H-F`: grid-hover watch recommendation selector organization, PR #54.
-- Active serial lane: none after `SYT-RC-001` human QA pass.
-- GitHub issues: #8/#10/#36/#38/#31 closed.
+- Active serial lane: planning/docs setup on `swarm/syt-ws001-readiness-planning`; route implementation lanes only after planning is integrated.
+- GitHub issues: #8/#10/#36/#38/#31 closed; #60 open for final readiness polish.
 - Recent merged swarm docs/code PRs: #39 integration record, #40 context repair, #41 burst capacity, #42 planner registration, #43 SYT-010H lane plan, #44 batch registration, #45 settings tests, #46 selector/runtime audit, #47 docs compaction, #48 runtime video binding, #50 Search lockup fixtures, #54 grid-hover organization, #55 RC checklist.
 - Do not route enhanced Home/Search hover grow research unless the user opens a fresh issue; #8 is closed as not planned.
 
@@ -25,7 +25,7 @@ Use this file as the fast entrypoint after `SWARM.md` and `docs/swarm/controller
 - Task queue: `docs/swarm/task-board.md`
 - Agent capacity: `docs/swarm/agent-registry.md`
 - GitHub policy/state: `docs/swarm/github.md`
-- Active lane handoff: `docs/swarm/handoffs/SYT-RC-001.md`
+- Active lane handoff: `docs/swarm/handoffs/SYT-WS-001.md`
 - User steering: `docs/swarm/user-feedback.md`
 
 ## Completed Lane References
@@ -52,4 +52,4 @@ Completed lanes are intentionally compacted to stubs. Use PRs and `docs/swarm/ar
 
 ## Next Safe Controller Action
 
-Wait for explicit release/version/tag/Web Store instruction or a new scoped issue. `SYT-RC-001` human QA passed; #8 and #10 are closed. Do not release, bump version, tag, or restart hover research without explicit user approval.
+Finish integrating the `SYT-WS-001` planning docs, then route the first scoped #60 lane. Do not release, bump version, tag, submit Web Store assets, or restart Home/Search hover research without explicit user approval.

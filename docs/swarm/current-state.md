@@ -4,7 +4,7 @@
 
 - Name: Simple YT Tweaks
 - Folder: `/Users/d4ngl/Git Repos/Codex/simple-yt-tweaks`
-- Status: existing repo, post-v0.3.0 hardening; `SYT-010H` implementation lanes are integrated, `SYT-RC-001` human QA passed, and #10 is closed.
+- Status: existing repo, post-v0.3.0 hardening; `SYT-RC-001` human QA passed, #8/#10 are closed, and `SYT-WS-001` is starting final Web Store readiness polish under #60.
 - GitHub: `https://github.com/cryptoteatime/simple-yt-tweaks`
 
 ## Current Focus
@@ -18,7 +18,8 @@
 2. `SYT-010H-F` integrated one-module `grid-hover.ts` watch-recommendation selector organization cleanup.
 3. `SYT-RC-001` human QA passed on 2026-06-11.
 4. #8 enhanced Home/Search hover grow research is closed as not planned; native YouTube Home/Search hover is the accepted behavior.
-5. Keep version/tag/Web Store release actions out unless explicitly approved.
+5. New active lane: `SYT-WS-001` / #60 Web Store readiness polish and asset refresh.
+6. Keep version/tag/Web Store release actions out unless explicitly approved.
 
 ## Recent State
 
@@ -36,6 +37,7 @@
 - PR #55 integrated the `SYT-RC-001` checklist and #10 completion criteria.
 - `npm run validate:all` passed on clean `main` after PR #55.
 - Issues #8 and #10 are closed after `SYT-RC-001` human QA passed and the Home/Search hover direction was accepted as native-only.
+- Issue #60 is open to coordinate final code polish, graphics/listing refresh, package readiness, and exact user handoff before Web Store submission.
 
 ## Constraints And Risks
 
@@ -44,6 +46,7 @@
 - Live YouTube smoke can be noisy; fixture-first checks remain the normal gate.
 - Do not reintroduce Home/Search enhanced hover grow, synthetic hover, or forced preview playback.
 - Do not bump version, tag releases, edit Web Store assets, or restart Home/Search hover research without explicit user approval and a fresh issue.
+- Store/repo graphics may be refreshed under #60, but submission/version/release actions still require explicit approval.
 
 ## Verification Defaults
 
@@ -54,12 +57,12 @@
 
 ## Automation Notes
 
-- Controller heartbeat: paused after `SYT-RC-001` became human-gated, id `simple-yt-tweaks-controller-heartbeat`.
-- Capacity: up to 3 only for planner-approved disjoint `SYT-010H` A/B/C work; review, integration, and runtime implementation stay serial.
+- Controller heartbeat: reactivated for #60 at a 30-minute cadence, id `simple-yt-tweaks-controller-heartbeat`.
+- Capacity: up to 3 only for planner-approved disjoint `SYT-WS-001` lanes; review, integration, and runtime implementation stay serial.
 - Shared docs lock: controller owns task-board, current-state, controller-directives, and agent-registry unless a handoff explicitly assigns them.
 - Registry: `docs/swarm/agent-registry.md`.
 
 ## Last Updated
 
 - Date: 2026-06-11
-- By: Controller after `SYT-RC-001` human QA pass and #10 closure
+- By: Controller starting `SYT-WS-001` / #60

@@ -19,6 +19,7 @@ Use this file for durable human steering that should survive across controller t
 - 2026-06-10: First `SYT-036` human QA failed. User reported autoplay on hover still does not work when going from a video back to Home, while it works on first YouTube load. Treat stricter advancing-preview validation and live signed-in Chrome inspection as required supporting evidence.
 - 2026-06-10: User clarified `SYT-036` is specifically watch video -> click YouTube logo/top-left Home or sidebar Home -> Home hover autoplay fails. Visiting profile and returning Home works. Do not substitute browser Back/profile navigation as proof for this bug.
 - 2026-06-10: User clarified the real app surface is the Brave YouTube PWA, not Chrome, and that the watch-page header must be hovered to expose the YouTube logo before clicking Home. Use that exact path for supplemental live verification of #36-style regressions.
+- 2026-06-11: User wants `.DS_Store` noise removed, a 30-minute controller automation cadence, final code polish toward Web Store readiness, and refreshed graphics/listing collateral. Automation should stop when Codex believes the repo is ready and then provide exact remaining user/Web Store steps.
 
 ## Product Ideas
 
@@ -28,6 +29,7 @@ Use this file for durable human steering that should survive across controller t
 | Strengthen fixture tests before hardening code | User | Planned | `SYT-010A` |
 | Smooth release-candidate validation/package flow | User | Planned | `SYT-010C` |
 | Keep native Home/Search hover only, with no enhanced grow/highlight | User / #8 decision | Active constraint | `SYT-021`, `SYT-008A` closed |
+| Final Web Store readiness polish and asset refresh | User | Active | `SYT-WS-001` / #60 |
 
 ## Human QA Notes
 
