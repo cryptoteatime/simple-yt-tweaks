@@ -19,11 +19,11 @@ Use this file to track who is working, where they are working, and whether the c
 
 ## Active Agents
 
-No active agents after `SYT-010H-D` integrated via PR #48.
+One active serial Runner for `SYT-010H-E`.
 
 | Agent / Thread | Task ID | Role | Status | Branch | Worktree | PR | Started | Last Seen | Expected Next Step | Heartbeat |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| none | none | none | none | none | none | none | none | none | none | none |
+| Archimedes / `019eb4cc-e5d2-78c1-ba54-683c0915f08a` | `SYT-010H-E` | Senior Developer Runner | In Progress | `swarm/syt-010h-selector-fixtures` | worker-owned | draft PR expected | 2026-06-10 23:45 EDT | 2026-06-10 23:45 EDT | Open a draft PR with focused selector/fixture hardening and update `docs/swarm/handoffs/SYT-010H-E.md` | none |
 
 ## Paused / Stale Agents
 
@@ -35,7 +35,7 @@ No active agents after `SYT-010H-D` integrated via PR #48.
 
 | Path / Area | Task ID | Owner | Branch / Worktree | Reason | Release Condition |
 | --- | --- | --- | --- | --- | --- |
-| none | none | none | none | none | none |
+| `tests/unit/**`, `tests/e2e/extension.fixture.spec.ts`, `tests/e2e/youtube-fixtures.ts`, selected pure helper source if needed | `SYT-010H-E` | Archimedes | `swarm/syt-010h-selector-fixtures` / worker-owned | Selector/helper and fixture gap hardening | PR review or blocker |
 
 ## Recently Completed
 
