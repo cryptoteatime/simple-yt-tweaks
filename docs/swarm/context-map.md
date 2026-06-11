@@ -11,7 +11,7 @@ Use this file as the fast entrypoint after `SWARM.md` and `docs/swarm/controller
   - `SYT-010H-B`: selector/runtime churn audit, PR #46, merge `ddac456`.
   - `SYT-010H-C`: docs/context compaction, PR #47, merge `b5e3f34`.
   - `SYT-010H-D`: runtime video binding hardening, PR #48.
-- Active serial lane: none after PR #48 integration. Next candidate is `SYT-010H-E` selector helper and fixture gap hardening.
+- Active serial lane: `SYT-010H-E` selector helper and fixture gap hardening, assigned to Archimedes (`019eb4cc-e5d2-78c1-ba54-683c0915f08a`) on `swarm/syt-010h-selector-fixtures`.
 - GitHub issues: #10 open; #36/#38/#31 closed; #8 paused.
 - Recent merged swarm docs/code PRs: #39 integration record, #40 context repair, #41 burst capacity, #42 planner registration, #43 SYT-010H lane plan, #44 batch registration, #45 settings tests, #46 selector/runtime audit, #47 docs compaction, #48 runtime video binding.
 - Do not route next: #8 enhanced Home/Search hover grow research unless the user explicitly reopens that gate.
@@ -48,4 +48,4 @@ Completed lanes are intentionally compacted to stubs. Use PRs and `docs/swarm/ar
 
 ## Next Safe Controller Action
 
-After PR #48 integration is visible on clean `main`, route `SYT-010H-E` as a serial selector/fixture gap hardening lane. Do not launch #8 hover research unless the user explicitly reopens that gate.
+Wait for `SYT-010H-E` to report a draft PR or blocker. Do not launch overlapping selector/runtime work and do not launch #8 hover research unless the user explicitly reopens that gate.
