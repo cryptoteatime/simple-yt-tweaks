@@ -62,7 +62,7 @@ Completed agent history is compacted here. Use `docs/swarm/archive/README.md`, t
 | `SYT-010H-D` / #48 | runtime video binding hardening integrated |
 | `SYT-010H-E` / #50 | Search modern lockup selector fixture hardening integrated |
 | `SYT-010H-F` / #54 | grid-hover watch recommendation selector organization integrated |
-| `SYT-RC-001` / #55 | release-candidate checklist integrated; human QA gate is next |
+| `SYT-RC-001` / #55/#56 | release-candidate checklist integrated; human QA passed; #10 closed |
 
 ## Pending Launch
 

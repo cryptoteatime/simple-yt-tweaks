@@ -8,17 +8,17 @@ This file is the repo-local dynamic control plane for the controller chat and an
 - Heartbeat mode: `active-pulse`
 - Heartbeat automation id: `simple-yt-tweaks-controller-heartbeat`
 - Main controller chat: Simple YT Tweaks controller in Codex workspace
-- Last reviewed by controller: 2026-06-11 00:45 EDT
+- Last reviewed by controller: 2026-06-11 01:36 EDT
 
 ## Current Source Of Truth
 
 - Default branch: `main`
 - Current branch: `main`
 - Expected Git state: clean `main` synced with `origin/main`
-- Open PR expectation: PR #20 remains paused draft for #8 research; no active #10 PR after #55 merge
+- Open PR expectation: PR #20 remains paused draft for #8 research; no active #10 PR after #10 closure
 - Active agents expectation: none
 - Controller lease expectation: none between bounded heartbeat passes
-- Current priority lane: `SYT-RC-001`, human release-candidate QA gate / #10 completion decision
+- Current priority lane: idle after `SYT-RC-001` human QA pass and #10 closure
 
 ## Controller Lease And Pacing
 
@@ -30,8 +30,8 @@ This file is the repo-local dynamic control plane for the controller chat and an
 - Controller pass budget: max 10 safe orchestration actions or 90 minutes during the `SYT-010H` final-leg push
 - Heartbeat pass budget: max 4 safe recovery/routing actions, then stop
 - Active capacity: max 3 active subagents total only for `SYT-010H` lanes that the planner marks disjoint and low/medium conflict; keep max 1 for runtime implementation touching the same content modules, review, integration, merge conflicts, live YouTube behavior, or release-candidate work
-- Heartbeat cadence target: 30 minutes while `SYT-010H` is actively being planned/routed; slow back toward 90 minutes or pause after the hardening lane is integrated or blocked on human QA
-- Next human QA gate: release-candidate lane or #8 visual/product-direction gate later
+- Heartbeat cadence target: paused while idle after `SYT-RC-001`; resume only when new scoped work or release work is requested
+- Next human QA gate: release candidate/release approval or #8 visual/product-direction gate later
 
 ## Context Hygiene
 
@@ -106,7 +106,7 @@ Heartbeat overlap rule:
 
 | Priority | Task ID | Action | Owner | Branch / Worktree | Stop Condition |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `SYT-RC-001` | Request or await human RC QA using the integrated checklist. Do not bump version, tag, release, close #10, or update Web Store assets. | Controller / Planner | `main` | Human QA pass/fail received |
+| 1 | `IDLE` | Wait for explicit release/version/tag/Web Store instruction or a new scoped issue. Do not bump version, tag, release, or update Web Store assets on heartbeat alone. | Controller | `main` | User request received |
 | 2 | `SYT-008A` | Keep research gate paused until the user wants enhanced hover research again | Planner | `swarm/syt-008a-hover-research` | Decision to defer, prototype, or require human QA |
 
 ## Dynamic Notes
@@ -145,3 +145,4 @@ Heartbeat overlap rule:
 - 2026-06-11: `SYT-010H-F` integrated through PR #54 after focused checks and `npm run validate:all`. Next safe action is `SYT-RC-001` checklist / #10 completion decision; no release action is approved yet.
 - 2026-06-11: Controller prepared `SYT-RC-001` checklist branch. #10 remains open until checklist integration and RC pass/fail decision.
 - 2026-06-11: PR #55 merged the `SYT-RC-001` checklist at `82188cf`. `npm run validate:all` passed on clean `main`. Next safe action is human RC QA; do not close #10 or release until the checklist gate is passed.
+- 2026-06-11: User reported `Human QA passed for SYT-RC-001`; issue #10 was closed with a hardening summary. No release/version/tag/Web Store action was performed.

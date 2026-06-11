@@ -3,12 +3,12 @@
 ## Status
 
 - Task ID: `SYT-RC-001`
-- GitHub issue: #10 remains open
+- GitHub issue: #10 closed after RC QA pass
 - Branch: `main` after PR #55 integration
 - PR: #55 merged at `82188cf`
-- State: Ready for Human QA
+- State: Integrated / Human QA passed
 - Role: Controller / release-candidate planner
-- Last updated: 2026-06-11 00:45 EDT
+- Last updated: 2026-06-11 01:36 EDT
 
 ## Goal
 
@@ -27,7 +27,7 @@ Move the repo from post-v0.3.0 hardening into a release-candidate validation gat
 - No test fixture edits unless a later RC failure requires them.
 - No enhanced Home/Search hover grow, forced preview playback, or synthetic hover behavior.
 - No version bump, tag, GitHub release, package upload, or Web Store asset update.
-- Do not close #10 from this docs-only checklist PR.
+- The docs-only checklist PR did not close #10; #10 was closed only after human QA passed.
 
 ## #10 Completion Decision
 
@@ -40,7 +40,9 @@ Move the repo from post-v0.3.0 hardening into a release-candidate validation gat
 - E: modern Search lockup fixture coverage.
 - F: grid-hover watch recommendation selector organization.
 
-Decision: stop opening additional speculative #10 hardening lanes. Keep #10 open until the checklist PR is integrated and the next controller/user RC pass confirms no new hardening defects. If RC QA passes, #10 can be closed with a summary linking the merged hardening PRs and the RC checklist. If RC QA fails, file or route a new narrow issue for the concrete failure instead of reopening broad hardening.
+Decision: stop opening additional speculative #10 hardening lanes. The checklist PR was integrated, RC QA passed, and #10 was closed with a summary linking the merged hardening PRs and the RC checklist. If a later regression appears, file or route a new narrow issue for the concrete failure instead of reopening broad hardening.
+
+Final result: user reported `Human QA passed for SYT-RC-001` on 2026-06-11. Issue #10 was closed with the hardening summary. No release, version bump, tag, package upload, Web Store asset update, or #8 restart was performed.
 
 ## Automated Gate
 
@@ -68,6 +70,10 @@ Use a freshly reloaded unpacked extension or the intended packaged build. The ex
 or:
 
 `Human QA failed for SYT-RC-001: <steps and observed problem>`
+
+Current result:
+
+- 2026-06-11: Human QA passed. User note: "looks solid mate... all is working and is well it appears."
 
 ### Popup And Settings
 
@@ -125,9 +131,4 @@ or:
 
 ## Next Recommended Controller Action
 
-After this checklist PR is integrated:
-
-1. Run `npm run validate:all` on clean `main` if it was not already run during the checklist PR.
-2. Ask the user for `SYT-RC-001` human QA using the checklist above.
-3. If the user passes RC QA, comment on and close #10 with the hardening summary, then wait for explicit release approval.
-4. If the user fails RC QA, route only the concrete failing behavior as a new narrow issue or task lane.
+Wait for an explicit release/version/tag/Web Store instruction or a new scoped issue. Do not restart #8 unless the user asks for hover research.
