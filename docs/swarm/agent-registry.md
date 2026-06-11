@@ -19,11 +19,11 @@ Use this file to track who is working, where they are working, and whether the c
 
 ## Active Agents
 
-No active agents after the first `SYT-010H` A/B/C burst is reconciled.
+No active agents after `SYT-010H-D` opened PR #48 for review.
 
 | Agent / Thread | Task ID | Role | Status | Branch | Worktree | PR | Started | Last Seen | Expected Next Step | Heartbeat |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `019eb4b3-f0c3-7a41-af94-f6221752ab71` / Galileo | `SYT-010H-D` | Senior Developer Runner | Running | `swarm/syt-010h-runtime-churn` | agent workspace | TBD | 2026-06-11 03:22 UTC | Implement one narrow runtime churn hardening target, run focused checks, open draft PR | none |
+| none | none | none | none | none | none | none | none | none | none | none |
 
 ## Paused / Stale Agents
 
@@ -35,7 +35,7 @@ No active agents after the first `SYT-010H` A/B/C burst is reconciled.
 
 | Path / Area | Task ID | Owner | Branch / Worktree | Reason | Release Condition |
 | --- | --- | --- | --- | --- | --- |
-| `src/content/content.ts`, `src/content/lifecycle.ts`, `src/content/state.ts`, targeted tests only | `SYT-010H-D` | Galileo | `swarm/syt-010h-runtime-churn` | Serial runtime apply-loop/polling hardening lane | PR reviewed/integrated or lane closed |
+| none | none | none | none | none | none |
 
 ## Recently Completed
 
@@ -59,6 +59,7 @@ Completed agent history is compacted here. Use `docs/swarm/archive/README.md`, t
 | `SYT-010H-A` / #45 | settings/popup coverage integrated |
 | `SYT-010H-B` / #46 | selector/runtime churn audit integrated |
 | `SYT-010H-C` / #47 | docs/context compaction integrated |
+| `SYT-010H-D` / #48 | runtime video binding hardening draft PR opened; needs review |
 
 ## Pending Launch
 

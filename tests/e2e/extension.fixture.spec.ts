@@ -451,6 +451,27 @@ test('watch fixture validates mode classes, visible comments, hover grow, and vi
   expect(extensionErrors(errors)).toEqual([]);
 });
 
+test('watch fixture binds replacement video through the runtime apply loop', async ({ context }) => {
+  const page = await context.newPage();
+  const errors = await openFixture(page, 'watch', 'https://www.youtube.com/watch?v=fixture');
+  const videoSurface = page.locator('#movie_player video.html5-main-video');
+
+  await expect(videoSurface).toHaveAttribute('data-simple-yt-tweaks-bound', '1');
+  await videoSurface.evaluate((video) => {
+    const replacement = video.cloneNode(false) as HTMLVideoElement;
+    replacement.removeAttribute('data-simple-yt-tweaks-bound');
+    replacement.setAttribute('data-testid', 'replacement-video');
+    video.replaceWith(replacement);
+  });
+
+  await expect(page.locator('[data-testid="replacement-video"]')).toHaveAttribute(
+    'data-simple-yt-tweaks-bound',
+    '1',
+    { timeout: 1_000 },
+  );
+  expect(extensionErrors(errors)).toEqual([]);
+});
+
 test('watch fixture keeps live chat overlay from squeezing the theater player', async ({ context, extensionId }) => {
   await writeExtensionSettings(context, extensionId, {
     theaterHideLiveChat: true,

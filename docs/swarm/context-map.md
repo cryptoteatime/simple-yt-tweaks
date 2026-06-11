@@ -10,7 +10,7 @@ Use this file as the fast entrypoint after `SWARM.md` and `docs/swarm/controller
   - `SYT-010H-A`: settings/popup/defaults/persistence test coverage, PR #45, merge `ce09953`.
   - `SYT-010H-B`: selector/runtime churn audit, PR #46, merge `ddac456`.
   - `SYT-010H-C`: docs/context compaction, PR #47.
-- Active serial lane: `SYT-010H-D` runtime apply-loop/polling hardening on `swarm/syt-010h-runtime-churn`. Keep implementation serial.
+- Active serial lane: `SYT-010H-D` runtime apply-loop/polling hardening draft PR #48 on `swarm/syt-010h-runtime-churn`; review next.
 - GitHub issues: #10 open; #36/#38/#31 closed; #8 paused.
 - Recent merged swarm docs PRs: #39 integration record, #40 context repair, #41 burst capacity, #42 planner registration, #43 SYT-010H lane plan, #44 batch registration, #45 settings tests, #46 selector/runtime audit.
 - Do not route next: #8 enhanced Home/Search hover grow research unless the user explicitly reopens that gate.
@@ -46,4 +46,4 @@ Completed lanes are intentionally compacted to stubs. Use PRs and `docs/swarm/ar
 
 ## Next Safe Controller Action
 
-Wait for the active `SYT-010H-D` runtime apply-loop/polling hardening runner. Do not launch additional runtime lanes in parallel.
+Review `SYT-010H-D` draft PR #48. Do not launch additional runtime lanes in parallel until review/integration is resolved.

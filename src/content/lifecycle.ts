@@ -4,6 +4,9 @@ import { state } from './state';
 
 let videoBindIntervalId: number | null = null;
 let playerSurfaceClickFallbackBound = false;
+let videoEventHandlers: VideoEventHandlers | null = null;
+
+const VIDEO_BIND_FALLBACK_INTERVAL_MS = 10_000;
 
 const PLAYER_CLICK_CONTROL_SELECTOR = [
   'a',
@@ -284,27 +287,39 @@ export function bindPlayerSurfaceClickFallback(): void {
   );
 }
 
-export function bindVideoEvents(handlers: {
+type VideoEventHandlers = {
   onPipChange: () => void;
   onPlaybackStateChange: () => void;
-}): void {
-  const attach = () => {
-    const video = getVideo();
-    if (!video || video.dataset.simpleYtTweaksBound === '1') return;
+};
 
-    video.dataset.simpleYtTweaksBound = '1';
-    const refreshPlaybackUi = () => {
-      window.setTimeout(() => handlers.onPlaybackStateChange(), 0);
-    };
+function attachVideoEvents(handlers: VideoEventHandlers): void {
+  const video = getVideo();
+  if (!video || video.dataset.simpleYtTweaksBound === '1') return;
 
-    video.addEventListener('enterpictureinpicture', handlers.onPipChange, { passive: true });
-    video.addEventListener('leavepictureinpicture', handlers.onPipChange, { passive: true });
-    video.addEventListener('play', refreshPlaybackUi, { passive: true });
-    video.addEventListener('pause', refreshPlaybackUi, { passive: true });
+  video.dataset.simpleYtTweaksBound = '1';
+  const refreshPlaybackUi = () => {
+    window.setTimeout(() => handlers.onPlaybackStateChange(), 0);
   };
 
-  attach();
+  video.addEventListener('enterpictureinpicture', handlers.onPipChange, { passive: true });
+  video.addEventListener('leavepictureinpicture', handlers.onPipChange, { passive: true });
+  video.addEventListener('play', refreshPlaybackUi, { passive: true });
+  video.addEventListener('pause', refreshPlaybackUi, { passive: true });
+}
+
+export function syncVideoEventBinding(): void {
+  if (!videoEventHandlers) return;
+
+  attachVideoEvents(videoEventHandlers);
+}
+
+export function bindVideoEvents(handlers: VideoEventHandlers): void {
+  videoEventHandlers = handlers;
+  syncVideoEventBinding();
+
   if (videoBindIntervalId === null) {
-    videoBindIntervalId = window.setInterval(attach, 2000);
+    videoBindIntervalId = window.setInterval(() => {
+      if (isWatchPage()) syncVideoEventBinding();
+    }, VIDEO_BIND_FALLBACK_INTERVAL_MS);
   }
 }
