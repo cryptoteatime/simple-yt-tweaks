@@ -20,9 +20,10 @@ Put Simple YT Tweaks into a paced autonomous controller rhythm with scoped GitHu
 ## Current Focus
 
 1. Launch `SYT-010H` as the final-leg polish/code-hardening lane under #10: settings walkthrough, selector cleanup, fixture gaps, runtime polling audit, and small refactors only where they reduce risk.
-2. Keep #8 as a future high-risk research lane until tests and product direction justify it.
-3. Keep release-candidate work separate from routine fixture/source hardening.
-4. Keep hot swarm context compact; use `docs/swarm/context-map.md` and archive references instead of loading old completed handoffs.
+2. Use a supervised burst of up to 3 subagents only after the `SYT-010H` planner defines disjoint path scopes and verification commands; keep fragile runtime changes serial.
+3. Keep #8 as a future high-risk research lane until tests and product direction justify it.
+4. Keep release-candidate work separate from routine fixture/source hardening.
+5. Keep hot swarm context compact; use `docs/swarm/context-map.md` and archive references instead of loading old completed handoffs.
 
 ## Success Criteria
 

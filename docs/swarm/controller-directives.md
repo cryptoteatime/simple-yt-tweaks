@@ -8,7 +8,7 @@ This file is the repo-local dynamic control plane for the controller chat and an
 - Heartbeat mode: `active-pulse`
 - Heartbeat automation id: `simple-yt-tweaks-controller-heartbeat`
 - Main controller chat: Simple YT Tweaks controller in Codex workspace
-- Last reviewed by controller: 2026-06-11 00:00 EDT
+- Last reviewed by controller: 2026-06-11 00:35 EDT
 
 ## Current Source Of Truth
 
@@ -27,10 +27,10 @@ This file is the repo-local dynamic control plane for the controller chat and an
 - Lease expected action: none
 - Lease stop condition: none
 - Lease stale after: 90 minutes
-- Controller pass budget: max 6 safe orchestration actions or 60 minutes
-- Heartbeat pass budget: max 2 safe recovery/routing actions, then stop
-- Active capacity: max 1 active subagent total
-- Heartbeat cadence target: slow back toward 90 minutes after the `SYT-010F` hot-state repair lands
+- Controller pass budget: max 10 safe orchestration actions or 90 minutes during the `SYT-010H` final-leg push
+- Heartbeat pass budget: max 4 safe recovery/routing actions, then stop
+- Active capacity: max 3 active subagents total only for `SYT-010H` lanes that the planner marks disjoint and low/medium conflict; keep max 1 for runtime implementation touching the same content modules, review, integration, merge conflicts, live YouTube behavior, or release-candidate work
+- Heartbeat cadence target: 30 minutes while `SYT-010H` is actively being planned/routed; slow back toward 90 minutes or pause after the hardening lane is integrated or blocked on human QA
 - Next human QA gate: release-candidate lane or #8 visual/product-direction gate later
 
 ## Context Hygiene
@@ -72,7 +72,10 @@ Heartbeat overlap rule:
 ## Spawn Strategy
 
 - Read `docs/swarm/agent-registry.md` before spawning.
-- Default to 1 active subagent at a time.
+- Default to 1 active subagent at a time outside the supervised `SYT-010H` hardening burst.
+- For `SYT-010H`, capacity may rise to 3 total active subagents only after the planner produces non-overlapping lanes with explicit path scopes, branch/worktree names, verification commands, and conflict-risk labels.
+- Good parallel candidates: read-only audit/planning, fixture coverage audit, popup/settings audit, docs compaction, and isolated unit-test/helper work.
+- Serial-only candidates: changes to `src/content/theater.ts`, `src/content/grid-hover.ts`, `src/content/sticky-player.ts`, shared settings contracts, live YouTube behavior, PR review, and integration.
 - Use low/medium effort for routine routing, docs, review, and fixture-test work.
 - Use high/xhigh only for hard browser-extension architecture, repeated test failures, merge conflicts, or #8 preview lifecycle work.
 - Spawn only when lane labels are present: `parallel-safe`, `serial-required`, `depends-on`, and `conflict-risk`.
@@ -103,7 +106,7 @@ Heartbeat overlap rule:
 
 | Priority | Task ID | Action | Owner | Branch / Worktree | Stop Condition |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `SYT-010H` | Launch final-leg #10 polish/hardening planner: settings walk-through, visual audit matrix, selector/code cleanup, polling/churn reduction, fixture gaps, and docs compaction | Controller / Planner | TBD | Handoff created and first bounded runner lane selected |
+| 1 | `SYT-010H` | Launch final-leg #10 polish/hardening planner: settings walk-through, visual audit matrix, selector/code cleanup, polling/churn reduction, fixture gaps, docs compaction, and a parallel-safe lane map for up to 3 disjoint agents | Controller / Planner | TBD | Handoff created, lane map produced, and first safe runner/reviewer batch selected |
 | 2 | `SYT-008A` | Keep research gate paused until the user wants enhanced hover research again | Planner | `swarm/syt-008a-hover-research` | Decision to defer, prototype, or require human QA |
 
 ## Dynamic Notes
@@ -137,3 +140,4 @@ Heartbeat overlap rule:
 - 2026-06-10: User reported Home hover stale-card backgrounds and missing autoplay after refresh -> watch page -> SPA Home. Controller opened issue #36 and draft PR #37 for `SYT-036`; human QA failed twice. Final follow-up diagnosed Brave PWA watch -> hover hidden header -> YouTube logo/Home -> Home hover path, removed Home/Search synthetic hover/playback recovery, preserved YouTube's zero-height preview loader, added a guarded real watch-to-Home URL watcher/reload, and verified with fixtures, `npm run test:e2e:live`, `npm run validate:all`, and exact Brave PWA playback advancement. Commit `f669141` pushed and PR/issue updated; route review next.
 - 2026-06-11: User confirmed the desired #36/#38 behavior appears to be working and asked to proceed into final-leg polish/hardening. PR #37 still requires fresh review before integration; `SYT-010H` should follow only after PR #37 lands.
 - 2026-06-11: PR #37 was marked ready and squash-merged at `342854f` after `npm run validate:all` passed. Issues #36 and #38 are closed; route `SYT-010H` next.
+- 2026-06-11: User approved a supervised final-leg push with up to 3 subagents if useful. Apply that only to planner-approved disjoint `SYT-010H` lanes; do not parallelize overlapping runtime implementation.
