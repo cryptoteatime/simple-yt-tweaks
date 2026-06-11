@@ -382,7 +382,6 @@ async function init(): Promise<void> {
     rerun: applyFeatureState,
     onScrollUi: () => {
       resetFullscreenGridPeekState();
-      resetLiveTheaterScrollOffset();
       updateScrollbarState();
       refreshInteractionUiState();
       updateFullscreenActionDock();

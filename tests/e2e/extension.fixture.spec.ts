@@ -423,6 +423,10 @@ test('watch fixture validates mode classes, visible comments, hover grow, and vi
   });
   await expect(page.locator('body')).toHaveClass(/simple-yt-tweaks-theater/);
   await expect(page.locator('#comments')).toBeVisible();
+  await page.locator('#comments').scrollIntoViewIfNeeded();
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(100);
+  await page.waitForTimeout(300);
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(100);
 
   const playerPointerEvents = await page.locator('#movie_player video.html5-main-video').evaluate((video) => getComputedStyle(video).pointerEvents);
   expect(playerPointerEvents).toBe('auto');
@@ -518,7 +522,26 @@ test('watch fixture keeps live chat overlay from squeezing the theater player', 
   await expect(page.locator('iframe#chatframe')).toHaveCSS('width', '380px');
   await expect(page.locator('#simple-yt-tweaks-live-chat-close')).toHaveCount(0);
   await expect(page.locator('#simple-yt-tweaks-live-chat-restore')).toBeHidden();
+  await page.evaluate(() => {
+    const legacyClose = document.createElement('button');
+    legacyClose.id = 'simple-yt-tweaks-live-chat-close';
+    legacyClose.textContent = '×';
+    legacyClose.title = 'Minimize live chat';
+    document.body.append(legacyClose);
+    document.querySelector('#comments')?.append(document.createElement('span'));
+  });
+  await expect(page.locator('#simple-yt-tweaks-live-chat-close')).toHaveCount(0);
 
+  await page.locator('iframe#chatframe').evaluate((iframe) => {
+    iframe.setAttribute('src', '/live_chat?v=live-fixture&dark_theme=1&continuation=original-chat');
+  });
+  await page.locator('ytd-live-chat-frame#chat').evaluate((chat) => {
+    chat.append(document.createElement('span'));
+  });
+  await expect(page.locator('ytd-live-chat-frame#chat')).toHaveAttribute(
+    'data-simple-yt-tweaks-chat-src',
+    '/live_chat?v=live-fixture&dark_theme=1&continuation=original-chat',
+  );
   await page.locator('ytd-live-chat-frame#chat').evaluate((chat) => {
     chat.setAttribute('collapsed', '');
     chat.setAttribute('hide-chat-frame', '');
@@ -540,7 +563,10 @@ test('watch fixture keeps live chat overlay from squeezing the theater player', 
   await expect(page.locator('body')).not.toHaveClass(/simple-yt-tweaks-live-chat-minimized/);
   await expect(page.locator('ytd-live-chat-frame#chat')).not.toHaveAttribute('collapsed', '');
   await expect(page.locator('ytd-live-chat-frame#chat')).not.toHaveAttribute('hide-chat-frame', '');
-  await expect(page.locator('iframe#chatframe')).toHaveAttribute('src', /live_chat\?v=live-fixture/);
+  await expect(page.locator('iframe#chatframe')).toHaveAttribute(
+    'src',
+    '/live_chat?v=live-fixture&dark_theme=1&continuation=original-chat',
+  );
   await expect(page.locator('#simple-yt-tweaks-live-chat-close')).toHaveCount(0);
   expect(extensionErrors(errors)).toEqual([]);
 });

@@ -4,6 +4,8 @@ import type { Settings } from './settings';
 import { state } from './state';
 
 const LIVE_CHAT_RESTORE_BUTTON_ID = 'simple-yt-tweaks-live-chat-restore';
+const LIVE_CHAT_FRAME_SRC_ATTR = 'data-simple-yt-tweaks-chat-src';
+const LEGACY_LIVE_CHAT_CLOSE_BUTTON_ID = 'simple-yt-tweaks-live-chat-close';
 
 export function buildTheaterCss(settings: Settings): string {
   const enhancedTheater = settings.enhancedTheaterMode;
@@ -474,6 +476,7 @@ export function restoreTheaterOnlyTargets(): void {
     target.classList.remove(LIVE_CHAT_CLASS);
   }
 
+  document.getElementById(LEGACY_LIVE_CHAT_CLOSE_BUTTON_ID)?.remove();
   document.getElementById(LIVE_CHAT_RESTORE_BUTTON_ID)?.remove();
 }
 
@@ -498,6 +501,10 @@ export function updateLiveChatTargets(): void {
 
   for (const frame of liveChatFrames) {
     frame.classList.toggle(LIVE_CHAT_CLASS, hasLiveChat);
+    const iframeSrc = frame.querySelector<HTMLIFrameElement>('iframe#chatframe')?.getAttribute('src');
+    if (iframeSrc) {
+      frame.setAttribute(LIVE_CHAT_FRAME_SRC_ATTR, iframeSrc);
+    }
   }
 
   if (hasLiveChat && state.settings.theaterShowLiveChatOverlay) {
@@ -539,6 +546,12 @@ function restoreLiveChatOverlayFrames(): void {
     const iframe = frame.querySelector<HTMLIFrameElement>('iframe#chatframe');
     if (!iframe) continue;
 
+    const previousSrc = frame.getAttribute(LIVE_CHAT_FRAME_SRC_ATTR);
+    if (!iframe.getAttribute('src') && previousSrc) {
+      iframe.setAttribute('src', previousSrc);
+      continue;
+    }
+
     const videoId =
       document.querySelector<HTMLElement>(SELECTORS.watchFlexy)?.getAttribute('video-id') ??
       new URLSearchParams(location.search).get('v') ??
@@ -550,6 +563,8 @@ function restoreLiveChatOverlayFrames(): void {
 }
 
 function syncLiveChatOverlayControls(shouldShowControls: boolean): void {
+  document.getElementById(LEGACY_LIVE_CHAT_CLOSE_BUTTON_ID)?.remove();
+
   if (!shouldShowControls) {
     document.getElementById(LIVE_CHAT_RESTORE_BUTTON_ID)?.remove();
     return;
@@ -593,6 +608,8 @@ function isLiveWatchPlayerActive(): boolean {
 export function resetLiveTheaterScrollOffset(): void {
   if (!isStandaloneLikeDisplayMode()) return;
   if (!isEnhancedTheaterActive(state.settings)) return;
+  if (!state.settings.theaterHideLiveChat || !state.settings.theaterShowLiveChatOverlay) return;
+  if (!document.querySelector(`ytd-live-chat-frame.${LIVE_CHAT_CLASS}`)) return;
   if (!isLiveWatchPlayerActive()) return;
   if (window.scrollY <= 0) return;
 
