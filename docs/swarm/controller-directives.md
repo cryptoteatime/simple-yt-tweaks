@@ -8,17 +8,17 @@ This file is the repo-local dynamic control plane for the controller chat and an
 - Heartbeat mode: `active-pulse`
 - Heartbeat automation id: `simple-yt-tweaks-controller-heartbeat`
 - Main controller chat: Simple YT Tweaks controller in Codex workspace
-- Last reviewed by controller: 2026-06-11 00:07 EDT
+- Last reviewed by controller: 2026-06-11 00:19 EDT
 
 ## Current Source Of Truth
 
 - Default branch: `main`
 - Current branch: `main`
 - Expected Git state: clean `main` synced with `origin/main`
-- Open PR expectation: PR #20 remains paused draft for #8 research; no active #10 PR after #50 merge
+- Open PR expectation: PR #20 remains paused draft for #8 research; no active #10 PR after #54 merge
 - Active agents expectation: none
 - Controller lease expectation: none between bounded heartbeat passes
-- Current priority lane: `SYT-010H-F`, one-module organization cleanup under #10
+- Current priority lane: `SYT-RC-001`, release-candidate checklist / #10 completion decision
 
 ## Controller Lease And Pacing
 
@@ -106,7 +106,7 @@ Heartbeat overlap rule:
 
 | Priority | Task ID | Action | Owner | Branch / Worktree | Stop Condition |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `SYT-010H-F` | Select one covered module organization target, then launch a serial Runner. Keep the PR to one module plus tests/handoff, and reject broad cleanup. | Controller / Runner | `swarm/syt-010h-content-organization` | Draft PR opened with focused checks, or handoff records a blocker |
+| 1 | `SYT-RC-001` | Prepare the release-candidate checklist and decide whether #10 hardening is complete. Do not bump version, tag, release, or update Web Store assets. | Controller / Planner | TBD | Checklist PR opened or human QA gate recorded |
 | 2 | `SYT-008A` | Keep research gate paused until the user wants enhanced hover research again | Planner | `swarm/syt-008a-hover-research` | Decision to defer, prototype, or require human QA |
 
 ## Dynamic Notes
@@ -142,3 +142,4 @@ Heartbeat overlap rule:
 - 2026-06-11: PR #37 was marked ready and squash-merged at `342854f` after `npm run validate:all` passed. Issues #36 and #38 are closed; route `SYT-010H` next.
 - 2026-06-11: User approved a supervised final-leg push with up to 3 subagents if useful. Apply that only to planner-approved disjoint `SYT-010H` lanes; do not parallelize overlapping runtime implementation.
 - 2026-06-11: `SYT-010H` A/B/C/D/E are integrated through PR #50. `npm run validate:all` passed before #48 and #50 merges. Next safe source lane is serial `SYT-010H-F`; keep #8 paused.
+- 2026-06-11: `SYT-010H-F` integrated through PR #54 after focused checks and `npm run validate:all`. Next safe action is `SYT-RC-001` checklist / #10 completion decision; no release action is approved yet.

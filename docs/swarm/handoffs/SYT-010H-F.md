@@ -5,10 +5,11 @@
 - Task ID: `SYT-010H-F`
 - Title: One-module grid-hover organization cleanup
 - Assigned role: Senior Developer Runner
-- Current state: Needs Review
+- Current state: Integrated
 - Repo: `/Users/d4ngl/Git Repos/Codex/simple-yt-tweaks`
 - Worktree: `/Users/d4ngl/Git Repos/Codex/simple-yt-tweaks-syt010h-f`
 - Branch: `swarm/syt-010h-content-organization`
+- PR: https://github.com/cryptoteatime/simple-yt-tweaks/pull/54
 - GitHub issue: #10
 - Verification tier: focused unit/static checks
 
@@ -52,6 +53,13 @@ Organization-only cleanup in `src/content/grid-hover.ts` for the watch recommend
 - Passed: `npm run typecheck`
 - Passed: `npm run lint`
 - Passed: `git diff --check`
+- Controller review passed: no findings.
+- Controller focused checks passed:
+  - `npm run test:unit -- --grep "grid hover"`
+  - `npm run typecheck`
+  - `npm run lint`
+  - `git diff --check origin/main...HEAD`
+- Controller integration gate passed: `npm run validate:all`
 
 ## Decisions Made
 
@@ -67,4 +75,4 @@ Organization-only cleanup in `src/content/grid-hover.ts` for the watch recommend
 
 ## Next Recommended Role And Action
 
-Reviewer: review the narrow selector-helper diff and PR body, then mark `Ready to Integrate` if no selector regression or scope issue is found.
+Controller: keep #10 open until the release-candidate checklist records whether final hardening is complete. Do not start another broad cleanup lane without a new narrow target.

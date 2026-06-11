@@ -5,16 +5,17 @@ Use this file as the fast entrypoint after `SWARM.md` and `docs/swarm/controller
 ## Current Hot State
 
 - Active lane family: `SYT-010H`, final-leg polish/code-hardening under issue #10.
-- Current routing: planning PR #43, batch registration PR #44, settings/popup coverage PR #45, selector/runtime audit PR #46, docs compaction PR #47, runtime video binding PR #48, and Search lockup fixture PR #50 are merged.
+- Current routing: planning PR #43, batch registration PR #44, settings/popup coverage PR #45, selector/runtime audit PR #46, docs compaction PR #47, runtime video binding PR #48, Search lockup fixture PR #50, and grid-hover organization PR #54 are merged.
 - Completed first burst:
   - `SYT-010H-A`: settings/popup/defaults/persistence test coverage, PR #45, merge `ce09953`.
   - `SYT-010H-B`: selector/runtime churn audit, PR #46, merge `ddac456`.
   - `SYT-010H-C`: docs/context compaction, PR #47, merge `b5e3f34`.
   - `SYT-010H-D`: runtime video binding hardening, PR #48.
   - `SYT-010H-E`: Search modern lockup selector fixture hardening, PR #50.
-- Active serial lane: `SYT-010H-F`, assigned to Dirac (`019eb4e0-ebda-7913-9651-dc03c9c18991`) on `swarm/syt-010h-content-organization` in `/Users/d4ngl/Git Repos/Codex/simple-yt-tweaks-syt010h-f`.
+  - `SYT-010H-F`: grid-hover watch recommendation selector organization, PR #54.
+- Active serial lane: none after PR #54 integration.
 - GitHub issues: #10 open; #36/#38/#31 closed; #8 paused.
-- Recent merged swarm docs/code PRs: #39 integration record, #40 context repair, #41 burst capacity, #42 planner registration, #43 SYT-010H lane plan, #44 batch registration, #45 settings tests, #46 selector/runtime audit, #47 docs compaction, #48 runtime video binding, #50 Search lockup fixtures.
+- Recent merged swarm docs/code PRs: #39 integration record, #40 context repair, #41 burst capacity, #42 planner registration, #43 SYT-010H lane plan, #44 batch registration, #45 settings tests, #46 selector/runtime audit, #47 docs compaction, #48 runtime video binding, #50 Search lockup fixtures, #54 grid-hover organization.
 - Do not route next: #8 enhanced Home/Search hover grow research unless the user explicitly reopens that gate.
 
 ## Hot Files
@@ -47,7 +48,8 @@ Completed lanes are intentionally compacted to stubs. Use PRs and `docs/swarm/ar
 - `SYT-010H-B` -> PR #46, merge `ddac456`, refs #10
 - `SYT-010H-D` -> PR #48, refs #10
 - `SYT-010H-E` -> PR #50, refs #10
+- `SYT-010H-F` -> PR #54, refs #10
 
 ## Next Safe Controller Action
 
-Wait for `SYT-010H-F` to report a draft PR or blocker. Do not launch overlapping runtime/organization work and do not launch #8 hover research unless the user explicitly reopens that gate.
+Prepare `SYT-RC-001` release-candidate checklist / #10 completion decision. Do not release, bump version, tag, or launch #8 hover research without explicit user approval.
