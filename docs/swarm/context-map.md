@@ -5,14 +5,15 @@ Use this file as the fast entrypoint after `SWARM.md` and `docs/swarm/controller
 ## Current Hot State
 
 - Active lane family: `SYT-010H`, final-leg polish/code-hardening under issue #10.
-- Current routing: planning PR #43, batch registration PR #44, settings/popup coverage PR #45, and selector/runtime audit PR #46 are merged; docs compaction PR #47 is this state repair.
+- Current routing: planning PR #43, batch registration PR #44, settings/popup coverage PR #45, selector/runtime audit PR #46, docs compaction PR #47, and runtime video binding PR #48 are merged.
 - Completed first burst:
   - `SYT-010H-A`: settings/popup/defaults/persistence test coverage, PR #45, merge `ce09953`.
   - `SYT-010H-B`: selector/runtime churn audit, PR #46, merge `ddac456`.
-  - `SYT-010H-C`: docs/context compaction, PR #47.
-- Active serial lane: `SYT-010H-D` runtime apply-loop/polling hardening draft PR #48 on `swarm/syt-010h-runtime-churn`; review next.
+  - `SYT-010H-C`: docs/context compaction, PR #47, merge `b5e3f34`.
+  - `SYT-010H-D`: runtime video binding hardening, PR #48.
+- Active serial lane: none after PR #48 integration. Next candidate is `SYT-010H-E` selector helper and fixture gap hardening.
 - GitHub issues: #10 open; #36/#38/#31 closed; #8 paused.
-- Recent merged swarm docs PRs: #39 integration record, #40 context repair, #41 burst capacity, #42 planner registration, #43 SYT-010H lane plan, #44 batch registration, #45 settings tests, #46 selector/runtime audit.
+- Recent merged swarm docs/code PRs: #39 integration record, #40 context repair, #41 burst capacity, #42 planner registration, #43 SYT-010H lane plan, #44 batch registration, #45 settings tests, #46 selector/runtime audit, #47 docs compaction, #48 runtime video binding.
 - Do not route next: #8 enhanced Home/Search hover grow research unless the user explicitly reopens that gate.
 
 ## Hot Files
@@ -40,10 +41,11 @@ Completed lanes are intentionally compacted to stubs. Use PRs and `docs/swarm/ar
 - `SYT-031` -> PR #32, merge `8e881c9`, closes #31
 - `SYT-010G` -> PR #34, merge `99156b5`, refs #10
 - `SYT-036` / `SYT-038` -> PR #37, merge `342854f`, closes #36/#38
-- `SYT-036`/`SYT-010H` docs repairs -> PRs #39/#40/#41/#42/#43/#44/#47, through this compaction lane
+- `SYT-036`/`SYT-010H` docs repairs -> PRs #39/#40/#41/#42/#43/#44/#47, through docs compaction
 - `SYT-010H-A` -> PR #45, merge `ce09953`, refs #10
 - `SYT-010H-B` -> PR #46, merge `ddac456`, refs #10
+- `SYT-010H-D` -> PR #48, refs #10
 
 ## Next Safe Controller Action
 
-Review `SYT-010H-D` draft PR #48. Do not launch additional runtime lanes in parallel until review/integration is resolved.
+After PR #48 integration is visible on clean `main`, route `SYT-010H-E` as a serial selector/fixture gap hardening lane. Do not launch #8 hover research unless the user explicitly reopens that gate.
