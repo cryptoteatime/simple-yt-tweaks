@@ -285,12 +285,13 @@ export function buildTheaterCss(settings: Settings): string {
     }
 
     body.simple-yt-tweaks-theater.simple-yt-tweaks-has-live-chat .${LIVE_CHAT_CLASS} {
+      --simple-yt-tweaks-live-chat-width: min(380px, calc(100vw - 32px));
       position: fixed !important;
       top: 84px !important;
       right: 16px !important;
       z-index: 2147483643 !important;
       display: block !important;
-      width: min(380px, calc(100vw - 32px)) !important;
+      width: var(--simple-yt-tweaks-live-chat-width) !important;
       height: min(70vh, calc(100vh - 120px)) !important;
       max-height: calc(100vh - 120px) !important;
       border: 1px solid rgba(255, 255, 255, 0.16) !important;
@@ -298,11 +299,12 @@ export function buildTheaterCss(settings: Settings): string {
       overflow: hidden !important;
       background: rgba(15, 15, 15, 0.92) !important;
       box-shadow: 0 16px 40px rgba(0, 0, 0, 0.42) !important;
+      transition: opacity 0.18s ease, transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
     }
 
     body.simple-yt-tweaks-theater.simple-yt-tweaks-has-live-chat #chat.${LIVE_CHAT_CLASS},
     body.simple-yt-tweaks-theater.simple-yt-tweaks-has-live-chat ytd-live-chat-frame.${LIVE_CHAT_CLASS} {
-      width: min(380px, calc(100vw - 32px)) !important;
+      width: var(--simple-yt-tweaks-live-chat-width) !important;
       height: min(70vh, calc(100vh - 120px)) !important;
       max-width: calc(100vw - 32px) !important;
       max-height: calc(100vh - 120px) !important;
@@ -338,8 +340,8 @@ export function buildTheaterCss(settings: Settings): string {
 
     body.simple-yt-tweaks-theater #${LIVE_CHAT_CLOSE_BUTTON_ID} {
       position: fixed !important;
-      top: 92px !important;
-      right: min(calc(min(380px, calc(100vw - 32px)) + 24px), calc(100vw - 48px)) !important;
+      top: 152px !important;
+      right: min(calc(min(380px, calc(100vw - 32px)) + 28px), calc(100vw - 48px)) !important;
       display: none !important;
       align-items: center !important;
       justify-content: center !important;
@@ -347,7 +349,7 @@ export function buildTheaterCss(settings: Settings): string {
       height: 40px !important;
       border-radius: 999px !important;
       font-size: 20px !important;
-      opacity: 0.68 !important;
+      opacity: 0.9 !important;
       transition: opacity 0.14s ease, background 0.14s ease !important;
     }
 

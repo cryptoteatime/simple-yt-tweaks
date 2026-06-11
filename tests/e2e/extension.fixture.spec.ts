@@ -523,7 +523,7 @@ test('watch fixture keeps live chat overlay from squeezing the theater player', 
       page.evaluate(() => {
         const chat = document.querySelector('ytd-live-chat-frame#chat')?.getBoundingClientRect();
         const close = document.querySelector('#simple-yt-tweaks-live-chat-close')?.getBoundingClientRect();
-        return Boolean(chat && close && close.right <= chat.left - 4);
+        return Boolean(chat && close && close.right <= chat.left - 4 && close.top >= chat.top + 48);
       }),
     )
     .toBe(true);
@@ -551,6 +551,15 @@ test('watch fixture keeps live chat overlay from squeezing the theater player', 
   await expect(page.locator('ytd-live-chat-frame#chat')).not.toHaveAttribute('collapsed', '');
   await expect(page.locator('ytd-live-chat-frame#chat')).not.toHaveAttribute('hide-chat-frame', '');
   await expect(page.locator('iframe#chatframe')).toHaveAttribute('src', /live_chat\?v=live-fixture/);
+  await expect
+    .poll(() =>
+      page.evaluate(() => {
+        const chat = document.querySelector('ytd-live-chat-frame#chat')?.getBoundingClientRect();
+        const close = document.querySelector('#simple-yt-tweaks-live-chat-close')?.getBoundingClientRect();
+        return Boolean(chat && close && close.right <= chat.left - 4 && close.top >= chat.top + 48);
+      }),
+    )
+    .toBe(true);
   expect(extensionErrors(errors)).toEqual([]);
 });
 
