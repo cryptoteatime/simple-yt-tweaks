@@ -17,7 +17,7 @@
    - E: modern Search lockup selector fixture hardening, PR #50.
 2. `SYT-010H-F` integrated one-module `grid-hover.ts` watch-recommendation selector organization cleanup.
 3. `SYT-RC-001` human QA passed on 2026-06-11.
-4. Keep #8 enhanced Home/Search hover grow research paused unless the user explicitly reopens it.
+4. #8 enhanced Home/Search hover grow research is closed as not planned; native YouTube Home/Search hover is the accepted behavior.
 5. Keep version/tag/Web Store release actions out unless explicitly approved.
 
 ## Recent State
@@ -35,7 +35,7 @@
 - PR #54 organized grid-hover watch recommendation selector construction and added unit assertions.
 - PR #55 integrated the `SYT-RC-001` checklist and #10 completion criteria.
 - `npm run validate:all` passed on clean `main` after PR #55.
-- Issue #10 is closed after `SYT-RC-001` human QA passed; #8 remains a future gated research lane.
+- Issues #8 and #10 are closed after `SYT-RC-001` human QA passed and the Home/Search hover direction was accepted as native-only.
 
 ## Constraints And Risks
 
@@ -43,14 +43,14 @@
 - Settings are duplicated between `src/shared/settings.ts` and `src/content/settings.ts`; parity tests are the guardrail.
 - Live YouTube smoke can be noisy; fixture-first checks remain the normal gate.
 - Do not reintroduce Home/Search enhanced hover grow, synthetic hover, or forced preview playback.
-- Do not bump version, tag releases, edit Web Store assets, or restart #8 without explicit user approval.
+- Do not bump version, tag releases, edit Web Store assets, or restart Home/Search hover research without explicit user approval and a fresh issue.
 
 ## Verification Defaults
 
 - Runner focused checks: task-specific `npm run test:e2e`, `npm run test:unit`, `npm run lint`, `npm run typecheck`, or `git diff --check` as assigned.
 - Reviewer targeted checks: changed-risk checks plus PR body/handoff validation.
 - Integrator full gate for source/test PRs: `npm run validate:all`.
-- Human QA: `SYT-RC-001` passed; future human QA is required for #8 visual hover implementation, release candidates, or explicit high-risk live browser behavior.
+- Human QA: `SYT-RC-001` passed; future human QA is required for release candidates, explicit high-risk live browser behavior, or any fresh visual hover implementation issue.
 
 ## Automation Notes
 

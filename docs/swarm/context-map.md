@@ -14,9 +14,9 @@ Use this file as the fast entrypoint after `SWARM.md` and `docs/swarm/controller
   - `SYT-010H-E`: Search modern lockup selector fixture hardening, PR #50.
   - `SYT-010H-F`: grid-hover watch recommendation selector organization, PR #54.
 - Active serial lane: none after `SYT-RC-001` human QA pass.
-- GitHub issues: #10/#36/#38/#31 closed; #8 paused.
+- GitHub issues: #8/#10/#36/#38/#31 closed.
 - Recent merged swarm docs/code PRs: #39 integration record, #40 context repair, #41 burst capacity, #42 planner registration, #43 SYT-010H lane plan, #44 batch registration, #45 settings tests, #46 selector/runtime audit, #47 docs compaction, #48 runtime video binding, #50 Search lockup fixtures, #54 grid-hover organization, #55 RC checklist.
-- Do not route next: #8 enhanced Home/Search hover grow research unless the user explicitly reopens that gate.
+- Do not route enhanced Home/Search hover grow research unless the user opens a fresh issue; #8 is closed as not planned.
 
 ## Hot Files
 
@@ -52,4 +52,4 @@ Completed lanes are intentionally compacted to stubs. Use PRs and `docs/swarm/ar
 
 ## Next Safe Controller Action
 
-Wait for explicit release/version/tag/Web Store instruction or a new scoped issue. `SYT-RC-001` human QA passed and #10 is closed. Do not release, bump version, tag, or launch #8 hover research without explicit user approval.
+Wait for explicit release/version/tag/Web Store instruction or a new scoped issue. `SYT-RC-001` human QA passed; #8 and #10 are closed. Do not release, bump version, tag, or restart hover research without explicit user approval.

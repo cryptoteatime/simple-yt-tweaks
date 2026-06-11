@@ -2,34 +2,33 @@
 
 ## State
 
-- Status: Paused
+- Status: Closed as not planned
 - Role: Planner
 - Repo: Simple YT Tweaks
-- Branch: `swarm/syt-008a-hover-research`
+- Branch: `swarm/syt-008a-hover-research` closed/deleted after PR #20 closure
 - Owner: Unassigned
 - Created: 2026-04-29
-- Updated: 2026-04-29
+- Updated: 2026-06-11
 
 ## Goal
 
-Research whether #8 can be safely revived in a future release without breaking native YouTube hover autoplay, preview overlays, or edge-card behavior.
+Record that #8 was closed as not planned after the native-only Home/Search hover direction passed RC QA. If enhanced hover is wanted later, open a fresh issue and prototype gate.
 
 ## Scope
 
-- Read GitHub #8 and prior handoff notes.
-- Identify what fixture tests can prove and what requires live/manual validation.
-- Propose a prototype plan only after #10 test hardening is in place.
+- GitHub #8 closed as not planned.
+- PR #20 closed without merge.
+- Native YouTube Home/Search hover remains accepted behavior.
 
 ## Non-Scope
 
-- Do not implement enhanced home/search hover in the current hardening milestone.
+- Do not implement enhanced home/search hover from this closed lane.
 - Do not change current native home/search hover behavior.
 - Do not use live YouTube as the only validation path.
 
 ## Dependencies
 
-- `SYT-010A` coverage audit complete.
-- User/product-direction gate before implementation.
+- Fresh user/product-direction issue before any future implementation.
 
 ## Lane Metadata
 
@@ -43,31 +42,21 @@ Research whether #8 can be safely revived in a future release without breaking n
 
 | Check | Result | Notes |
 | --- | --- | --- |
-| `npm run test:e2e` | Not run for this lane yet | Required for any prototype. |
-| `npm run test:e2e:live` | Not run for this lane yet | Optional research smoke, not stable gate. |
-| Human QA | Not run for this lane yet | Required before merging any visual behavior change. |
+| PR #20 | Closed | Research gate closed without merge. |
+| GitHub #8 | Closed as not planned | Native-only Home/Search hover is the accepted direction. |
+| Human QA | Passed via `SYT-RC-001` | Current native-only behavior accepted. |
 
 ## Human Acceptance Checklist
 
-- Required before merge: Yes for any implementation.
-- URL(s): PR TBD
+- Required before merge: Yes for any fresh future implementation issue.
+- URL(s): none
 - Who should test: User for final visual/live YouTube behavior.
-- Expected result: no flicker, no autoplay breakage, no edge clipping, independently disableable.
-- If it passes, tell the controller: `Human QA passed for SYT-008A: <notes>`
-- If it fails, tell the controller: `Human QA failed for SYT-008A: <steps and observed problem>`
+- Expected result for current release path: native Home/Search hover only; no extension grow/highlight/synthetic preview behavior.
+- Fresh future issue required for any changed visual behavior.
 
 ## Next Handoff
 
-- Next role: Planner after #10 test hardening.
-- Next action: Research only; do not implement until controller explicitly unpauses #8.
-- Branch/worktree cleanup needed after merge: yes.
-- Copy-ready prompt:
-
-```text
-Plan Simple YT Tweaks SYT-008A only after SYT-010A is integrated.
-
-Repo: /Users/d4ngl/Git Repos/Codex/simple-yt-tweaks
-Branch: swarm/syt-008a-hover-research
-
-Read GitHub #8, the swarm docs, and docs/swarm/handoffs/SYT-008A.md. Produce a research plan for enhanced home/search hover that preserves native YouTube autoplay and defines fixture/live/manual gates. Do not implement runtime hover behavior unless the controller explicitly unpauses implementation.
-```
+- Next role: none.
+- Next action: none unless the user opens a fresh hover enhancement issue.
+- Branch/worktree cleanup needed after merge: complete; PR #20 branch deleted.
+- Copy-ready prompt: none; branch is deleted and issue is closed.

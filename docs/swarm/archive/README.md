@@ -40,5 +40,5 @@ GitHub PR bodies, reviews, and issue comments remain the preferred public histor
 | --- | --- | --- |
 | `SYT-010H-D` | Ready serial runtime apply-loop/polling lane | `docs/swarm/handoffs/SYT-010H.md`, `docs/swarm/handoffs/SYT-010H-B.md` |
 | `SYT-010H-E/F` | Hold until D or selector-fixture decision | `docs/swarm/handoffs/SYT-010H.md` |
-| `SYT-008A` | Paused future research | `docs/swarm/handoffs/SYT-008A.md` |
+| `SYT-008A` | Closed as not planned; native Home/Search hover accepted | `docs/swarm/handoffs/SYT-008A.md` |
 | `SYT-RC-001` | Backlog release candidate checklist | `docs/swarm/task-board.md` |

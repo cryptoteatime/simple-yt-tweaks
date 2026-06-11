@@ -22,7 +22,7 @@
 
 ### Notes
 
-- Enhanced home/search grid hover preview is deferred to GitHub issue #8.
+- Enhanced home/search grid hover preview was closed as not planned for this release path; Home/Search hover stays native to YouTube.
 
 ## 0.2.1
 

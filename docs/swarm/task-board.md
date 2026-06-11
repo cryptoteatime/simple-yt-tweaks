@@ -20,7 +20,6 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 | `SYT-010H-A` | Settings, popup defaults, and persistence | Integrator | Integrated | `swarm/syt-010h-settings-popup` | settings/popup/defaults tests | parallel-safe with B/C while test-only | `SYT-010H` plan | medium | `docs/swarm/handoffs/SYT-010H.md` | #45 merged |
 | `SYT-010H-B` | Selector accuracy and runtime churn audit | Integrator | Integrated | `swarm/syt-010h-selector-runtime-audit` | docs/audit; no production runtime edits | parallel-safe as audit-only | `SYT-010H` plan | low for audit, high for implementation | `docs/swarm/handoffs/SYT-010H-B.md` | #46 merged |
 | `SYT-010H-C` | Swarm docs and context compaction | Integrator | Integrated | `swarm/syt-010h-docs-compaction` | compact hot swarm docs and completed handoff stubs | parallel-safe | `SYT-010H` plan | low/medium docs state | `docs/swarm/handoffs/SYT-010H.md` | #47 merged |
-| `SYT-008A` | Enhanced Home/Search hover research gate | Planner | Paused | `swarm/syt-008a-hover-research` | #8 research, fixtures/prototype only | serial-required | user/product gate | high | `docs/swarm/handoffs/SYT-008A.md` | none |
 
 ## Hold / Future Tasks
 
@@ -56,6 +55,7 @@ Completed lanes are stubs in `docs/swarm/handoffs/` and indexed in `docs/swarm/a
 | `SYT-010H-E` | PR #50 merged; Search modern lockup selector fixture hardening |
 | `SYT-010H-F` | PR #54 merged; grid-hover watch recommendation selector organization |
 | `SYT-RC-001` | PR #55/#56 merged; `validate:all` passed; human QA passed; issue #10 closed |
+| `SYT-008A` | PR #20 closed; issue #8 closed as not planned; native Home/Search hover remains accepted |
 
 ## Review / Integration Queues
 
@@ -69,12 +69,11 @@ Completed lanes are stubs in `docs/swarm/handoffs/` and indexed in `docs/swarm/a
 
 | Task ID | PR / URL | Status | Required Before Merge | Exact Pass/Fail Message |
 | --- | --- | --- | --- | --- |
-| `SYT-008A` | none | Not started | Yes before implementing visual hover behavior | `Human QA passed/failed for SYT-008A: <notes>` |
 | `SYT-RC-001` | #55/#56 | Passed | Complete | `Human QA passed for SYT-RC-001: looks solid mate... all is working and is well it appears.` |
 
 ## Controller Notes
 
 - Capacity returns to serial for runtime implementation after the A/B/C burst.
 - Runtime source changes, review, integration, merge conflicts, and release-candidate work stay serial.
-- Current controller phase: idle after `SYT-RC-001`; no source hardening lanes should launch unless the user reports a concrete failure or opens a new scoped request.
-- Do not route #8 unless the user explicitly reopens that gate.
+- Current controller phase: idle after `SYT-RC-001` and #8/#10 closure; no source hardening lanes should launch unless the user reports a concrete failure or opens a new scoped request.
+- Do not route Home/Search hover research unless the user opens a fresh issue.
