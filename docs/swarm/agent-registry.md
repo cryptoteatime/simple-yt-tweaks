@@ -21,7 +21,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Agent / Thread | Task ID | Role | Status | Branch | Worktree | PR | Started | Last Seen | Expected Next Step | Heartbeat |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| none | none | none | none | none | none | none | none | none | none | none |
+| `019eb401-965a-7551-84e5-e5212c4eb10d` / Bernoulli | `SYT-036` / `SYT-038` | Reviewer | In Progress | `swarm/syt-036-home-hover-stuck-lifecycle` | main repo checkout, read-mostly | #37 | 2026-06-10 20:06 EDT | Review PR #37 after latest #38 live-chat control refinements and report result to controller | none |
 
 ## Paused / Stale Agents
 
