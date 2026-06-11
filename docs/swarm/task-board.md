@@ -26,7 +26,7 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 
 | Task ID | Title | Status | Release Condition |
 | --- | --- | --- | --- |
-| `SYT-010H-D` | Runtime apply-loop and polling hardening | Ready | Start one serial source lane from B audit; include focused fixtures and Brave PWA QA if watch-to-Home behavior changes. |
+| `SYT-010H-D` | Runtime apply-loop and polling hardening | In Progress | Galileo on `swarm/syt-010h-runtime-churn`; serial source lane from B audit. |
 | `SYT-010H-E` | Selector helper and fixture gap hardening | Hold | Start only after B identifies targets and A is not touching overlapping tests. |
 | `SYT-010H-F` | Theater/grid/sidebar organization cleanup | Proposed | Serial-only after coverage/audit lanes, one module per PR. |
 | `SYT-RC-001` | Next release-candidate checklist | Backlog | After #10 hardening. Human QA required before release. |
@@ -72,5 +72,5 @@ Completed lanes are stubs in `docs/swarm/handoffs/` and indexed in `docs/swarm/a
 
 - Capacity returns to serial for runtime implementation after the A/B/C burst.
 - Runtime source changes, review, integration, merge conflicts, and release-candidate work stay serial.
-- Current controller phase: integrate C if clean, then launch one serial `SYT-010H-D` implementation lane from B's audit.
+- Current controller phase: wait for `SYT-010H-D` runner result; keep runtime implementation serial.
 - Do not route #8 unless the user explicitly reopens that gate.
