@@ -6,6 +6,7 @@ import { state } from './state';
 const LIVE_CHAT_RESTORE_BUTTON_ID = 'simple-yt-tweaks-live-chat-restore';
 const LIVE_CHAT_FRAME_SRC_ATTR = 'data-simple-yt-tweaks-chat-src';
 const LEGACY_LIVE_CHAT_CLOSE_BUTTON_ID = 'simple-yt-tweaks-live-chat-close';
+const liveChatCloseBoundTargets = new WeakSet<EventTarget>();
 
 export function buildTheaterCss(settings: Settings): string {
   const enhancedTheater = settings.enhancedTheaterMode;
@@ -501,6 +502,7 @@ export function updateLiveChatTargets(): void {
 
   for (const frame of liveChatFrames) {
     frame.classList.toggle(LIVE_CHAT_CLASS, hasLiveChat);
+    bindLiveChatNativeClose(frame);
     const iframeSrc = frame.querySelector<HTMLIFrameElement>('iframe#chatframe')?.getAttribute('src');
     if (iframeSrc) {
       frame.setAttribute(LIVE_CHAT_FRAME_SRC_ATTR, iframeSrc);
@@ -527,6 +529,64 @@ export function updateLiveChatTargets(): void {
       frame.classList.remove(LIVE_CHAT_CLASS);
     }
   }
+}
+
+function bindLiveChatNativeClose(frame: HTMLElement): void {
+  bindLiveChatNativeCloseTarget(frame);
+
+  const iframe = frame.querySelector<HTMLIFrameElement>('iframe#chatframe');
+  if (!iframe) return;
+
+  try {
+    const iframeDocument = iframe.contentDocument;
+    if (iframeDocument) {
+      bindLiveChatNativeCloseTarget(iframeDocument);
+    }
+  } catch {
+    // Some live chat embeds may be inaccessible. In that case the restore path still handles YouTube's collapsed state.
+  }
+}
+
+function bindLiveChatNativeCloseTarget(target: EventTarget): void {
+  if (liveChatCloseBoundTargets.has(target)) return;
+  liveChatCloseBoundTargets.add(target);
+
+  target.addEventListener(
+    'click',
+    (event) => {
+      if (!isNativeLiveChatCloseClick(event)) return;
+
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      setLiveChatOverlayMinimized(true);
+    },
+    { capture: true },
+  );
+}
+
+function isNativeLiveChatCloseClick(event: Event): boolean {
+  return event.composedPath().some((target) => {
+    if (!(target instanceof Element)) return false;
+
+    const closeTarget = target.closest(
+      [
+        '#close-button',
+        'button[aria-label*="Close" i]',
+        'button[title*="Close" i]',
+        '[role="button"][aria-label*="Close" i]',
+        '[role="button"][title*="Close" i]',
+      ].join(','),
+    );
+    if (!closeTarget) return false;
+
+    const text = [
+      closeTarget.getAttribute('aria-label'),
+      closeTarget.getAttribute('title'),
+      closeTarget.textContent,
+    ].join(' ');
+
+    return /\b(?:close|hide)\b/i.test(text) || closeTarget.id === 'close-button';
+  });
 }
 
 function setLiveChatOverlayMinimized(minimized: boolean): void {

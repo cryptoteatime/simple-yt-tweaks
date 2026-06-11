@@ -543,6 +543,26 @@ test('watch fixture keeps live chat overlay from squeezing the theater player', 
     '/live_chat?v=live-fixture&dark_theme=1&continuation=original-chat',
   );
   await page.locator('ytd-live-chat-frame#chat').evaluate((chat) => {
+    const nativeClose = document.createElement('button');
+    nativeClose.id = 'close-button';
+    nativeClose.setAttribute('aria-label', 'Close');
+    nativeClose.addEventListener('click', () => {
+      chat.setAttribute('collapsed', '');
+      chat.querySelector('iframe#chatframe')?.removeAttribute('src');
+    });
+    chat.append(nativeClose);
+  });
+  await page.locator('ytd-live-chat-frame#chat #close-button').click();
+  await expect(page.locator('body')).toHaveClass(/simple-yt-tweaks-live-chat-minimized/);
+  await expect(page.locator('ytd-live-chat-frame#chat')).not.toHaveAttribute('collapsed', '');
+  await expect(page.locator('iframe#chatframe')).toHaveAttribute(
+    'src',
+    '/live_chat?v=live-fixture&dark_theme=1&continuation=original-chat',
+  );
+  await page.locator('#simple-yt-tweaks-live-chat-restore').click();
+  await expect(page.locator('body')).not.toHaveClass(/simple-yt-tweaks-live-chat-minimized/);
+
+  await page.locator('ytd-live-chat-frame#chat').evaluate((chat) => {
     chat.setAttribute('collapsed', '');
     chat.setAttribute('hide-chat-frame', '');
     chat.querySelector('iframe#chatframe')?.removeAttribute('src');
@@ -554,7 +574,7 @@ test('watch fixture keeps live chat overlay from squeezing the theater player', 
     .poll(() =>
       page.evaluate(() => {
         const restore = document.querySelector('#simple-yt-tweaks-live-chat-restore')?.getBoundingClientRect();
-        return Boolean(restore && restore.left < window.innerWidth - 20 && restore.right > window.innerWidth);
+        return Boolean(restore && restore.width > 0 && restore.left < window.innerWidth && restore.right > window.innerWidth - 48);
       }),
     )
     .toBe(true);
