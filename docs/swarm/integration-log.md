@@ -12,6 +12,32 @@ Use this file for merge decisions, conflict history, final checks, and release n
 
 ## Entries
 
+### 2026-06-11: SYT-036 / SYT-038 Home Hover And Live Theater Chat Integration
+
+- Integrator: Codex
+- Target branch: `main`
+- Candidate branch(es): `swarm/syt-036-home-hover-stuck-lifecycle`
+- PR(s): https://github.com/cryptoteatime/simple-yt-tweaks/pull/37
+- Issue(s): https://github.com/cryptoteatime/simple-yt-tweaks/issues/36, https://github.com/cryptoteatime/simple-yt-tweaks/issues/38
+- Decision: Integrated
+- Merge: squash merge commit `342854f11db10a9ef0930b43ba5b6c3d9362690f`
+- Reason: User confirmed the desired #36/#38 behavior was working; the integration gate passed; PR #37 was marked ready and merged through GitHub. The PR fixed Home native hover after watch-to-Home navigation and live-stream Theater/chat overlay regressions without reintroducing enhanced Home/Search hover grow.
+- Conflicts: none; PR #37 was mergeable before merge.
+- Checks:
+  - `git diff --check origin/main...HEAD`: PASS.
+  - `npm run validate:all`: PASS, including typecheck, lint, package validation, packaged validation, 22 unit tests, and 17 fixture tests.
+- Human acceptance: PASSED
+- Human acceptance evidence: User confirmed everything currently desired appeared to be working before merge, including Home autoplay, live overlay behavior, comments scroll, and non-overlay hidden live chat.
+- Branch cleanup: GitHub deleted the remote task branch during merge.
+- Worktree cleanup: local `main` is synced to `origin/main`; post-merge hot-state repair records `SYT-010H` as the next lane.
+- Notes:
+  - Issues #36 and #38 are closed.
+  - No version bump, tag, release, or Web Store asset update was performed.
+  - Issue #10 remains open for final-leg polish/code hardening.
+- Follow-ups:
+  - Launch `SYT-010H` under #10 for settings walkthrough, selector cleanup, polling/churn reduction, fixture gaps, and compact docs.
+  - Keep #8 enhanced Home/Search hover research paused unless the user explicitly reopens that product direction.
+
 ### 2026-06-10: SYT-010G Fullscreen Player UI Geometry Integration
 
 - Integrator: Codex
