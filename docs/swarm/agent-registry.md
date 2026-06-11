@@ -21,7 +21,7 @@ Use this file to track who is working, where they are working, and whether the c
 
 | Agent / Thread | Task ID | Role | Status | Branch | Worktree | PR | Started | Last Seen | Expected Next Step | Heartbeat |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| none | none | none | none | none | none | none | none | none | none | none |
+| `019eb455-9972-7030-9acc-b0f041d55f9b` / Sagan | `SYT-036` / `SYT-038` | Reviewer | Active | `swarm/syt-036-home-hover-stuck-lifecycle` | main repo checkout | #37 | 2026-06-10 21:36 EDT | Review PR #37 after commit `4615c74`; report Ready for Human QA/Integrate, Needs Fixes, or Blocked | none |
 
 ## Paused / Stale Agents
 
