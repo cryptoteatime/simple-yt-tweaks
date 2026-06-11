@@ -3,6 +3,13 @@ import { LIVE_CHAT_CLASS, MASTHEAD_CLASS, SELECTORS, THEATER_PRIMARY_METADATA_CL
 import type { Settings } from './settings';
 import { state } from './state';
 
+const LIVE_CHAT_RESTORE_BUTTON_ID = 'simple-yt-tweaks-live-chat-restore';
+const LIVE_CHAT_IFRAME_CLOSE_BUTTON_ID = 'simple-yt-tweaks-live-chat-frame-close';
+const LIVE_CHAT_IFRAME_STYLE_ID = 'simple-yt-tweaks-live-chat-frame-style';
+const LIVE_CHAT_FRAME_SRC_ATTR = 'data-simple-yt-tweaks-chat-src';
+const LEGACY_LIVE_CHAT_CLOSE_BUTTON_ID = 'simple-yt-tweaks-live-chat-close';
+const liveChatCloseBoundTargets = new WeakSet<EventTarget>();
+
 export function buildTheaterCss(settings: Settings): string {
   const enhancedTheater = settings.enhancedTheaterMode;
   const theaterHideHeader = settings.theaterHideHeader;
@@ -238,6 +245,30 @@ export function buildTheaterCss(settings: Settings): string {
     ` : ''}
 
     ${enhancedTheater && theaterHideLiveChat && !theaterShowLiveChatOverlay ? `
+    body.simple-yt-tweaks-theater.simple-yt-tweaks-has-live-chat #player-full-bleed-container {
+      flex: 0 0 100% !important;
+      width: 100% !important;
+      min-width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    body.simple-yt-tweaks-theater.simple-yt-tweaks-has-live-chat #panels-full-bleed-container {
+      flex: 0 0 0 !important;
+      width: 0 !important;
+      min-width: 0 !important;
+      max-width: 0 !important;
+      overflow: hidden !important;
+    }
+
+    body.simple-yt-tweaks-theater.simple-yt-tweaks-has-live-chat #secondary {
+      width: 0 !important;
+      min-width: 0 !important;
+      max-width: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      overflow: hidden !important;
+    }
+
     body.simple-yt-tweaks-theater.simple-yt-tweaks-has-live-chat ${SELECTORS.liveChat} {
       display: none !important;
     }
@@ -253,8 +284,23 @@ export function buildTheaterCss(settings: Settings): string {
       padding: 0 !important;
     }
 
+    body.simple-yt-tweaks-theater.simple-yt-tweaks-has-live-chat #player-full-bleed-container {
+      flex: 0 0 100% !important;
+      width: 100% !important;
+      min-width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    body.simple-yt-tweaks-theater.simple-yt-tweaks-has-live-chat #panels-full-bleed-container {
+      flex: 0 0 0 !important;
+      width: 0 !important;
+      min-width: 0 !important;
+      max-width: 0 !important;
+      overflow: visible !important;
+    }
+
     body.simple-yt-tweaks-theater.simple-yt-tweaks-has-live-chat #chat-container,
-    body.simple-yt-tweaks-theater.simple-yt-tweaks-has-live-chat #chat {
+    body.simple-yt-tweaks-theater.simple-yt-tweaks-has-live-chat #chat:not(.${LIVE_CHAT_CLASS}) {
       display: block !important;
       visibility: visible !important;
       overflow: visible !important;
@@ -267,12 +313,13 @@ export function buildTheaterCss(settings: Settings): string {
     }
 
     body.simple-yt-tweaks-theater.simple-yt-tweaks-has-live-chat .${LIVE_CHAT_CLASS} {
+      --simple-yt-tweaks-live-chat-width: min(380px, calc(100vw - 32px));
       position: fixed !important;
       top: 84px !important;
       right: 16px !important;
       z-index: 2147483643 !important;
       display: block !important;
-      width: min(380px, calc(100vw - 32px)) !important;
+      width: var(--simple-yt-tweaks-live-chat-width) !important;
       height: min(70vh, calc(100vh - 120px)) !important;
       max-height: calc(100vh - 120px) !important;
       border: 1px solid rgba(255, 255, 255, 0.16) !important;
@@ -280,7 +327,74 @@ export function buildTheaterCss(settings: Settings): string {
       overflow: hidden !important;
       background: rgba(15, 15, 15, 0.92) !important;
       box-shadow: 0 16px 40px rgba(0, 0, 0, 0.42) !important;
+      transition: opacity 0.18s ease, transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
     }
+
+    body.simple-yt-tweaks-theater.simple-yt-tweaks-has-live-chat #chat.${LIVE_CHAT_CLASS},
+    body.simple-yt-tweaks-theater.simple-yt-tweaks-has-live-chat ytd-live-chat-frame.${LIVE_CHAT_CLASS} {
+      width: var(--simple-yt-tweaks-live-chat-width) !important;
+      height: min(70vh, calc(100vh - 120px)) !important;
+      max-width: calc(100vw - 32px) !important;
+      max-height: calc(100vh - 120px) !important;
+    }
+
+    body.simple-yt-tweaks-theater.simple-yt-tweaks-has-live-chat .${LIVE_CHAT_CLASS} iframe#chatframe {
+      display: block !important;
+      width: 100% !important;
+      height: 100% !important;
+      max-width: 100% !important;
+      max-height: 100% !important;
+    }
+
+    body.simple-yt-tweaks-theater.simple-yt-tweaks-has-live-chat.simple-yt-tweaks-live-chat-minimized .${LIVE_CHAT_CLASS} {
+      opacity: 0 !important;
+      pointer-events: none !important;
+      transform: translateX(calc(100% + 24px)) !important;
+    }
+
+    body.simple-yt-tweaks-theater #${LIVE_CHAT_RESTORE_BUTTON_ID} {
+      appearance: none !important;
+      border: 1px solid rgba(255, 255, 255, 0.18) !important;
+      color: #fff !important;
+      background: rgba(15, 15, 15, 0.78) !important;
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.34) !important;
+      font: 500 12px/1.2 Roboto, Arial, sans-serif !important;
+      cursor: pointer !important;
+      z-index: 2147483645 !important;
+      -webkit-user-select: none !important;
+      user-select: none !important;
+    }
+
+    body.simple-yt-tweaks-theater #${LIVE_CHAT_RESTORE_BUTTON_ID} {
+      position: fixed !important;
+      top: 50% !important;
+      right: 0 !important;
+      display: none !important;
+      align-items: center !important;
+      justify-content: center !important;
+      width: 44px !important;
+      min-height: 92px !important;
+      padding: 10px 8px !important;
+      border-radius: 10px 0 0 10px !important;
+      writing-mode: vertical-rl !important;
+      text-orientation: mixed !important;
+      letter-spacing: 0 !important;
+      opacity: 0.58 !important;
+      transform: translate(14px, -50%) !important;
+      transition: opacity 0.14s ease, transform 0.14s ease, background 0.14s ease !important;
+    }
+
+    body.simple-yt-tweaks-theater.simple-yt-tweaks-has-live-chat.simple-yt-tweaks-live-chat-minimized #${LIVE_CHAT_RESTORE_BUTTON_ID} {
+      display: inline-flex !important;
+    }
+
+    body.simple-yt-tweaks-theater #${LIVE_CHAT_RESTORE_BUTTON_ID}:hover,
+    body.simple-yt-tweaks-theater #${LIVE_CHAT_RESTORE_BUTTON_ID}:focus-visible {
+      opacity: 1 !important;
+      transform: translate(0, -50%) !important;
+      background: rgba(15, 15, 15, 0.94) !important;
+    }
+
     ` : ''}
 
     ${isTheaterMinimalLayoutActive(settings) ? `
@@ -354,6 +468,9 @@ export function updateViewClasses(): boolean {
     document.documentElement.classList.remove('simple-yt-tweaks-theater-scrollbar-hidden');
     document.body.classList.remove('simple-yt-tweaks-scrollbar-hidden');
     document.body.classList.remove('simple-yt-tweaks-theater-scrollbar-hidden');
+    document.body.classList.remove('simple-yt-tweaks-live-chat-minimized');
+    document.body.classList.remove('simple-yt-tweaks-live-chat-native-close-missing');
+    state.liveChatOverlayMinimized = false;
     restoreTheaterOnlyTargets();
   }
 
@@ -387,6 +504,9 @@ export function restoreTheaterOnlyTargets(): void {
   for (const target of queryAll<HTMLElement>(`.${LIVE_CHAT_CLASS}`)) {
     target.classList.remove(LIVE_CHAT_CLASS);
   }
+
+  document.getElementById(LEGACY_LIVE_CHAT_CLOSE_BUTTON_ID)?.remove();
+  document.getElementById(LIVE_CHAT_RESTORE_BUTTON_ID)?.remove();
 }
 
 export function updateMastheadTargets(): void {
@@ -407,18 +527,342 @@ export function updateLiveChatTargets(): void {
     state.settings.theaterHideLiveChat;
   const liveChatFrames = queryAll<HTMLElement>('ytd-live-chat-frame');
   const hasLiveChat = shouldUseLiveChat && liveChatFrames.length > 0;
+  let hasNativeLiveChatClose = false;
 
   for (const frame of liveChatFrames) {
     frame.classList.toggle(LIVE_CHAT_CLASS, hasLiveChat);
+    bindLiveChatNativeClose(frame);
+    syncLiveChatIframeCloseButton(frame, hasLiveChat && state.settings.theaterShowLiveChatOverlay);
+    hasNativeLiveChatClose ||= hasLiveChat && frameHasNativeLiveChatClose(frame);
+    const iframeSrc = frame.querySelector<HTMLIFrameElement>('iframe#chatframe')?.getAttribute('src');
+    if (iframeSrc && shouldStoreLiveChatFrameSrc(frame, iframeSrc)) {
+      frame.setAttribute(LIVE_CHAT_FRAME_SRC_ATTR, iframeSrc);
+    }
+  }
+
+  if (hasLiveChat && state.settings.theaterShowLiveChatOverlay) {
+    if (liveChatFrames.some((frame) => frame.hasAttribute('collapsed') || frame.hasAttribute('hide-chat-frame'))) {
+      state.liveChatOverlayMinimized = true;
+    }
+  } else {
+    state.liveChatOverlayMinimized = false;
   }
 
   document.body.classList.toggle('simple-yt-tweaks-has-live-chat', hasLiveChat);
+  document.body.classList.toggle(
+    'simple-yt-tweaks-live-chat-minimized',
+    hasLiveChat && state.settings.theaterShowLiveChatOverlay && state.liveChatOverlayMinimized,
+  );
+  document.body.classList.toggle(
+    'simple-yt-tweaks-live-chat-native-close-missing',
+    hasLiveChat && state.settings.theaterShowLiveChatOverlay && !state.liveChatOverlayMinimized && !hasNativeLiveChatClose,
+  );
+  syncLiveChatOverlayControls(hasLiveChat && state.settings.theaterShowLiveChatOverlay);
+
+  if (hasLiveChat && state.settings.theaterShowLiveChatOverlay && !state.liveChatOverlayMinimized) {
+    restoreLiveChatOverlayFrames();
+  }
 
   if (!hasLiveChat) {
     for (const frame of queryAll<HTMLElement>(`.${LIVE_CHAT_CLASS}`)) {
+      removeLiveChatIframeCloseButton(frame);
       frame.classList.remove(LIVE_CHAT_CLASS);
     }
   }
+}
+
+function frameHasNativeLiveChatClose(frame: HTMLElement): boolean {
+  const iframe = frame.querySelector<HTMLIFrameElement>('iframe#chatframe');
+  if (!iframe) return false;
+
+  try {
+    const iframeDocument = iframe.contentDocument;
+    return Boolean(
+      iframeDocument &&
+        Array.from(iframeDocument.querySelectorAll('button, [role="button"]')).some((element) =>
+          /\bclose\b/i.test(
+            [
+              element.getAttribute('aria-label'),
+              element.getAttribute('title'),
+              element.textContent,
+            ].join(' '),
+          ),
+        ),
+    );
+  } catch {
+    return false;
+  }
+}
+
+function getLiveChatIframeDocument(frame: HTMLElement): Document | null {
+  const iframe = frame.querySelector<HTMLIFrameElement>('iframe#chatframe');
+  if (!iframe) return null;
+
+  try {
+    return iframe.contentDocument;
+  } catch {
+    return null;
+  }
+}
+
+function syncLiveChatIframeCloseButton(frame: HTMLElement, shouldShowControls: boolean): void {
+  const iframeDocument = getLiveChatIframeDocument(frame);
+  if (!iframeDocument) return;
+
+  const hasNativeClose = frameHasNativeLiveChatClose(frame);
+  if (!shouldShowControls || hasNativeClose || state.liveChatOverlayMinimized) {
+    iframeDocument.getElementById(LIVE_CHAT_IFRAME_CLOSE_BUTTON_ID)?.remove();
+    return;
+  }
+
+  ensureLiveChatIframeStyle(iframeDocument);
+
+  let closeButton = iframeDocument.getElementById(LIVE_CHAT_IFRAME_CLOSE_BUTTON_ID) as HTMLButtonElement | null;
+  if (!closeButton) {
+    closeButton = iframeDocument.createElement('button');
+    closeButton.id = LIVE_CHAT_IFRAME_CLOSE_BUTTON_ID;
+    closeButton.type = 'button';
+    closeButton.textContent = '×';
+    closeButton.setAttribute('aria-label', 'Minimize live chat');
+    closeButton.title = 'Minimize live chat';
+    closeButton.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+      setLiveChatOverlayMinimized(true);
+    });
+  }
+
+  const moreOptionsButton = Array.from(iframeDocument.querySelectorAll<HTMLElement>('button, [role="button"]')).find((element) =>
+    /\bmore\b/i.test(
+      [
+        element.getAttribute('aria-label'),
+        element.getAttribute('title'),
+        element.textContent,
+      ].join(' '),
+    ),
+  );
+  const insertionTarget =
+    moreOptionsButton?.closest('yt-live-chat-button#live-chat-header-context-menu') ??
+    moreOptionsButton?.closest('yt-live-chat-button') ??
+    moreOptionsButton?.closest('button-view-model') ??
+    moreOptionsButton?.closest('yt-button-renderer') ??
+    moreOptionsButton ??
+    iframeDocument.querySelector('yt-live-chat-header-renderer');
+
+  if (insertionTarget?.parentElement) {
+    insertionTarget.parentElement.insertBefore(closeButton, insertionTarget.nextSibling);
+  }
+}
+
+function ensureLiveChatIframeStyle(iframeDocument: Document): void {
+  if (iframeDocument.getElementById(LIVE_CHAT_IFRAME_STYLE_ID)) return;
+
+  const style = iframeDocument.createElement('style');
+  style.id = LIVE_CHAT_IFRAME_STYLE_ID;
+  style.textContent = `
+    #${LIVE_CHAT_IFRAME_CLOSE_BUTTON_ID} {
+      appearance: none !important;
+      width: 40px !important;
+      height: 40px !important;
+      min-width: 40px !important;
+      border: 0 !important;
+      border-radius: 999px !important;
+      padding: 0 !important;
+      margin: 4px 0 0 0 !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      background: transparent !important;
+      color: var(--yt-spec-text-primary, #fff) !important;
+      font: 400 28px/1 Roboto, Arial, sans-serif !important;
+      cursor: pointer !important;
+    }
+
+    #${LIVE_CHAT_IFRAME_CLOSE_BUTTON_ID}:hover,
+    #${LIVE_CHAT_IFRAME_CLOSE_BUTTON_ID}:focus-visible {
+      background: rgba(255, 255, 255, 0.12) !important;
+      outline: none !important;
+    }
+  `;
+  iframeDocument.documentElement.append(style);
+}
+
+function removeLiveChatIframeCloseButton(frame: HTMLElement): void {
+  const iframeDocument = getLiveChatIframeDocument(frame);
+  iframeDocument?.getElementById(LIVE_CHAT_IFRAME_CLOSE_BUTTON_ID)?.remove();
+}
+
+function shouldStoreLiveChatFrameSrc(frame: HTMLElement, nextSrc: string): boolean {
+  const previousSrc = frame.getAttribute(LIVE_CHAT_FRAME_SRC_ATTR);
+  if (!previousSrc) return true;
+
+  const previousParams = previousSrc.includes('?') ? previousSrc.split('?')[1] : '';
+  const nextParams = nextSrc.includes('?') ? nextSrc.split('?')[1] : '';
+
+  return nextParams.length > previousParams.length;
+}
+
+function bindLiveChatNativeClose(frame: HTMLElement): void {
+  bindLiveChatNativeCloseTarget(frame);
+
+  const iframe = frame.querySelector<HTMLIFrameElement>('iframe#chatframe');
+  if (!iframe) return;
+
+  bindLiveChatNativeCloseTarget(iframe);
+  iframe.addEventListener('load', () => bindLiveChatNativeClose(frame), { once: true });
+
+  try {
+    if (iframe.contentWindow) {
+      bindLiveChatNativeCloseTarget(iframe.contentWindow);
+    }
+    const iframeDocument = iframe.contentDocument;
+    if (iframeDocument) {
+      bindLiveChatNativeCloseTarget(iframeDocument);
+    }
+  } catch {
+    // Some live chat embeds may be inaccessible. In that case the restore path still handles YouTube's collapsed state.
+  }
+}
+
+function bindLiveChatNativeCloseTarget(target: EventTarget): void {
+  if (liveChatCloseBoundTargets.has(target)) return;
+  liveChatCloseBoundTargets.add(target);
+
+  target.addEventListener(
+    'click',
+    (event) => {
+      if (!isNativeLiveChatCloseClick(event)) return;
+
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      setLiveChatOverlayMinimized(true);
+    },
+    { capture: true },
+  );
+}
+
+function isNativeLiveChatCloseClick(event: Event): boolean {
+  return event.composedPath().some((target) => {
+    if (!(target instanceof Element)) return false;
+
+    const closeTarget = target.closest(
+      [
+        '#close-button',
+        'button[aria-label*="Close" i]',
+        'button[title*="Close" i]',
+        '[role="button"][aria-label*="Close" i]',
+        '[role="button"][title*="Close" i]',
+      ].join(','),
+    );
+    if (!closeTarget) return false;
+
+    const text = [
+      closeTarget.getAttribute('aria-label'),
+      closeTarget.getAttribute('title'),
+      closeTarget.textContent,
+    ].join(' ');
+
+    return /\b(?:close|hide)\b/i.test(text) || closeTarget.id === 'close-button';
+  });
+}
+
+function setLiveChatOverlayMinimized(minimized: boolean): void {
+  state.liveChatOverlayMinimized = minimized;
+  document.body.classList.toggle('simple-yt-tweaks-live-chat-minimized', minimized);
+
+  if (!minimized) {
+    restoreLiveChatOverlayFrames();
+  }
+}
+
+function restoreLiveChatOverlayFrames(): void {
+  for (const frame of queryAll<HTMLElement>(`ytd-live-chat-frame.${LIVE_CHAT_CLASS}`)) {
+    const iframe = frame.querySelector<HTMLIFrameElement>('iframe#chatframe');
+    const showHideButton = frame.querySelector<HTMLElement>('#show-hide-button');
+    const showChatButton = frame.querySelector<HTMLButtonElement>('#show-hide-button button[aria-label*="Show chat" i]');
+
+    if (showChatButton && showHideButton && !showHideButton.hasAttribute('hidden')) {
+      showChatButton.click();
+    }
+
+    frame.removeAttribute('collapsed');
+    frame.removeAttribute('hide-chat-frame');
+
+    if (!iframe) continue;
+
+    const previousSrc = frame.getAttribute(LIVE_CHAT_FRAME_SRC_ATTR);
+    if (!iframe.getAttribute('src') && previousSrc) {
+      iframe.setAttribute('src', previousSrc);
+      continue;
+    }
+
+    const videoId =
+      document.querySelector<HTMLElement>(SELECTORS.watchFlexy)?.getAttribute('video-id') ??
+      new URLSearchParams(location.search).get('v') ??
+      '';
+    if (!iframe.getAttribute('src') && videoId) {
+      iframe.setAttribute('src', `/live_chat?v=${encodeURIComponent(videoId)}`);
+    }
+  }
+}
+
+function syncLiveChatOverlayControls(shouldShowControls: boolean): void {
+  document.getElementById(LEGACY_LIVE_CHAT_CLOSE_BUTTON_ID)?.remove();
+
+  if (!shouldShowControls) {
+    document.getElementById(LIVE_CHAT_RESTORE_BUTTON_ID)?.remove();
+    return;
+  }
+
+  let restoreButton = document.getElementById(LIVE_CHAT_RESTORE_BUTTON_ID) as HTMLButtonElement | null;
+  if (!restoreButton) {
+    restoreButton = document.createElement('button');
+    restoreButton.id = LIVE_CHAT_RESTORE_BUTTON_ID;
+    restoreButton.type = 'button';
+    restoreButton.textContent = 'Live chat';
+    restoreButton.setAttribute('aria-label', 'Show live chat');
+    restoreButton.title = 'Show live chat';
+    restoreButton.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      setLiveChatOverlayMinimized(false);
+    });
+    document.body.append(restoreButton);
+  }
+}
+
+function isStandaloneLikeDisplayMode(): boolean {
+  return (
+    window.matchMedia('(display-mode: standalone)').matches ||
+    window.matchMedia('(display-mode: minimal-ui)').matches
+  );
+}
+
+function isLiveWatchPlayerActive(): boolean {
+  const player = document.querySelector<HTMLElement>(SELECTORS.player);
+  const watchFlexy = document.querySelector<HTMLElement>(SELECTORS.watchFlexy);
+
+  return Boolean(
+    player?.classList.contains('ytp-livebadge-color') ||
+      watchFlexy?.hasAttribute('live-chat-present-and-expanded') ||
+      watchFlexy?.hasAttribute('should-stamp-chat'),
+  );
+}
+
+export function resetLiveTheaterScrollOffset(): void {
+  if (!isStandaloneLikeDisplayMode()) return;
+  if (!isEnhancedTheaterActive(state.settings)) return;
+  if (!state.settings.theaterHideLiveChat || !state.settings.theaterShowLiveChatOverlay) return;
+  if (!document.querySelector(`ytd-live-chat-frame.${LIVE_CHAT_CLASS}`)) return;
+  if (!isLiveWatchPlayerActive()) return;
+  if (window.scrollY <= 0) return;
+
+  const player = document.querySelector<HTMLElement>(SELECTORS.player);
+  const playerRect = player?.getBoundingClientRect();
+  if (!playerRect || playerRect.top >= -8) return;
+
+  window.scrollTo(0, 0);
 }
 
 export function updateScrollbarState(): void {

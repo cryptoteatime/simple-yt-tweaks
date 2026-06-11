@@ -67,6 +67,10 @@ Use this file to track who is working, where they are working, and whether the c
 | `019eb1a5-f3e6-7520-86aa-956ea3bd2de6` / Hume | `SYT-010F` | Integrator | Merged PR #28 | 2026-06-10 09:02 EDT | `npm run validate:all` passed; PR #28 squash-merged at `fa07c18`; docs follow-up PR #29 merged at `6580065`; issue #10 remains open. |
 | `019eb293-9f5e-7ca2-ada8-6bad5f84c002` / Russell | `SYT-010G` | Reviewer | Ready to Integrate | 2026-06-10 13:30 EDT | No findings; `git diff --check origin/main...origin/swarm/syt-010g-fullscreen-ui-geometry` and `npm run test:unit` passed; human QA not required. |
 | Codex / main controller | `SYT-010G` | Integrator | Merged PR #34 | 2026-06-10 13:33 EDT | `npm run validate:all` passed; PR #34 squash-merged at `99156b5`; issue #10 remains open. |
+| `019eb2b0-254b-7230-9b53-3f98d55020f6` / Bacon | `SYT-036` | Reviewer | Ready for Human QA | 2026-06-10 14:04 EDT | No findings; `git diff --check`, targeted Home hover regression, and full fixture suite passed. Keep human QA gate before merge due live YouTube hover behavior. |
+| `019eb3ac-ad99-7b90-8a44-09fd13f141bc` / Anscombe | `SYT-036` | Reviewer | Ready for Human QA | 2026-06-10 18:44 EDT | No findings; `git diff --check origin/main...origin/swarm/syt-036-home-hover-stuck-lifecycle`, `npm run test:e2e`, and `npm run test:e2e:live` passed. Superseded by post-review #38 live-stream Theater/chat overlay patch. |
+| `019eb401-965a-7551-84e5-e5212c4eb10d` / Bernoulli | `SYT-036` / `SYT-038` | Reviewer | Ready for Human QA, superseded | 2026-06-10 20:13 EDT | No findings; targeted live-chat/native-hover checks and full fixture suite passed. Superseded by screenshot QA patch that removed the extension-created duplicate close button. |
+| `019eb455-9972-7030-9acc-b0f041d55f9b` / Sagan | `SYT-036` / `SYT-038` | Reviewer | Shutdown before result | 2026-06-10 21:43 EDT | Closed by controller because user reported a new non-overlay live-chat black-panel regression before review completed; route fresh review after the follow-up patch. |
 
 ## Pending Launch
 

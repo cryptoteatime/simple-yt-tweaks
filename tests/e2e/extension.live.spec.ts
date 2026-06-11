@@ -2,11 +2,26 @@ import { collectPageErrors, expect, extensionErrors, test, waitForExtensionReady
 
 type LiveCardTarget = {
   href: string;
+  isLive: boolean;
   title: string;
   x: number;
   y: number;
   width: number;
   height: number;
+};
+
+type VisiblePreviewState = {
+  currentTime: number;
+  href: string;
+  paused: boolean;
+  title: string;
+  visible: boolean;
+};
+
+type HomeNavTarget = {
+  label: string;
+  x: number;
+  y: number;
 };
 
 function getWatchVideoId(href: string): string {
@@ -23,8 +38,10 @@ async function getVisibleHomeCardTargets(page: import('@playwright/test').Page):
       .map((card) => {
         const link = card.querySelector<HTMLAnchorElement>('a[href*="/watch"]');
         const rect = card.getBoundingClientRect();
+        const text = card.textContent?.trim().replace(/\s+/g, ' ') ?? '';
         return {
-          title: card.textContent?.trim().replace(/\s+/g, ' ').slice(0, 120) ?? '',
+          title: text.slice(0, 120),
+          isLive: /\bLIVE\b|watching/i.test(text),
           href: link?.href ?? '',
           x: rect.left,
           y: rect.top,
@@ -34,19 +51,24 @@ async function getVisibleHomeCardTargets(page: import('@playwright/test').Page):
         };
       })
       .filter((card) => card.visible && card.href.includes('/watch') && !card.href.includes('/shorts/'))
-      .map(({ href, title, x, y, width, height }) => ({ href, title, x, y, width, height })),
+      .map(({ href, isLive, title, x, y, width, height }) => ({ href, isLive, title, x, y, width, height })),
   );
 }
 
-async function getVisiblePreviewState(page: import('@playwright/test').Page): Promise<{
-  currentTime: number;
-  href: string;
-  paused: boolean;
-  title: string;
-  visible: boolean;
-}> {
+async function getVisiblePreviewState(page: import('@playwright/test').Page): Promise<VisiblePreviewState> {
   return page.evaluate(() => {
-    for (const video of document.querySelectorAll<HTMLVideoElement>('ytd-video-preview video, #inline-preview-player video')) {
+    const previewVideoSelector = [
+      'ytd-video-preview video',
+      '#inline-preview-player video',
+      'ytd-moving-thumbnail-renderer video',
+      'ytd-thumbnail-overlay-loading-preview-renderer video',
+      'ytd-thumbnail-overlay-inline-preview-renderer video',
+      'yt-inline-player-view-model video',
+      'inline-player-view-model video',
+      '.ytInlinePlayerViewModelHost video',
+    ].join(',');
+
+    for (const video of document.querySelectorAll<HTMLVideoElement>(previewVideoSelector)) {
       const rect = video.getBoundingClientRect();
       const visible = rect.width > 80 && rect.height > 60 && rect.bottom > 0 && rect.top < window.innerHeight;
       if (!visible) continue;
@@ -66,6 +88,60 @@ async function getVisiblePreviewState(page: import('@playwright/test').Page): Pr
       paused: true,
       title: '',
       visible: false,
+    };
+  });
+}
+
+async function previewIsAdvancing(page: import('@playwright/test').Page): Promise<boolean> {
+  const before = await getVisiblePreviewState(page);
+  if (!before.visible) return false;
+
+  await page.waitForTimeout(350);
+  const after = await getVisiblePreviewState(page);
+  return after.visible && !after.paused && after.currentTime > before.currentTime + 0.05;
+}
+
+async function getVisibleHomeNavTarget(page: import('@playwright/test').Page): Promise<HomeNavTarget | null> {
+  return page.evaluate(() => {
+    const candidates = Array.from(
+      document.querySelectorAll<HTMLAnchorElement>(
+        [
+          'a#logo[href="/"]',
+          'ytd-topbar-logo-renderer a[href="/"]',
+          'ytd-mini-guide-entry-renderer a[href="/"]',
+          'ytd-guide-entry-renderer a[href="/"]',
+          'a#endpoint[href="/"]',
+        ].join(','),
+      ),
+    )
+      .map((link) => {
+        const rect = link.getBoundingClientRect();
+        const text = link.textContent?.trim().replace(/\s+/g, ' ') ?? '';
+        const isLogo = Boolean(link.closest('ytd-topbar-logo-renderer') || link.id === 'logo');
+
+        return {
+          label: isLogo ? 'YouTube logo' : text || link.getAttribute('aria-label') || 'Home',
+          isLogo,
+          rect,
+          visible:
+            rect.width > 16 &&
+            rect.height > 16 &&
+            rect.bottom > 0 &&
+            rect.top < window.innerHeight &&
+            rect.right > 0 &&
+            rect.left < window.innerWidth,
+        };
+      })
+      .filter((candidate) => candidate.visible)
+      .sort((a, b) => Number(b.isLogo) - Number(a.isLogo) || a.rect.top - b.rect.top);
+
+    const target = candidates[0];
+    if (!target) return null;
+
+    return {
+      label: target.label,
+      x: target.rect.left + target.rect.width / 2,
+      y: target.rect.top + target.rect.height / 2,
     };
   });
 }
@@ -130,17 +206,17 @@ test.describe('live YouTube smoke', () => {
     await page.waitForURL(/\/watch/, { timeout: 20_000 });
     await waitForExtensionReady(page);
 
-    const logo = page.locator('a#logo[href="/"], ytd-topbar-logo-renderer a[href="/"]');
-    if ((await logo.count()) === 0) {
+    const homeNavTarget = await getVisibleHomeNavTarget(page);
+    if (!homeNavTarget) {
       test.info().annotations.push({
         type: 'live-smoke-skipped',
-        description: 'Live YouTube logo link was not available for SPA Home navigation.',
+        description: 'Live YouTube Home logo/sidebar navigation was not visible on the watch page.',
       });
       return;
     }
 
-    await logo.first().click();
-    await page.waitForURL('https://www.youtube.com/', { timeout: 20_000 });
+    await page.mouse.click(homeNavTarget.x, homeNavTarget.y);
+    await page.waitForURL(/https:\/\/www\.youtube\.com\/(?:$|\?)/, { timeout: 20_000 });
     await waitForExtensionReady(page);
 
     const homeTargets = await getVisibleHomeCardTargets(page);
@@ -152,8 +228,11 @@ test.describe('live YouTube smoke', () => {
       return;
     }
 
-    const hoverTarget = homeTargets[0];
-    await page.mouse.move(hoverTarget.x + hoverTarget.width / 2, hoverTarget.y + Math.min(90, hoverTarget.height / 2));
+    const hoverTarget = homeTargets.find((target) => !target.isLive) ?? homeTargets[0];
+    await page.mouse.move(
+      hoverTarget.x + hoverTarget.width / 2,
+      hoverTarget.y + Math.min(190, hoverTarget.height - 30),
+    );
     const preview = await expect
       .poll(() => getVisiblePreviewState(page), { timeout: 4_000 })
       .toHaveProperty('visible', true)
@@ -165,7 +244,7 @@ test.describe('live YouTube smoke', () => {
       expect(previewVideoId).toBe(hoverTargetVideoId);
     }
 
-    expect(preview.paused || preview.currentTime > 0).toBeTruthy();
+    await expect.poll(() => previewIsAdvancing(page), { timeout: 8_000 }).toBe(true);
     expect(extensionErrors(errors)).toEqual([]);
   });
 });

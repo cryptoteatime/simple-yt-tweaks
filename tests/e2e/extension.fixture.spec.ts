@@ -4,6 +4,8 @@ import { routeYouTubeFixture } from './youtube-fixtures';
 
 declare global {
   interface Window {
+    __simpleYtTweaksDelayedPreviewEvents?: string[];
+    __simpleYtTweaksNativeHoverLifecycleEvents?: string[];
     __simpleYtTweaksNativePreviewEvents?: string[];
     __simpleYtTweaksPlaybackEvents?: string[];
     __simpleYtTweaksSimulateTransientClick?: boolean;
@@ -100,6 +102,92 @@ test('home fixture uses native feed layout while cleanup stays active', async ({
   expect(extensionErrors(errors)).toEqual([]);
 });
 
+test('home fixture repairs stale YouTube grid metadata after watch-to-home navigation', async ({ context }) => {
+  const page = await context.newPage();
+  const errors = await openFixture(page, 'home', 'https://www.youtube.com/');
+
+  await page.evaluate(() => {
+    history.pushState({}, '', '/watch?v=fixture');
+    window.dispatchEvent(new PopStateEvent('popstate'));
+  });
+  await page.waitForTimeout(220);
+  await page.evaluate(() => {
+    const grid = document.querySelector('ytd-browse[page-subtype="home"] ytd-rich-grid-renderer');
+    const items = Array.from(
+      document.querySelectorAll('ytd-browse[page-subtype="home"] ytd-rich-grid-renderer #contents > ytd-rich-item-renderer'),
+    );
+
+    grid?.setAttribute('elements-per-row', '2');
+    items.forEach((item, index) => {
+      item.setAttribute('items-per-row', '2');
+      item.removeAttribute('is-in-first-column');
+      item.removeAttribute('is-in-last-column');
+      if (index === 1) item.setAttribute('is-in-first-column', '');
+    });
+
+    history.pushState({}, '', '/');
+    window.dispatchEvent(new PopStateEvent('popstate'));
+  });
+
+  await expect
+    .poll(
+      () =>
+        page.evaluate(() => {
+          const grid = document.querySelector('ytd-browse[page-subtype="home"] ytd-rich-grid-renderer');
+          return {
+            gridColumns: grid?.getAttribute('elements-per-row'),
+            items: Array.from(
+              document.querySelectorAll<HTMLElement>(
+                'ytd-browse[page-subtype="home"] ytd-rich-grid-renderer #contents > ytd-rich-item-renderer',
+              ),
+            )
+              .filter((item) => !item.hidden && getComputedStyle(item).display !== 'none')
+              .map((item) => ({
+                id: item.getAttribute('data-testid'),
+                columns: item.getAttribute('items-per-row'),
+                first: item.hasAttribute('is-in-first-column'),
+                last: item.hasAttribute('is-in-last-column'),
+              })),
+          };
+        }),
+      { timeout: 3_000 },
+    )
+    .toEqual({
+      gridColumns: '3',
+      items: [
+        { id: 'video-1', columns: '3', first: true, last: false },
+        { id: 'video-2', columns: '3', first: false, last: false },
+        { id: 'video-3', columns: '3', first: false, last: true },
+        { id: 'video-with-preview', columns: '3', first: true, last: false },
+      ],
+    });
+  expect(extensionErrors(errors)).toEqual([]);
+});
+
+test('home fixture clears hidden watch player cache after watch-to-home navigation', async ({ context }) => {
+  const page = await context.newPage();
+  const errors = await openFixture(page, 'home', 'https://www.youtube.com/');
+
+  await page.evaluate(() => {
+    history.pushState({}, '', '/watch?v=fixture');
+    window.dispatchEvent(new PopStateEvent('popstate'));
+  });
+  await page.waitForTimeout(220);
+  await page.evaluate(() => {
+    const watchPage = document.createElement('ytd-watch-flexy');
+    watchPage.hidden = true;
+    watchPage.setAttribute('data-testid', 'hidden-watch-cache');
+    watchPage.innerHTML = '<ytd-player id="ytd-player"><div id="movie_player"><video src="blob:fixture"></video></div></ytd-player>';
+    document.querySelector('ytd-app')?.append(watchPage);
+
+    history.pushState({}, '', '/');
+    window.dispatchEvent(new PopStateEvent('popstate'));
+  });
+
+  await expect(page.locator('[data-testid="hidden-watch-cache"]')).toHaveCount(0, { timeout: 3_000 });
+  expect(extensionErrors(errors)).toEqual([]);
+});
+
 test('home fixture defers destructive cleanup briefly after watch-to-home navigation', async ({ context }) => {
   const page = await context.newPage();
   const errors = await openFixture(page, 'home', 'https://www.youtube.com/');
@@ -123,7 +211,7 @@ test('home fixture defers destructive cleanup briefly after watch-to-home naviga
   expect(extensionErrors(errors)).toEqual([]);
 });
 
-test('home fixture wakes native preview when SPA navigation leaves pointer over a new card', async ({ context }) => {
+test('home fixture does not synthesize native feed hover after watch-to-home navigation', async ({ context }) => {
   const page = await context.newPage();
   const errors = await openFixture(page, 'home', 'https://www.youtube.com/');
 
@@ -133,37 +221,129 @@ test('home fixture wakes native preview when SPA navigation leaves pointer over 
     window.dispatchEvent(new PopStateEvent('popstate'));
   });
   await page.waitForTimeout(220);
-  await page.evaluate(() => {
-    const stalePreview = document.createElement('ytd-video-preview');
-    stalePreview.setAttribute('data-testid', 'stale-home-preview');
-    stalePreview.innerHTML = `
-      <a id="media-container-link" href="/watch?v=stale-preview">
-        <div id="inline-preview-player">
-          <video data-testid="stale-home-preview-video" style="position: fixed; left: 0; top: 0; width: 220px; height: 140px;"></video>
-        </div>
-      </a>
-    `;
-    document.querySelector('#video-preview')?.append(stalePreview);
+  const hoverPoint = await page.evaluate(() => {
+    window.__simpleYtTweaksNativeHoverLifecycleEvents = [];
 
-    const stationaryCard = document.createElement('ytd-rich-item-renderer');
-    stationaryCard.setAttribute('data-testid', 'stationary-hover-video');
-    stationaryCard.setAttribute('items-per-row', '3');
-    stationaryCard.innerHTML = `
-      <a class="ytLockupViewModelContentImage" href="/watch?v=stationary-hover">
-        <yt-thumbnail-view-model></yt-thumbnail-view-model>
+    const card = document.createElement('ytd-rich-item-renderer');
+    card.setAttribute('data-testid', 'native-only-hover-card');
+    card.setAttribute('data-native-preview-card', 'native-only-hover-card');
+    card.setAttribute('items-per-row', '3');
+    card.setAttribute(
+      'style',
+      'display: block; width: 280px; height: 180px; margin: 0; padding: 0; position: fixed; left: 40px; top: 96px; z-index: 1;',
+    );
+    card.innerHTML = `
+      <a class="ytLockupViewModelContentImage" href="/watch?v=native-only-hover-card" style="display: block; width: 100%; height: 128px;">
+        <yt-thumbnail-view-model style="display: block; width: 100%; height: 128px;"></yt-thumbnail-view-model>
       </a>
-      <h3>Stationary hover fixture</h3>
+      <h3>Native-only hover fixture</h3>
     `;
-    document.querySelector('ytd-browse[page-subtype="home"] ytd-rich-grid-renderer #contents')?.prepend(stationaryCard);
+
+    card.addEventListener('pointerover', (event) =>
+      window.__simpleYtTweaksNativeHoverLifecycleEvents?.push(event.isTrusted ? 'pointerover:trusted' : 'pointerover:synthetic'),
+    );
+    card.addEventListener('mouseover', (event) =>
+      window.__simpleYtTweaksNativeHoverLifecycleEvents?.push(event.isTrusted ? 'mouseover:trusted' : 'mouseover:synthetic'),
+    );
+    card.addEventListener('mousemove', (event) =>
+      window.__simpleYtTweaksNativeHoverLifecycleEvents?.push(event.isTrusted ? 'mousemove:trusted' : 'mousemove:synthetic'),
+    );
+
+    document.querySelector('ytd-browse[page-subtype="home"] ytd-rich-grid-renderer #contents')?.prepend(card);
     history.pushState({}, '', '/');
     window.dispatchEvent(new PopStateEvent('popstate'));
+
+    const rect = card.getBoundingClientRect();
+    return {
+      x: rect.left + rect.width / 2,
+      y: rect.top + Math.min(72, rect.height / 2),
+    };
   });
 
+  await page.mouse.move(hoverPoint.x, hoverPoint.y);
+  await page.waitForTimeout(1_000);
   await expect
-    .poll(() => page.evaluate(() => window.__simpleYtTweaksNativePreviewEvents ?? []), { timeout: 2_500 })
-    .toContainEqual('mousemove:synthetic');
-  await expect(page.locator('[data-testid="stationary-preview-started"]')).toHaveCount(1);
-  await expect(page.locator('[data-testid="stationary-hover-video"]')).not.toHaveClass(
+    .poll(() =>
+      page.evaluate(() =>
+        (window.__simpleYtTweaksNativeHoverLifecycleEvents ?? []).filter((event) => event.includes('synthetic')),
+      ),
+    )
+    .toEqual([]);
+  await expect(page.locator('[data-testid="native-only-hover-card"]')).not.toHaveClass(
+    /simple-yt-tweaks-grid-hover-ready/,
+  );
+  expect(extensionErrors(errors)).toEqual([]);
+});
+
+test('home fixture clears off-card detached preview without forcing playback', async ({ context }) => {
+  const page = await context.newPage();
+  const errors = await openFixture(page, 'home', 'https://www.youtube.com/');
+
+  await page.mouse.move(80, 80);
+  await page.evaluate(() => {
+    history.pushState({}, '', '/watch?v=fixture');
+    window.dispatchEvent(new PopStateEvent('popstate'));
+  });
+  await page.waitForTimeout(220);
+  const hoverPoint = await page.evaluate(() => {
+    window.__simpleYtTweaksOffCardPreviewEvents = [];
+
+    const card = document.createElement('ytd-rich-item-renderer');
+    card.setAttribute('data-testid', 'off-card-same-video-card');
+    card.setAttribute('data-native-preview-card', 'off-card-same-video-card');
+    card.setAttribute('items-per-row', '3');
+    card.setAttribute(
+      'style',
+      'display: block; width: 280px; height: 190px; margin: 0; padding: 0; position: fixed; left: 420px; top: 220px; z-index: 1;',
+    );
+    card.innerHTML = `
+      <a class="ytLockupViewModelContentImage" href="/watch?v=off-card-same-video-card" style="display: block; width: 100%; height: 128px;">
+        <yt-thumbnail-view-model style="display: block; width: 100%; height: 128px;"></yt-thumbnail-view-model>
+      </a>
+      <h3 style="margin: 12px 0 0;">Off-card same video fixture</h3>
+    `;
+
+    card.addEventListener('mousemove', () => {
+      window.__simpleYtTweaksOffCardPreviewEvents?.push('mousemove');
+    });
+
+    document.querySelector('ytd-browse[page-subtype="home"] ytd-rich-grid-renderer #contents')?.prepend(card);
+
+    const staleLoader = document.createElement('ytd-video-preview-loader');
+    staleLoader.setAttribute('data-testid', 'off-card-stale-loader');
+    staleLoader.setAttribute(
+      'style',
+      'position: fixed; left: -5000px; top: 0; width: 280px; height: 128px; z-index: 10000; pointer-events: auto;',
+    );
+    staleLoader.innerHTML = `
+      <ytd-video-preview style="display: block; width: 280px; height: 128px;">
+        <a id="media-container-link" href="/watch?v=off-card-same-video-card">
+          <ytd-player id="inline-player">
+            <div id="inline-preview-player">
+              <video data-testid="off-card-stale-video" src="fixture-stale.mp4" style="display: block; width: 280px; height: 128px;"></video>
+            </div>
+          </ytd-player>
+        </a>
+      </ytd-video-preview>
+    `;
+    document.querySelector('#video-preview')?.append(staleLoader);
+
+    history.pushState({}, '', '/');
+    window.dispatchEvent(new PopStateEvent('popstate'));
+
+    const rect = card.getBoundingClientRect();
+    return {
+      x: rect.left + rect.width / 2,
+      y: rect.top + 154,
+    };
+  });
+
+  await page.mouse.move(hoverPoint.x, hoverPoint.y);
+  await expect(page.locator('[data-testid="off-card-stale-loader"]')).toHaveCount(0, { timeout: 2_500 });
+  await expect.poll(() => page.evaluate(() => window.__simpleYtTweaksOffCardPreviewEvents ?? [])).toEqual([
+    'mousemove',
+  ]);
+  await expect(page.locator('[data-testid="off-card-same-video-card"]')).not.toHaveClass(
     /simple-yt-tweaks-grid-hover-ready/,
   );
   expect(extensionErrors(errors)).toEqual([]);
@@ -243,9 +423,256 @@ test('watch fixture validates mode classes, visible comments, hover grow, and vi
   });
   await expect(page.locator('body')).toHaveClass(/simple-yt-tweaks-theater/);
   await expect(page.locator('#comments')).toBeVisible();
+  await page.locator('#comments').scrollIntoViewIfNeeded();
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(100);
+  await page.locator('#comments').evaluate((comments) => comments.append(document.createElement('span')));
+  await page.waitForTimeout(300);
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(100);
 
   const playerPointerEvents = await page.locator('#movie_player video.html5-main-video').evaluate((video) => getComputedStyle(video).pointerEvents);
   expect(playerPointerEvents).toBe('auto');
+  expect(extensionErrors(errors)).toEqual([]);
+});
+
+test('watch fixture keeps live chat overlay from squeezing the theater player', async ({ context, extensionId }) => {
+  await writeExtensionSettings(context, extensionId, {
+    theaterHideLiveChat: true,
+    theaterShowLiveChatOverlay: true,
+  });
+
+  const page = await context.newPage();
+  await page.addInitScript(() => {
+    const originalMatchMedia = window.matchMedia.bind(window);
+    window.matchMedia = (query: string): MediaQueryList => {
+      const result = originalMatchMedia(query);
+      if (query.includes('display-mode: minimal-ui')) {
+        return {
+          ...result,
+          matches: true,
+          media: query,
+          addEventListener: result.addEventListener.bind(result),
+          removeEventListener: result.removeEventListener.bind(result),
+          addListener: result.addListener.bind(result),
+          removeListener: result.removeListener.bind(result),
+          dispatchEvent: result.dispatchEvent.bind(result),
+        };
+      }
+
+      return result;
+    };
+  });
+  const errors = await openFixture(page, 'watch', 'https://www.youtube.com/watch?v=live-fixture');
+
+  await page.locator('ytd-watch-flexy').evaluate((watchFlexy) => {
+    watchFlexy.setAttribute('theater', '');
+    watchFlexy.setAttribute('full-bleed-player', '');
+    watchFlexy.setAttribute('live-chat-present-and-expanded', '');
+    watchFlexy.setAttribute('should-stamp-chat', '');
+    watchFlexy.setAttribute('squeezeback', '');
+    watchFlexy.setAttribute('watch-while-panels-active', '');
+
+    const playerContainer = document.querySelector('#player-container');
+    const columns = document.querySelector('#columns');
+    const secondary = document.querySelector('#secondary');
+    if (!playerContainer || !columns || !secondary || document.querySelector('#full-bleed-container')) return;
+
+    const fullBleedContainer = document.createElement('div');
+    fullBleedContainer.id = 'full-bleed-container';
+    fullBleedContainer.style.cssText = 'display: flex; width: 100vw; height: 540px; overflow: hidden;';
+
+    const playerFullBleedContainer = document.createElement('div');
+    playerFullBleedContainer.id = 'player-full-bleed-container';
+    playerFullBleedContainer.style.cssText = 'display: block; flex: 1 1 0%; width: 558px; height: 540px; overflow: hidden; position: relative;';
+
+    const panelsFullBleedContainer = document.createElement('div');
+    panelsFullBleedContainer.id = 'panels-full-bleed-container';
+    panelsFullBleedContainer.style.cssText = 'display: block; flex: 0 1 auto; width: 402px; height: 540px;';
+
+    const chatContainer = document.createElement('div');
+    chatContainer.id = 'chat-container';
+    const liveChatFrame = document.createElement('ytd-live-chat-frame');
+    liveChatFrame.id = 'chat';
+    const chatFrame = document.createElement('iframe');
+    chatFrame.id = 'chatframe';
+    liveChatFrame.append(chatFrame);
+    chatContainer.append(liveChatFrame);
+    secondary.append(chatContainer);
+
+    playerContainer.parentElement?.insertBefore(fullBleedContainer, playerContainer);
+    playerFullBleedContainer.append(playerContainer);
+    panelsFullBleedContainer.append(secondary);
+    fullBleedContainer.append(playerFullBleedContainer, panelsFullBleedContainer);
+    columns.prepend(fullBleedContainer);
+
+    document.querySelector('#movie_player')?.classList.add('ytp-livebadge-color');
+  });
+
+  await expect(page.locator('body')).toHaveClass(/simple-yt-tweaks-theater/);
+  await expect(page.locator('body')).toHaveClass(/simple-yt-tweaks-has-live-chat/);
+  const viewportWidth = await page.evaluate(() => window.innerWidth);
+  await expect
+    .poll(() =>
+      page.locator('#player-full-bleed-container').evaluate((element) => ({
+        elementWidth: element.getBoundingClientRect().width,
+        viewportWidth: window.innerWidth,
+      })),
+    )
+    .toEqual({ elementWidth: viewportWidth, viewportWidth });
+  await expect(page.locator('#panels-full-bleed-container')).toHaveCSS('width', '0px');
+  await expect(page.locator('ytd-live-chat-frame#chat')).toHaveCSS('width', '380px');
+  await expect(page.locator('iframe#chatframe')).toHaveCSS('width', '380px');
+  await expect(page.locator('#simple-yt-tweaks-live-chat-close')).toHaveCount(0);
+  await expect(page.locator('#simple-yt-tweaks-live-chat-restore')).toBeHidden();
+  await page.evaluate(() => {
+    const legacyClose = document.createElement('button');
+    legacyClose.id = 'simple-yt-tweaks-live-chat-close';
+    legacyClose.textContent = '×';
+    legacyClose.title = 'Minimize live chat';
+    document.body.append(legacyClose);
+    document.querySelector('#comments')?.append(document.createElement('span'));
+  });
+  await expect(page.locator('#simple-yt-tweaks-live-chat-close')).toHaveCount(0);
+
+  await page.locator('iframe#chatframe').evaluate((iframe) => {
+    iframe.setAttribute('src', '/live_chat?v=live-fixture&dark_theme=1&continuation=original-chat');
+  });
+  await page.locator('ytd-live-chat-frame#chat').evaluate((chat) => {
+    chat.append(document.createElement('span'));
+  });
+  await expect(page.locator('ytd-live-chat-frame#chat')).toHaveAttribute(
+    'data-simple-yt-tweaks-chat-src',
+    '/live_chat?v=live-fixture&dark_theme=1&continuation=original-chat',
+  );
+  await page.locator('ytd-live-chat-frame#chat').evaluate((chat) => {
+    const nativeClose = document.createElement('button');
+    nativeClose.id = 'close-button';
+    nativeClose.setAttribute('aria-label', 'Close');
+    nativeClose.addEventListener('click', () => {
+      chat.setAttribute('collapsed', '');
+      chat.querySelector('iframe#chatframe')?.removeAttribute('src');
+    });
+    chat.append(nativeClose);
+  });
+  await page.locator('ytd-live-chat-frame#chat #close-button').click();
+  await expect(page.locator('body')).toHaveClass(/simple-yt-tweaks-live-chat-minimized/);
+  await expect(page.locator('ytd-live-chat-frame#chat')).not.toHaveAttribute('collapsed', '');
+  await expect(page.locator('iframe#chatframe')).toHaveAttribute(
+    'src',
+    '/live_chat?v=live-fixture&dark_theme=1&continuation=original-chat',
+  );
+  await page.locator('#simple-yt-tweaks-live-chat-restore').click();
+  await expect(page.locator('body')).not.toHaveClass(/simple-yt-tweaks-live-chat-minimized/);
+
+  await page.locator('ytd-live-chat-frame#chat').evaluate((chat) => {
+    chat.setAttribute('collapsed', '');
+    chat.setAttribute('hide-chat-frame', '');
+    chat.querySelector('iframe#chatframe')?.removeAttribute('src');
+
+    const showHide = document.createElement('div');
+    showHide.id = 'show-hide-button';
+    const showButton = document.createElement('button');
+    showButton.setAttribute('aria-label', 'Show chat');
+    showButton.addEventListener('click', () => {
+      showHide.setAttribute('hidden', '');
+      chat.setAttribute('theater-watch-while', '');
+    });
+    showHide.append(showButton);
+    chat.append(showHide);
+  });
+  await expect(page.locator('body')).toHaveClass(/simple-yt-tweaks-live-chat-minimized/);
+  await expect(page.locator('ytd-live-chat-frame#chat')).toHaveCSS('opacity', '0');
+  await expect(page.locator('#simple-yt-tweaks-live-chat-restore')).toBeVisible();
+  await expect
+    .poll(() =>
+      page.evaluate(() => {
+        const restore = document.querySelector('#simple-yt-tweaks-live-chat-restore')?.getBoundingClientRect();
+        return Boolean(restore && restore.width > 0 && restore.left < window.innerWidth && restore.right > window.innerWidth - 48);
+      }),
+    )
+    .toBe(true);
+
+  await page.locator('#simple-yt-tweaks-live-chat-restore').click();
+  await expect(page.locator('body')).not.toHaveClass(/simple-yt-tweaks-live-chat-minimized/);
+  await expect(page.locator('ytd-live-chat-frame#chat')).not.toHaveAttribute('collapsed', '');
+  await expect(page.locator('ytd-live-chat-frame#chat')).not.toHaveAttribute('hide-chat-frame', '');
+  await expect(page.locator('ytd-live-chat-frame#chat #show-hide-button')).toHaveAttribute('hidden', '');
+  await expect(page.locator('ytd-live-chat-frame#chat')).toHaveAttribute('theater-watch-while', '');
+  await expect(page.locator('iframe#chatframe')).toHaveAttribute(
+    'src',
+    '/live_chat?v=live-fixture&dark_theme=1&continuation=original-chat',
+  );
+  await expect(page.locator('#simple-yt-tweaks-live-chat-close')).toHaveCount(0);
+  expect(extensionErrors(errors)).toEqual([]);
+});
+
+test('watch fixture hides non-overlay live chat without leaving a black theater panel', async ({ context, extensionId }) => {
+  await writeExtensionSettings(context, extensionId, {
+    theaterHideLiveChat: true,
+    theaterShowLiveChatOverlay: false,
+  });
+
+  const page = await context.newPage();
+  const errors = await openFixture(page, 'watch', 'https://www.youtube.com/watch?v=live-fixture');
+
+  await page.locator('ytd-watch-flexy').evaluate((watchFlexy) => {
+    watchFlexy.setAttribute('theater', '');
+    watchFlexy.setAttribute('full-bleed-player', '');
+    watchFlexy.setAttribute('live-chat-present-and-expanded', '');
+    watchFlexy.setAttribute('should-stamp-chat', '');
+    watchFlexy.setAttribute('squeezeback', '');
+    watchFlexy.setAttribute('watch-while-panels-active', '');
+
+    const playerContainer = document.querySelector('#player-container');
+    const columns = document.querySelector('#columns');
+    const secondary = document.querySelector('#secondary');
+    if (!playerContainer || !columns || !secondary || document.querySelector('#full-bleed-container')) return;
+
+    const fullBleedContainer = document.createElement('div');
+    fullBleedContainer.id = 'full-bleed-container';
+    fullBleedContainer.style.cssText = 'display: flex; width: 100vw; height: 540px; overflow: hidden;';
+
+    const playerFullBleedContainer = document.createElement('div');
+    playerFullBleedContainer.id = 'player-full-bleed-container';
+    playerFullBleedContainer.style.cssText = 'display: block; flex: 1 1 0%; width: 558px; height: 540px; overflow: hidden; position: relative;';
+
+    const panelsFullBleedContainer = document.createElement('div');
+    panelsFullBleedContainer.id = 'panels-full-bleed-container';
+    panelsFullBleedContainer.style.cssText = 'display: block; flex: 0 1 auto; width: 402px; height: 540px; background: #000;';
+
+    const chatContainer = document.createElement('div');
+    chatContainer.id = 'chat-container';
+    const liveChatFrame = document.createElement('ytd-live-chat-frame');
+    liveChatFrame.id = 'chat';
+    const chatFrame = document.createElement('iframe');
+    chatFrame.id = 'chatframe';
+    liveChatFrame.append(chatFrame);
+    chatContainer.append(liveChatFrame);
+    secondary.append(chatContainer);
+
+    playerContainer.parentElement?.insertBefore(fullBleedContainer, playerContainer);
+    playerFullBleedContainer.append(playerContainer);
+    panelsFullBleedContainer.append(secondary);
+    fullBleedContainer.append(playerFullBleedContainer, panelsFullBleedContainer);
+    columns.prepend(fullBleedContainer);
+
+    document.querySelector('#movie_player')?.classList.add('ytp-livebadge-color');
+  });
+
+  await expect(page.locator('body')).toHaveClass(/simple-yt-tweaks-theater/);
+  await expect(page.locator('body')).toHaveClass(/simple-yt-tweaks-has-live-chat/);
+  const viewportWidth = await page.evaluate(() => window.innerWidth);
+  await expect
+    .poll(() =>
+      page.locator('#player-full-bleed-container').evaluate((element) => ({
+        elementWidth: element.getBoundingClientRect().width,
+        viewportWidth: window.innerWidth,
+      })),
+    )
+    .toEqual({ elementWidth: viewportWidth, viewportWidth });
+  await expect(page.locator('#panels-full-bleed-container')).toHaveCSS('width', '0px');
+  await expect(page.locator('#secondary')).toHaveCSS('width', '0px');
+  await expect(page.locator('ytd-live-chat-frame#chat')).toBeHidden();
+  await expect(page.locator('#simple-yt-tweaks-live-chat-restore')).toHaveCount(0);
   expect(extensionErrors(errors)).toEqual([]);
 });
 
