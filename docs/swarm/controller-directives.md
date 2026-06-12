@@ -8,14 +8,14 @@ This file is the repo-local dynamic control plane for the controller chat and an
 - Heartbeat mode: `active-pulse`
 - Heartbeat automation id: `simple-yt-tweaks-controller-heartbeat`
 - Main controller chat: Simple YT Tweaks controller in Codex workspace
-- Last reviewed by controller: 2026-06-11 02:45 EDT
+- Last reviewed by controller: 2026-06-12 02:44 EDT
 
 ## Current Source Of Truth
 
 - Default branch: `main`
-- Current branch: `main`
-- Expected Git state: clean `main` synced with `origin/main`
-- Open PR expectation: docs planning PR for `SYT-WS-001` until integrated
+- Current branch: `swarm/syt-ws001a-assets-refresh`
+- Expected Git state: `SYT-WS-001A` asset refresh branch ready for review/PR, then clean `main` after integration
+- Open PR expectation: PR #63 for `SYT-WS-001A` until integrated
 - Active agents expectation: none
 - Controller lease expectation: none between bounded heartbeat passes
 - Current priority lane: `SYT-WS-001` / GitHub #60 Web Store readiness polish and asset refresh
@@ -106,9 +106,9 @@ Heartbeat overlap rule:
 
 | Priority | Task ID | Action | Owner | Branch / Worktree | Stop Condition |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `SYT-WS-001` | Integrate the readiness planning docs, then route the first safe lane from `docs/swarm/handoffs/SYT-WS-001.md`. | Controller | `swarm/syt-ws001-readiness-planning` then task branches | Planning PR merged or blocked |
-| 2 | `SYT-WS-001A` | Audit Web Store/repo graphics, listing copy, and package collateral; produce concrete asset refresh tasks before editing assets. | Planner/Runner | task branch | Handoff ready for review |
-| 3 | `SYT-WS-001B` | Code polish audit focused on duplicate settings, polling/watchers, and large fragile modules; implement only low-risk cleanups with tests. | Planner/Runner | task branch | Handoff ready for review |
+| 1 | `SYT-WS-001A` | Review and integrate PR #63 if checks are clean. | Reviewer/Integrator | `swarm/syt-ws001a-assets-refresh` | PR merged or blocked |
+| 2 | `SYT-WS-001B` | Decide whether any safe-now code polish remains before Web Store handoff. Avoid runtime changes unless concrete and test-backed. | Controller/Planner | task branch if needed | Handoff ready or deferred |
+| 3 | `SYT-WS-001C` | Run final package/readiness handoff, pause automation, and give exact user Web Store steps. | Controller | `main` after prior lanes | Final handoff complete |
 
 ## Dynamic Notes
 
@@ -149,3 +149,4 @@ Heartbeat overlap rule:
 - 2026-06-11: User reported `Human QA passed for SYT-RC-001`; issue #10 was closed with a hardening summary. No release/version/tag/Web Store action was performed.
 - 2026-06-11: User indicated issue #8 was effectively handled. PR #20 was closed, issue #8 was closed as not planned, and native YouTube Home/Search hover remains the accepted direction.
 - 2026-06-11: User requested final Web Store readiness polish, removal of local `.DS_Store` noise, new/refined graphics, and a 30-minute automation cadence. Controller opened #60 and started `SYT-WS-001`. No version bump, tag, release, or Web Store submission is approved yet.
+- 2026-06-12: `SYT-WS-001A` asset refresh implemented current popup captures, refreshed marketing assets, added marquee promo, updated validation, and refreshed private Web Store notes locally. `npm run assets:store`, `git diff --check`, `npm run validate:all`, and zip inspection passed before PR.

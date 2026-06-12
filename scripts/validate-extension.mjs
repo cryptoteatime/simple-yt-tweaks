@@ -11,6 +11,7 @@ const sharedSettingsPath = resolve(root, 'src', 'shared', 'settings.ts');
 const contentSettingsPath = resolve(root, 'src', 'content', 'settings.ts');
 const screenshotsDir = resolve(root, 'store-assets', 'screenshots');
 const promoTilePath = resolve(root, 'store-assets', 'promo', 'small-promo-tile-440x280.png');
+const marqueePromoPath = resolve(root, 'store-assets', 'promo', 'marquee-promo-1400x560.png');
 const packagedMode = process.argv.includes('--packaged');
 
 const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8'));
@@ -300,6 +301,7 @@ assertExists(resolve(root, 'LICENSE'), 'LICENSE');
 assertExists(resolve(root, 'DEVELOPMENT.md'), 'DEVELOPMENT');
 assertSettingsParity();
 assertPngSize(promoTilePath, 440, 280, 'Small promo tile');
+assertPngSize(marqueePromoPath, 1400, 560, 'Marquee promo tile');
 assertScreenshotDirectory();
 assertExists(manifestPath, 'Built manifest');
 

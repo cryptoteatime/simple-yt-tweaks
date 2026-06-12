@@ -5,9 +5,9 @@
 - Task ID: `SYT-WS-001`
 - GitHub issue: #60
 - Role: Controller / Planner first, then scoped Runners
-- State: In Progress
+- State: `SYT-WS-001A` implementation ready for review
 - Repo: `/Users/d4ngl/Git Repos/Codex/simple-yt-tweaks`
-- Current branch: `swarm/syt-ws001-readiness-planning`
+- Current branch: `swarm/syt-ws001a-assets-refresh`
 
 ## Goal
 
@@ -98,4 +98,59 @@ Bring Simple YT Tweaks from RC-passed to nearly Web Store-ready without changing
 
 ## Next Recommended Role
 
-Controller should route `SYT-WS-001A` implementation next: refresh marketing generation/assets and private Web Store notes. Keep code cleanup conservative; do not touch runtime behavior unless a concrete low-risk test-backed change is selected.
+Reviewer should review `SYT-WS-001A` asset refresh, then Integrator can merge if clean. Keep code cleanup conservative; do not touch runtime behavior unless a concrete low-risk test-backed change is selected.
+
+## `SYT-WS-001A` Implementation
+
+### Files / Areas Touched
+
+- Added `scripts/capture-popup-assets.mjs` to capture current popup tabs from the built extension in an isolated Playwright Chromium profile.
+- Rebuilt `scripts/generate-marketing-assets.mjs` so repo/store graphics are generated from the current popup captures and refreshed icon.
+- Added package scripts:
+  - `npm run assets:popup`
+  - `npm run assets:store`
+- Extended validation to require the new `store-assets/promo/marquee-promo-1400x560.png`.
+- Regenerated:
+  - popup source captures in `store-assets/popup/`
+  - small promo tile
+  - new marquee promo tile
+  - README banner and repo feature cards
+  - five Web Store screenshot PNG/SVG pairs
+- Refreshed `.private/WEBSTORE.md` locally for `v0.3.0`, current asset names, and current feature copy. This file is ignored and must not be staged.
+
+### Verification
+
+- `npm run assets:store` passed.
+- `sips` dimension check confirmed:
+  - small promo: `440x280`
+  - marquee promo: `1400x560`
+  - screenshots: `1280x800`
+  - repo cards/banner: `1280x640`
+- Visual spot-check passed for the small promo, marquee promo, README banner, General settings screenshot, Home/Search cleanup screenshot, and Watch-page modes screenshot.
+- First `npm run validate:all` failed on generated SVG trailing whitespace.
+- Fixed the generator to trim trailing whitespace before writing SVG files.
+- `git diff --check` passed.
+- Final `npm run validate:all` passed:
+  - typecheck
+  - lint
+  - package + packaged validation
+  - 25 unit tests
+  - 21 fixture tests
+- Packaged zip inspection confirmed `release/simple-yt-tweaks-v0.3.0.zip` contains only extension runtime files:
+  - popup files
+  - content script
+  - icons
+  - manifest
+
+### Decisions / Risks
+
+- No runtime behavior changed.
+- No version bump, tag, release, Web Store upload, or permission change.
+- Store assets are refreshed in-repo so final Web Store submission can use current collateral after user approval.
+- The final Web Store listing/assets acceptance remains a user gate before submission.
+
+### Next Exact Action
+
+1. Review PR #63.
+2. Integrate PR #63 if clean.
+3. Continue to `SYT-WS-001B` only if there is a low-risk code polish task worth doing before final handoff; otherwise route `SYT-WS-001C`.

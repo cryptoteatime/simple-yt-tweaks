@@ -45,7 +45,7 @@ Use this file to record the repo's GitHub status and autonomous PR policy.
 
 | Task ID | Branch | PR | Status | Owner | Notes |
 | --- | --- | --- | --- | --- | --- |
-| none | none | none | none | none | none |
+| `SYT-WS-001A` | `swarm/syt-ws001a-assets-refresh` | #63 | Open, needs review | Controller | Refs #60; refreshed store/repo graphics and asset scripts. |
 
 ## Setup Log
 

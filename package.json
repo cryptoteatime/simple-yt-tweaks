@@ -17,6 +17,8 @@
     "validate": "node scripts/validate-extension.mjs",
     "validate:packaged": "node scripts/validate-extension.mjs --packaged",
     "package": "npm run build && npm run validate && node scripts/package-extension.mjs && npm run validate:packaged",
+    "assets:popup": "npm run build && node scripts/capture-popup-assets.mjs",
+    "assets:store": "npm run icons && npm run assets:popup && npm run assets:marketing",
     "test:unit": "playwright test --project=unit",
     "test:e2e": "npm run build && playwright test --project=fixtures",
     "test:e2e:live": "npm run build && SIMPLE_YT_TWEAKS_LIVE=1 playwright test --project=live",
