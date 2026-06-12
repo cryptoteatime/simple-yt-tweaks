@@ -5,7 +5,7 @@
 - Task ID: `SYT-WS-001`
 - GitHub issue: #60
 - Role: Controller / Planner first, then scoped Runners
-- State: `SYT-WS-001A` integrated; `SYT-WS-001B` defer/cleanup decision next
+- State: Complete from automation side; final user Web Store approval/upload remains
 - Repo: `/Users/d4ngl/Git Repos/Codex/simple-yt-tweaks`
 - Current branch: `swarm/syt-ws001a-assets-refresh`
 
@@ -98,7 +98,7 @@ Bring Simple YT Tweaks from RC-passed to nearly Web Store-ready without changing
 
 ## Next Recommended Role
 
-Controller should decide whether to defer `SYT-WS-001B` and route `SYT-WS-001C` final package/readiness handoff. Keep code cleanup conservative; do not touch runtime behavior unless a concrete low-risk test-backed change is selected.
+Controller should close #60, stop/delete the heartbeat automation, and give the user exact final Web Store/release steps. Keep runtime behavior stable until after submission unless the user reports a concrete regression.
 
 ## `SYT-WS-001A` Implementation
 
@@ -149,9 +149,15 @@ Controller should decide whether to defer `SYT-WS-001B` and route `SYT-WS-001C` 
 - Store assets are refreshed in-repo so final Web Store submission can use current collateral after user approval.
 - The final Web Store listing/assets acceptance remains a user gate before submission.
 - PR #63 merged at `65a52f7`.
+- `SYT-WS-001B` is deferred because the audit found no Web Store blocker and broad runtime cleanup is higher risk than value before submission.
+- Final clean-main readiness checks passed:
+  - `npm run assets:store`
+  - `npm run validate:all`
+  - store asset dimension check
+  - packaged zip inspection
 
 ### Next Exact Action
 
-1. Decide whether `SYT-WS-001B` has any low-risk code polish worth doing now.
-2. If not, route `SYT-WS-001C`.
-3. In `SYT-WS-001C`, run final validation/package inspection, pause automation, and give the user exact Web Store/release steps.
+1. Close #60 with the readiness summary.
+2. Stop/delete `simple-yt-tweaks-controller-heartbeat`.
+3. Tell the user the exact remaining Web Store/release steps.

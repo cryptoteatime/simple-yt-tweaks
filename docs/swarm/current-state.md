@@ -4,7 +4,7 @@
 
 - Name: Simple YT Tweaks
 - Folder: `/Users/d4ngl/Git Repos/Codex/simple-yt-tweaks`
-- Status: existing repo, post-v0.3.0 hardening; `SYT-RC-001` human QA passed, #8/#10 are closed, and `SYT-WS-001` is starting final Web Store readiness polish under #60.
+- Status: existing repo, post-v0.3.0 hardening; `SYT-RC-001` human QA passed, #8/#10 are closed, and `SYT-WS-001` Web Store readiness polish is complete pending user listing/upload approval.
 - GitHub: `https://github.com/cryptoteatime/simple-yt-tweaks`
 
 ## Current Focus
@@ -18,9 +18,10 @@
 2. `SYT-010H-F` integrated one-module `grid-hover.ts` watch-recommendation selector organization cleanup.
 3. `SYT-RC-001` human QA passed on 2026-06-11.
 4. #8 enhanced Home/Search hover grow research is closed as not planned; native YouTube Home/Search hover is the accepted behavior.
-5. New active lane: `SYT-WS-001` / #60 Web Store readiness polish and asset refresh.
+5. `SYT-WS-001` / #60 Web Store readiness polish and asset refresh is complete from the automation side.
 6. `SYT-WS-001A` asset refresh is integrated through PR #63 at `65a52f7`.
-7. Keep version/tag/Web Store release actions out unless explicitly approved.
+7. `SYT-WS-001B` code polish is deferred because the audit found no Web Store blocker and broad runtime cleanup is higher risk than value before submission.
+8. Keep version/tag/Web Store release/upload actions out unless explicitly approved.
 
 ## Recent State
 
@@ -43,6 +44,11 @@
 - `SYT-WS-001B` code audit found no code/manifest no-go; defer broad runtime refactors and keep the watch-to-Home path stable before submission.
 - `SYT-WS-001A` implementation refreshed popup captures, store/repo graphics, asset generation scripts, validation for marquee promo, and local private Web Store notes. `npm run assets:store`, `git diff --check`, `npm run validate:all`, and packaged zip inspection passed.
 - PR #63 merged the asset refresh at `65a52f7`; no runtime behavior, version, tag, release, Web Store submission, or permission changes were made.
+- Final clean-main readiness checks passed on 2026-06-12:
+  - `npm run assets:store`
+  - `npm run validate:all`
+  - store asset dimension check
+  - packaged zip inspection
 
 ## Constraints And Risks
 
@@ -62,7 +68,7 @@
 
 ## Automation Notes
 
-- Controller heartbeat: reactivated for #60 at a 30-minute cadence, id `simple-yt-tweaks-controller-heartbeat`.
+- Controller heartbeat: should be stopped/deleted after the final readiness notification, id `simple-yt-tweaks-controller-heartbeat`.
 - Capacity: up to 3 only for planner-approved disjoint `SYT-WS-001` lanes; review, integration, and runtime implementation stay serial.
 - Shared docs lock: controller owns task-board, current-state, controller-directives, and agent-registry unless a handoff explicitly assigns them.
 - Registry: `docs/swarm/agent-registry.md`.
@@ -70,4 +76,4 @@
 ## Last Updated
 
 - Date: 2026-06-12
-- By: Controller integrating `SYT-WS-001A` / #60 asset refresh
+- By: Controller completing `SYT-WS-001` / #60 Web Store readiness

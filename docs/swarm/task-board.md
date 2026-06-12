@@ -17,10 +17,7 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 
 | Task ID | Title | Role | Status | Branch | Scope | Parallel | Depends On | Conflict Risk | Handoff | PR |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `SYT-010H-A` | Settings, popup defaults, and persistence | Integrator | Integrated | `swarm/syt-010h-settings-popup` | settings/popup/defaults tests | parallel-safe with B/C while test-only | `SYT-010H` plan | medium | `docs/swarm/handoffs/SYT-010H.md` | #45 merged |
-| `SYT-010H-B` | Selector accuracy and runtime churn audit | Integrator | Integrated | `swarm/syt-010h-selector-runtime-audit` | docs/audit; no production runtime edits | parallel-safe as audit-only | `SYT-010H` plan | low for audit, high for implementation | `docs/swarm/handoffs/SYT-010H-B.md` | #46 merged |
-| `SYT-010H-C` | Swarm docs and context compaction | Integrator | Integrated | `swarm/syt-010h-docs-compaction` | compact hot swarm docs and completed handoff stubs | parallel-safe | `SYT-010H` plan | low/medium docs state | `docs/swarm/handoffs/SYT-010H.md` | #47 merged |
-| `SYT-WS-001` | Web Store readiness polish and asset refresh | Controller | In Progress | `main` plus scoped task branches | route #60 lanes, docs, cadence | serial-required for planning/integration | user request / #60 | low docs, medium follow-up | `docs/swarm/handoffs/SYT-WS-001.md` | #61/#62 merged |
+| none | none | none | none | none | none | none | none | none | none |
 
 ## Hold / Future Tasks
 
@@ -30,8 +27,7 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 | `SYT-010H-E` | Selector helper and fixture gap hardening | Integrated | PR #50; modern Search lockup fixture coverage. |
 | `SYT-010H-F` | Grid-hover watch recommendation selector organization cleanup | Integrated | PR #54; one-module selector organization and unit coverage. |
 | `SYT-RC-002` | Release-candidate polish after #10 hardening | Backlog | After `SYT-010H` and follow-up fixes are integrated. |
-| `SYT-WS-001B` | Final code polish audit and low-risk cleanup | Ready, lower priority | No code/manifest no-go; only pursue low-risk settings/test cleanup. Do not change watch-to-Home behavior before submission without live QA. |
-| `SYT-WS-001C` | Final package/release handoff | Backlog | After assets/code polish pass and `npm run validate:all`; stop automation and give user exact next steps. |
+| `SYT-WS-001B` | Final code polish audit and low-risk cleanup | Deferred | Code audit found no Web Store blocker; broad runtime cleanup is deferred until after submission because behavior is stable. |
 
 ## Completed / Archived
 
@@ -60,6 +56,7 @@ Completed lanes are stubs in `docs/swarm/handoffs/` and indexed in `docs/swarm/a
 | `SYT-RC-001` | PR #55/#56 merged; `validate:all` passed; human QA passed; issue #10 closed |
 | `SYT-008A` | PR #20 closed; issue #8 closed as not planned; native Home/Search hover remains accepted |
 | `SYT-WS-001A` | PR #63 merged at `65a52f7`; refreshed current store/repo graphics, popup captures, asset scripts, and validation |
+| `SYT-WS-001C` | Final readiness checks passed on clean `main`; heartbeat should stop after user-facing final handoff |
 
 ## Review / Integration Queues
 
@@ -80,5 +77,5 @@ Completed lanes are stubs in `docs/swarm/handoffs/` and indexed in `docs/swarm/a
 - Capacity returns to serial for runtime implementation after the A/B/C burst.
 - Runtime source changes, review, integration, merge conflicts, and release-candidate work stay serial.
 - Current controller phase: #60 readiness polish. Keep first pass docs/planning-only, then route scoped lanes. No version/release/Web Store submission until explicit approval.
-- `SYT-WS-001A` asset/listing refresh is integrated. Decide whether to defer `SYT-WS-001B`; otherwise route `SYT-WS-001C` final handoff.
+- `SYT-WS-001` is complete from the automation side. Close #60, stop/delete the heartbeat, and give the user final Web Store/release steps.
 - Do not route Home/Search hover research unless the user opens a fresh issue.
