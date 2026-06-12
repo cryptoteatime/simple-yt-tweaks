@@ -4,7 +4,7 @@ Use this file as the fast entrypoint after `SWARM.md` and `docs/swarm/controller
 
 ## Current Hot State
 
-- Active lane family: `SYT-WS-001` / #60 Web Store readiness polish and asset refresh.
+- Active lane family: none; `SYT-WS-001` / #60 Web Store readiness polish is complete pending user listing/upload approval.
 - Current routing: planning PR #43, batch registration PR #44, settings/popup coverage PR #45, selector/runtime audit PR #46, docs compaction PR #47, runtime video binding PR #48, Search lockup fixture PR #50, grid-hover organization PR #54, and RC checklist PR #55 are merged.
 - Completed first burst:
   - `SYT-010H-A`: settings/popup/defaults/persistence test coverage, PR #45, merge `ce09953`.
@@ -13,9 +13,9 @@ Use this file as the fast entrypoint after `SWARM.md` and `docs/swarm/controller
   - `SYT-010H-D`: runtime video binding hardening, PR #48.
   - `SYT-010H-E`: Search modern lockup selector fixture hardening, PR #50.
   - `SYT-010H-F`: grid-hover watch recommendation selector organization, PR #54.
-- Active serial lane: `SYT-WS-001A` is integrated through PR #63; decide `SYT-WS-001B` defer vs small cleanup, then route `SYT-WS-001C`.
-- GitHub issues: #8/#10/#36/#38/#31 closed; #60 open for final readiness polish.
-- Latest audit result: asset/listing refresh is integrated; code has no Web Store blocker and runtime behavior should stay stable.
+- Active serial lane: final notification and heartbeat shutdown.
+- GitHub issues: #8/#10/#36/#38/#31 closed; #60 ready to close after final readiness notification.
+- Latest audit result: asset/listing refresh is integrated; code has no Web Store blocker; `SYT-WS-001B` is deferred before submission.
 - Recent merged swarm docs/code PRs: #39 integration record, #40 context repair, #41 burst capacity, #42 planner registration, #43 SYT-010H lane plan, #44 batch registration, #45 settings tests, #46 selector/runtime audit, #47 docs compaction, #48 runtime video binding, #50 Search lockup fixtures, #54 grid-hover organization, #55 RC checklist.
 - Do not route enhanced Home/Search hover grow research unless the user opens a fresh issue; #8 is closed as not planned.
 
@@ -53,4 +53,4 @@ Completed lanes are intentionally compacted to stubs. Use PRs and `docs/swarm/ar
 
 ## Next Safe Controller Action
 
-Decide whether to defer `SYT-WS-001B` code polish, then route `SYT-WS-001C` final package/readiness handoff. Do not release, bump version, tag, submit Web Store assets, or restart Home/Search hover research without explicit user approval.
+Close #60, stop/delete the heartbeat automation, and give the user exact Web Store upload/release steps. Do not release, bump version, tag, submit Web Store assets, or restart Home/Search hover research without explicit user approval.

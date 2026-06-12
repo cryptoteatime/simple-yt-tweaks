@@ -5,20 +5,20 @@ This file is the repo-local dynamic control plane for the controller chat and an
 ## Mode
 
 - Controller mode: `AUTOPILOT_WITH_HEARTBEAT`
-- Heartbeat mode: `active-pulse`
+- Heartbeat mode: `complete-after-final-notification`
 - Heartbeat automation id: `simple-yt-tweaks-controller-heartbeat`
 - Main controller chat: Simple YT Tweaks controller in Codex workspace
-- Last reviewed by controller: 2026-06-12 02:44 EDT
+- Last reviewed by controller: 2026-06-12 03:09 EDT
 
 ## Current Source Of Truth
 
 - Default branch: `main`
 - Current branch: `main`
 - Expected Git state: clean `main` synced with `origin/main`
-- Open PR expectation: none after PR #63 integration
+- Open PR expectation: none after final #60 readiness docs integration
 - Active agents expectation: none
 - Controller lease expectation: none between bounded heartbeat passes
-- Current priority lane: `SYT-WS-001` / GitHub #60 Web Store readiness polish and asset refresh
+- Current priority lane: none; `SYT-WS-001` / GitHub #60 is ready to close after final docs integration
 
 ## Controller Lease And Pacing
 
@@ -30,8 +30,8 @@ This file is the repo-local dynamic control plane for the controller chat and an
 - Controller pass budget: max 10 safe orchestration actions or 90 minutes during the `SYT-010H` final-leg push
 - Heartbeat pass budget: max 4 safe recovery/routing actions, then stop
 - Active capacity: max 3 active subagents total only for `SYT-WS-001` lanes that the planner marks disjoint and low/medium conflict; keep max 1 for runtime implementation touching the same content modules, review, integration, merge conflicts, live YouTube behavior, or release-candidate work
-- Heartbeat cadence target: 30 minutes while `SYT-WS-001` is active; pause when final readiness handoff is complete
-- Next human QA gate: final Web Store listing/assets acceptance and release approval after automation stops
+- Heartbeat cadence target: stop/delete after final readiness handoff is reported
+- Next human QA gate: final Web Store listing/assets acceptance and release/upload approval by the user
 
 ## Context Hygiene
 
@@ -106,8 +106,7 @@ Heartbeat overlap rule:
 
 | Priority | Task ID | Action | Owner | Branch / Worktree | Stop Condition |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `SYT-WS-001B` | Decide whether any safe-now code polish remains before Web Store handoff. Avoid runtime changes unless concrete and test-backed. | Controller/Planner | task branch if needed | Handoff ready or deferred |
-| 2 | `SYT-WS-001C` | Run final package/readiness handoff, pause automation, and give exact user Web Store steps. | Controller | `main` after prior lanes | Final handoff complete |
+| 1 | `SYT-WS-001C` | Close issue #60, stop/delete the heartbeat automation, and give exact user Web Store steps. | Controller | `main` after final docs PR | Final handoff complete |
 
 ## Dynamic Notes
 
@@ -150,3 +149,4 @@ Heartbeat overlap rule:
 - 2026-06-11: User requested final Web Store readiness polish, removal of local `.DS_Store` noise, new/refined graphics, and a 30-minute automation cadence. Controller opened #60 and started `SYT-WS-001`. No version bump, tag, release, or Web Store submission is approved yet.
 - 2026-06-12: `SYT-WS-001A` asset refresh implemented current popup captures, refreshed marketing assets, added marquee promo, updated validation, and refreshed private Web Store notes locally. `npm run assets:store`, `git diff --check`, `npm run validate:all`, and zip inspection passed before PR.
 - 2026-06-12: PR #63 squash-merged at `65a52f7`; no version bump, tag, release, Web Store submission, permission change, or runtime behavior change.
+- 2026-06-12: Final `npm run assets:store`, `npm run validate:all`, asset dimension checks, and zip inspection passed on clean `main`. `SYT-WS-001B` is deferred because the code audit found no Web Store blocker and broad runtime cleanup is higher risk than value before submission.
