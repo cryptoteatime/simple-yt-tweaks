@@ -5,7 +5,7 @@
 - Task ID: `SYT-WS-001`
 - GitHub issue: #60
 - Role: Controller / Planner first, then scoped Runners
-- State: `SYT-WS-001A` implementation ready for review
+- State: `SYT-WS-001A` integrated; `SYT-WS-001B` defer/cleanup decision next
 - Repo: `/Users/d4ngl/Git Repos/Codex/simple-yt-tweaks`
 - Current branch: `swarm/syt-ws001a-assets-refresh`
 
@@ -98,7 +98,7 @@ Bring Simple YT Tweaks from RC-passed to nearly Web Store-ready without changing
 
 ## Next Recommended Role
 
-Reviewer should review `SYT-WS-001A` asset refresh, then Integrator can merge if clean. Keep code cleanup conservative; do not touch runtime behavior unless a concrete low-risk test-backed change is selected.
+Controller should decide whether to defer `SYT-WS-001B` and route `SYT-WS-001C` final package/readiness handoff. Keep code cleanup conservative; do not touch runtime behavior unless a concrete low-risk test-backed change is selected.
 
 ## `SYT-WS-001A` Implementation
 
@@ -148,9 +148,10 @@ Reviewer should review `SYT-WS-001A` asset refresh, then Integrator can merge if
 - No version bump, tag, release, Web Store upload, or permission change.
 - Store assets are refreshed in-repo so final Web Store submission can use current collateral after user approval.
 - The final Web Store listing/assets acceptance remains a user gate before submission.
+- PR #63 merged at `65a52f7`.
 
 ### Next Exact Action
 
-1. Review PR #63.
-2. Integrate PR #63 if clean.
-3. Continue to `SYT-WS-001B` only if there is a low-risk code polish task worth doing before final handoff; otherwise route `SYT-WS-001C`.
+1. Decide whether `SYT-WS-001B` has any low-risk code polish worth doing now.
+2. If not, route `SYT-WS-001C`.
+3. In `SYT-WS-001C`, run final validation/package inspection, pause automation, and give the user exact Web Store/release steps.

@@ -12,6 +12,32 @@ Use this file for merge decisions, conflict history, final checks, and release n
 
 ## Entries
 
+### 2026-06-12: SYT-WS-001A Web Store Asset Refresh Integration
+
+- Integrator: Codex
+- Target branch: `main`
+- Candidate branch(es): `swarm/syt-ws001a-assets-refresh`
+- PR(s): https://github.com/cryptoteatime/simple-yt-tweaks/pull/63
+- Issue(s): https://github.com/cryptoteatime/simple-yt-tweaks/issues/60
+- Decision: Integrated
+- Merge: squash merge commit `65a52f7b0b0eb8f40dfa40ce68195206604551aa`
+- Reason: Asset audit found stale popup and marketing imagery. PR #63 refreshed current popup captures, store/repo graphics, asset generation scripts, and validation for the new marquee promo without touching runtime behavior.
+- Conflicts: none; PR #63 was mergeable before merge.
+- Checks:
+  - `npm run assets:store`: PASS.
+  - `git diff --check`: PASS.
+  - `npm run validate:all`: PASS, including typecheck, lint, package validation, packaged validation, 25 unit tests, and 21 fixture tests.
+  - `unzip -l release/simple-yt-tweaks-v0.3.0.zip`: PASS; packaged zip contains only extension runtime files.
+- Human acceptance: NOT_REQUIRED before merge
+- Human acceptance evidence: PR changes were generated assets/docs/scripts only. Final Web Store listing/assets acceptance remains a user gate before submission.
+- Branch cleanup: GitHub deleted the remote task branch during merge.
+- Worktree cleanup: local `main` synced to `origin/main`; this docs repair records the integration and clears active PR state.
+- Notes:
+  - No runtime behavior, version bump, tag, release, Web Store submission, or permission change was performed.
+  - `.private/WEBSTORE.md` was refreshed locally but remains ignored and untracked.
+- Follow-ups:
+  - Decide whether to defer `SYT-WS-001B` code polish, then route `SYT-WS-001C` final package/readiness handoff.
+
 ### 2026-06-11: SYT-036 / SYT-038 Home Hover And Live Theater Chat Integration
 
 - Integrator: Codex
