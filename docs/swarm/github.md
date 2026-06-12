@@ -45,7 +45,7 @@ Use this file to record the repo's GitHub status and autonomous PR policy.
 
 | Task ID | Branch | PR | Status | Owner | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `SYT-WS-001A` | `swarm/syt-ws001a-assets-refresh` | #63 | Open, needs review | Controller | Refs #60; refreshed store/repo graphics and asset scripts. |
+| none | none | none | none | none | none |
 
 ## Setup Log
 
@@ -74,3 +74,4 @@ Use this file to record the repo's GitHub status and autonomous PR policy.
 - 2026-06-11: User confirmed desired #36/#38 behavior is working and asked to proceed to polish/hardening. Keep PR #37 in review path, then integrate if clean before launching `SYT-010H` under #10.
 - 2026-06-11: PR #37 marked ready and squash-merged at `342854f` after `npm run validate:all` passed. Issues #36 and #38 closed. Next GitHub work should be a `SYT-010H` polish/hardening branch under #10.
 - 2026-06-11: PR #20 was closed and branch `swarm/syt-008a-hover-research` deleted. Issue #8 was closed as not planned because native YouTube Home/Search hover is the accepted direction.
+- 2026-06-12: PR #63 squash-merged at `65a52f7` for `SYT-WS-001A`; remote branch cleanup completed by merge.

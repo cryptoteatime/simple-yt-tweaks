@@ -21,7 +21,6 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 | `SYT-010H-B` | Selector accuracy and runtime churn audit | Integrator | Integrated | `swarm/syt-010h-selector-runtime-audit` | docs/audit; no production runtime edits | parallel-safe as audit-only | `SYT-010H` plan | low for audit, high for implementation | `docs/swarm/handoffs/SYT-010H-B.md` | #46 merged |
 | `SYT-010H-C` | Swarm docs and context compaction | Integrator | Integrated | `swarm/syt-010h-docs-compaction` | compact hot swarm docs and completed handoff stubs | parallel-safe | `SYT-010H` plan | low/medium docs state | `docs/swarm/handoffs/SYT-010H.md` | #47 merged |
 | `SYT-WS-001` | Web Store readiness polish and asset refresh | Controller | In Progress | `main` plus scoped task branches | route #60 lanes, docs, cadence | serial-required for planning/integration | user request / #60 | low docs, medium follow-up | `docs/swarm/handoffs/SYT-WS-001.md` | #61/#62 merged |
-| `SYT-WS-001A` | Store/repo graphics and listing collateral refresh | Runner | Needs Review | `swarm/syt-ws001a-assets-refresh` | refreshed popup captures, store/repo graphics, asset scripts, private notes | serial-required for review/integration | `SYT-WS-001` audits | medium visual/product assets | `docs/swarm/handoffs/SYT-WS-001.md` | #63 |
 
 ## Hold / Future Tasks
 
@@ -60,6 +59,7 @@ Completed lanes are stubs in `docs/swarm/handoffs/` and indexed in `docs/swarm/a
 | `SYT-010H-F` | PR #54 merged; grid-hover watch recommendation selector organization |
 | `SYT-RC-001` | PR #55/#56 merged; `validate:all` passed; human QA passed; issue #10 closed |
 | `SYT-008A` | PR #20 closed; issue #8 closed as not planned; native Home/Search hover remains accepted |
+| `SYT-WS-001A` | PR #63 merged at `65a52f7`; refreshed current store/repo graphics, popup captures, asset scripts, and validation |
 
 ## Review / Integration Queues
 
@@ -80,5 +80,5 @@ Completed lanes are stubs in `docs/swarm/handoffs/` and indexed in `docs/swarm/a
 - Capacity returns to serial for runtime implementation after the A/B/C burst.
 - Runtime source changes, review, integration, merge conflicts, and release-candidate work stay serial.
 - Current controller phase: #60 readiness polish. Keep first pass docs/planning-only, then route scoped lanes. No version/release/Web Store submission until explicit approval.
-- `SYT-WS-001A` asset/listing refresh is implemented on `swarm/syt-ws001a-assets-refresh`; review the branch/PR next.
+- `SYT-WS-001A` asset/listing refresh is integrated. Decide whether to defer `SYT-WS-001B`; otherwise route `SYT-WS-001C` final handoff.
 - Do not route Home/Search hover research unless the user opens a fresh issue.
