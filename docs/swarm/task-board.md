@@ -21,7 +21,7 @@ Use this file as the repo-local queue. Keep entries short and route details to h
 | `SYT-010H-B` | Selector accuracy and runtime churn audit | Integrator | Integrated | `swarm/syt-010h-selector-runtime-audit` | docs/audit; no production runtime edits | parallel-safe as audit-only | `SYT-010H` plan | low for audit, high for implementation | `docs/swarm/handoffs/SYT-010H-B.md` | #46 merged |
 | `SYT-010H-C` | Swarm docs and context compaction | Integrator | Integrated | `swarm/syt-010h-docs-compaction` | compact hot swarm docs and completed handoff stubs | parallel-safe | `SYT-010H` plan | low/medium docs state | `docs/swarm/handoffs/SYT-010H.md` | #47 merged |
 | `SYT-WS-001` | Web Store readiness polish and asset refresh | Controller | In Progress | `main` plus scoped task branches | route #60 lanes, docs, cadence | serial-required for planning/integration | user request / #60 | low docs, medium follow-up | `docs/swarm/handoffs/SYT-WS-001.md` | #61/#62 merged |
-| `SYT-WS-001A` | Store/repo graphics and listing collateral refresh | Runner | Needs Review | `swarm/syt-ws001a-assets-refresh` | refreshed popup captures, store/repo graphics, asset scripts, private notes | serial-required for review/integration | `SYT-WS-001` audits | medium visual/product assets | `docs/swarm/handoffs/SYT-WS-001.md` | pending |
+| `SYT-WS-001A` | Store/repo graphics and listing collateral refresh | Runner | Needs Review | `swarm/syt-ws001a-assets-refresh` | refreshed popup captures, store/repo graphics, asset scripts, private notes | serial-required for review/integration | `SYT-WS-001` audits | medium visual/product assets | `docs/swarm/handoffs/SYT-WS-001.md` | #63 |
 
 ## Hold / Future Tasks
 

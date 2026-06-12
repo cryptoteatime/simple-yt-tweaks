@@ -15,7 +15,7 @@ This file is the repo-local dynamic control plane for the controller chat and an
 - Default branch: `main`
 - Current branch: `swarm/syt-ws001a-assets-refresh`
 - Expected Git state: `SYT-WS-001A` asset refresh branch ready for review/PR, then clean `main` after integration
-- Open PR expectation: `SYT-WS-001A` PR until integrated
+- Open PR expectation: PR #63 for `SYT-WS-001A` until integrated
 - Active agents expectation: none
 - Controller lease expectation: none between bounded heartbeat passes
 - Current priority lane: `SYT-WS-001` / GitHub #60 Web Store readiness polish and asset refresh
@@ -106,7 +106,7 @@ Heartbeat overlap rule:
 
 | Priority | Task ID | Action | Owner | Branch / Worktree | Stop Condition |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `SYT-WS-001A` | Review and integrate the asset refresh branch if checks/PR are clean. | Reviewer/Integrator | `swarm/syt-ws001a-assets-refresh` | PR merged or blocked |
+| 1 | `SYT-WS-001A` | Review and integrate PR #63 if checks are clean. | Reviewer/Integrator | `swarm/syt-ws001a-assets-refresh` | PR merged or blocked |
 | 2 | `SYT-WS-001B` | Decide whether any safe-now code polish remains before Web Store handoff. Avoid runtime changes unless concrete and test-backed. | Controller/Planner | task branch if needed | Handoff ready or deferred |
 | 3 | `SYT-WS-001C` | Run final package/readiness handoff, pause automation, and give exact user Web Store steps. | Controller | `main` after prior lanes | Final handoff complete |
 

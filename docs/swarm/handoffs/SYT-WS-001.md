@@ -151,8 +151,6 @@ Reviewer should review `SYT-WS-001A` asset refresh, then Integrator can merge if
 
 ### Next Exact Action
 
-1. Commit this branch with `Codex: refresh Web Store assets`.
-2. Push `swarm/syt-ws001a-assets-refresh`.
-3. Open PR for #60 with the validation commands and package inspection result.
-4. Review and integrate if clean.
-5. Continue to `SYT-WS-001B` only if there is a low-risk code polish task worth doing before final handoff; otherwise route `SYT-WS-001C`.
+1. Review PR #63.
+2. Integrate PR #63 if clean.
+3. Continue to `SYT-WS-001B` only if there is a low-risk code polish task worth doing before final handoff; otherwise route `SYT-WS-001C`.
