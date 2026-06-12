@@ -13,9 +13,9 @@ Use this file as the fast entrypoint after `SWARM.md` and `docs/swarm/controller
   - `SYT-010H-D`: runtime video binding hardening, PR #48.
   - `SYT-010H-E`: Search modern lockup selector fixture hardening, PR #50.
   - `SYT-010H-F`: grid-hover watch recommendation selector organization, PR #54.
-- Active serial lane: planning/docs setup on `swarm/syt-ws001-readiness-planning`; route implementation lanes only after planning is integrated.
+- Active serial lane: `SYT-WS-001A` asset refresh on `swarm/syt-ws001a-assets-refresh`; review/PR is next.
 - GitHub issues: #8/#10/#36/#38/#31 closed; #60 open for final readiness polish.
-- Latest audit result: asset/listing refresh is the next best lane; code has no Web Store blocker and runtime behavior should stay stable.
+- Latest audit result: asset/listing refresh is implemented; code has no Web Store blocker and runtime behavior should stay stable.
 - Recent merged swarm docs/code PRs: #39 integration record, #40 context repair, #41 burst capacity, #42 planner registration, #43 SYT-010H lane plan, #44 batch registration, #45 settings tests, #46 selector/runtime audit, #47 docs compaction, #48 runtime video binding, #50 Search lockup fixtures, #54 grid-hover organization, #55 RC checklist.
 - Do not route enhanced Home/Search hover grow research unless the user opens a fresh issue; #8 is closed as not planned.
 
@@ -53,4 +53,4 @@ Completed lanes are intentionally compacted to stubs. Use PRs and `docs/swarm/ar
 
 ## Next Safe Controller Action
 
-Route `SYT-WS-001A` asset/listing refresh next. Do not release, bump version, tag, submit Web Store assets, or restart Home/Search hover research without explicit user approval.
+Review and integrate `SYT-WS-001A` asset/listing refresh next. Do not release, bump version, tag, submit Web Store assets, or restart Home/Search hover research without explicit user approval.

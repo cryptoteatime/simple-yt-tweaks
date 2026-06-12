@@ -19,7 +19,8 @@
 3. `SYT-RC-001` human QA passed on 2026-06-11.
 4. #8 enhanced Home/Search hover grow research is closed as not planned; native YouTube Home/Search hover is the accepted behavior.
 5. New active lane: `SYT-WS-001` / #60 Web Store readiness polish and asset refresh.
-6. Keep version/tag/Web Store release actions out unless explicitly approved.
+6. `SYT-WS-001A` asset refresh is implemented on `swarm/syt-ws001a-assets-refresh` and ready for review/PR.
+7. Keep version/tag/Web Store release actions out unless explicitly approved.
 
 ## Recent State
 
@@ -40,6 +41,7 @@
 - Issue #60 is open to coordinate final code polish, graphics/listing refresh, package readiness, and exact user handoff before Web Store submission.
 - `SYT-WS-001A` store/listing audit found stale marketing assets and private Web Store notes; asset refresh is the next best lane.
 - `SYT-WS-001B` code audit found no code/manifest no-go; defer broad runtime refactors and keep the watch-to-Home path stable before submission.
+- `SYT-WS-001A` implementation refreshed popup captures, store/repo graphics, asset generation scripts, validation for marquee promo, and local private Web Store notes. `npm run assets:store`, `git diff --check`, `npm run validate:all`, and packaged zip inspection passed.
 
 ## Constraints And Risks
 
@@ -66,5 +68,5 @@
 
 ## Last Updated
 
-- Date: 2026-06-11
-- By: Controller starting `SYT-WS-001` / #60
+- Date: 2026-06-12
+- By: Controller implementing `SYT-WS-001A` / #60 asset refresh
